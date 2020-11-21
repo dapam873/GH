@@ -1,0 +1,17 @@
+
+DateTime debut = DateTime.Now;
+
+DateTime fin = DateTime.Now;
+double diff = ((TimeSpan)(fin - debut)).TotalMilliseconds;
+GEDCOMClass.Z XCV("diff " + (diff).ToString());
+
+
+
+
+
+// exemple de d'appeler un fonction de Form1.cs dans html.cs
+
+var principalForm = Application.OpenForms.OfType<GH.GH>().FirstOrDefault();
+
+            principalForm.Form_desactiver(false);
+//
