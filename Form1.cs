@@ -138,7 +138,8 @@ namespace GH
         public GH()
         {
             InitializeComponent();
-}
+        }
+        ToolTip t1 = new ToolTip();
         private void OuvrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!Directory.Exists(Properties.Settings.Default.DossierHTML))
@@ -161,7 +162,29 @@ namespace GH
                 {
                     FichierGEDCOMaLire = openFileDialog.FileName;
                 }
+
             }
+            // Si dialog retourne autre chose que ""
+            if (FichierGEDCOMaLire != "")
+            {
+                DossierSortie = Properties.Settings.Default.DossierHTML + "\\" + Path.GetFileNameWithoutExtension(FichierGEDCOMaLire);
+
+                if (Directory.Exists(DossierSortie))
+                {
+                    DialogResult reponse;
+                    string message = "Le dossier des rapports " + Path.GetFileNameWithoutExtension(FichierGEDCOMaLire) +
+                        " existe. Il sera effacé.";
+                    reponse = MessageBox.Show(
+                        message,
+                        "Attention",
+                        MessageBoxButtons.OKCancel,
+                        MessageBoxIcon.Warning
+                        );
+                    if (reponse == System.Windows.Forms.DialogResult.Cancel)
+                        GH.annuler = true;
+                }
+            }
+            if (GH.annuler) return;
             if (FichierGEDCOMaLire != "")
             {
                 Btn_annuler.Visible = true;
@@ -183,7 +206,7 @@ namespace GH
                     return;
                 }
                 Properties.Settings.Default.DossierGEDCOM = Path.GetDirectoryName(FichierGEDCOMaLire);
-                DossierSortie = Properties.Settings.Default.DossierHTML + "/" + Path.GetFileNameWithoutExtension(FichierGEDCOMaLire);
+               
                 if (Properties.Settings.Default.DossierHTML != "") CreerDossier();
                 FichierGEDCOM = Path.GetFileName(FichierGEDCOMaLire);
                 this.Text = " " + FichierGEDCOM;
@@ -196,10 +219,12 @@ namespace GH
         //*************************** Function
         public string AssemblerPatronymePrenom(string patronyme, string prenom)
         {
-            if (prenom == null && patronyme == null) return "";
-            if (prenom == "" && patronyme == "") return "";
+            if (prenom == null && patronyme == null) return null;
+            if (prenom == "" && patronyme == "") return null;
             if (prenom == "") prenom = "?";
+            if (prenom == null) prenom = "?";
             if (patronyme == "") patronyme = "?";
+            if (patronyme == null) patronyme = "?";
             return patronyme + ", " + prenom;
         }
         private void AvoirDossierMedias()
@@ -251,23 +276,22 @@ namespace GH
             {
                 erreur = Avoir_code_erreur();
                 DirectoryInfo di = new DirectoryInfo(@DossierSortie);
-
                 if (EffacerLesDossier(di))
                 {
                     erreur = Avoir_code_erreur();
                     Thread.Sleep(2000);
                     Tb_Status.Text = "Création des dossiers";
                     if (!Directory.Exists(DossierSortie)) Directory.CreateDirectory(DossierSortie);
-                    if (!Directory.Exists(DossierSortie + "/commun")) Directory.CreateDirectory(DossierSortie + "/commun");
-                    if (!Directory.Exists(DossierSortie + "/commun/images")) Directory.CreateDirectory(DossierSortie + "/commun/images");
-                    if (!Directory.Exists(DossierSortie + "/familles")) Directory.CreateDirectory(DossierSortie + "/familles");
-                    if (!Directory.Exists(DossierSortie + "/familles/medias")) Directory.CreateDirectory(DossierSortie + "/familles/medias");
-                    if (!Directory.Exists(DossierSortie + "/individus")) Directory.CreateDirectory(DossierSortie + "/individus");
-                    if (!Directory.Exists(DossierSortie + "/individus/medias")) Directory.CreateDirectory(DossierSortie + "/individus/medias");
+                    if (!Directory.Exists(DossierSortie + "\\commun")) Directory.CreateDirectory(DossierSortie + "\\commun");
+                    if (!Directory.Exists(DossierSortie + "\\commun\\images")) Directory.CreateDirectory(DossierSortie + "\\commun\\images");
+                    if (!Directory.Exists(DossierSortie + "\\familles")) Directory.CreateDirectory(DossierSortie + "\\familles");
+                    if (!Directory.Exists(DossierSortie + "\\familles\\medias")) Directory.CreateDirectory(DossierSortie + "\\familles\\medias");
+                    if (!Directory.Exists(DossierSortie + "\\individus")) Directory.CreateDirectory(DossierSortie + "\\individus");
+                    if (!Directory.Exists(DossierSortie + "\\individus\\medias")) Directory.CreateDirectory(DossierSortie + "\\individus\\medias");
                     erreur = Avoir_code_erreur();
                     // copier tous les fichiers commun
-                    string souceDossier = @Application.StartupPath + "/commun/";
-                    string destinationDossier = @DossierSortie + "/commun/";
+                    string souceDossier = @Application.StartupPath + "\\commun\\";
+                    string destinationDossier = @DossierSortie + "\\commun\\";
                     string[] listeFichier = Directory.GetFiles(souceDossier, "*.*");
                     foreach (string f in listeFichier)
                     {
@@ -279,8 +303,8 @@ namespace GH
                         File.Copy(Path.Combine(souceDossier, nomFichier), Path.Combine(destinationDossier, nomFichier), true);
                     }
                     erreur = Avoir_code_erreur();
-                    souceDossier = @Application.StartupPath + "/commun/images/";
-                    destinationDossier = @DossierSortie + "/commun/images/";
+                    souceDossier = @Application.StartupPath + "\\commun\\images\\";
+                    destinationDossier = @DossierSortie + "\\commun\\images\\";
                     listeFichier = Directory.GetFiles(souceDossier, "*.*");
                     erreur = Avoir_code_erreur();
                     foreach (string f in listeFichier)
@@ -360,11 +384,11 @@ namespace GH
             if (dossier != null)
                 dossier1 = dossier.ToString();
             Tb_Status.Text = "Effacement des anciens dossiers";
-            bool status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "/" + dossier1 + "/commun");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "/" + dossier1 + "/individus/medias");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "/" + dossier1 + "/individus");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "/" + dossier1 + "/familles/medias");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "/" + dossier1 + "/familles");
+            bool status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "\\" + dossier1 + "\\commun");
+            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "\\" + dossier1 + "\\individus\\medias");
+            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "\\" + dossier1 + "\\individus");
+            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "\\" + dossier1 + "\\familles/medias");
+            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + "\\" + dossier1 + "\\familles");
             Tb_Status.Text = "";
             return status;
         }
@@ -372,7 +396,7 @@ namespace GH
         {
             try
             {
-                //string dossier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/GH";
+                //string dossier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\GH";
                 // si deboguer.txt existe efface fichiers
                 if (File.Exists(Properties.Settings.Default.DossierHTML + "\\deboguer.txt"))
                 {
@@ -414,7 +438,7 @@ namespace GH
         }
         private void GH_Load(object sender, EventArgs e)
         {
-
+            
             this.Visible = false;
             this.WindowState = Properties.Settings.Default.Form1_State;
             this.Location = Properties.Settings.Default.Form1_location;
@@ -461,10 +485,10 @@ namespace GH
 
             LvChoixIndividu.Columns.Add("ID", 80);
             LvChoixIndividu.Columns.Add("Nom", 200);
-            LvChoixIndividu.Columns.Add("Naissance", 70);
-            LvChoixIndividu.Columns.Add("Lieu naissance", 285);
-            LvChoixIndividu.Columns.Add("Décès", 70);
-            LvChoixIndividu.Columns.Add("Lieu décès", 285);
+            LvChoixIndividu.Columns.Add("Naissance", 80);
+            LvChoixIndividu.Columns.Add("Lieu naissance", 275);
+            LvChoixIndividu.Columns.Add("Décès", 80);
+            LvChoixIndividu.Columns.Add("Lieu décès", 275);
             LvChoixIndividu.BackColor = Color.LightSkyBlue;
 
             LvChoixFamille.View = View.Details;
@@ -474,8 +498,8 @@ namespace GH
             LvChoixFamille.Columns.Add("ID", 80);
             LvChoixFamille.Columns.Add("Conjoint", 225);
             LvChoixFamille.Columns.Add("Conjointe", 225);
-            LvChoixFamille.Columns.Add("Mariage", 70);
-            LvChoixFamille.Columns.Add("Lieu mariage", 390);
+            LvChoixFamille.Columns.Add("Mariage", 80);
+            LvChoixFamille.Columns.Add("Lieu mariage", 380);
             LvChoixFamille.BackColor = Color.LightSkyBlue;
             Effacer_Log();
             PasConfidentiel("", "");
@@ -531,17 +555,22 @@ namespace GH
                 Animation(true);
                 GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD infoIndividu;
                 (Ok, infoIndividu) = GEDCOMClass.Avoir_info_individu(IDIndividu);
-                string nom = "";
+                string nom = null;
                 if (Ok)
                 {
                     if (infoIndividu.N1_NAME_liste.Count > 0)
                     {
-                        nom = AssemblerPatronymePrenom(infoIndividu.N1_NAME_liste[0].N1_SURN, infoIndividu.N1_NAME_liste[0].N1_GIVN);
-                        if (nom == "")
+                        if (infoIndividu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES != null)
                         {
-                            nom = infoIndividu.N1_NAME_liste[0].N0_NAME;
+                            nom = AssemblerPatronymePrenom(infoIndividu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN,
+                                infoIndividu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN);
                         }
                     }
+                    if (nom == null)
+                    {
+                        nom = infoIndividu.N1_NAME_liste[0].N0_NAME;
+                    }
+                    
                 }
                 // info naissance
                 GEDCOMClass.EVENT_ATTRIBUTE_STRUCTURE Naissance;
@@ -581,16 +610,21 @@ namespace GH
                 GEDCOM.GEDCOMClass.FAM_RECORD infoFamille = GEDCOMClass.Avoir_info_famille(IDFamille);
                 GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD infoConjoint;
                 (Ok, infoConjoint) = GEDCOMClass.Avoir_info_individu(infoFamille.N1_HUSB);
-                string nomConjoint = "inconnu";
+                string nomConjoint = null;
                 if (Ok)
                 {
                     if (infoConjoint.N1_NAME_liste.Count > 0)
                     {
-                        nomConjoint = AssemblerPatronymePrenom(infoConjoint.N1_NAME_liste[0].N1_SURN, infoConjoint.N1_NAME_liste[0].N1_GIVN);
-                        if (nomConjoint == "") nomConjoint = infoConjoint.N1_NAME_liste[0].N0_NAME;
+                        if (infoConjoint.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES != null)
+                        {
+                            nomConjoint = AssemblerPatronymePrenom(
+                                infoConjoint.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN,
+                                infoConjoint.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN);
+                        }
+                        if (nomConjoint == null) nomConjoint = infoConjoint.N1_NAME_liste[0].N0_NAME;
                     }
                 }
-                string nomConjointe = "inconnu";
+                string nomConjointe = null;
                 GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD infoConjointe;
 
                 (Ok, infoConjointe) = GEDCOMClass.Avoir_info_individu(infoFamille.N1_WIFE);
@@ -598,8 +632,13 @@ namespace GH
                 {
                     if (infoConjointe.N1_NAME_liste.Count > 0)
                     {
-                        nomConjointe = AssemblerPatronymePrenom(infoConjointe.N1_NAME_liste[0].N1_SURN, infoConjointe.N1_NAME_liste[0].N1_GIVN);
-                        if (nomConjointe == "") nomConjointe = infoConjointe.N1_NAME_liste[0].N0_NAME;
+                        if (infoConjointe.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES != null)
+                        {
+                            nomConjointe = AssemblerPatronymePrenom(
+                                infoConjointe.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN,
+                                infoConjointe.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN);
+                        }
+                        if (nomConjointe == null) nomConjointe = infoConjointe.N1_NAME_liste[0].N0_NAME;
                     }
                 }
                 GEDCOMClass.EVENT_ATTRIBUTE_STRUCTURE Mariage = GEDCOMClass.AvoirEvenementMariage(infoFamille.N1_EVENT_Liste);
@@ -676,9 +715,9 @@ namespace GH
             Btn_voir_fiche_individu.Visible = false;
             Btn_voir_fiche_famille.Visible = false;
             Application.DoEvents();
-            Array.ForEach(Directory.GetFiles(DossierSortie + "/individus"), delegate (string path) { File.Delete(path); });
-            Array.ForEach(Directory.GetFiles(DossierSortie + "/individus/medias"), delegate (string path) { File.Delete(path); });
-            Array.ForEach(Directory.GetFiles(DossierSortie + "/familles"), delegate (string path) { File.Delete(path); });
+            Array.ForEach(Directory.GetFiles(DossierSortie + "\\individus"), delegate (string path) { File.Delete(path); });
+            Array.ForEach(Directory.GetFiles(DossierSortie + "\\individus/medias"), delegate (string path) { File.Delete(path); });
+            Array.ForEach(Directory.GetFiles(DossierSortie + "\\familles"), delegate (string path) { File.Delete(path); });
             Array.ForEach(Directory.GetFiles(DossierSortie, "*.html"), delegate (string path) { File.Delete(path); });
             if (annuler) return;
             List<string> ListeID = new List<string>();
@@ -716,7 +755,7 @@ namespace GH
 
             try
             {
-                System.Diagnostics.Process.Start("file:///" + DossierSortie + "/index.html");
+                System.Diagnostics.Process.Start("file:///" + DossierSortie + "\\index.html");
             }
             catch (Exception msg)
             {
@@ -1012,7 +1051,7 @@ namespace GH
         {
             try
             {
-                System.Diagnostics.Process.Start("file:///" + Application.StartupPath + "/aide/aide.html");
+                System.Diagnostics.Process.Start("file:///" + Application.StartupPath + "\\aide\\aide.html");
             }
             catch (Exception msg)
             {
@@ -1326,7 +1365,7 @@ namespace GH
             ListViewItem item = LvChoixFamille.SelectedItems[0];
             IDCourantFamilleConjoint = item.SubItems[0].Text;
             HTML.Famille(IDCourantFamilleConjoint, false, DossierSortie);
-            System.Diagnostics.Process.Start("file:///" + DossierSortie + "/familles/page.html");
+            System.Diagnostics.Process.Start("file:///" + DossierSortie + "\\familles\\page.html");
             Form_desactiver(false);
         }
         private void BaliseBt_Click(object sender, EventArgs e)
@@ -1390,12 +1429,10 @@ namespace GH
             };
             l.ShowDialog(this);
         }
-
         private void Bt_annuler_Click(object sender, EventArgs e)
         {
             annuler = true;
         }
-
         private void Btn_voir_fiche_Click(object sender, EventArgs e)
         {
             if (!DossierHTMLValide())
@@ -1417,7 +1454,7 @@ namespace GH
                     Form_desactiver(true);
                     Application.DoEvents();
                     HTML.Individu(IDCourantIndividu, false, DossierSortie);
-                    System.Diagnostics.Process.Start("file:///" + DossierSortie + "/individus/page.html");
+                    System.Diagnostics.Process.Start("file:///" + DossierSortie + "\\individus\\page.html");
                     Form_desactiver(false);
                     Btn_total.Visible = true;
                     Btn_voir_fiche_individu.Visible = true;
@@ -1447,6 +1484,8 @@ namespace GH
         private void Btn_anuler_HTML_Click(object sender, EventArgs e)
         {
             annuler = true;
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Arrêter l'opération", Btn_annuler_HTML);
         }
         private void Btn_balise_Click(object sender, EventArgs e)
         {
@@ -1479,7 +1518,7 @@ namespace GH
                 Form_desactiver(true);
                 Application.DoEvents();
                 HTML.Famille(IDCourantFamilleConjoint, false, DossierSortie);
-                System.Diagnostics.Process.Start("file:///" + DossierSortie + "/familles/page.html");
+                System.Diagnostics.Process.Start("file:///" + DossierSortie + "\\familles\\page.html");
                 Form_desactiver(false);
                 Btn_total.Visible = true;
                 Btn_voir_fiche_individu.Visible = true;
@@ -1492,6 +1531,48 @@ namespace GH
         {
             if (File.Exists(Properties.Settings.Default.DossierHTML + "\\erreur.txt"))
                 Process.Start(Properties.Settings.Default.DossierHTML + "\\erreur.txt");
+        }
+
+        private void Btn_voir_fiche_individu_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Voir l'individu sélectionné", Btn_voir_fiche_individu);
+        }
+
+        private void Btn_voir_fiche_famille_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Voir la famille sélectionné", Btn_voir_fiche_famille);
+        }
+
+        private void Btn_total_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Voir tous les individus et les familles avec index", Btn_total);
+        }
+
+        private void Btn_balise_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Voir le journal des balises non reconnue", Btn_balise);
+        }
+
+        private void Btn_deboguer_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Voir le journal de deboque", Btn_deboguer);
+        }
+
+        private void Btn_erreur_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Voir le journal des erreurs", Btn_erreur);
+        }
+
+        private void Btn_annuler_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Arrêter l'opération", Btn_annuler);
         }
     }
     internal class ListViewItemComparer : IComparer

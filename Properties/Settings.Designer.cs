@@ -214,5 +214,17 @@ namespace GH.Properties {
                 this["voir_carte"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool voir_ToolTip {
+            get {
+                return ((bool)(this["voir_ToolTip"]));
+            }
+            set {
+                this["voir_ToolTip"] = value;
+            }
+        }
     }
 }

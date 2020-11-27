@@ -47,6 +47,7 @@
             this.Btn_Fermer = new System.Windows.Forms.Button();
             this.Btn_dossierHTML = new System.Windows.Forms.Button();
             this.Btn_dossierMedia = new System.Windows.Forms.Button();
+            this.CbToolTip = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // TbDossierMedia
@@ -241,6 +242,7 @@
             this.Btn_dossierHTML.TabIndex = 137;
             this.Btn_dossierHTML.UseVisualStyleBackColor = false;
             this.Btn_dossierHTML.Click += new System.EventHandler(this.Btn_dossierHTML_Click);
+            this.Btn_dossierHTML.MouseHover += new System.EventHandler(this.Btn_dossierHTML_MouseHover);
             // 
             // Btn_dossierMedia
             // 
@@ -260,6 +262,18 @@
             this.Btn_dossierMedia.TabIndex = 138;
             this.Btn_dossierMedia.UseVisualStyleBackColor = false;
             this.Btn_dossierMedia.Click += new System.EventHandler(this.Btn_dossierMedia_Click);
+            this.Btn_dossierMedia.MouseHover += new System.EventHandler(this.Btn_dossierMedia_MouseHover);
+            // 
+            // CbToolTip
+            // 
+            this.CbToolTip.AutoSize = true;
+            this.CbToolTip.Location = new System.Drawing.Point(193, 219);
+            this.CbToolTip.Name = "CbToolTip";
+            this.CbToolTip.Size = new System.Drawing.Size(69, 17);
+            this.CbToolTip.TabIndex = 139;
+            this.CbToolTip.Text = "Inf&o-bulle";
+            this.CbToolTip.UseVisualStyleBackColor = true;
+            this.CbToolTip.CheckedChanged += new System.EventHandler(this.CbToolTip_CheckedChanged);
             // 
             // Parametre
             // 
@@ -267,6 +281,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(397, 244);
+            this.Controls.Add(this.CbToolTip);
             this.Controls.Add(this.Btn_dossierMedia);
             this.Controls.Add(this.Btn_dossierHTML);
             this.Controls.Add(this.Btn_Fermer);
@@ -286,6 +301,8 @@
             this.Controls.Add(this.TbDossierHTML);
             this.Controls.Add(this.TbDossierMedia);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Parametre";
             this.Text = "Paramètres";
             this.Load += new System.EventHandler(this.Parametre_Load);
@@ -314,5 +331,6 @@
         private System.Windows.Forms.Button Btn_Fermer;
         private System.Windows.Forms.Button Btn_dossierHTML;
         private System.Windows.Forms.Button Btn_dossierMedia;
+        private System.Windows.Forms.CheckBox CbToolTip;
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GH));
             this.menuPrincipal = new System.Windows.Forms.MenuStrip();
             this.fichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,6 +83,7 @@
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.Btn_cadre_individu = new System.Windows.Forms.Button();
             this.Btn_cadre_famille = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuPrincipal.SuspendLayout();
             this.Gb_info_GEDCOM.SuspendLayout();
             this.SuspendLayout();
@@ -169,7 +171,7 @@
             // 
             this.LvChoixFamille.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.LvChoixFamille.Cursor = System.Windows.Forms.Cursors.Default;
-            this.LvChoixFamille.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LvChoixFamille.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LvChoixFamille.HideSelection = false;
             this.LvChoixFamille.Location = new System.Drawing.Point(12, 291);
             this.LvChoixFamille.MultiSelect = false;
@@ -378,16 +380,19 @@
             this.Btn_voir_fiche_individu.Name = "Btn_voir_fiche_individu";
             this.Btn_voir_fiche_individu.Size = new System.Drawing.Size(58, 44);
             this.Btn_voir_fiche_individu.TabIndex = 124;
+            this.Btn_voir_fiche_individu.Tag = "";
             this.Btn_voir_fiche_individu.UseVisualStyleBackColor = false;
             this.Btn_voir_fiche_individu.Click += new System.EventHandler(this.Btn_voir_fiche_Click);
+            this.Btn_voir_fiche_individu.MouseHover += new System.EventHandler(this.Btn_voir_fiche_individu_MouseHover);
             // 
             // Tb_Status
             // 
             this.Tb_Status.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.Tb_Status.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.Tb_Status.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Tb_Status.Location = new System.Drawing.Point(19, 144);
             this.Tb_Status.Name = "Tb_Status";
-            this.Tb_Status.Size = new System.Drawing.Size(997, 13);
+            this.Tb_Status.Size = new System.Drawing.Size(997, 15);
             this.Tb_Status.TabIndex = 68;
             this.Tb_Status.Text = "Lecture fichier GEDCOM";
             this.Tb_Status.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -414,7 +419,7 @@
             // 
             this.LvChoixIndividu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.LvChoixIndividu.Cursor = System.Windows.Forms.Cursors.Default;
-            this.LvChoixIndividu.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LvChoixIndividu.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LvChoixIndividu.GridLines = true;
             this.LvChoixIndividu.HideSelection = false;
             this.LvChoixIndividu.LabelWrap = false;
@@ -630,6 +635,7 @@
             this.Btn_total.TabIndex = 134;
             this.Btn_total.UseVisualStyleBackColor = false;
             this.Btn_total.Click += new System.EventHandler(this.Btn_HTML_Click);
+            this.Btn_total.MouseHover += new System.EventHandler(this.Btn_total_MouseHover);
             // 
             // Btn_annuler
             // 
@@ -650,6 +656,7 @@
             this.Btn_annuler.Text = " &Arrêt";
             this.Btn_annuler.UseVisualStyleBackColor = false;
             this.Btn_annuler.Click += new System.EventHandler(this.Btn_annuler_Click);
+            this.Btn_annuler.MouseHover += new System.EventHandler(this.Btn_annuler_MouseHover);
             // 
             // Btn_annuler_HTML
             // 
@@ -689,6 +696,7 @@
             this.Btn_voir_fiche_famille.TabIndex = 137;
             this.Btn_voir_fiche_famille.UseVisualStyleBackColor = false;
             this.Btn_voir_fiche_famille.Click += new System.EventHandler(this.Btn_voir_fiche_famille_Click);
+            this.Btn_voir_fiche_famille.MouseHover += new System.EventHandler(this.Btn_voir_fiche_famille_MouseHover);
             // 
             // Btn_deboguer
             // 
@@ -708,6 +716,7 @@
             this.Btn_deboguer.TabIndex = 138;
             this.Btn_deboguer.UseVisualStyleBackColor = false;
             this.Btn_deboguer.Click += new System.EventHandler(this.Btn_deboguer_Click);
+            this.Btn_deboguer.MouseHover += new System.EventHandler(this.Btn_deboguer_MouseHover);
             // 
             // Btn_balise
             // 
@@ -727,6 +736,7 @@
             this.Btn_balise.TabIndex = 139;
             this.Btn_balise.UseVisualStyleBackColor = false;
             this.Btn_balise.Click += new System.EventHandler(this.Btn_balise_Click);
+            this.Btn_balise.MouseHover += new System.EventHandler(this.Btn_balise_MouseHover);
             // 
             // Btn_erreur
             // 
@@ -746,6 +756,7 @@
             this.Btn_erreur.TabIndex = 140;
             this.Btn_erreur.UseVisualStyleBackColor = false;
             this.Btn_erreur.Click += new System.EventHandler(this.Btn_erreur_Click);
+            this.Btn_erreur.MouseHover += new System.EventHandler(this.Btn_erreur_MouseHover);
             // 
             // Btn_cadre_individu
             // 
@@ -811,7 +822,9 @@
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuPrincipal;
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(1251, 500);
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1251, 500);
             this.Name = "GH";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GH_FormClosing);
@@ -880,6 +893,7 @@
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.Button Btn_cadre_individu;
         private System.Windows.Forms.Button Btn_cadre_famille;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

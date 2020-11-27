@@ -56,6 +56,8 @@ The GEDCOM 5.5.5 Specification with Annotations
     | genealogical software, provided this notice is included. All other rights reserved.  |
     \--------------------------------------------------------------------------------------/
 
+Les réferences aux pages sont pour 5.5.1_LDS_2019-11-15 si non mentionner.
+
 */
 using System;
 using System.Collections.Generic;
@@ -81,100 +83,116 @@ namespace GEDCOM
         private static readonly Random hazard = new Random();
         public static List<string> dataGEDCOM = new List<string>();
         public class ADDRESS_STRUCTURE
-        { // 5.5.1_LDS_2019-11-15 p.31
-          //ADDRESS_STRUCTURE:=
-            public string N0_ADDR;                  //  n ADDR <ADDRESS_LINE>               {1:1} p.41
-                                                    //      +1 CONT <ADDRESS_LINE>          {0:3} p.41
-            public string N1_ADR1;                  //      +1 ADR1 <ADDRESS_LINE1>         {0:1} p.41
-            public string N1_ADR2;                  //      +1 ADR2 <ADDRESS_LINE2>         {0:1} p.41
-            public string N1_ADR3;                  //      +1 ADR3 <ADDRESS_LINE3>         {0:1} p.41
-            public string N1_CITY;                  //      +1 CITY <ADDRESS_CITY>          {0:1} p.41
-            public string N1_STAE;                  //      +1 STAE <ADDRESS_STATE>         {0:1} p.42
-            public string N1_POST;                  //      +1 POST <ADDRESS_POSTAL_CODE>   {0:1} p.41
-            public string N1_CTRY;                  //      +1 CTRY <ADDRESS_COUNTRY>       {0:1} p.41
-            // déplacer à                           //  n PHON <PHONE_NUMBER>               {0:3} p.57
-            // EVENT_ATTRIBUTE_STRUCTURE            //  n EMAIL <ADDRESS_EMAIL>             {0:3} p.41
-            // GEDCOM_HEADER                        //  n FAX <ADDRESS_FAX>                 {0:3} p.41
-            // SUBMITTER_RECORD                     //  n WWW <ADDRESS_WEB_PAGE>            {0:3} p.42 
+        // 5.5_LDS_1996-01-02.pdf   p29
+        // 5.5.1_LDS_2019-11-15.pdf p.31
+        // 5.5.5_Annotations_TJ.pdf p.64 
+        {
+            //ADDRESS_STRUCTURE:=
+            public string N0_ADDR;                              //  n ADDR <ADDRESS_LINE>               {1:1} p.41 V5.5.1 v5.5.5
+                                                                //                                      V5.5.1 p.41
+                                                                //                                      V5.5.5 p.97
+                                                                //      +1 CONT <ADDRESS_LINE>          {0:3} p.41 V5.5.1 v5.5.5
+            public string N1_ADR1;                              //      +1 ADR1 <ADDRESS_LINE1>         {0:1} p.41 V5.5.1 v5.5.5
+            public string N1_ADR2;                              //      +1 ADR2 <ADDRESS_LINE2>         {0:1} p.41 V5.5.1 v5.5.5
+            public string N1_ADR3;                              //      +1 ADR3 <ADDRESS_LINE3>         {0:1} p.41 V5.5.1 v5.5.5
+            public string N1_CITY;                              //      +1 CITY <ADDRESS_CITY>          {0:1} p.41 V5.5.1 v5.5.5
+            public string N1_STAE;                              //      +1 STAE <ADDRESS_STATE>         {0:1} p.42 V5.5.1 v5.5.5
+            public string N1_POST;                              //      +1 POST <ADDRESS_POSTAL_CODE>   {0:1} p.41 V5.5.1 v5.5.5
+            public string N1_CTRY;                              //      +1 CTRY <ADDRESS_COUNTRY>       {0:1} p.41 V5.5.1 v5.5.5
+            // déplacer à                                       //  n PHON <PHONE_NUMBER>               {0:3} p.57 V5.5.1 v5.5.5
+            // EVENT_ATTRIBUTE_STRUCTURE                        //  n EMAIL <ADDRESS_EMAIL>             {0:3} p.41 V5.5.1 v5.5.5
+            // GEDCOM_HEADER                                    //  n FAX <ADDRESS_FAX>                 {0:3} p.41 V5.5.1 v5.5.5
+            // SUBMITTER_RECORD                                 //  n WWW <ADDRESS_WEB_PAGE>            {0:3} p.42 V5.5.1 v5.5.5
             // REPOSITORY_RECORD
-            public List<string> N1_NOTE_liste_ID;   // GRAMPS
+            public List<string> N1_NOTE_liste_ID;               // GRAMPS
         }
-        public class ASSOCIATION_STRUCTURE // 5.5.1_LDS_2019-11-15.pdf p.31
+        public class ASSOCIATION_STRUCTURE 
+            // 5.5.1_LDS_2019-11-15.pdf p.31
+            // 5.5.5_Annotations_TJ.pdf p.65
         {
             //  ASSOCIATION_STRUCTURE:=
-            public string N0_ASSO;                          //      n ASSO @<XREF:INDI>@                    {1:1} p.25
-            public string N1_RELA;                          //          +1 RELA <RELATION_IS_DESCRIPTOR>    {1:1} p.60
-            public List<string> N1_SOUR_citation_liste_ID;  //          +1 <<SOURCE_CITATION>>              {0:M} p.39
+            public string N0_ASSO;                          //      n ASSO @<XREF:INDI>@                    {1:1} p.25 V5.5.1 v5.5.5
+            public string N1_RELA;                          //          +1 RELA <RELATION_IS_DESCRIPTOR>    {1:1} p.60 V5.5.1 v5.5.5
+            public List<string> N1_SOUR_citation_liste_ID;  //          +1 <<SOURCE_CITATION>>              {0:M} p.39 V5.5.1 v5.5.5
             public List<string> N1_SOUR_source_liste_ID;    //          +1 généré par l'appication
-            public List<string> N1_NOTE_liste_ID;           //          +1 <<NOTE_STRUCTURE>>               {0:M} p.37
+            public List<string> N1_NOTE_liste_ID;           //          +1 <<NOTE_STRUCTURE>>               {0:M} p.37 V5.5.1 v5.5.5
         }
-        public class CHANGE_DATE // 5.5.1_LDS_2019-11-15.pdf p.31
+        public class CHANGE_DATE 
+            // 5.5.1_LDS_2019-11-15.pdf p.31
+            // 5.5.5_Annotations_TJ.pdf p.66
         {
             //CHANGE_DATE:=
             //  n CHAN                          {1:1}
-            public string N1_CHAN_DATE;                 //      +1 DATE <DATE_EXACT>        {1:1} p.44
-            public string N2_CHAN_DATE_TIME;            //          +2 TIME <TIME_VALUE>    {0:1} p.63
-            public List<string> N1_CHAN_NOTE_ID_liste;  //          +1 <<NOTE_STRUCTURE>>   {0:M} p.37
+            public string N1_CHAN_DATE;                 //      +1 DATE <DATE_EXACT>        {1:1} p.44 V5.5.1 v5.5.5
+            public string N2_CHAN_DATE_TIME;            //          +2 TIME <TIME_VALUE>    {0:1} p.63 V5.5.1 v5.5.5
+            public List<string> N1_CHAN_NOTE_ID_liste;  //          +1 <<NOTE_STRUCTURE>>   {0:M} p.37 V5.5.1 v5.5.5
         }
-        public class CHILD_TO_FAMILY_LINK // 5.5.1_LDS_2019-11-15 p.31
+        public class CHILD_TO_FAMILY_LINK 
+            // 5.5.1_LDS_2019-11-15 p.31
+            // 5.5.5_Annotations_TJ.pdf p.67
         {
             //  CHILD_TO_FAMILY_LINK:=
-            public string N0_FAMC;                  //      n FAMC @<XREF:FAM>@                 {1:1} p.24
-            public string N1_PEDI;                  //          +1 PEDI <PEDIGREE_LINKAGE_TYPE> {0:1} p.57
-            public string N1_STAT;                  //          +1 STAT <CHILD_LINKAGE_STATUS>  {0:1} p.44
-            public List<string> N1_NOTE_liste_ID;   //          +1 <<NOTE_STRUCTURE>>           {0:M} p.37
+            public string N0_FAMC;                  //      n FAMC @<XREF:FAM>@                 {1:1} p.24 V5.5.1 v5.5.5
+            public string N1_PEDI;                  //          +1 PEDI <PEDIGREE_LINKAGE_TYPE> {0:1} p.57 V5.5.1 v5.5.5
+            public string N1_STAT;                  //          +1 STAT <CHILD_LINKAGE_STATUS>  {0:1} p.44 V5.5.1
+            public List<string> N1_NOTE_liste_ID;   //          +1 <<NOTE_STRUCTURE>>           {0:M} p.37 V5.5.1 v5.5.5
         }
-        public class FAM_RECORD                                         // 5.5.1_LDS_2019-11-15 p.24
+        public class FAM_RECORD
         {
-                                                                        // FAM_RECORD:=
-            public string N0_ID;                                        //    n @<XREF:FAM>@ FAM                                  {1:1}
-            public string N1_RESN;                                      //    +1 RESN <RESTRICTION_NOTICE>                        {0:1) p.60
-            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //    +1 <<FAMILY_EVENT_STRUCTURE>>                       {0:M} p.32
-            public string N1_HUSB;                                      //    +1 HUSB @<XREF:INDI>@                               {0:1} p.25
-            public string N1_WIFE;                                      //    +1 WIFE @<XREF:INDI>@                               {0:1} p.25
-            public List<string> N1_CHIL_liste_ID;                       //    +1 CHIL @<XREF:INDI>@                               {0:M} p.25
-            public string N1_NCHI;                                      //    +1 NCHI <COUNT_OF_CHILDREN>                         {0:1} p.44
-            public List<string> N1_SUBM_liste_ID;                       //    +1 SUBM @<XREF:SUBM>@                               {0:M} p.28
-            public LDS_SPOUSE_SEALING N1_SLGS;                          //    +1 <<LDS_SPOUSE_SEALING>>                           {0:M} p.36
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //    +1 REFN <USER_REFERENCE_NUMBER>                     {0:M} p.63, 64
-                                                                        //      +2 TYPE <USER_REFERENCE_TYPE>                     {0:1} p.64
-            public string N1_RIN;                                       //    +1 RIN <AUTOMATED_RECORD_ID>                        {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                                 //    +1 <<CHANGE_DATE>>                                  {0:1} p.31
-            public List<string> N1_NOTE_liste_ID;                       //    +1 <<NOTE_STRUCTURE>>                               {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;                 //    +1 <<SOURCE_CITATION>>                              {0:M} p.39
+            // 5.5.1_LDS_2019-11-15 p.24
+            // 5.5.5_Annotations_TJ.pdf p.58 FAM_GROUP_RECORD
+            //                                                          FAM_RECORD:=
+            public string N0_ID;                                        //    n @<XREF:FAM>@ FAM                                  {1:1}      V5.5.1 v5.5.5
+            public string N1_RESN;                                      //    +1 RESN <RESTRICTION_NOTICE>                        {0:1) p.60 V5.5.1
+            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //    +1 <<FAMILY_EVENT_STRUCTURE>>                       {0:M} p.32 V5.5.1 v5.5.5
+            public string N1_HUSB;                                      //    +1 HUSB @<XREF:INDI>@                               {0:1} p.25 V5.5.1 v5.5.5
+            public string N1_WIFE;                                      //    +1 WIFE @<XREF:INDI>@                               {0:1} p.25 V5.5.1 v5.5.5
+            public List<string> N1_CHIL_liste_ID;                       //    +1 CHIL @<XREF:INDI>@                               {0:M} p.25 V5.5.1 v5.5.5
+            public string N1_NCHI;                                      //    +1 NCHI <COUNT_OF_CHILDREN>                         {0:1} p.44 V5.5.1 v5.5.5
+            public List<string> N1_SUBM_liste_ID;                       //    +1 SUBM @<XREF:SUBM>@                               {0:M} p.28 V5.5.1 v5.5.5
+            public LDS_SPOUSE_SEALING N1_SLGS;                          //    +1 <<LDS_SPOUSE_SEALING>>                           {0:M} p.36 V5.5.1 v5.5.5
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //    +1 REFN <USER_REFERENCE_NUMBER>                     {0:M} p.63 V5.5.1 v5.5.5
+                                                                        //      +2 TYPE <USER_REFERENCE_TYPE>                     {0:1} p.64 V5.5.1 v5.5.5
+            public string N1_RIN;                                       //    +1 RIN <AUTOMATED_RECORD_ID>                        {0:1} p.43 V5.5.1 v5.5.5
+            public CHANGE_DATE N1_CHAN;                                 //    +1 <<CHANGE_DATE>>                                  {0:1} p.31 V5.5.1 v5.5.5
+            public List<string> N1_NOTE_liste_ID;                       //    +1 <<NOTE_STRUCTURE>>                               {0:M} p.37 V5.5.1 v5.5.5
+            public List<string> N1_SOUR_citation_liste_ID;              //    +1 <<SOURCE_CITATION>>                              {0:M} p.39 V5.5.1 v5.5.5
             public List<string> N1_SOUR_source_liste_ID;
-            public List<string> N1_OBJE_liste;                          //    +1 <<MULTIMEDIA_LINK>>                              {0:M} p.37, 26
+            public List<string> N1_OBJE_liste;                          //    +1 <<MULTIMEDIA_LINK>>                              {0:M} p.37, 26 V5.5.1 v5.5.5
 
             public List<EVENT_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste;  //    pour GRAMPS
-            public string N1_TYPU;                                      //    +1 Type d'union pour Ancestrologie
+            public string N1_TYPU;                                      //    +1 Type d'union                                      Ancestrologie
+            public string N1__UST;                                      //    +1 Type d'union                                      Heridis 
         }
-        public class INDIVIDUAL_RECORD   // 5.5.1_LDS_2019-11-15 p.25 
+        public class INDIVIDUAL_RECORD      
+            //  INDIVIDUAL_RECORD
+            // 5.5.1_LDS_2019-11-15 p.25 
+            // 5.5.5_Annotations_TJ p.61
         {
-            //  INDIVIDUAL_RECORD:=
-            public string N0_ID;                                        //      n @XREF:INDI@ INDI                          {1:1}
-            public string N1_RESN;                                      //          +1 RESN <RESTRICTION_NOTICE>            {0:1} p.60
-            public List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste;         //          +1 <<PERSONAL_NAME_STRUCTURE>>          {0:M} p.38
-            public string N1_SEX;                                       //          +1 SEX <SEX_VALUE>                      {0:1} p.61
-            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //          +1 <<INDIVIDUAL_EVENT_STRUCTURE>>       {0:M} p.34
-            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_Attribute_liste;  //          +1 <<INDIVIDUAL_ATTRIBUTE_STRUCTURE>>   {0:M} p.33
-            public List<LDS_INDIVIDUAL_ORDINANCE> N1_LDS_liste;         //          +1 <<LDS_INDIVIDUAL_ORDINANCE>>         {0:M} p.35, 36
-            public CHILD_TO_FAMILY_LINK N1_FAMC;                        //          +1 <<CHILD_TO_FAMILY_LINK>>             {0:M} p.31
-            public List<SPOUSE_TO_FAMILY_LINK> N1_FAMS_liste_Conjoint;  //          +1 <<SPOUSE_TO_FAMILY_LINK>>            {0:M} p.40
-            public List<string> N1_SUBM_liste_ID;                       //          +1 SUBM @<XREF:SUBM>@                   {0:M} p.28
-            public List<ASSOCIATION_STRUCTURE> N1_ASSO_liste;           //          +1 <<ASSOCIATION_STRUCTURE>>            {0:M} p.31
-            public List<string> N1_ALIA_liste_ID;                       //          +1 ALIA @<XREF:INDI>@                   {0:M} p.25  An indicator to link different record descriptions 
-            public List<string> N1_ANCI_liste_ID;                       //          +1 ANCI @<XREF:SUBM>@                   {0:M} p.28  Indicates an interest in additional research for 
-            public List<string> N1_DESI_liste_ID;                       //          +1 DESI @<XREF:SUBM>@                   {0:M} p.28  
-            public string N1_RFN;                                       //          +1 RFN <PERMANENT_RECORD_FILE_NUMBER>   {0:1} p.57
-            public string N1_AFN;                                       //          +1 AFN <ANCESTRAL_FILE_NUMBER>          {0:1} p.42
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63, 64
-            // inclue dans la ligne précédente                          //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64
-            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31
-            public List<string> N1_NOTE_liste_ID;                                      //          +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39
+            public string N0_ID;                                        //      n @XREF:INDI@ INDI                          {1:1}      V5.5.1 v5.5.5
+            public string N1_RESN;                                      //          +1 RESN <RESTRICTION_NOTICE>            {0:1} p.60 V5.5.1
+            public List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste;         //          +1 <<PERSONAL_NAME_STRUCTURE>>          {0:M} p.38 V5.5.1 v5.5.5
+            public string N1_SEX;                                       //          +1 SEX <SEX_VALUE>                      {0:1} p.61 V5.5.1 v5.5.5
+            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //          +1 <<INDIVIDUAL_EVENT_STRUCTURE>>       {0:M} p.34 V5.5.1 v5.5.5
+            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_Attribute_liste;  //          +1 <<INDIVIDUAL_ATTRIBUTE_STRUCTURE>>   {0:M} p.33 V5.5.1 v5.5.5
+            public List<LDS_INDIVIDUAL_ORDINANCE> N1_LDS_liste;         //          +1 <<LDS_INDIVIDUAL_ORDINANCE>>         {0:M} p.35 V5.5.1 v5.5.5
+            public CHILD_TO_FAMILY_LINK N1_FAMC;                        //          +1 <<CHILD_TO_FAMILY_LINK>>             {0:M} p.31 V5.5.1 v5.5.5
+            public List<SPOUSE_TO_FAMILY_LINK> N1_FAMS_liste_Conjoint;  //          +1 <<SPOUSE_TO_FAMILY_LINK>>            {0:M} p.40 V5.5.1 v5.5.5
+            public List<string> N1_SUBM_liste_ID;                       //          +1 SUBM @<XREF:SUBM>@                   {0:M} p.28 V5.5.1 v5.5.5
+            public List<ASSOCIATION_STRUCTURE> N1_ASSO_liste;           //          +1 <<ASSOCIATION_STRUCTURE>>            {0:M} p.31 V5.5.1 v5.5.5
+            public List<string> N1_ALIA_liste_ID;                       //          +1 ALIA @<XREF:INDI>@                   {0:M} p.25 V5.5.1 v5.5.5
+            public List<string> N1_ANCI_liste_ID;                       //          +1 ANCI @<XREF:SUBM>@                   {0:M} p.28 V5.5.1 v5.5.5
+            public List<string> N1_DESI_liste_ID;                       //          +1 DESI @<XREF:SUBM>@                   {0:M} p.28 V5.5.1 v5.5.5
+            public string N1_RFN;                                       //          +1 RFN <PERMANENT_RECORD_FILE_NUMBER>   {0:1} p.57 V5.5.1 v5.5.5
+            public string N1_AFN;                                       //          +1 AFN <ANCESTRAL_FILE_NUMBER>          {0:1} p.42 V5.5.1
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63 V5.5.1 v5.5.5
+            // inclue dans la ligne précédente                          //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64 V5.5.1 v5.5.5
+            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43 V5.5.1 v5.5.5
+            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31 V5.5.1 v5.5.5
+            public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                   {0:M} p.37 V5.5.1 v5.5.5
+            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39 V5.5.1 v5.5.5
             public List<string> N1_SOUR_source_liste_ID;
-            public List<string> N1_OBJE_liste;                          //          +1 <<MULTIMEDIA_LINK>>                  {0:M} p.37, 26
+            public List<string> N1_OBJE_liste;                          //          +1 <<MULTIMEDIA_LINK>>                  {0:M} p.37 V5.5.1 v5.5.5
             // extra
             public string Adopter;
             public string nom_section_1;
@@ -186,335 +204,568 @@ namespace GEDCOM
             public string N1__ANCES_CLE_FIXE;                           // +1 _ANCES_CLE_FIXE dans Ancestrologie
             public string N1_FILA;                                      // +1 FILA Filiation dans Ancestrologie
             public List<string> N1_WWW_liste;                           // +1 WWW dans GRAMPS
+            public string N1_SIGN;                                      // Heridis
+            public string N1__FIL;                                      // Filiation de l'individu Heridis
+            public string N1__CLS;                                      // Individu sans postérité. Heridis
         }
         public class EVENT_ATTRIBUTE_STRUCTURE
         {
-            public string N1_EVEN;                          //  n    {1:1}
+                        // mixe
+            
+
+            //      INDIVIDUAL_EVENT_DETAIL
+            //                      5.5.1_LDS_2019-11-15 p.34
+            //                      5.5.5_Annotations_TJ p.69
+            //      INDIVIDUAL_EVENT_STRUCTURE
+            //                      5.5.1_LDS_2019-11-15 p.34
+            //                      5.5.5_Annotations_TJ p.69
+            //      FAMILY_EVENT_DETAIL
+            //                      5.5.1_LDS_2019-11-15 p.32
+            //                      5.5.5_Annotations_TJ p.67
+            //      EVENT_DETAIL    
+            //                      5.5.1_LDS_2019-11-15 p.32
+            //                      5.5.5_Annotations_TJ p.67
+            public string N1_EVEN;                          //  n                                       {1:1}      V5.5.1 v5.5.5
             public string N1_EVEN_texte;                    // récupaire le texte avec balise.
 
-                                                            // EVENT_DETAIL:=                           {0:1} p.32
-            public string N2_TYPE;                          //  n TYPE <EVENT_OR_FACT_CLASSIFICATION>   {0:1} p.49
-            public string N2_DATE;                          //  n DATE <DATE_VALUE>                     {0:1} p.47, 46
-            public PLACE_STRUCTURE N2_PLAC;                 //  n <<PLACE_STRUCTURE>>                   {0:1} p.38
-            public ADDRESS_STRUCTURE N2_ADDR;               //  n <<ADDRESS_STRUCTURE>>                 {0:1} p.31
-            public List<string> N2_PHON_liste;              //  n PHON <PHONE_NUMBER>                   {0:3} p.57
-            public List<string> N2_EMAIL_liste;             //  n EMAIL <ADDRESS_EMAIL>                 {0:3} p.41
-            public List<string> N2_FAX_liste;               //  n FAX <ADDRESS_FAX>                     {0:3} p.41
-            public List<string> N2_WWW_liste;               //  n WWW <ADDRESS_WEB_PAGE>                {0:3} p.42
-            public string N2_AGNC;                          //  n AGNC <RESPONSIBLE_AGENCY>             {0:1} p.60
-            public string N2_RELI;                          //  n RELI <RELIGIOUS_AFFILIATION>          {0:1} p.60
-            public string N2_CAUS;                          //  n CAUS <CAUSE_OF_EVENT>                 {0:1} p.43
-            public string N2_RESN;                          //  n RESN <RESTRICTION_NOTICE>             {0:1} p.60
-            public List<string> N2_NOTE_liste_ID;           //  n <<NOTE_STRUCTURE>>                    {0:M} p.37
-            public List<string> N2_SOUR_citation_liste_ID;  //  n <<SOURCE_CITATION>>                   {0:M} p.39
+                                                            // EVENT_DETAIL:=                           {0:1} p.32 V5.5.1 v5.5.5
+            public string N2_TYPE;                          //  n TYPE <EVENT_OR_FACT_CLASSIFICATION>   {0:1} p.49 V5.5.1 v5.5.5
+            public string N2_DATE;                          //  n DATE <DATE_VALUE>                     {0:1} p.47 V5.5.1 v5.5.5
+            public string N3_DATE_TIME;                     //  n TIME                                        Heridis
+            public PLACE_STRUCTURE N2_PLAC;                 //  n <<PLACE_STRUCTURE>>                   {0:1} p.38 V5.5.1 v5.5.5
+            public ADDRESS_STRUCTURE N2_ADDR;               //  n <<ADDRESS_STRUCTURE>>                 {0:1} p.31 V5.5.1 v5.5.5
+            public List<string> N2_PHON_liste;              //  n PHON <PHONE_NUMBER>                   {0:3} p.57 V5.5.1 v5.5.5
+            public List<string> N2_EMAIL_liste;             //  n EMAIL <ADDRESS_EMAIL>                 {0:3} p.41 V5.5.1 v5.5.5
+            public List<string> N2_FAX_liste;               //  n FAX <ADDRESS_FAX>                     {0:3} p.41 V5.5.1 v5.5.5
+            public List<string> N2_WWW_liste;               //  n WWW <ADDRESS_WEB_PAGE>                {0:3} p.42 V5.5.1 v5.5.5
+            public string N2_AGNC;                          //  n AGNC <RESPONSIBLE_AGENCY>             {0:1} p.60 V5.5.1 v5.5.5
+            public string N2_RELI;                          //  n RELI <RELIGIOUS_AFFILIATION>          {0:1} p.60 V5.5.1 v5.5.5
+            public string N2_CAUS;                          //  n CAUS <CAUSE_OF_EVENT>                 {0:1} p.43 V5.5.1 v5.5.5
+            public string N2_RESN;                          //  n RESN <RESTRICTION_NOTICE>             {0:1} p.60 V5.5.1 v5.5.5
+            public List<string> N2_NOTE_liste_ID;           //  n <<NOTE_STRUCTURE>>                    {0:M} p.37 V5.5.1 v5.5.5
+            public List<string> N2_SOUR_citation_liste_ID;  //  n <<SOURCE_CITATION>>                   {0:M} p.39 V5.5.1 v5.5.5
             public List<string> N2_SOUR_source_liste_ID;
-            public List<string> N2_OBJE_liste_ID;           //  n <<MULTIMEDIA_LINK>>                   {0:M} p.37, 26
+            public List<string> N2_OBJE_liste_ID;           //  n <<MULTIMEDIA_LINK>>                   {0:M} p.37 V5.5.1 v5.5.5
             
-            // FAMILY_EVENT_DETAIL:=
+            // FAMILY_EVENT_DETAIL
                                                             //  n HUSB {0:1}
-            public string N3_HUSB_AGE;                      //      +1 AGE <AGE_AT_EVENT> {1:1} p.42
-                                                            //  n WIFE {0:1}
-            public string N3_WIFE_AGE;                      //      +1 AGE <AGE_AT_EVENT> {1:1} p.42
+            public string N3_HUSB_AGE;                      //      +1 AGE <AGE_AT_EVENT>               {1:1} p.42 V5.5.1 v5.5.5
+                                                            //  n WIFE                                  {0:1} V5.5.1 v5.5.5
+            public string N3_WIFE_AGE;                      //      +1 AGE <AGE_AT_EVENT>               {1:1} p.42 V5.5.1 v5.5.5
             // INDIVIDUAL_EVENT_DETAIL:=
             public string N2_AGE;                           //  n AGE <AGE_AT_EVENT>
             // INDIVIDUAL_EVENT_STRUCTURE:=
-            public string N2_FAMC;                          //      +1 FAMC @<XREF:FAM>@ {0:1} p.24
-            public string N2_FAMC_ADOP;                     //          +2 ADOP<ADOPTED_BY_WHICH_PARENT> {0:1}
+            public string N2_FAMC;                          //      +1 FAMC @<XREF:FAM>@                {0:1} p.24 V5.5.1 v5.5.5
+            public string N2_FAMC_ADOP;                     //         +2 ADOP<ADOPTED_BY_WHICH_PARENT> {0:1} V5.5.1 v5.5.5
 
             public string titre;
             public string description;
 
             public string N2__ANCES_ORDRE;                  //  n Ancestrologie
             public string N2__ANCES_XINSEE;                 //  n Ancestrologie
+            public string N2__FNA;                          //  n Heridis Etat des recherches d'un événement
         }
-        public struct HEADER // 5.5.1_LDS_1999-10-02.pdf p.23
-        {
-                                                            //  HEADER:=
-                                                            //  n HEAD {1:1}
-            public string N1_SOUR;                          //      +1 SOUR <APPROVED_SYSTEM_ID>                        {1:1} p.42
-            public string N2_SOUR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1} p.64
-            public string N2_SOUR_NAME;                     //          +2 NAME <NAME_OF_PRODUCT>                       {0:1} p.54
-            public string N2_SOUR_CORP;                     //          +2 CORP <NAME_OF_BUSINESS>                      {0:1} p.54
-            public ADDRESS_STRUCTURE N3_SOUR_CORP_ADDR;     //              +3 <<ADDRESS_STRUCTURE>>                    {0:1} p.31
-            public List<string> N3_SOUR_CORP_PHON_liste;    //              +3 PHON <PHONE_NUMBER>                      {0:3} p.57
-            public List<string> N3_SOUR_CORP_EMAIL_liste;   //              +3 EMAIL <ADDRESS_EMAIL>                    {0:3} p.41
-            public List<string> N3_SOUR_CORP_FAX_liste;     //              +3 FAX <ADDRESS_FAX>                        {0:3} p.41
-            public List<string> N3_SOUR_CORP_WWW_liste;     //              +3 WWW <ADDRESS_WEB_PAGE>                   {0:3} p.42
-            public string N2_SOUR_DATA;                     //          +2 DATA <NAME_OF_SOURCE_DATA>                   {0:1} p.54
-            public string N3_SOUR_DATA_DATE;                //              +3 DATE <PUBLICATION_DATE>                  {0:1) p.59
-            public string N3_SOUR_DATA_CORP;                //              +3 COPR <COPYRIGHT_SOURCE_DATA>             {0:1) p.44
-                                                            //                  +4 [CONT|CONC]<COPYRIGHT_SOURCE_DATA>   {0:M} p.44
-            public string N1_DEST;                          //      +1 DEST <RECEIVING_SYSTEM_NAME>                     {0:1* p.59
-            public string N1_DATE;                          //      +1 DATE <TRANSMISSION_DATE>                         {0:1} p.63
-            public string N2_DATE_TIME;                     //          +2 TIME <TIME_VALUE>                            {0:1} p.63
-            public List<string> N1_SUBM_liste_ID;           //      +1 SUBM @<XREF:SUBM>@                               {1:1} p.28
-            public string N1_SUBN;                          //      +1 SUBN @<XREF:SUBN>@                               {0:1} p.28
-            public string N1_FILE;                          //      +1 FILE <FILE_NAME>                                 {0:1} p.50
-            public string N1_COPR;                          //      +1 COPR <COPYRIGHT_GEDCOM_FILE>                     {0:1} p.44
-                                                            //      +1 GEDC                                             {1:1}
-            public string N2_GEDC_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {1:1} p.64
-            public string N2_GEDC_FORM;                     //          +2 FORM <GEDCOM_FORM>                           {1:1} p.50
-            public string N1_CHAR;                          //      +1 CHAR <CHARACTER_SET>                             {1:1} p.44
-            public string N2_CHAR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1} p.64
-            public string N1_LANG;                          //      +1 LANG <LANGUAGE_OF_TEXT>                          {0:1} p.51
-            public string N1_PLAC;                          //      +1 PLAC                                             {0:1}
-            public string N2_PLAC_FORM;                     //          +2 FORM <PLACE_HIERARCHY>                       {1:1} p.58
-            public string N1_NOTE;                          //      +1 NOTE <GEDCOM_CONTENT_DESCRIPTION>                {0:1} p.50
+        public struct HEADER 
+            // HEADER           5.5.1_LDS_1999-10-02.pdf p.23
+            // GEDCOM_HEADER    5.5.5_Annotations_TJ p.67
+
+            // avec pour V5.5.v LINEAGE_LINKED_HEADER_EXTENSION p.57
+        {   
+                                                            
+                                                            //  n HEAD                                                  {1:1}      V5.5.1 V5.5.5
+            public string N1_SOUR;                          //      +1 SOUR <APPROVED_SYSTEM_ID>                        {1:1} p.42 V5.5.1 V5.5.5
+            public string N2_SOUR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1} p.64 V5.5.1 V5.5.5
+            public string N2_SOUR_NAME;                     //          +2 NAME <NAME_OF_PRODUCT>                       {0:1} p.54 V5.5.1 V5.5.5
+            public string N2_SOUR_CORP;                     //          +2 CORP <NAME_OF_BUSINESS>                      {0:1} p.54 V5.5.1 V5.5.5
+            public ADDRESS_STRUCTURE N3_SOUR_CORP_ADDR;     //              +3 <<ADDRESS_STRUCTURE>>                    {0:1} p.31 V5.5.1 V5.5.5
+            public List<string> N3_SOUR_CORP_PHON_liste;    //              +3 PHON <PHONE_NUMBER>                      {0:3} p.57 V5.5.1 V5.5.5
+            public List<string> N3_SOUR_CORP_EMAIL_liste;   //              +3 EMAIL <ADDRESS_EMAIL>                    {0:3} p.41 V5.5.1 V5.5.5
+            public List<string> N3_SOUR_CORP_FAX_liste;     //              +3 FAX <ADDRESS_FAX>                        {0:3} p.41 V5.5.1 V5.5.5
+            public List<string> N3_SOUR_CORP_WWW_liste;     //              +3 WWW <ADDRESS_WEB_PAGE>                   {0:3} p.42 V5.5.1 V5.5.5
+            public string N2_SOUR_DATA;                     //          +2 DATA <NAME_OF_SOURCE_DATA>                   {0:1} p.54 V5.5.1 V5.5.5
+            public string N3_SOUR_DATA_DATE;                //              +3 DATE <PUBLICATION_DATE>                  {0:1) p.59 V5.5.1 V5.5.5
+            public string N3_SOUR_DATA_CORP;                //              +3 COPR <COPYRIGHT_SOURCE_DATA>             {0:1) p.44 V5.5.1 V5.5.5
+                                                            //                  +4 [CONT|CONC]<COPYRIGHT_SOURCE_DATA>   {0:M} p.44 V5.5.1
+            public string N1_DEST;                          //      +1 DEST <RECEIVING_SYSTEM_NAME>                     {0:1* p.59 V5.5.1 V5.5.5
+            public string N1_DATE;                          //      +1 DATE <TRANSMISSION_DATE>                         {0:1} p.63 V5.5.1 V5.5.5
+            public string N2_DATE_TIME;                     //          +2 TIME <TIME_VALUE>                            {0:1} p.63 V5.5.1 V5.5.5
+            public List<string> N1_SUBM_liste_ID;           //      +1 SUBM @<XREF:SUBM>@                               {1:1} p.28 V5.5.1 V5.5.5
+            public string N1_SUBN;                          //      +1 SUBN @<XREF:SUBN>@                               {0:1} p.28 V5.5.1
+            public string N1_FILE;                          //      +1 FILE <FILE_NAME>                                 {0:1} p.50 V5.5.1 V5.5.5
+            public string N1_COPR;                          //      +1 COPR <COPYRIGHT_GEDCOM_FILE>                     {0:1} p.44 V5.5.1 V5.5.5
+                                                            //      +1 GEDC                                             {1:1}      V5.5.1
+            public string N2_GEDC_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {1:1} p.64 V5.5.1
+            public string N2_GEDC_FORM;                     //          +2 FORM <GEDCOM_FORM>                           {1:1} p.50 V5.5.1
+            public string N3_GEDC_FORM_VERS;                //              +3 VERS <GEDCOM_VERSION_NUMBER>                        V5.5.1 V5.5.5
+            public string N1_CHAR;                          //      +1 CHAR <CHARACTER_SET>                             {1:1} p.44 V5.5.1
+            public string N2_CHAR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1} p.64 V5.5.1
+            public string N1_LANG;                          //      +1 LANG <LANGUAGE_OF_TEXT>                          {0:1} p.51 V5.5.1 V5.5.5
+            public string N1_PLAC;                          //      +1 PLAC                                             {0:1}      V5.5.1
+            public string N2_PLAC_FORM;                     //          +2 FORM <PLACE_HIERARCHY>                       {1:1} p.58 V5.5.1
+            public string N1_NOTE;                          //      +1 NOTE <GEDCOM_CONTENT_DESCRIPTION>                {0:1} p.50 V5.5.1 V5.5.5
 
             public string N1_DATA;
             public string N2_DATA_DATE;
             public string Nom_fichier_disque;               // nom du fichier réel sur le disque
+            public string N1__GUID;                         // identificateur global unique Herisis
         }
-        public class LDS_INDIVIDUAL_ORDINANCE // 5.5.1_LDS_1999-10-02.pdf p.36
+        public class LDS_INDIVIDUAL_ORDINANCE 
+            // 5.5.1_LDS_1999-10-02.pdf p.36
         {
-            //LDS_INDIVIDUAL_ORDINANCE:=
-            public string N0_Type;                          //  n [ BAPL | CONL | ENDL | SLGC] {1:1}
-            public string N1_DATE;                          //      +1 DATE <DATE_LDS_ORD> {0:1} p.46
-            public string N1_TEMP;                          //      +1 TEMP <TEMPLE_CODE> {0:1} p.63
-            public string N1_PLAC;                          //      +1 PLAC <PLACE_LIVING_ORDINANCE> {0:1} p.58
-            public string N1_STAT;                          //      +1 STAT <LDS_BAPTISM_DATE_STATUS> {0:1} p.51
-            public string N2_STAT_DATE;                     //          +2 DATE <CHANGE_DATE> {1:1} p.44
-            public List<string> N1_NOTE_liste_ID;           //      +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;  //      +1 <<SOURCE_CITATION>> {0:M} p.39
+            //LDS_INDIVIDUAL_ORDINANCE
+            public string N0_Type;                          //  n [ BAPL | CONL | ENDL | SLGC]                          {1:1}      V5.5.1
+            public string N1_DATE;                          //      +1 DATE <DATE_LDS_ORD>                              {0:1} p.46 V5.5.1
+            public string N1_TEMP;                          //      +1 TEMP <TEMPLE_CODE>                               {0:1} p.63 V5.5.1
+            public string N1_PLAC;                          //      +1 PLAC <PLACE_LIVING_ORDINANCE>                    {0:1} p.58 V5.5.1
+            public string N1_STAT;                          //      +1 STAT <LDS_BAPTISM_DATE_STATUS>                   {0:1} p.51 V5.5.1
+            public string N2_STAT_DATE;                     //          +2 DATE <CHANGE_DATE>                           {1:1} p.44 V5.5.1
+            public List<string> N1_NOTE_liste_ID;           //      +1 <<NOTE_STRUCTURE>>                               {0:M} p.37 V5.5.1
+            public List<string> N1_SOUR_citation_liste_ID;  //      +1 <<SOURCE_CITATION>>                              {0:M} p.39 V5.5.1
             public List<string> N1_SOUR_source_liste_ID;
-
-            public string N1_FAMC;                          //      +1 FAMC @<XREF:FAM>@ {1:1} p.24 pour balise SLGC
+            public string N1_FAMC;                          //      +1 FAMC @<XREF:FAM>@                                {1:1} p.24  V5.5.1
         }
-        public class LDS_SPOUSE_SEALING// 5.5.1_LDS_1999-10-02.pdf p.36
+        public class LDS_SPOUSE_SEALING
+            // 5.5.1_LDS_1999-10-02.pdf p.36
         {
                                                             // LDS_SPOUSE_SEALING:=                   
                                                             //      n SLGS {1:1}
-            public string N1_DATE;                          //         +1 DATE <DATE_LDS_ORD>                       {0:1} p.46
-            public string N1_TEMP;                          //         +1 TEMP <TEMPLE_CODE>                        {0:1} p.63
-            public string N1_PLAC;                          //         +1 PLAC <PLACE_LIVING_ORDINANCE>             {0:1} p.58
-            public string N1_STAT;                          //         +1 STAT <LDS_SPOUSE_SEALING_DATE_STATUS>     {0:1} p.52
-            public string N2_STAT_DATE;                     //             +2 DATE <CHANGE_DATE>                    {1:1} p.44
-            public List<string> N1_NOTE_liste_ID;           //         +1 <<NOTE_STRUCTURE>>                        {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;  //         +1 <<SOURCE_CITATION>>                       {0:M} p.39
+            public string N1_DATE;                          //         +1 DATE <DATE_LDS_ORD>                       {0:1} p.46 V5.5.1
+            public string N1_TEMP;                          //         +1 TEMP <TEMPLE_CODE>                        {0:1} p.63 V5.5.1
+            public string N1_PLAC;                          //         +1 PLAC <PLACE_LIVING_ORDINANCE>             {0:1} p.58 V5.5.1
+            public string N1_STAT;                          //         +1 STAT <LDS_SPOUSE_SEALING_DATE_STATUS>     {0:1} p.52 V5.5.1
+            public string N2_STAT_DATE;                     //             +2 DATE <CHANGE_DATE>                    {1:1} p.44 V5.5.1
+            public List<string> N1_NOTE_liste_ID;           //         +1 <<NOTE_STRUCTURE>>                        {0:M} p.37 V5.5.1
+            public List<string> N1_SOUR_citation_liste_ID;  //         +1 <<SOURCE_CITATION>>                       {0:M} p.39 V5.5.1
             public List<string> N1_SOUR_source_liste_ID;
         }
-        public class MULTIMEDIA_RECORD // 5.5.1_LDS_1999-10-02.pdf p.26
+        public class MULTIMEDIA_RECORD 
         {
-            //  MULTIMEDIA_RECORD:=
-            public string N0_ID;                                        //      n @XREF:OBJE@ OBJE                          {1:1}
-            public string N1_FILE;                                      //          +1 FILE <MULTIMEDIA_FILE_REFN>          {1:M} p.54
-            public string N2_FILE_FORM;                                 //              +2 FORM <MULTIMEDIA_FORMAT>         {1:1} p.54
-            public string N3_FILE_FORM_TYPE;                            //                  +3 TYPE <SOURCE_MEDIA_TYPE>     {0:1} p.62
-            public string N2_FILE_TITL;                                 //              +2 TITL <DESCRIPTIVE_TITLE>         {0:1} p.48
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63, 64
-                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64
-            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39
+            // 5.5.1_LDS_1999-10-02.pdf p.26
+            // 5.5.5_Annotations_TJ p.62
+            //                                                                  MULTIMEDIA_RECORD:=
+            public string N0_ID;                                        //      n @XREF:OBJE@ OBJE                          {1:1}      V5.5.1 V5.5.5
+            public string N1_FILE;                                      //          +1 FILE <MULTIMEDIA_FILE_REFN>          {1:M} p.54 V5.5.1 V5.5.5
+            public string N2_FILE_FORM;                                 //              +2 FORM <MULTIMEDIA_FORMAT>         {1:1} p.54 V5.5.1 V5.5.5
+            public string N3_FILE_FORM_TYPE;                            //                  +3 TYPE <SOURCE_MEDIA_TYPE>     {0:1} p.62 V5.5.1 V5.5.5
+            public string N2_FILE_TITL;                                 //              +2 TITL <DESCRIPTIVE_TITLE>         {0:1} p.48 V5.5.1 V5.5.5
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63 V5.5.1 V5.5.5
+                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64 V5.5.1 V5.5.5
+            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43 V5.5.1 V5.5.5
+            public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                   {0:M} p.37 V5.5.1 V5.5.5
+            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39 V5.5.1 V5.5.5
             public List<string> N1_SOUR_source_liste_ID;
-            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31
+            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31 V5.5.1 V5.5.5
 
-            public string N1_FORM;                                      //          +1 +1 FORM <MULTIMEDIA_FORMAT> v5.5
-            public string N1_TITL;                                      //          +1 FORM <MULTIMEDIA_FORMAT> v5.5
-            public string N1_BLOB;                                      //          +1 BINARY_OBJECT        v5.5 seulement
-            public string N1_OBJE;                                      //          +1 @<XREF:OBJE>@ chain to continued object  v5.5 seulement 
+            public string N1_FORM;                                      //          +1 +1 FORM <MULTIMEDIA_FORMAT>                     v5.5
+            public string N1_TITL;                                      //          +1 FORM <MULTIMEDIA_FORMAT>                        v5.5
+            public string N1_BLOB;                                      //          +1 BINARY_OBJECT                                   v5.5
+            public string N1_OBJE;                                      //          +1 @<XREF:OBJE>@ chain to continued object         v5.5
+            public string N1__DATE;                                     //          +                                                  Herisis
         }
-        public class NOTE_RECORD // 5.5.1_LDS_1999-10-02.pdf p.27
+        public class NOTE_RECORD 
+            // 5.5.1_LDS_1999-10-02.pdf p.27
+            // 5.5.5_Annotations_TJ p.71
         {
             // NOTE_RECORD:=
-            public string N0_ID;                                        //      n @<XREF:NOTE>@ NOTE <SUBMITTER_TEXT>       {1:1} p.63
-            // le texte est placé dans N0_NOTE_Texte                    //          +1 [CONC|CONT] <SUBMITTER_TEXT>         {0:M}
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63, 64
-            // inclue avec le précédent                                 //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64
-            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39
+            public string N0_ID;                                        //      n @<XREF:NOTE>@ NOTE <SUBMITTER_TEXT>       {1:1} 
+                                                                                                            // V5.5.1 p.63 
+                                                                                                            // V5.5.5 p.108
+                                                                        //          +1 [CONC|CONT] <SUBMITTER_TEXT>         {0:M}
+                                                                                        // le texte est placé dans N0_NOTE_Texte
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} 
+                                                                                                            // V5.5.1 p.63 
+                                                                                                            // V5.5.5 p.107
+                                                                                                    // inclue avec le précédent
+                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} 
+                                                                                                            // V5.5.1 p.64 
+                                                                                                            // V5.5.5 p.107
+            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                                                            // V5.5.1 p.43 
+                                                                                                            // V5.5.5 p.78
+            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} 
+                                                                                                            // V5.5.1 p.39
+                                                                                                            // V5.5.5 p.73
             public List<string> N1_SOUR_source_liste_ID;
-            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31
+            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} 
+                                                                                                            // V5.5.1 p.31
+                                                                                                            // V5.5.5 p.66
 
             public int numero;
             public string N0_NOTE_Texte;
         }
-        public class PERSONAL_NAME_STRUCTURE   // 5.5.1_LDS_2019-11-15 p.38 
+        public class PERSONAL_NAME_PIECES
+        {
+            // 5.5.1_LDS_2019-11-15 p.37
+            // 5.5.5_Annotations_TJ p.71
+            public string Nn_NPFX;                                      //      n NPFX <NAME_PIECE_PREFIX>  {0:1}
+                                                                                                            // V5.5.1 p.55
+                                                                                                            // V5.5.5 p.97
+            public string Nn_GIVN;                                      //      n GIVN <NAME_PIECE_GIVEN>   {0:1}
+                                                                                                            // V5.5.1 p.55
+                                                                                                            // V5.5.5 p.97
+            public string Nn_NICK;                                      //      n NICK <NAME_PIECE_NICKNAME> {0:1}
+                                                                                                            // V5.5.1 p.55
+                                                                                                            // V5.5.5 p.97
+            public string Nn_SPFX;                                      //      n SPFX <NAME_PIECE_SURNAME_PREFIX {0:1}
+                                                                                                            // V5.5.1 p.56
+                                                                                                            // V5.5.5 p.98
+            public string Nn_SURN;                                      //      n SURN <NAME_PIECE_SURNAME> {0:1}
+                                                                                                            // V5.5.1 p.55
+                                                                                                            // V5.5.5 p.98
+            public string Nn_NSFX;                                      //      n NSFX <NAME_PIECE_SUFFIX>  {0:1}
+                                                                                                            // V5.5.1 p.55
+                                                                                                            // V5.5.5 p.98
+            public List<string> Nn_NOTE_liste_ID;                       //      n <<NOTE_STRUCTURE>>        {0:M}
+                                                                                                            // V5.5.1 p.37
+                                                                                                            // V5.5.5 p.71
+            public List<string> Nn_SOUR_citation_liste_ID;              //      n <<SOURCE_CITATION>>       {0:M}
+            public List<string> Nn_SOUR_source_liste_ID;
+                                                                                                            // V5.5.1 p.39
+                                                                                                            // V5.5.5 p.73
+        }
+        public class PERSONAL_NAME_STRUCTURE   
+            // 5.5.1_LDS_2019-11-15 p.38
+            // 5.5.5_Annotations_TJ p.72
         {
             //  PERSONAL_NAME_STRUCTURE:=
-            public string N0_NAME;                                      //      n NAME <NAME_PERSONAL>                          {1:1} p.54
-            public string N1_TYPE;                                      //          +1 TYPE <NAME_TYPE>                         {0:1} p.56
-                                                                        //  PERSONAL_NAME_PIECES:=                                    p.37
-            public string N1_NPFX;                                      //          +1 NPFX <NAME_PIECE_PREFIX>                 {0:1} p.55
-            public string N1_GIVN;                                      //          +1 GIVN <NAME_PIECE_GIVEN>                  {0:1} p.55
-            public string N1_NICK;                                      //          +1 NICK <NAME_PIECE_NICKNAME>               {0:1} p.55
-            public string N1_SPFX;                                      //          +1 SPFX <NAME_PIECE_SURNAME_PREFIX          {0:1} p.56
-            public string N1_SURN;                                      //          +1 SURN <NAME_PIECE_SURNAME>                {0:1} p.55
-            public string N1_NSFX;                                      //          +1 NSFX <NAME_PIECE_SUFFIX>                 {0:1} p.55
-            public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                       {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                      {0:M} p.39
-            public List<string> N1_SOUR_source_liste_ID;
-            public string N1_FONE;                                      //          +1 FONE <NAME_PHONETIC_VARIATION>           {0:M} p.55
-            public string N2_FONE_TYPE;                                 //              +2 TYPE <PHONETIC_TYPE>                 {1:1} p.57
-                                                                        //  PERSONAL_NAME_PIECES:=                                    p.37
-            public string N2_FONE_NPFX;                                 //              +2 NPFX <NAME_PIECE_PREFIX>             {0:1} p.55
-            public string N2_FONE_GIVN;                                 //              +2 GIVN <NAME_PIECE_GIVEN>              {0:1} p.55
-            public string N2_FONE_NICK;                                 //              +2 NICK <NAME_PIECE_NICKNAME>           {0:1} p.55
-            public string N2_FONE_SPFX;                                 //              +2 SPFX <NAME_PIECE_SURNAME_PREFIX      {0:1} p.56
-            public string N2_FONE_SURN;                                 //              +2 SURN <NAME_PIECE_SURNAME>            {0:1} p.55
-            public string N2_FONE_NSFX;                                 //              +2 NSFX <NAME_PIECE_SUFFIX>             {0:1} p.55
-            public List<string> N2_FONE_NOTE_ID_liste;                  //              +2 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N2_FONE_SOUR_citation_liste_ID;         //              +2 <<SOURCE_CITATION>>                  {0:M} p.39
-            public List<string> N2_FONE_SOUR_source_liste_ID;
-            public string N1_ROMN;                                      //          +1 ROMN <NAME_ROMANIZED_VARIATION>          {0:M} p.56
-            public string N2_ROMN_TYPE;                                 //              +2 TYPE <ROMANIZED_TYPE>                {1:1} p.61
-                                                                        //  PERSONAL_NAME_PIECES:=                                    p.37
-            public string N2_ROMN_NPFX;                                 //              +2 NPFX <NAME_PIECE_PREFIX>             {0:1} p.55
-            public string N2_ROMN_GIVN;                                 //              +2 GIVN <NAME_PIECE_GIVEN>              {0:1} p.55
-            public string N2_ROMN_NICK;                                 //              +2 NICK <NAME_PIECE_NICKNAME>           {0:1} p.55
-            public string N2_ROMN_SPFX;                                 //              +2 SPFX <NAME_PIECE_SURNAME_PREFIX      {0:1} p.56
-            public string N2_ROMN_SURN;                                 //              +2 SURN <NAME_PIECE_SURNAME>            {0:1} p.55
-            public string N2_ROMN_NSFX;                                 //              +2 NSFX <NAME_PIECE_SUFFIX>             {0:1} p.55
-            public List<string> N2_ROMN_NOTE_ID_liste;                  //              +2 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N2_ROMN_SOUR_citation_liste_ID;         //              +2 <<SOURCE_CITATION>>                  {0:M} p.39
-            public List<string> N2_ROMN_SOUR_source_liste_ID;
+            public string N0_NAME;                                      //      n NAME <NAME_PERSONAL>      {1:1}
+                                                                                                            // V5.5.1 p.54
+                                                                                                            // V5.5.5 p.96
+            public string N1_TYPE;                                      //          +1 TYPE <NAME_TYPE>     {0:1}
+                                                                                                            // V5.5.1 p.56
+                                                                                                            // V5.5.5 p.98
+            public PERSONAL_NAME_PIECES N1_PERSONAL_NAME_PIECES;        //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  // V5.5.1 p.37
+                                                                        //                                  // V5.5.5 p.71
 
+            public string N1_FONE;                                      //          +1 FONE <NAME_PHONETIC_VARIATION>{0:M} 
+                                                                        //                                  V5.5.1 p.55
+                                                                        //                                  V5.5.5 p.97
+
+            public string N2_FONE_TYPE;                                 //              +2 TYPE <PHONETIC_TYPE>{1:1} 
+                                                                        //                                  V5.5.1 p.57
+                                                                        //                                  V5.5.5 p.72
+                                                                        //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  V5.5.1 p.37
+                                                                        //                                  V5.5.5 p.71
+            public PERSONAL_NAME_PIECES N1_FONE_name_pieces;            //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  V5.5.1 p.37
+                                                                        //                                  V5.5.5 p.71
+           
+            public string N1_ROMN;                                      //          +1 ROMN <NAME_ROMANIZED_VARIATION>{0:M} 
+                                                                        //                                  V5.5.1 p.56
+                                                                        //                                  V5.5.5 p.98
+            public string N2_ROMN_TYPE;                                 //              +2 TYPE <ROMANIZED_TYPE>{1:1} 
+                                                                        //                                  V5.5.1 p.61
+                                                                        //                                  V5.5.5 p.98
+            public PERSONAL_NAME_PIECES N1_ROMN_name_pieces;            //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  V5.5.1 p.37
+                                                                        //                                  V5.5.5 p.105
             // extra
             public List<string> N1_ALIA_liste;                          //              +1 ALIA  alia dans BROSKEEP
 
         }
-        public class PLACE_STRUCTURE    // 5.5.1_LDS_2019-11-15 p.38
+        public class PLACE_STRUCTURE
         {
-            // PLACE_STRUCTURE:=
-            public string N0_PLAC;                              //  n PLAC <PLACE_NAME>                         {1:1} p.58
-            public string N1_FORM;                              //      +1 FORM <PLACE_HIERARCHY>               {0:1} p.58
-            public string N1_FONE;                              //      +1 FONE <PLACE_PHONETIC_VARIATION>      {0:M} p.59
-            public string N2_FONE_TYPE;                         //          +2 TYPE <PHONETIC_TYPE>             {1:1} p.57
-            public string N1_ROMN;                              //      +1 ROMN <PLACE_ROMANIZED_VARIATION>     {0:M} p.59
-            public string N2_ROMN_TYPE;                         //          +2 TYPE <ROMANIZED_TYPE>            {1:1} p.61
-                                                                //      +1 MAP                                  {0:1}
-            public string N2_MAP_LATI;                          //          +2 LATI <PLACE_LATITUDE>            {1:1} p.58
-            public string N2_MAP_LONG;                          //          +2 LONG <PLACE_LONGITUDE>           {1:1} p.58
-            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            
+            // 5.5.1_LDS_2019-11-15 p.38
+            // 5.5.5_Annotations_TJ p.72
+                                                                // PLACE_STRUCTURE:=
+            public string N0_PLAC;                              //  n PLAC <PLACE_NAME>                     {1:1} 
+                                                                //                                          V5.5.1 p.58
+                                                                //                                          V5.5.51 p.100
+            public string N1_FORM;                              //      +1 FORM <PLACE_HIERARCHY>           {0:1}
+                                                                //                                          V5.5.1 p.58
+            public string N1_FONE;                              //      +1 FONE <PLACE_PHONETIC_VARIATION>  {0:M} p.59
+                                                                //                                          V5.5.1 p.598
+                                                                //                                          V5.5.51 p.101
+            public string N2_FONE_TYPE;                         //          +2 TYPE <PHONETIC_TYPE>         {1:1} p.57
+                                                                //                                          V5.5.1 p.57
+                                                                //                                          V5.5.51 p.100
+            public string N1_ROMN;                              //      +1 ROMN <PLACE_ROMANIZED_VARIATION> {0:M} p.59
+                                                                //                                          V5.5.1 p.59
+                                                                //                                          V5.5.51 p.101
+            public string N2_ROMN_TYPE;                         //          +2 TYPE <ROMANIZED_TYPE>        {1:1} p.61
+                                                                //                                          V5.5.1 p.61
+                                                                //                                          V5.5.5 p.105
+                                                                //      +1 MAP                              {0:1}
+            public string N2_MAP_LATI;                          //          +2 LATI <PLACE_LATITUDE>        {1:1}
+                                                                //                                          V5.5.1 p.58
+                                                                //                                          V5.5.5 p.100
+            public string N2_MAP_LONG;                          //          +2 LONG <PLACE_LONGITUDE>       {1:1}
+                                                                //                                          V5.5.1 p.58
+                                                                //                                          V5.5.5 p.100
+            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M} p.37
+                                                                //                                          V5.5.1 p.37
+                                                                //                                          V5.5.5 p.71
+
             public List<string> N1_SOUR_citation_liste_ID;      // pour GEDitCOM
             public List<string> N1_SOUR_source_liste_ID;        // pour GEDitCOM
         }
-        public class REPOSITORY_RECORD // 5.5.1_LDS_2019-11-15 p.27
+        public class REPOSITORY_RECORD 
         {
+            // 5.5.1_LDS_2019-11-15 p.27
+            // 5.5.5_Annotations_TJ p.63
             // REPOSITORY_RECORD:=
             public string N0_ID;                                //  n @<XREF:REPO>@ REPO {1:1}
-            public string N1_NAME;                              //      +1 NAME <NAME_OF_REPOSITORY> {1:1} p.54
-            public ADDRESS_STRUCTURE N1_ADDR;                   //      +1 <<ADDRESS_STRUCTURE>> {0:1} p.31
-            public List<string> N1_PHON_liste;                  //      n PHON <PHONE_NUMBER>                   {0:3} p.57
-            public List<string> N1_EMAIL_liste;                 //      n EMAIL <ADDRESS_EMAIL>                 {0:3} p.41
-            public List<string> N1_FAX_liste;                   //      n FAX <ADDRESS_FAX>                     {0:3} p.41
-            public List<string> N1_WWW_liste;                   //      n WWW <ADDRESS_WEB_PAGE>                {0:3} p.42
-            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;   //      +1 REFN <USER_REFERENCE_NUMBER> {0:M} p.63, 64
-                                                                //      +2 TYPE <USER_REFERENCE_TYPE> {0:1} p.64
-            public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID> {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>> {0:1} p.31
+            public string N1_NAME;                              //      +1 NAME <NAME_OF_REPOSITORY>        {1:1}
+                                                                //                                          V5.5.1 p.54
+                                                                //                                          V5.5.5 p.96
+            public ADDRESS_STRUCTURE N1_ADDR;                   //      +1 <<ADDRESS_STRUCTURE>>            {0:1}
+                                                                //                                          V5.5.1 p.31
+                                                                //                                          V5.5.5 p.64
+            public List<string> N1_PHON_liste;                  //      n PHON <PHONE_NUMBER>               {0:3}
+                                                                //                                          V5.5.1 p.57
+                                                                //                                          V5.5.5 p.99
+            public List<string> N1_EMAIL_liste;                 //      n EMAIL <ADDRESS_EMAIL>             {0:3}
+                                                                //                                          V5.5.1 p.41
+                                                                //                                          V5.5.5 p.75
+            public List<string> N1_FAX_liste;                   //      n FAX <ADDRESS_FAX>                 {0:3}
+                                                                //                                          V5.5.1 p.41
+                                                                //                                          V5.5.5 p.75
+            public List<string> N1_WWW_liste;                   //      n WWW <ADDRESS_WEB_PAGE>            {0:3}
+                                                                //                                          V5.5.1 p.42
+                                                                //                                          V5.5.5 p.76
+            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                                //                                          V5.5.1 p.37
+                                                                //                                          V5.5.5 p.71
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;   //      +1 REFN <USER_REFERENCE_NUMBER>     {0:M}
+                                                                //                                          V5.5.1 p.63
+                                                                //                                          V5.5.5 p.107
+                                                                //      +2 TYPE <USER_REFERENCE_TYPE>       {0:1}
+                                                                //                                          V5.5.1 p.64
+                                                                //                                          V5.5.5 p.107
+            public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID>        {0:1} p.43
+                                                                //                                          V5.5.1 p.43
+                                                                //                                          V5.5.5 p.78
+            public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>>                  {0:1}
+                                                                //                                          V5.5.1 p.54
+                                                                //                                          V5.5.5 p.66
         }
-        public class SOURCE_CITATION // 5.5.1_LDS_2019-11-15 p.39
+        public class SOURCE_CITATION
         {
-            //  SOURCE_CITATION:=
-            //      [           /* pointer to source record (preferred)*/
-            public string N0_ID_source;                                     //      n SOUR @<XREF:SOUR>@ {1:1} p.27
-            public string N1_PAGE;                                          //          +1 PAGE<WHERE_WITHIN_SOURCE> {0:1} p.64
-            public string N1_EVEN;                                          //          +1 EVEN<EVENT_TYPE_CITED_FROM> {0:1} p.49
-            public string N2_EVEN_ROLE;                                     //              +2 ROLE<ROLE_IN_EVENT> {0:1} p.61
-            public string N1_DATA;                                          //          +1 DATA {0:1}
-            public string N2_DATA_DATE;                                     //              +2 DATE<ENTRY_RECORDING_DATE> {0:1} p.48
-            public string N2_DATA_TEXT;                                     //              +2 TEXT<TEXT_FROM_SOURCE> {0:M} p.63
-                                                                            //                  +3 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
-            public List<string> N1_OBJE_ID_liste;                           //          +1 <<MULTIMEDIA_LINK>> {0:M} p.37, 26
-            public List<string> N1_NOTE_liste_ID;                           //          +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public string N1_QUAY;                                          //          +1 QUAY<CERTAINTY_ASSESSMENT> {0:1} p.43
-                                                                            //      |           /* Systems not using source records */
-            public string N0_Titre;                                         //      n SOUR <SOURCE_DESCRIPTION> {1:1} p.61
-                                                                            //          +1 [CONC|CONT] <SOURCE_DESCRIPTION> {0:M}
-            public string N1_TEXT;                                          //          +1 TEXT<TEXT_FROM_SOURCE> {0:M} p.63
-                                                                            //              +2 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
-                                                                            // Voir plus haut                                               //          +1 <<MULTIMEDIA_LINK>> {0:M} p.37, 26
-                                                                            // Voir plus haut                                               //          +1 <<NOTE_STRUCTURE>> {0:M} p.37
-                                                                            // Voir plus haut                                               //          +1 QUAY<CERTAINTY_ASSESSMENT> {0:1} p.43
-                                                                            //      ]
-            public string N0_ID_citation;                                   // pour identifier tous les citations avec et sans ID de source
-        }
-        public class SOURCE_RECORD // 5.5.1_LDS_2019-11-15 p.27
-        {
-            //  SOURCE_RECORD:=
-            public int N0_numero;                                   //      n numero assigné par application
-            public string N0_ID;                                    //      n @<XREF:SOUR>@ SOUR {1:1}
-                                                                    //          +1 DATA {0:1}
-            public string N2_DATA_EVEN;                             //              +2 EVEN <EVENTS_RECORDED>                   {0:M} p.50
-            public string N3_DATA_DATE;                             //                  +3 DATE <DATE_PERIOD>                   {0:1} p.46
-            public string N3_DATA_PLAC;                             //                  +3 PLAC <SOURCE_JURISDICTION_PLACE>     {0:1} p.62
-            public string N2_DATA_AGNC;                             //              +2 AGNC <RESPONSIBLE_AGENCY>                {0:1} p.60
-            public List<string> N2_DATA_NOTE_liste_ID;              //              +2 <<NOTE_STRUCTURE>>                       {0:M} p.37
-            public string N1_AUTH;                                  //          +1 AUTH <SOURCE_ORIGINATOR>                     {0:1} p.62
-                                                                    //              +2 [CONC|CONT] <SOURCE_ORIGINATOR>          {0:M} p.62
-            public string N1_TITL;                                  //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE>              {0:1} p.62
-                                                                    //              +2 [CONC|CONT] <SOURCE_DESCRIPTIVE_TITLE>   {0:M} p.62
-            public string N1_ABBR;                                  //          +1 ABBR <SOURCE_FILED_BY_ENTRY>                 {0:1} p.62
-            public string N1_PUBL;                                  //          +1 PUBL <SOURCE_PUBLICATION_FACTS>              {0:1} p.62
-                                                                    //              +2 [CONC|CONT] <SOURCE_PUBLICATION_FACTS>   {0:M} p.62
-            public string N1_TEXT;                                  //          +1 TEXT <TEXT_FROM_SOURCE>                      {0:1} p.63
-                                                                    //              +2 [CONC|CONT] <TEXT_FROM_SOURCE>           {0:M} p.63
-            public SOURCE_REPOSITORY_CITATION N1_REPO_info;         //          +1 <<SOURCE_REPOSITORY_CITATION>>               {0:M} p.40
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;       //          +1 REFN <USER_REFERENCE_NUMBER>                 {0:M} p.63, 64
-                                                                    //              +2 TYPE <USER_REFERENCE_TYPE>               {0:1} p.64
-            public string N1_RIN;                                   //          +1 RIN <AUTOMATED_RECORD_ID>                    {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                             //          +1 <<CHANGE_DATE>>                              {0:1} p.31
-            public List<string> N1_NOTE_liste_ID;                   //          +1 <<NOTE_STRUCTURE>>                           {0:M} p.37
-            public List<string> N1_OBJE_liste_ID;                   //          +1 <<MULTIMEDIA_LINK>>                          {0:M} p.37, 26
+            // 5.5.1_LDS_2019-11-15.pdf p.39
+            // 5.5.5_Annotations_TJ.pdf p.73
+                                                                //  SOURCE_CITATION:=
+                                                                //      [      /* pointer to source record (preferred)*/
+            public string N0_ID_source;                         //      n SOUR @<XREF:SOUR>@                {1:1}
+                                                                //                                          V5.5.1 p.27
+                                                                //                                          V5.5.5 p.108
+            public string N1_PAGE;                              //          +1 PAGE<WHERE_WITHIN_SOURCE>    {0:1}
+                                                                //                                          V5.5.1 p.64
+                                                                //                                          V5.5.5 p.107
+            public string N1_EVEN;                              //          +1 EVEN<EVENT_TYPE_CITED_FROM>  {0:1}
+                                                                //                                          V5.5.1 p.49
+                                                                //                                          V5.5.5 p.92
+            public string N2_EVEN_ROLE;                         //              +2 ROLE<ROLE_IN_EVENT> {0:1} p.61
+                                                                //                                          V5.5.1 p.61
+                                                                //                                          V5.5.5 p.104
+                                                                //          +1 DATA                         {0:1}
+            public string N2_DATA_DATE;                         //              +2 DATE<ENTRY_RECORDING_DATE> {0:1}
+                                                                //                                          V5.5.1 p.48
+                                                                //                                          V5.5.5 p.91
+            public string N2_DATA_TEXT;                         //              +2 TEXT<TEXT_FROM_SOURCE> {0:M} p.63
+                                                                //                                          V5.5.1 p.63
+                                                                //                                          V5.5.5 p.106
+                                                                //                  +3 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
+                                                                //                                          V5.5.1
+            public List<string> N1_OBJE_ID_liste;               //          +1 <<MULTIMEDIA_LINK>>          {0:M}
+                                                                //                                          V5.5.1 p.37 P.26
+                                                                //                                          V5.5.5 p.71
+            public List<string> N1_NOTE_liste_ID;               //          +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                //                                          V5.5.1 p.37
+                                                                //                                          V5.5.5 p.71
+            public string N1_QUAY;                              //          +1 QUAY<CERTAINTY_ASSESSMENT>   {0:1}
+                                                                //                                          V5.5.1 p.43
+                                                                //                                          V5.5.5 p.78
+                                                                //      |           /* Systems not using source records */
+            public string N0_Titre;                             //      n SOUR <SOURCE_DESCRIPTION>         {1:1}
+                                                                //                                          V5.5.1 p.61
+                                                                //          +1 [CONC|CONT] <SOURCE_DESCRIPTION>{0:M}
+            public string N1_TEXT;                              //          +1 TEXT<TEXT_FROM_SOURCE>       {0:M}
+                                                                //                                          V5.5.1 p.63
+                                                                //              +2 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
+                                                                //      ]
+            public string N0_ID_citation;                       // pour identifier tous les citations avec et sans ID de source
 
-            public string N1_EVEN;                                  //          1 ancestrologie  valeur I, F
+            //                                                              +1 _QUAL                        // Herisis
+            public string N2__QUAL__SOUR;                             //              +2 _SOUR Qualité de la source  // Herisis
+            public string N2__QUAL__INFO;                             //              +2 _INFO Qualité de l'information // Heridis
+            public string N2__QUAL__EVID;                             //              +2 _EVID Qualité de la preuve  // Heridis
         }
-        public class SOURCE_REPOSITORY_CITATION  // 5.5.1_LDS_2019-11-15 p.40
+        public class SOURCE_RECORD 
         {
-            // SOURCE_REPOSITORY_CITATION:=
-            public string N0_ID;                                    //  n REPO [ @XREF:REPO@ | <NULL>] {1:1} p.27
-            public List<string> N1_NOTE_liste_ID;                   //      +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public string N1_CALN;                                  //      +1 CALN <SOURCE_CALL_NUMBER> {0:M} p.61
-            public string N2_CALN_MEDI;                             //          +2 MEDI <SOURCE_MEDIA_TYPE> {0:1} p.62 
-                                                                    //          [ audio | book | card | electronic | 
-                                                                    //              fiche | film | magazine |
-                                                                    //              manuscript | map | newspaper | 
-                                                                    //              photo | tombstone | video ]
+            // 5.5.1_LDS_2019-11-15.pdf p.27
+            // 5.5.5_Annotations_TJ.pdf p.63
+                                                                //  SOURCE_RECORD:=
+            public int N0_numero;                               //      n numero assigné par application
+            public string N0_ID;                                //      n @<XREF:SOUR>@ SOUR                {1:1}
+                                                                //                                          V5.5.1
+                                                                //                                          V5.5.5
+                                                                //          +1 DATA                         {0:1}
+            public string N2_DATA_EVEN;                         //              +2 EVEN <EVENTS_RECORDED>   {0:M}
+                                                                //                                          V5.5.1 p.50
+                                                                //                                          V5.5.5 p.92
+            public string N3_DATA_DATE;                         //                  +3 DATE <DATE_PERIOD>   {0:1}
+                                                                //                                          V5.5.1 p.46
+                                                                //                                          V5.5.5 p.85
+            public string N3_DATA_PLAC;                         //                  +3 PLAC <SOURCE_JURISDICTION_PLACE>{0:1}
+                                                                //                                          V5.5.1 p62
+                                                                //                                          V5.5.5 p.106
+            public string N2_DATA_AGNC;                         //              +2 AGNC <RESPONSIBLE_AGENCY>{0:1}
+                                                                //                                          V5.5.1 p.60
+                                                                //                                          V5.5.5 p.104
+            public List<string> N2_DATA_NOTE_liste_ID;          //              +2 <<NOTE_STRUCTURE>>       {0:M}
+                                                                //                                          V5.5.1 p.37
+                                                                //                                          V5.5.5 p.71
+            public string N1_AUTH;                              //          +1 AUTH <SOURCE_ORIGINATOR>     {0:1} p.62
+                                                                //                                          V5.5.1 p.62
+                                                                //                                          V5.5.5 p.106
+                                                                //              +2 [CONC|CONT] <SOURCE_ORIGINATOR>{0:M}
+                                                                //                                          V5.5.1 p.62
+            public string N1_TITL;                              //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE>{0:1} p.62
+                                                                //                                          V5.5.1 p.62
+                                                                //                                          V5.5.5 p.105
+                                                                //              +2 [CONC|CONT] <SOURCE_DESCRIPTIVE_TITLE>{0:M} p.62
+                                                                //                                          V5.5.1
+            public string N1_ABBR;                              //          +1 ABBR <SOURCE_FILED_BY_ENTRY> {0:1}
+                                                                //                                          V5.5.1 p.62
+                                                                //                                          V5.5.5 p.106
+            public string N1_PUBL;                              //          +1 PUBL <SOURCE_PUBLICATION_FACTS>{0:1}
+                                                                //                                          V5.5.1 p.62
+                                                                //                                          V5.5.5 p.106
+                                                                //              +2 [CONC|CONT] <SOURCE_PUBLICATION_FACTS>{0:M} p.62
+                                                                //                                          V5.5.1
+            public string N1_TEXT;                              //          +1 TEXT <TEXT_FROM_SOURCE>      {0:1}
+                                                                //                                          V5.5.1 p.63
+                                                                //                                          V5.5.5 p.106
+                                                                //              +2 [CONC|CONT] <TEXT_FROM_SOURCE>{0:M} p.63
+                                                                //                                          V5.5.1
+            public SOURCE_REPOSITORY_CITATION N1_REPO_info;     //          +1 <<SOURCE_REPOSITORY_CITATION>>{0:M}
+                                                                //                                          V5.5.1 p.40
+                                                                //                                          V5.5.5 p.74
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;   //          +1 REFN <USER_REFERENCE_NUMBER> {0:M}
+                                                                //                                          V5.5.1 p.63
+                                                                //                                          V5.5.5 p.107
+                                                                //              +2 TYPE <USER_REFERENCE_TYPE>{0:1} p.64
+                                                                //                                          V5.5.1 p.65
+                                                                //                                          V5.5.5 p.107
+            public string N1_RIN;                               //          +1 RIN <AUTOMATED_RECORD_ID>    {0:1} p.43
+                                                                //                                          V5.5.1 p.43
+                                                                //                                          V5.5.5 p.78
+            public CHANGE_DATE N1_CHAN;                         //          +1 <<CHANGE_DATE>>              {0:1}
+                                                                //                                          V5.5.1 p.31
+                                                                //                                          V5.5.5 p.66
+            public List<string> N1_NOTE_liste_ID;               //          +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                //                                          V5.5.1 p.37
+                                                                //                                          V5.5.5 p.71
+            public List<string> N1_OBJE_liste_ID;               //          +1 <<MULTIMEDIA_LINK>>          {0:M}
+                                                                //                                          V5.5.1 p.37 p.26
+                                                                //                                          V5.5.5 p.71
+            public string N1_EVEN;                              //          +1 valeur I, F                  ancestrologie
+            public string N1_QUAY;                              //          +1                              Heridis
+            public string N1_TYPE;                              //          +1                              Heridis
+            public string N1_DATE;                              //          +1                              Heridis
         }
-        public class SPOUSE_TO_FAMILY_LINK // 5.5.1_LDS_2019-11-15 p.40
+        public class SOURCE_REPOSITORY_CITATION
         {
-            //  SPOUSE_TO_FAMILY_LINK:=
-            public string N0_ID;                                    //      n FAMS @<XREF:FAM>@     {1:1} p.24
-            public List<string> N1_NOTE_liste_ID;                   //      +1 <<NOTE_STRUCTURE>>   {0:M} p.37
+            // 5.5.1_LDS_2019-11-15.pdf p.40
+            // 5.5.5_Annotations_TJ.pdf p.74
+                                                                // SOURCE_REPOSITORY_CITATION:=
+            public string N0_ID;                                //  n REPO [ @XREF:REPO@ | <NULL>]          {1:1} p.27
+                                                                //                                          V5.5.1 p.27
+                                                                //                                          V5.5.5 p.108
+            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M} p.37
+                                                                //                                          V5.5.1 p.37
+            public string N1_CALN;                              //      +1 CALN <SOURCE_CALL_NUMBER>        {0:M} p.61
+                                                                //                                          V5.5.1 p.61
+                                                                //                                          V5.5.5 p.105
+            public string N2_CALN_MEDI;                         //          +2 MEDI <SOURCE_MEDIA_TYPE>     {0:1}
+                                                                //                                          V5.5.1 p.62
+                                                                //                                          V5.5.5 p.106
+                                                                //          [ audio | book | card | electronic | 
+                                                                //              fiche | film | magazine |
+                                                                //              manuscript | map | newspaper | 
+                                                                //              photo | tombstone | video ]
+        }
+        public class SPOUSE_TO_FAMILY_LINK 
+        {
+            // 5.5.1_LDS_2019-11-15.pdf p.40
+            // 5.5.5_Annotations_TJ.pdf p.75
+                                                                //  SPOUSE_TO_FAMILY_LINK:=
+            public string N0_ID;                                //      n FAMS @<XREF:FAM>@                 {1:1}
+                                                                //                                          V5.5.1 p.24
+                                                                //                                          V5.5.5 p.75
+            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M} 
+                                                                //                                          V5.5.1 p.37
+                                                                //                                          V5.5.5 p.71
         }
         public class SUBMISSION_RECORD // 5.5.1_LDS_2019-11-15 p.28
         {
-            //  SUBMISSION_RECORD:=
-            public string N0_ID;                    //  n @XREF:SUBN@ SUBN                          {1:1}
-            public List<string> N1_SUBM_liste_ID;   //      +1 SUBM @XREF:SUBM@                     {0:1} p.28
-            public string N1_FAMF;                  //      +1 FAMF <NAME_OF_FAMILY_FILE>           {0:1} p.54
-            public string N1_TEMP;                  //      +1 TEMP <TEMPLE_CODE>                   {0:1} p.63
-            public string N1_ANCE;                  //      +1 ANCE <GENERATIONS_OF_ANCESTORS>      {0:1} p.50
-            public string N1_DESC;                  //      +1 DESC <GENERATIONS_OF_DESCENDANTS>    {0:1} p.50
-            public string N1_ORDI;                  //      +1 ORDI <ORDINANCE_PROCESS_FLAG>        {0:1} p.57
-            public string N1_RIN;                   //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_NOTE_liste_ID;   //      +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public CHANGE_DATE N1_CHAN;             //      +1 <<CHANGE_DATE>>                      {0:1} p.31
+            // 5.5.1_LDS_2019-11-15.pdf p.28
+            // 5.5.5_Annotations_TJ.pdf pas utiliser
+                                                                //  SUBMISSION_RECORD:=
+            public string N0_ID;                                //  n @XREF:SUBN@ SUBN                          {1:1}
+            public List<string> N1_SUBM_liste_ID;               //      +1 SUBM @XREF:SUBM@                     {0:1} p.28
+                                                                //                                              V5.5.1 p.28
+            public string N1_FAMF;                              //      +1 FAMF <NAME_OF_FAMILY_FILE>           {0:1}
+                                                                //                                              V5.5.1 p.54
+            public string N1_TEMP;                              //      +1 TEMP <TEMPLE_CODE>                   {0:1} p.63
+                                                                //                                              V5.5.1 p.63
+            public string N1_ANCE;                              //      +1 ANCE <GENERATIONS_OF_ANCESTORS>      {0:1} p.50
+                                                                //                                              V5.5.1 p.50
+            public string N1_DESC;                              //      +1 DESC <GENERATIONS_OF_DESCENDANTS>    {0:1}
+                                                                //                                              V5.5.1 p.50
+            public string N1_ORDI;                              //      +1 ORDI <ORDINANCE_PROCESS_FLAG>        {0:1}
+                                                                //                                              V5.5.1 p.57
+            public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                //                                              V5.5.1 p.43
+            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                //                                              V5.5.1 p.37
+            public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>>                      {0:1}
+                                                                //                                              V5.5.1 p.31
         }
-        public class SUBMITTER_RECORD // 5.5.1_LDS_2019-11-15 p.28
+        public class SUBMITTER_RECORD
         {
+            // 5.5.1_LDS_2019-11-15 p.28
+            // 5.5.5_Annotations_TJ.pdf pas utiliser
             //  SUBMITTER_RECORD:=
-            public string N0_ID;                    //      n @<XREF:SUBM>@ SUBM                    {1:1}
-            public string N1_NAME;                  //      +1 NAME <SUBMITTER_NAME>                {1:1} p.63
-            public ADDRESS_STRUCTURE N1_ADDR;       //      +1 <<ADDRESS_STRUCTURE>>                {0:1}* p.31
-            public List<string> N1_PHON_liste;      //      n PHON <PHONE_NUMBER>                   {0:3} p.57
-            public List<string> N1_EMAIL_liste;     //      n EMAIL <ADDRESS_EMAIL>                 {0:3} p.41
-            public List<string> N1_FAX_liste;       //      n FAX <ADDRESS_FAX>                     {0:3} p.41
-            public List<string> N1_WWW_liste;       //      n WWW <ADDRESS_WEB_PAGE>                {0:3} p.42
-            public List<string> N1_OBJE_ID_liste;   //      +1 <<MULTIMEDIA_LINK>>                  {0:M} p.37, 26
-            public string N1_LANG;                  //      +1 LANG <LANGUAGE_PREFERENCE>           {0:3} p.51
-            public string N1_RFN;                   //      +1 RFN <SUBMITTER_REGISTERED_RFN>       {0:1} p.63
-            public string N1_RIN;                   //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_NOTE_liste_ID;   //      +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public CHANGE_DATE N1_CHAN;             //      +1 <<CHANGE_DATE>>                      {0:1} p.31
+            public string N0_ID;                                //      n @<XREF:SUBM>@ SUBM                    {1:1}
+            public string N1_NAME;                              //      +1 NAME <SUBMITTER_NAME>                {1:1}
+                                                                //                                              V5.5.1 p.63
+            public ADDRESS_STRUCTURE N1_ADDR;                   //      +1 <<ADDRESS_STRUCTURE>>                {0:1}
+                                                                //                                              V5.5.1 p.31
+            public List<string> N1_PHON_liste;                  //      n PHON <PHONE_NUMBER>                   {0:3}
+                                                                //                                              V5.5.1 p.57
+            public List<string> N1_EMAIL_liste;                 //      n EMAIL <ADDRESS_EMAIL>                 {0:3}
+                                                                //                                              V5.5.1 p.41
+            public List<string> N1_FAX_liste;                   //      n FAX <ADDRESS_FAX>                     {0:3}
+                                                                //                                              V5.5.1 p.41
+            public List<string> N1_WWW_liste;                   //      n WWW <ADDRESS_WEB_PAGE>                {0:3}
+                                                                //                                              V5.5.1 p.42
+            public List<string> N1_OBJE_ID_liste;               //      +1 <<MULTIMEDIA_LINK>>                  {0:M}
+                                                                //                                              V5.5.1 p.37, 26
+            public string N1_LANG;                              //      +1 LANG <LANGUAGE_PREFERENCE>           {0:3}
+                                                                //                                              V5.5.1 p.51
+            public string N1_RFN;                               //      +1 RFN <SUBMITTER_REGISTERED_RFN>       {0:1}
+                                                                //                                              V5.5.1 p.63
+            public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                //                                              V5.5.1 p.43
+            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                //                                              V5.5.1 p.37
+            public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>>                      {0:1}
+                                                                //                                              V5.5.1 p.31
         }
         public class USER_REFERENCE_NUMBER  // 5.5.1_LDS_2019-11-15 p.63
         {
+            // 5.5.1_LDS_2019-11-15 p.63
+            // 5.5.5_Annotations_TJ.pdf p.107
+
             public string N0_REFN;
+                                                                //                                          V5.5.1 p.63
+                                                                //                                          V5.5.5 p.107
             public string N1_TYPE;
+                                                                //                                          V5.5.1 p.64
+                                                                //                                          V5.5.5 p.107
         }
         public class ItemSourceIDTexte
         {
@@ -538,6 +789,7 @@ namespace GEDCOM
                 return (this.ID.Equals(other.ID));
             }
         }
+        public static string erreur = "";
         // RECORD GEDCOM
         public static HEADER Info_HEADER = new HEADER(); // 551-p23
         private static List<FAM_RECORD> liste_FAM_RECORD = new List<FAM_RECORD>();  // 551-p24
@@ -608,9 +860,9 @@ namespace GEDCOM
             }
             return null;
         }
-        private static string Avoir_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
+        private static void Avoir_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
         {
-            return "G" + sourceLineNumber;
+            erreur = "G" + sourceLineNumber;
         }
         private static string Avoir_type_media(string TYPE)
         {
@@ -627,6 +879,7 @@ namespace GEDCOM
             if (TYPE.ToLower() == "newspaper") TYPE = "Journal";
             if (TYPE.ToLower() == "tombstone") TYPE = "Pierre tombale";
             if (TYPE.ToLower() == "video") TYPE = "Vidéo";
+            if (TYPE.ToLower() == "other") TYPE = "Autre";
             return TYPE;
         }
         private static (LDS_INDIVIDUAL_ORDINANCE, int) Extraire_LDS_INDIVIDUAL_ORDINANCE(int ligne)
@@ -937,6 +1190,7 @@ namespace GEDCOM
             List<string> N1_NOTE_liste_ID = new List<string>();
             string N1_BLOB = null; // v5.5
             string N1_OBJE = null; // v5.5
+            string N1__DATE = null;// Herisis 
 
             List<string> N1_SOUR_citation_liste_ID = new List<string>();
             List<string> N1_SOUR_source_liste_ID = new List<string>();
@@ -945,52 +1199,52 @@ namespace GEDCOM
             Tb_Status.Text = "Décodage du data. Lecture des médias  ID " + N0_ID;
             Animation(true);
             ligne++;
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 while (Extraire_niveau(ligne) > 0)
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     Application.DoEvents();
                     if (Extraire_balise(dataGEDCOM[ligne]) == "1 FORM")                                 // 1 FORM v5.5
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
                     if (Extraire_balise(dataGEDCOM[ligne]) == "1 TITL")                                 // 1 TITL v5.5
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_TITL = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILE")                            // 1 FILLE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_FILE = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             if (Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                         // 2 FORM
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 N2_FILE_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                                 while (Extraire_niveau(ligne) > 2)
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     if (Extraire_balise(dataGEDCOM[ligne]) == "3 TYPE")                 // 3 FORM TYPE
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N3_FILE_FORM_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         N3_FILE_FORM_TYPE = Avoir_type_media(N3_FILE_FORM_TYPE);
                                         ligne++;
                                     }
                                     else
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                                         ligne++;
                                     }
@@ -998,27 +1252,27 @@ namespace GEDCOM
                             }
                             else if (Extraire_balise(dataGEDCOM[ligne]) == "2 TITL")                    // 2 TITL
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 N2_FILE_TITL = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                                 while (Extraire_niveau(ligne) > 2)
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     if (Extraire_balise(dataGEDCOM[ligne]) == "3 CONC")                 // 2 CONC
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N2_FILE_TITL += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                     }
                                     else if (Extraire_balise(dataGEDCOM[ligne]) == "3 CONT")            // 2 CONT
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N2_FILE_TITL += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                     }
                                     else
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                                         ligne++;
                                     }
@@ -1026,7 +1280,7 @@ namespace GEDCOM
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
@@ -1034,43 +1288,43 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         USER_REFERENCE_NUMBER N1_REFN;
                         (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
                         N1_REFN_liste.Add(N1_REFN);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                            // 1 NOTE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string IDNote;
                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                         N1_NOTE_liste_ID.Add(IDNote);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 BLOB")                            // 1 BLOB v5.5
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_BLOB = "blob";
                         N1_FILE = "blob.svg";
                         N2_FILE_FORM = "svg";
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
+                            Avoir_code_erreur();
                             if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                             // 2 CONT
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 ligne++;
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
@@ -1078,18 +1332,18 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                                // 1 OBJE v5.5
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             EcrireBalise(ligne, dataGEDCOM[ligne]);
                             ligne++;
                         }
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                                // 1 SOUR
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string citation;
                         string source;
                         (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
@@ -1098,12 +1352,19 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                // 1 CHAN changer date
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
+                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _DATE")                           // _DATE Heridis
+                    {
+                        Avoir_code_erreur();
+                        N1__DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 5));
+                        ligne++;
+                    }
+
                     else
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                         ligne++;
 
@@ -1133,12 +1394,14 @@ namespace GEDCOM
                     N1_OBJE = N1_OBJE, // v5.5
                     N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                     N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                    N1_CHAN = N1_CHAN
+                    N1_CHAN = N1_CHAN,
+                    N1__DATE = N1__DATE // Herisis
                 });
             }
         }
         private static (string, int) Extraire_SOURCE_RECORD(int ligne)
         {
+           
             bool ajouter = false;
             string N0_ID;
             string N2_DATA_EVEN = null;
@@ -1151,6 +1414,9 @@ namespace GEDCOM
             string N1_ABBR = null;
             string N1_PUBL = null;
             string N1_TEXT = null;
+            string N1_QUAY = null; //Heridis
+            string N1_TYPE = null; // Heridis
+            string N1_DATE = null; // Herisis
             SOURCE_REPOSITORY_CITATION N1_REPO_info = null;
             List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
             string N1_RIN = null;
@@ -1166,99 +1432,111 @@ namespace GEDCOM
             Tb_Status.Text = "Décodage du data. Lecture des Sources  ID " + N0_ID;
             Animation(true);
             string niveau = Extraire_niveau(ligne).ToString();
+            int niveau_I = Extraire_niveau(ligne);
             ligne++;
+            Avoir_code_erreur();
             // niveau 0
             if (niveau == "0")
             {
+                Avoir_code_erreur();
                 while (Extraire_niveau(ligne) > 0)
                 {
-                    string erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     try
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         Application.DoEvents();
                         ajouter = true;
                         string baliseN1 = Extraire_balise(dataGEDCOM[ligne]);
-                        if (baliseN1 == "1 DATA")                                                           // 1 DATA
+                        if (baliseN1 == niveau_I + 1 + " DATA")                                         // +1 DATA
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             ligne++;
                             while (Extraire_niveau(ligne) > 1)
                             {
-                                erreur = Avoir_code_erreur();
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "2 EVEN")                         // 1 DATA_EVEN  BIRT, DEAT, MARR.
+                                string baliseN2 = Extraire_balise(dataGEDCOM[ligne]);
+                                Avoir_code_erreur();
+                                if (baliseN2 == (niveau_I + 2).ToString() + " EVEN")                    // +2 DATA_EVEN  BIRT, DEAT, MARR.
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     Extraire_balise(dataGEDCOM[ligne]);
                                     N2_DATA_EVEN = Extraire_EVENT_liste(Extraire_ligne(dataGEDCOM[ligne], 4));
                                     ligne++;
                                     while (Extraire_niveau(ligne) > 2)
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        if (Extraire_balise(dataGEDCOM[ligne]) == "3 DATE")                 // 3 DATE
+                                        string baliseN3 = Extraire_balise(dataGEDCOM[ligne]);
+                                        Avoir_code_erreur();
+                                        if (baliseN3 == (niveau_I + 3).ToString() + " DATE")                // +3 DATE
                                         {
-                                            erreur = Avoir_code_erreur();
+                                            Avoir_code_erreur();
                                             N3_DATA_EVEN_DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 4));
                                             ligne++;
                                         }
-                                        else if (Extraire_balise(dataGEDCOM[ligne]) == "3 PLAC")            // 3 PLAC
+                                        else if (baliseN3 == (niveau_I + 3).ToString() + " PLAC")            // +3 PLAC
                                         {
-                                            erreur = Avoir_code_erreur();
+                                            Avoir_code_erreur();
                                             N3_DATA_EVEN_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);
                                             ligne++;
                                         }
                                         else
                                         {
-                                            erreur = Avoir_code_erreur();
+                                            Avoir_code_erreur();
                                             EcrireBalise(ligne, dataGEDCOM[ligne]);
                                             ligne++;
                                         }
                                     }
                                 }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 AGNC")                    // 2 AGNC
+                                else if (baliseN2 == "2 AGNC")                    // 2 AGNC
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     N2_DATA_AGNC = Extraire_ligne(dataGEDCOM[ligne], 4);
                                     ligne++;
                                 }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 NOTE")                    // 2 NOTE
+                                else if (baliseN2 == "2 NOTE")                    // 2 NOTE
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     string IDNote;
                                     (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                                     N2_DATA_NOTE_liste_ID.Add(IDNote);
                                 }
                                 else
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     EcrireBalise(ligne, dataGEDCOM[ligne]);
                                     ligne++;
                                 }
                             }
                         }
+                        else if (baliseN1 == "1 DATE")                 // 1 DATE Herisis
+                        {
+                            Avoir_code_erreur();
+                            N1_DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 4));
+                            ligne++;
+                        }
                         else if (baliseN1 == "1 TITL")                                                      // 1 TITL
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             N1_TITL = Extraire_ligne(dataGEDCOM[ligne], 4);
                             ligne++;
                             while (Extraire_niveau(ligne) > 1)
                             {
-                                erreur = Avoir_code_erreur();
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                         // 2 CONC
+                                string baliseN2 = Extraire_balise(dataGEDCOM[ligne]);
+                                Avoir_code_erreur();
+                                if (baliseN2 == "2 CONC")                         // 2 CONC
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     N1_TITL += Extraire_ligne(dataGEDCOM[ligne], 4);
                                     ligne++;
                                 }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                    // 2 CONT
+                                else if (baliseN2 == "2 CONT")                    // 2 CONT
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     N1_TITL += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
                                     ligne++;
                                 }
                                 else
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     EcrireBalise(ligne, dataGEDCOM[ligne]);
                                     ligne++;
                                 }
@@ -1266,27 +1544,28 @@ namespace GEDCOM
                         }
                         else if (baliseN1 == "1 AUTH")                                                      // 1 AUTH
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             N1_AUTH = Extraire_ligne(dataGEDCOM[ligne], 4);
                             ligne++;
                             while (Extraire_niveau(ligne) > 1)
                             {
-                                erreur = Avoir_code_erreur();
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                         // 2 CONT
+                                string baliseN2 = Extraire_balise(dataGEDCOM[ligne]);
+                                Avoir_code_erreur();
+                                if (baliseN2 == "2 CONT")                         // 2 CONT
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     N1_AUTH += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
                                     ligne++;
                                 }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                    // 2 CONC
+                                else if (baliseN2 == "2 CONC")                    // 2 CONC
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     N1_AUTH += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                                     ligne++;
                                 }
                                 else
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     EcrireBalise(ligne, dataGEDCOM[ligne]);
                                     ligne++;
                                 }
@@ -1295,24 +1574,25 @@ namespace GEDCOM
                         }
                         else if (baliseN1 == "1 PUBL")                                                      // 1 PUBL
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             N1_PUBL = Extraire_ligne(dataGEDCOM[ligne], 4);
                             ligne++;
                             while (Extraire_niveau(ligne) > 1)
                             {
-                                erreur = Avoir_code_erreur();
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                         // 2 CONC
+                                string baliseN2 = Extraire_balise(dataGEDCOM[ligne]);
+                                Avoir_code_erreur();
+                                if (baliseN2 == "2 CONC")                         // 2 CONC
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     N1_PUBL += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                                     ligne++;
                                 }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                    // 2 CONT
+                                else if (baliseN2 == "2 CONT")                    // 2 CONT
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     if (dataGEDCOM[ligne].Length > 7)
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N1_PUBL += "<br />" + dataGEDCOM[ligne].Substring(7);
                                     }
                                     else N1_PUBL += "<br />\n";
@@ -1320,7 +1600,7 @@ namespace GEDCOM
                                 }
                                 else
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     EcrireBalise(ligne, dataGEDCOM[ligne]);
                                     ligne++;
                                 }
@@ -1328,67 +1608,79 @@ namespace GEDCOM
                         }
                         else if (baliseN1 == "1 TEXT" && dataGEDCOM[ligne].Length > 7)                      // 1 TEXT
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             (N1_TEXT, ligne) = Extraire_TEXT(ligne);
                         }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
+                        else if (baliseN1 == "1 REFN")                            // 1 REFN
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             USER_REFERENCE_NUMBER N1_REFN;
                             (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
                             N1_REFN_liste.Add(N1_REFN);
                         }
                         else if (baliseN1 == "1 ABBR")                                                      // 1 ABBR
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             N1_ABBR = Extraire_ligne(dataGEDCOM[ligne], 4);
                             ligne++;
                         }
                         else if (baliseN1 == "1 OBJE")                                                      // 1 OBJE
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             string temp;
                             (temp, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
                             N1_OBJE_liste_ID.Add(temp);
                         }
                         else if (baliseN1 == "1 REPO")                                                      // 1 REPO
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             (N1_REPO_info, ligne) = Extraire_SOURCE_REPOSITORY_CITATION(ligne);
                         }
                         else if (baliseN1 == "1 NOTE")                                                      // 1 NOTE
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             string IDNote;
                             (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                             N1_NOTE_liste_ID.Add(IDNote);
                         }
                         else if (baliseN1 == "1 CHAN")                                                      // 1 CHAN changer date
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                         }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
+                        else if (baliseN1 == "1 RIN")                             // 1 RIN
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
                             ligne++;
                         }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
+                        else if (baliseN1 == "1 EVEN")                            // 1 EVEN dans ancestrologie
                         {
-                            erreur = Avoir_code_erreur();
-                            N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                            ligne++;
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "1 EVEN")                            // 1 EVEN dans ancestrologie
-                        {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             N1_EVEN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            ligne++;
+                        }
+                        else if (baliseN1 == "1 QUAY")                            // 1 QUAY Heridis
+                        {
+                            Avoir_code_erreur();
+                            N1_QUAY = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            ligne++;
+                        }
+                        else if (baliseN1 == "1 TYPE")                            // 1 TYPE Heridis
+                        {
+                            Avoir_code_erreur();
+                            N1_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            switch (N1_TYPE.ToUpper())
+                            {
+                                case "ADMINISTRATIVE DOCUMENT": N1_TYPE = "Document administratif"; break;
+                                case "DEED": N1_TYPE = "Acte"; break;
+                                case "OTHER": N1_TYPE = "Autre"; break;
+                            }
                             ligne++;
                         }
                         else
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             EcrireBalise(ligne, dataGEDCOM[ligne]);
                             ligne++;
                         }
@@ -1429,7 +1721,10 @@ namespace GEDCOM
                     N1_CHAN = N1_CHAN,
                     N1_NOTE_liste_ID = N1_NOTE_liste_ID,
                     N1_OBJE_liste_ID = N1_OBJE_liste_ID,
-                    N1_EVEN = N1_EVEN
+                    N1_EVEN = N1_EVEN,
+                    N1_QUAY = N1_QUAY,
+                    N1_TYPE = N1_TYPE,
+                    N1_DATE = N1_DATE
                 });
             }
             return (N0_ID, ligne);
@@ -1572,38 +1867,38 @@ namespace GEDCOM
             Tb_Status.Text = "Décodage du data. Lecture des dépôts  ID " + info.N0_ID;
             Animation(true);
             ligne++;
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 while (Extraire_niveau(ligne) > 0)
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     Application.DoEvents();
                     if (Extraire_balise(dataGEDCOM[ligne]) == "1 NAME")                                     // 1 NAME
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info.N1_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                             // 2 CONT
                             {
-                                erreur = Avoir_code_erreur();
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 info.N1_NAME += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                        // 1 CONC
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 info.N1_NAME += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
@@ -1611,73 +1906,73 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ADDR")                                // 1 ADDR
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (info.N1_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 PHON")                                // 1 PHON
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 EMAIL")                               // 1 EMAIL
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 5));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _EMAIL")                              // 1 _EMAIL
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 6));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAX")                                 // 1 FAX
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WWW")                                 // 1 wwW
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _URL")                                // 1 URL
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                // 1 NOTE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string IDNote;
                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                         N1_NOTE_liste_ID.Add(IDNote);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                                // 1 REFN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         USER_REFERENCE_NUMBER N1_REFN;
                         (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
                         N1_REFN_liste.Add(N1_REFN);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                                 // 1 RIN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info.N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                // 1 CHAN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (info.N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
                     else
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                         ligne++;
                     }
@@ -1724,7 +2019,11 @@ namespace GEDCOM
             List<string> listeObjetIDN3 = new List<string>();
             List<string> N1_NOTE_liste_ID = new List<string>();
             string N1_QUAY = null;
-            int niveau_I = Extraire_niveau(ligne);
+            string N2__QUAL__SOUR = null; // Herisis
+            string N2__QUAL__INFO = null; // Heridis
+            string N2__QUAL__EVID = null; // Heridis
+
+        int niveau_I = Extraire_niveau(ligne);
             var itemSourceOld = new SOURCE_CITATION();
             N0_ID_source = Extraire_ID(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
             if (N0_ID_source == null) N0_Titre = Extraire_texte_ligne1(dataGEDCOM[ligne]);
@@ -1835,6 +2134,33 @@ namespace GEDCOM
                     }
                     ligne++;
                 }
+                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " _QUAL")     // +1 _QUAL Heridis
+                {
+                    ligne++;
+                    while (Extraire_niveau(ligne) > niveau_I + 1)
+                    {
+                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " _SOUR")  // +2 _QUAL__SOUR Heridis
+                        {
+                            N2__QUAL__SOUR = Extraire_ligne(dataGEDCOM[ligne], 5);
+                            ligne++;
+                        }
+                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " _INFO")  // +2 _QUAL__INFO Heridis
+                        {
+                            N2__QUAL__INFO = Extraire_ligne(dataGEDCOM[ligne], 5);
+                            ligne++;
+                        }
+                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " _EVID")  // +2 _QUAL__EVED Heridis
+                        {
+                            N2__QUAL__EVID = Extraire_ligne(dataGEDCOM[ligne], 5);
+                            ligne++;
+                        }
+                        else
+                        {
+                            EcrireBalise(ligne, dataGEDCOM[ligne]);
+                            ligne++;
+                        }
+                    }
+                }
                 else
                 {
                     EcrireBalise(ligne, dataGEDCOM[ligne]);
@@ -1852,6 +2178,9 @@ namespace GEDCOM
                 N2_DATA_DATE == null &&
                 N2_DATA_TEXT == null &&
                 N1_QUAY == null &&
+                N2__QUAL__SOUR == null &&
+                N2__QUAL__INFO == null &&
+                N2__QUAL__EVID == null &&
                 N1_NOTE_liste_ID == null &&
                 listeObjetIDN3 == null
                 )
@@ -1870,10 +2199,12 @@ namespace GEDCOM
                 itemSourceOld.N1_PAGE = N1_PAGE;
                 itemSourceOld.N1_EVEN = N1_EVEN;
                 itemSourceOld.N2_EVEN_ROLE = N2_EVEN_ROLE;
-                itemSourceOld.N1_DATA = N1_DATA;
                 itemSourceOld.N2_DATA_DATE = N2_DATA_DATE;
                 itemSourceOld.N2_DATA_TEXT = N2_DATA_TEXT;
                 itemSourceOld.N1_QUAY = N1_QUAY;
+                itemSourceOld.N2__QUAL__SOUR = N2__QUAL__SOUR;
+                itemSourceOld.N2__QUAL__INFO = N2__QUAL__INFO;
+                itemSourceOld.N2__QUAL__EVID = N2__QUAL__EVID;
                 itemSourceOld.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
                 itemSourceOld.N1_OBJE_ID_liste = listeObjetIDN3;
                 liste_SOURCE_CITATION.Add(itemSourceOld);
@@ -2024,8 +2355,8 @@ namespace GEDCOM
             )
         {
             if (!GH.Properties.Settings.Default.balise || GH.Properties.Settings.Default.DossierHTML == "") return;
-            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GH"].Controls["Btn_balise"] as System.Windows.Forms.Button;
-            numeroLigne++;
+            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GH"].Controls["Btn_balise"] as 
+                System.Windows.Forms.Button;
             string fichier = GH.Properties.Settings.Default.DossierHTML + "\\balise.txt";
             try
             {
@@ -2036,7 +2367,7 @@ namespace GEDCOM
 
                         Btn_balise.Visible = true;
                         ligne.WriteLine(DateTime.Now);
-                        ligne.WriteLine("***********************************************************************");
+                        ligne.WriteLine("*** Balise *************************************************************");
                         ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
                         ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
                         ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
@@ -2048,7 +2379,8 @@ namespace GEDCOM
                         ligne.WriteLine("***********************************************************************");
                         TagInfoGEDCOM = true;
                     }
-                    string s = String.Format("{0,5} {1,-30:G} {2,5} ►{3}◄ ", ligneCode, fonction, numeroLigne, infoLigne);
+                    //string s = String.Format("{0,5} {1,-30:G} {2,5} ►{3}◄ ", ligneCode, fonction, numeroLigne, infoLigne);
+                    string s = String.Format("{0,5} {1,5} {2,-35:G} ►{3}◄ ", ligneCode, numeroLigne + 1, fonction,  dataGEDCOM[numeroLigne]);
                     ligne.WriteLine(s);
                 }
             }
@@ -2058,13 +2390,15 @@ namespace GEDCOM
                 reponse = MessageBox.Show("Ne peut écrire le fichier balise.txt.\r\n\r\n" +
                     msg.Message +
                     "\r\n\r\n",
-                    "Erreur G" + Avoir_code_erreur() + " problème ?",
+                    "Erreur " + erreur + " problème ?",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 if (reponse == System.Windows.Forms.DialogResult.Cancel)
                     GH.GH.annuler = true;
             }
         }
+
+        
         public static string Extraire_balise(string ligne)
         {
             ligne = ligne.ToUpper();
@@ -2169,129 +2503,137 @@ namespace GEDCOM
             Info_HEADER.N1_COPR = null;
             Info_HEADER.N2_GEDC_VERS = null;
             Info_HEADER.N2_GEDC_FORM = null;
+            Info_HEADER.N3_GEDC_FORM_VERS = null;
             Info_HEADER.N1_CHAR = null;
             Info_HEADER.N2_CHAR_VERS = null;
             Info_HEADER.N1_LANG = null;
             Info_HEADER.N1_PLAC = null;
             Info_HEADER.N2_PLAC_FORM = null;
             Info_HEADER.N1_NOTE = null;
+            Info_HEADER.N1__GUID = null;
             List<string> N1_SUBM_liste_ID = new List<string>();
             ligne++;
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 while (Extraire_niveau(ligne) > 0)
                 {
-                    erreur = Avoir_code_erreur();
-                    if (Extraire_balise(dataGEDCOM[ligne]) == "1 DEST")                                     // 1 DEST
+                    Avoir_code_erreur();
+                    string balise_1 = Extraire_balise(dataGEDCOM[ligne]);
+                    if (balise_1 == "1 DEST")                                     // 1 DEST
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         Info_HEADER.N1_DEST = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                                // 1 SOUR
+                    else if (balise_1 == "1 SOUR")                                // 1 SOUR
                     {
-                        erreur = Avoir_code_erreur();
-                        Info_HEADER.N1_SOUR = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        Avoir_code_erreur();
+                        string balise_1_texte = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        Info_HEADER.N1_SOUR = balise_1_texte;
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 VERS")                             // 2 VERS
+                            Avoir_code_erreur();
+                            string balise_2 = Extraire_balise(dataGEDCOM[ligne]);
+                            if (balise_2 == "2 VERS")                             // 2 VERS
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N2_SOUR_VERS = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 NAME")                        // 2 NAME
+                            else if (balise_2 == "2 NAME")                        // 2 NAME
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N2_SOUR_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CORP")                        // 2 CORP
+                            else if (balise_2 == "2 CORP")                        // 2 CORP
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N2_SOUR_CORP = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                                 while (Extraire_niveau(ligne) > 2)
                                 {
-                                    erreur = Avoir_code_erreur();
-                                    if (Extraire_balise(dataGEDCOM[ligne]) == "3 ADDR")                     // 3 ADDR
+                                    string balise_3 = Extraire_balise(dataGEDCOM[ligne]);
+                                    Avoir_code_erreur();
+                                    if (balise_3 == "3 ADDR")                     // 3 ADDR
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         (Info_HEADER.N3_SOUR_CORP_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 PHON")                // 2 PHON
+                                    else if (balise_3 == "3 PHON")                // 2 PHON
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N3_SOUR_CORP_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                                         ligne++;
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 FAX")                 // 3 FAX
+                                    else if (balise_3 == "3 FAX")                 // 3 FAX
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N3_SOUR_CORP_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                                         ligne++;
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 EMAIL")               // 3 EMAIL
+                                    else if (balise_3 == "3 EMAIL")               // 3 EMAIL
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N3_SOUR_CORP_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 5));
                                         ligne++;
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 _EMAIL")              // 3 _EMAIL
+                                    else if (balise_3 == "3 _EMAIL")              // 3 _EMAIL
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N3_SOUR_CORP_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 6));
                                         ligne++;
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 WWW")                 // 3 WWW
+                                    else if (balise_3 == "3 WWW")                 // 3 WWW
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N3_SOUR_CORP_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                                         ligne++;
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 _WWW")                // 3 _WWW
+                                    else if (balise_3 == "3 _WWW")                // 3 _WWW
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         N3_SOUR_CORP_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                                         ligne++;
                                     }
                                     else
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                                         ligne++;
                                     }
                                 }
                             }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 DATA")                        // 2 DATA
+                            else if (balise_2 == "2 DATA")                        // 2 DATA
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N2_SOUR_DATA = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                                 while (Extraire_niveau(ligne) > 2)
                                 {
-                                    erreur = Avoir_code_erreur();
-                                    if (Extraire_balise(dataGEDCOM[ligne]) == "3 DATE")                     // 3 DATA DATE
+                                    Avoir_code_erreur();
+                                    string balise_3 = Extraire_balise(dataGEDCOM[ligne]);
+                                    if (balise_3 == "3 DATE")                     // 3 DATA DATE
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         Info_HEADER.N3_SOUR_DATA_DATE = ConvertirDateGEDCOM(dataGEDCOM[ligne].Substring(7));
                                         ligne++;
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 COPR")                // 3 DATA COPR
+                                    else if (balise_3 == "3 COPR")                // 3 DATA COPR
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         Info_HEADER.N3_SOUR_DATA_CORP = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         while (Extraire_niveau(ligne) > 3)
                                         {
-                                            erreur = Avoir_code_erreur();
-                                            if (Extraire_balise(dataGEDCOM[ligne]) == "4 CONT")             // 4 CONT
+                                            Avoir_code_erreur();
+                                            string balise_4 = Extraire_balise(dataGEDCOM[ligne]);
+                                            if (balise_4 == "4 CONT")             // 4 CONT
                                             {
-                                                erreur = Avoir_code_erreur();
+                                                Avoir_code_erreur();
                                                 if (dataGEDCOM[ligne].Length > 7)
                                                 {
                                                     Info_HEADER.N3_SOUR_DATA_CORP += "<br />" + Extraire_ligne(dataGEDCOM[ligne], 4);
@@ -2299,15 +2641,15 @@ namespace GEDCOM
                                                 else Info_HEADER.N3_SOUR_DATA_CORP += "<br />\n";
                                                 ligne++;
                                             }
-                                            else if (Extraire_balise(dataGEDCOM[ligne]) == "4 CONC")        // 4 CONC
+                                            else if (balise_4 == "4 CONC")        // 4 CONC
                                             {
-                                                erreur = Avoir_code_erreur();
+                                                Avoir_code_erreur();
                                                 Info_HEADER.N3_SOUR_DATA_CORP += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                                                 ligne++;
                                             }
                                             else
                                             {
-                                                erreur = Avoir_code_erreur();
+                                                Avoir_code_erreur();
                                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                                 ligne++;
                                             }
@@ -2316,7 +2658,7 @@ namespace GEDCOM
                                     }
                                     else
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                                         ligne++;
                                     }
@@ -2324,177 +2666,185 @@ namespace GEDCOM
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 DATE")                                // 1 DATE
+                    else if (balise_1 == "1 DATE")                                // 1 DATE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         Info_HEADER.N1_DATE = ConvertirDateGEDCOM(dataGEDCOM[ligne].Substring(7));
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             if (Extraire_balise(dataGEDCOM[ligne]) == "2 TIME")                             // 2 TIME
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 if (dataGEDCOM[ligne].Length > 7)
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     Info_HEADER.N2_DATE_TIME = dataGEDCOM[ligne].Substring(7);
                                 }
                                 ligne++;
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                                // 1 SUBM
+                    else if (balise_1 == "1 SUBM")                                // 1 SUBM
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILE")                                // 1 FILE
+                    else if (balise_1 == "1 FILE")                                // 1 FILE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         if (dataGEDCOM[ligne].Length > 7)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             Info_HEADER.N1_FILE = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
                             ligne++;
                         }
                         else
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             EcrireBalise(ligne, dataGEDCOM[ligne]);
                             ligne++;
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBN")                                // 1 SUBN
+                    else if (balise_1 == "1 SUBN")                                // 1 SUBN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         Info_HEADER.N1_SUBN = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _HME")                                // 1 _HME
+                    else if (balise_1 == "1 _HME")                                // 1 _HME
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 GEDC")                                // 1 GEDC
+                    else if (balise_1 == "1 GEDC")                                // 1 GEDC
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 VERS")                             // 2 VERS
+                            Avoir_code_erreur();
+                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 VERS")                             // 2 GEDC VERS
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N2_GEDC_VERS = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                ligne++;
                             }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                         // 2 FORM
+                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                         // 2 GEDC FORM
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N2_GEDC_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                ligne++;
+                                while (Extraire_niveau(ligne) > 2)
+                                {
+                                    Avoir_code_erreur();
+                                    if (Extraire_balise(dataGEDCOM[ligne]) == "3 VERS")                      // 3 GEDC FORM VERS
+                                    {
+                                        Avoir_code_erreur();
+                                        Info_HEADER.N3_GEDC_FORM_VERS = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        ligne++;
+                                    }
+                                    else
+                                    {
+                                        Avoir_code_erreur();
+                                        EcrireBalise(ligne, dataGEDCOM[ligne]);
+                                        ligne++;
+                                    }
+                                }
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
-                            ligne++;
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAR")                                // 1 CHAR
+                    else if (balise_1 == "1 CHAR")                                // 1 CHAR
                     {
-                        erreur = Avoir_code_erreur();
-                        if (dataGEDCOM[ligne].Length > 7)
-                        {
-                            erreur = Avoir_code_erreur();
-                            Info_HEADER.N1_CHAR = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                        }
+                        Avoir_code_erreur();
+                        Info_HEADER.N1_CHAR = Extraire_ligne(dataGEDCOM[ligne], 4);;
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             if (Extraire_balise(dataGEDCOM[ligne]) == "2 VERS")                             // 2 VERS
                             {
-                                erreur = Avoir_code_erreur();
-                                if (dataGEDCOM[ligne].Length > 7)
-                                {
-                                    erreur = Avoir_code_erreur();
-                                    Info_HEADER.N2_CHAR_VERS = dataGEDCOM[ligne].Substring(7,
-                                        dataGEDCOM[ligne].Length - 7);
-                                }
+                                Avoir_code_erreur();
+                                Info_HEADER.N2_CHAR_VERS = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 PLAC")                                // 1 PLAC
+                    else if (balise_1 == "1 PLAC")                                // 1 PLAC
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         Info_HEADER.N1_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             if (Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                             // 2 PLAC FORM
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N2_PLAC_FORM = dataGEDCOM[ligne].Substring(7,
                                     dataGEDCOM[ligne].Length - 7);
                                 ligne++;
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
 
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 LANG")                                // 1 LANG
+                    else if (balise_1 == "1 LANG")                                // 1 LANG
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         if (dataGEDCOM[ligne].Length > 7)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             Info_HEADER.N1_LANG = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
                             if (Info_HEADER.N1_LANG.ToLower() == "english") Info_HEADER.N1_LANG = "Anglais";
                             if (Info_HEADER.N1_LANG.ToLower() == "french") Info_HEADER.N1_LANG = "Français";
                         }
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 COPR")                                // 1 COPR
+                    else if (balise_1 == "1 COPR")                                                      // 1 COPR
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         Info_HEADER.N1_COPR = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                // 1 NOTE
+                    else if (balise_1 == "1 NOTE")                                // 1 NOTE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         Info_HEADER.N1_NOTE = Extraire_texte_ligne1(dataGEDCOM[ligne]);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
@@ -2516,10 +2866,16 @@ namespace GEDCOM
                             }
                         }
                     }
+                    else if (balise_1 == "1 _GUID")                                                    // 1 _GUID
+                    {
+                        Avoir_code_erreur();
+                        Info_HEADER.N1__GUID = Extraire_ligne(dataGEDCOM[ligne], 5);
+                        ligne++;
+                    }
                     else
                     {
-                        erreur = Avoir_code_erreur();
-                        EcrireBalise(ligne, dataGEDCOM[ligne]);
+                        Avoir_code_erreur();
+                        EcrireBalise(ligne, "\n\r    ►" + dataGEDCOM[ligne]);
                         ligne++;
                     }
                 }
@@ -2556,7 +2912,7 @@ namespace GEDCOM
                     if (!LogErreur)
                     {
                         Btn_erreur.Visible = true;
-                        ligne.WriteLine("**********************************************************************");
+                        ligne.WriteLine("*** Erreur ************************************************************");
                         ligne.WriteLine("");
                         ligne.WriteLine("Liste des erreurs dans le code GH");
                         ligne.WriteLine("");
@@ -2826,6 +3182,7 @@ namespace GEDCOM
             {
                 N2_TYPE = null,
                 N2_DATE = "", // important pour classer par date;
+                N3_DATE_TIME = null, // Herisis
                 N2_PLAC = null,
                 N2_ADDR = null,
                 N2_AGNC = null,
@@ -2841,8 +3198,9 @@ namespace GEDCOM
                 N2_FAMC_ADOP = null,
                 titre = null,
                 description = null,
-                N2__ANCES_ORDRE = null,
-                N2__ANCES_XINSEE = null
+                N2__ANCES_ORDRE = null, // Ancestrologie
+                N2__ANCES_XINSEE = null,  // Ancestrologie
+                N2__FNA = null, // Heredis
             };
             List<string> N2_PHON_liste = new List<string>();
             List<string> N2_EMAIL_liste = new List<string>();
@@ -2869,16 +3227,20 @@ namespace GEDCOM
             string extraEVEN = "";
             
             ligne++;
+            Avoir_code_erreur();
             while (Extraire_niveau(ligne) > 1)
             {
+                Avoir_code_erreur();
                 if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                                     // 2 CONC
                 {
+                    Avoir_code_erreur();
                     if (dataGEDCOM[ligne].Length > 7)
                         extraEVEN += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                                // 2 CONT
                 {
+                    Avoir_code_erreur();
                     if (dataGEDCOM[ligne].Length > 7)
                     {
                         extraEVEN += "<br />" + dataGEDCOM[ligne].Substring(7);
@@ -2888,57 +3250,95 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 TYPE")                                // 2 TYPE 
                 {
+                    Avoir_code_erreur();
                     info.N2_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
+                    switch(info.N2_TYPE)
+                    {
+                        case "unknown": info.N2_TYPE = "inconnue"; break; 
+                        case "marriage": info.N2_TYPE = "marriage"; break; 
+                        case "not married": info.N2_TYPE = "pas marié"; break; 
+                        case "civil": info.N2_TYPE = "mariage civil"; break;
+                        case "religious": info.N2_TYPE =" mariage religieux"; break;
+                        case "common law": info.N2_TYPE = "mariage de fait en union libre"; break;
+                        case "partnership": info.N2_TYPE = "partenariat"; break;
+                        case "registered partnership": info.N2_TYPE = "partenariat enregistré"; break;
+                        case "living together": info.N2_TYPE = "living together"; break;
+                        case "living apart together": info.N2_TYPE = "vivre séparément ensemble"; break;
+                    }
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 DATE")                                // 2 DATE
                 {
+                    Avoir_code_erreur();
                     string d = Extraire_ligne(dataGEDCOM[ligne], 4);
                     string dd = ConvertirDateGEDCOM(d);
                     info.N2_DATE = dd;
                     ligne++;
+                    while (Extraire_niveau(ligne) > 2)
+                    {
+                        Avoir_code_erreur();
+                        if (Extraire_balise(dataGEDCOM[ligne]) == "3 TIME")                             // 3 TIME Heresis
+                        {
+                            Avoir_code_erreur();
+                            info.N3_DATE_TIME = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            ligne++;
+                        }
+                        else
+                        {
+                            EcrireBalise(ligne, dataGEDCOM[ligne]);
+                            ligne++;
+                        }
+                    }
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 PLAC")                                // 2 PLAC
                 {
+                    Avoir_code_erreur();
                     (info.N2_PLAC, ligne) = Extraire_PLACE_STRUCTURE(ligne);
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 ADDR")                                // 2 ADDR
                 {
+                    Avoir_code_erreur();
                     (info.N2_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 PHON")                                // 2 PHON
                 {
-
+                    Avoir_code_erreur();
                     N2_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 FAX")                                 // 2 FAX
                 {
+                    Avoir_code_erreur();
                     N2_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 EMAIL")                               // 2 EMAIL
                 {
+                    Avoir_code_erreur();
                     N2_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 5));
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 WWW")                                 // 2 WWW
                 {
+                    Avoir_code_erreur();
                     N2_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 AGNC")                                // 2 AGNC 
                 {
+                    Avoir_code_erreur();
                     info.N2_AGNC = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 RELI")                                // 2 RELI 
                 {
+                    Avoir_code_erreur();
                     info.N2_RELI = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CAUS")                                // 2 CAUS 
                 {
+                    Avoir_code_erreur();
                     info.N2_CAUS = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
@@ -2952,18 +3352,21 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 NOTE")                                // 2 NOTE
                 {
+                    Avoir_code_erreur();
                     string IDNote;
                     (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                     N2_NOTE_liste_ID.Add(IDNote);
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 OBJE")                                // 2 OBJE
                 {
+                    Avoir_code_erreur();
                     string ID_OBJE;
                     (ID_OBJE, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
                     N2_OBJE_liste_ID.Add(ID_OBJE);
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 SOUR")                                // 2 SOUR
                 {
+                    Avoir_code_erreur();
                     string citation;
                     string source;
                     (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
@@ -2972,23 +3375,28 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 AGE")                                 // 2 AGE
                 {
+                    Avoir_code_erreur();
                     info.N2_AGE = Extraire_ligne(dataGEDCOM[ligne], 3);
                     info.N2_AGE = Convert_Age_GEDCOM(info.N2_AGE);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 FAMC")                                // 2 FAMC
                 {
+                    Avoir_code_erreur();
                     info.N2_FAMC = Extraire_ID(dataGEDCOM[ligne]);
                     ligne++;
                     while (Extraire_niveau(ligne) > 2)
                     {
+                        Avoir_code_erreur();
                         if (Extraire_balise(dataGEDCOM[ligne]) == "3 ADOP")                             // 3 ADOP
                         {
+                            Avoir_code_erreur();
                             info.N2_FAMC_ADOP = Extraire_ligne(dataGEDCOM[ligne], 4);
                             ligne++;
                         }
                         else
                         {
+                            Avoir_code_erreur();
                             EcrireBalise(ligne, dataGEDCOM[ligne]);
                             ligne++;
                         }
@@ -2996,11 +3404,14 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 HUSB")                                // 2 HUSB
                 {
+                    Avoir_code_erreur();
                     ligne++;
                     while (Extraire_niveau(ligne) > 2)
                     {
+                        Avoir_code_erreur();
                         if (Extraire_balise(dataGEDCOM[ligne]) == "3 AGE")                              // 3  HUSB AGE
                         {
+                            Avoir_code_erreur();
                             info.N3_HUSB_AGE = Extraire_ligne(dataGEDCOM[ligne], 3);
                             info.N3_HUSB_AGE = Convert_Age_GEDCOM(info.N3_HUSB_AGE);
                             ligne++;
@@ -3014,11 +3425,14 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 WIFE")                                // 2 WIFE
                 {
+                    Avoir_code_erreur();
                     ligne++;
                     while (Extraire_niveau(ligne) > 2)
                     {
+                        Avoir_code_erreur();
                         if (Extraire_balise(dataGEDCOM[ligne]) == "3 AGE")                              // 3 WIFE AGE
                         {
+                            Avoir_code_erreur();
                             info.N3_WIFE_AGE = Extraire_ligne(dataGEDCOM[ligne], 3);
                             info.N3_WIFE_AGE = Convert_Age_GEDCOM(info.N3_WIFE_AGE);
                             ligne++;
@@ -3032,20 +3446,45 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 _ANCES_ORDRE")                        // 2 ANCES_ORDRE
                 {
+                    Avoir_code_erreur();
                     info.N2__ANCES_ORDRE = Extraire_ligne(dataGEDCOM[ligne], 12);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 _ANCES_XINSEE")                       // 2 ANCES_XINSEE
                 {
+                    Avoir_code_erreur();
                     info.N2__ANCES_XINSEE = Extraire_ligne(dataGEDCOM[ligne], 13);
                     ligne++;
                 }
+                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 _FNA")                                // 1 SIGN pour Heresis
+                {
+                    Avoir_code_erreur();
+                    info.N2__FNA = Extraire_ligne(dataGEDCOM[ligne], 4);
+                    if (info.N2__FNA != null)
+                    {
+                        Avoir_code_erreur();
+                        switch (info.N2__FNA.ToUpper())
+                        {
+                            case "YES": info.N2__FNA = "Oui"; break;
+                            case "NO": info.N2__FNA = "Non"; break;
+                        }
+                    }
+                    ligne++;
+                    while (Extraire_niveau(ligne) > 2)
+                    {
+                        EcrireBalise(ligne, dataGEDCOM[ligne]);
+                        ligne++;
+                    }
+                }
+               
+
                 else
                 {
                     EcrireBalise(ligne, dataGEDCOM[ligne]);
                     ligne++;
                 }
             }
+            Avoir_code_erreur();
             if (extraEVEN != "") info.titre += extraEVEN;
             info.N2_PHON_liste = N2_PHON_liste;
             info.N2_FAX_liste = N2_FAX_liste;
@@ -3098,26 +3537,25 @@ namespace GEDCOM
             List<string> N1_SOUR_source_liste_ID = new List<string>();
             List<string> N1_OBJE_liste = new List<string>();
             string N1_TYPU = null; // Ancestrologie
-
+            string N1__UST = null; // Heridis
             N0_ID = Extraire_ID(dataGEDCOM[ligne]);
             Tb_Status.Text = "Décodage du data. Lecture des familles ID  " + N0_ID;
             Animation(true);
             ligne++;
             // extraction
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
                 Avoir_code_erreur();
                 while (Extraire_niveau(ligne) > 0)
                 {
                     Avoir_code_erreur();
-                    Avoir_code_erreur();
                     Application.DoEvents();
                     string balise = Extraire_balise(dataGEDCOM[ligne]);
                     // Si événement
                     if (SiBaliseEvenementFamille(balise))
                     {
-                        Avoir_code_erreur();
+
                         Avoir_code_erreur();
                         EVENT_ATTRIBUTE_STRUCTURE Event;
                         (Event, ligne) = Extraire_EVENT_ATTRIBUTE_STRUCTURE(ligne);
@@ -3144,6 +3582,22 @@ namespace GEDCOM
                     {
                         Avoir_code_erreur();
                         N1_TYPU = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        ligne++;
+                    }
+                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _UST")                                // 1 _UST Heridis
+                    {
+                        Avoir_code_erreur();
+                        N1__UST = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        if (N1__UST != null)
+                        {
+                            switch (N1__UST.ToUpper())
+                            {
+                                case "MARRIED": N1__UST = "Marié"; break;
+                                case "SEPARATED": N1__UST = "Séparé"; break;
+                                case "EXTRACONJUGAL_RELATION": N1__UST = "Relation extraconjugale"; break;
+                                case "COHABITATION": N1__UST = "Cohabitation"; break;
+                            }
+                        }
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 HUSB")                                // 1 HUSB
@@ -3273,7 +3727,8 @@ namespace GEDCOM
                     N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                     N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
                     N1_CHAN = N1_CHAN,
-                    N1_TYPU = N1_TYPU
+                    N1_TYPU = N1_TYPU,
+                    N1__UST = N1__UST
                 });
             }
             return (N0_ID, ligne);
@@ -3310,7 +3765,10 @@ namespace GEDCOM
             string titre = null;
             string photoID = null;
             string N1__ANCES_CLE_FIXE = null; // Ancestrologie
-            string N1_FILA; // Ancestrologie
+            string N1_FILA = null; // Ancestrologie
+            string N1_SIGN = null; // Heridis
+            string N1__FIL = null; // heridis
+            string N1__CLS = null; // Heridis
             List<string> N1_WWW_liste = new List<string>(); // GRAMPS
             List<LDS_INDIVIDUAL_ORDINANCE> N1_LDS_liste = new List<LDS_INDIVIDUAL_ORDINANCE>();
             int cn = 0;
@@ -3322,17 +3780,17 @@ namespace GEDCOM
             Tb_Status.Text = "Décodage du data. Lecture des individus ID  " + N0_ID;
             Animation(true);
             ligne++;
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
                 while (Extraire_niveau(ligne) > 0 && !GH.GH.annuler)
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     Application.DoEvents();
                     string baliseN1 = Extraire_balise(dataGEDCOM[ligne].ToUpper());
                     if (baliseN1 == "1 RESN")                                                               //1 RESN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_RESN = Extraire_ligne(dataGEDCOM[ligne], 4);
                         if (N1_RESN.ToLower() == "confidential") N1_RESN = "confidentiel";
                         if (N1_RESN.ToLower() == "locked") N1_RESN = "verrouillé";
@@ -3342,50 +3800,60 @@ namespace GEDCOM
                     // 1 NAME **************************************************************************************************
                     else if (baliseN1 == "1 NAME")                                                      // 1 NAME
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
+                        PERSONAL_NAME_PIECES N1_PERSONAL_NAME_PIECES = new PERSONAL_NAME_PIECES
+                        {
+                            Nn_NPFX = null,
+                            Nn_GIVN = null,
+                            Nn_NICK = null,
+                            Nn_SPFX = null,
+                            Nn_SURN = null,
+                            Nn_NSFX = null,
+                            Nn_SOUR_citation_liste_ID = new List<string>(),
+                            Nn_SOUR_source_liste_ID = new List<string>(),
+                            Nn_NOTE_liste_ID = new List<string>()
+                        };
+                        PERSONAL_NAME_PIECES N1_FONE_name_pieces = new PERSONAL_NAME_PIECES
+                        {
+                            Nn_NPFX = null,
+                            Nn_GIVN = null,
+                            Nn_NICK = null,
+                            Nn_SPFX = null,
+                            Nn_SURN = null,
+                            Nn_NSFX = null,
+                            Nn_SOUR_citation_liste_ID = new List<string>(),
+                            Nn_SOUR_source_liste_ID = new List<string>(),
+                            Nn_NOTE_liste_ID = new List<string>()
+                        };
+                        PERSONAL_NAME_PIECES N1_ROMN_name_pieces = new PERSONAL_NAME_PIECES
+                        {
+                            Nn_NPFX = null,
+                            Nn_GIVN = null,
+                            Nn_NICK = null,
+                            Nn_SPFX = null,
+                            Nn_SURN = null,
+                            Nn_NSFX = null,
+                            Nn_SOUR_citation_liste_ID = new List<string>(),
+                            Nn_SOUR_source_liste_ID = new List<string>(),
+                            Nn_NOTE_liste_ID = new List<string>()
+                        };
                         PERSONAL_NAME_STRUCTURE itemNom = new PERSONAL_NAME_STRUCTURE()
                         {
                             N0_NAME = null,
                             N1_TYPE = "Nom",
-                            N1_NPFX = null,
-                            N1_GIVN = null,
-                            N1_NICK = null,
-                            N1_SPFX = null,
-                            N1_SURN = null,
-                            N1_NSFX = null,
                             N1_FONE = null,
                             N2_FONE_TYPE = null,
-                            N2_FONE_NPFX = null,
-                            N2_FONE_GIVN = null,
-                            N2_FONE_NICK = null,
-                            N2_FONE_SPFX = null,
-                            N2_FONE_SURN = null,
-                            N2_FONE_NSFX = null,
-                            N2_FONE_SOUR_citation_liste_ID = new List<string>(),
-                            N2_FONE_SOUR_source_liste_ID = new List<string>(),
-                            N2_FONE_NOTE_ID_liste = new List<string>(),
                             N1_ROMN = null,
                             N2_ROMN_TYPE = null,
-                            N2_ROMN_NPFX = null,
-                            N2_ROMN_GIVN = null,
-                            N2_ROMN_NICK = null,
-                            N2_ROMN_SPFX = null,
-                            N2_ROMN_SURN = null,
-                            N2_ROMN_NSFX = null,
-                            N2_ROMN_SOUR_citation_liste_ID = new List<string>(),
-                            N2_ROMN_SOUR_source_liste_ID = new List<string>(),
-                            N2_ROMN_NOTE_ID_liste = new List<string>(),
-                            N1_NOTE_liste_ID = new List<string>(),
-                            N1_SOUR_citation_liste_ID = new List<string>(),
-                            N1_SOUR_source_liste_ID = new List<string>(),
                             N1_ALIA_liste = null // BROSKEEP
                         };
+
                         List<string> alia_liste = new List<string>();
                         itemNom.N0_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
                         itemNom.N0_NAME = Extraire_NAME(itemNom.N0_NAME);
                         cn++;
                         ligne++;
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         while (Extraire_niveau(ligne) > 1)
                         {
                             string balise = Extraire_balise(dataGEDCOM[ligne]);
@@ -3403,145 +3871,145 @@ namespace GEDCOM
                             }
                             else if (balise == "2 NPFX")                                                // 2 NPFX
                             {
-                                erreur = Avoir_code_erreur();
-                                itemNom.N1_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                Avoir_code_erreur();
+                                N1_PERSONAL_NAME_PIECES.Nn_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else if (balise == "2 GIVN")                                                // 2 GIVN
                             {
-                                erreur = Avoir_code_erreur();
-                                itemNom.N1_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                Avoir_code_erreur();
+                                N1_PERSONAL_NAME_PIECES.Nn_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else if (balise == "2 NICK")                                                // 2 NICK
                             {
-                                erreur = Avoir_code_erreur();
-                                itemNom.N1_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                Avoir_code_erreur();
+                                N1_PERSONAL_NAME_PIECES.Nn_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else if (balise == "2 SPFX")                                                // 2 SPFX
                             {
-                                erreur = Avoir_code_erreur();
-                                itemNom.N1_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                Avoir_code_erreur();
+                                N1_PERSONAL_NAME_PIECES.Nn_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else if (balise == "2 SURN")                                                // 2 SURN
                             {
-                                erreur = Avoir_code_erreur();
-                                itemNom.N1_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                Avoir_code_erreur();
+                                N1_PERSONAL_NAME_PIECES.Nn_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else if (balise == "2 NSFX")                                                // 2 NSFX
                             {
-                                erreur = Avoir_code_erreur();
-                                itemNom.N1_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                Avoir_code_erreur();
+                                N1_PERSONAL_NAME_PIECES.Nn_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                             }
                             else if (balise == "2 NOTE")                                                // 2 NOTE
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 string IDNote;
                                 (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                                itemNom.N1_NOTE_liste_ID.Add(IDNote);
+                                N1_PERSONAL_NAME_PIECES.Nn_NOTE_liste_ID.Add(IDNote);
                             }
                             else if (balise == "2 SOUR")                                                // 2 SOUR
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 string citation;
                                 string source;
                                 (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                                if (citation != null) itemNom.N1_SOUR_citation_liste_ID.Add(citation);
-                                if (source != null) itemNom.N1_SOUR_source_liste_ID.Add(source);
+                                if (citation != null) N1_PERSONAL_NAME_PIECES.Nn_SOUR_citation_liste_ID.Add(citation);
+                                if (source != null) N1_PERSONAL_NAME_PIECES.Nn_SOUR_source_liste_ID.Add(source);
                             }
                             else if (balise == "2 FONE")                                                // 2 FONE
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 itemNom.N1_FONE = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 itemNom.N1_FONE = Extraire_NAME(itemNom.N1_FONE);
                                 ligne++;
                                 balise = Extraire_balise(dataGEDCOM[ligne]);
                                 while (Extraire_niveau(ligne) > 2)
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     if (balise == "3 TYPE")                                             // FONE 3 TYPE
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         itemNom.N2_FONE_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 NPFX")                                        // FONE NPFX
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_FONE_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_FONE_name_pieces.Nn_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 GIVN")                                        // FONE GIVN
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_FONE_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_FONE_name_pieces.Nn_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 NICK")                                        // FONE NICK
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_FONE_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_FONE_name_pieces.Nn_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 SPFX")                                        // FONE SPFX
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_FONE_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_FONE_name_pieces.Nn_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 SURN")                                        // FONE 3 SURN
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_FONE_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_FONE_name_pieces.Nn_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 NSFX")                                        // FONE  3 NSFX
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_FONE_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_FONE_name_pieces.Nn_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 NOTE")                                        // FONE 3 NOTE
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         string IDNote;
                                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                                        itemNom.N2_FONE_NOTE_ID_liste.Add(IDNote);
+                                        N1_FONE_name_pieces.Nn_NOTE_liste_ID.Add(IDNote);
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 SOUR")                                        // FONE 3 SOUR
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         string citation;
                                         string source;
                                         (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                                        if (citation != null) itemNom.N2_FONE_SOUR_citation_liste_ID.Add(citation);
-                                        if (source != null) itemNom.N2_FONE_SOUR_source_liste_ID.Add(source);
+                                        if (citation != null) N1_FONE_name_pieces.Nn_SOUR_citation_liste_ID.Add(citation);
+                                        if (source != null) N1_FONE_name_pieces.Nn_SOUR_source_liste_ID.Add(source);
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                 }
                             }
                             else if (balise == "2 ROMN")                                                // 2 ROMN
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 itemNom.N1_ROMN = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 itemNom.N1_ROMN = Extraire_NAME(itemNom.N1_ROMN);
                                 ligne++;
                                 balise = Extraire_balise(dataGEDCOM[ligne]);
                                 while (Extraire_niveau(ligne) > 2)
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     if (balise == "3 TYPE")                                             // ROMN 3 TYPE
                                     {
                                         itemNom.N2_ROMN_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
@@ -3550,68 +4018,71 @@ namespace GEDCOM
                                     }
                                     else if (balise == "3 NPFX")                                        // ROMN 3 NPFX
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_ROMN_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_ROMN_name_pieces.Nn_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 GIVN")                                        // ROMN 3 GIVN
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_ROMN_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_ROMN_name_pieces.Nn_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 NICK")                                        // ROMN 3 NICK
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_ROMN_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_ROMN_name_pieces.Nn_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 SPFX")                                        // ROMN SPFX
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_ROMN_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_ROMN_name_pieces.Nn_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 SURN")                                        // ROMN SURN
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_ROMN_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_ROMN_name_pieces.Nn_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 NSFX")                                        // ROMN NSFX
                                     {
-                                        erreur = Avoir_code_erreur();
-                                        itemNom.N2_ROMN_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                                        Avoir_code_erreur();
+                                        N1_ROMN_name_pieces.Nn_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 NOTE")                                        // ROMN 3 NOTE
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         string IDNote;
                                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                                        itemNom.N2_ROMN_NOTE_ID_liste.Add(IDNote);
+                                        N1_ROMN_name_pieces.Nn_NOTE_liste_ID.Add(IDNote);
                                         balise = Extraire_balise(dataGEDCOM[ligne]);
                                     }
                                     else if (balise == "3 SOUR")                                        // ROMN SOUR
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         string citation;
                                         string source;
                                         (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                                        if (citation != null) itemNom.N2_ROMN_SOUR_citation_liste_ID.Add(citation);
-                                        if (source != null) itemNom.N2_ROMN_SOUR_source_liste_ID.Add(source);
+                                        if (citation != null) N1_ROMN_name_pieces.Nn_SOUR_citation_liste_ID.Add(citation);
+                                        if (source != null) itemNom.N1_ROMN_name_pieces.Nn_SOUR_source_liste_ID.Add(source);
                                     }
                                 }
+                                itemNom.N1_PERSONAL_NAME_PIECES = N1_PERSONAL_NAME_PIECES;
+                                itemNom.N1_FONE_name_pieces = N1_FONE_name_pieces;
+                                itemNom.N1_ROMN_name_pieces = N1_ROMN_name_pieces;
                             }
                             else if (balise == "2 ALIA")                                                // 2 ALIA BROSKEEP
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 string alia = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 alia = Extraire_NAME(alia);
                                 alia_liste.Add(alia);
@@ -3619,7 +4090,7 @@ namespace GEDCOM
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 EcrireBalise(ligne, dataGEDCOM[ligne]);
                                 ligne++;
                             }
@@ -3631,7 +4102,7 @@ namespace GEDCOM
                     // Si événement
                     else if (SiBaliseEvenementIndividu(baliseN1))                                       // événement
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EVENT_ATTRIBUTE_STRUCTURE Event;
                         (Event, ligne) = Extraire_EVENT_ATTRIBUTE_STRUCTURE(ligne);
                         N1_Event_liste.Add(Event);
@@ -3639,7 +4110,7 @@ namespace GEDCOM
                     // Si attribut
                     else if (SiBaliseAttributeIndividu(baliseN1))                                       // attribut
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EVENT_ATTRIBUTE_STRUCTURE Attribute;
                         (Attribute, ligne) = Extraire_EVENT_ATTRIBUTE_STRUCTURE(ligne);
                         N1_ATTRIBUTE_liste.Add(Attribute);
@@ -3647,25 +4118,25 @@ namespace GEDCOM
                     // Si ordinance
                     else if (SiBaliseOrdinanceIndividu(baliseN1))                                       // ordinance
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (N1_LDS, ligne) = Extraire_LDS_INDIVIDUAL_ORDINANCE(ligne);
                         N1_LDS_liste.Add(N1_LDS);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILA")                            // 1 FILA dans Ancestrologie
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_FILA = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SEX")                             // 1 SEX
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_SEX = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                            // 1 SUBM
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         if (dataGEDCOM[ligne].Length > 7)
                         {
                             N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
@@ -3679,63 +4150,63 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ASSO")                            // 1 ASSO
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         ASSOCIATION_STRUCTURE info;
                         (info, ligne) = Extraire_ASSOCIATION_STRUCTURE(ligne);
                         N1_ASSO_liste.Add(info);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ALIA")                            // 1 ALIA
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_ALIA_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ANCI")                            // 1 ANCI
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_ANCI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 DESI")                            // 1 DESI
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_DESI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RFN")                             // 1 RFN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_RFN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 AFN")                             // 1 AFN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_AFN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMS")                            // 1 FAMS conjoint/spouse
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         SPOUSE_TO_FAMILY_LINK info;// = new SPOUSE_TO_FAMILY_LINK();
                         (info, ligne) = Extraire_SPOUSE_TO_FAMILY_LINK(ligne);
                         N1_FAMS_liste_Conjoint.Add(info);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         USER_REFERENCE_NUMBER N1_REFN;
                         (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
                         N1_REFN_liste.Add(N1_REFN);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMC")                            // 1 FAMC enfant de la famille
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (N1_FAMC, ligne) = Extraire_CHILD_TO_FAMILY_LINK(ligne);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                            // 1 SOUR
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string citation;
                         string source;
                         (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
@@ -3744,54 +4215,118 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                            // 1 OBJE individu
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string ID_OBJE;
                         (ID_OBJE, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
                         N1_OBJE_liste.Add(ID_OBJE);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                            // 1 NOTE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string IDNote;
                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                         N1_NOTE_liste_ID.Add(IDNote);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                            // 1 CHAN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
-                        while (Extraire_niveau(ligne) > 2)
+                        while (Extraire_niveau(ligne) > 1)
                         {
+                            EcrireBalise(ligne, dataGEDCOM[ligne]);
                             ligne++;
                         }
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _ANCES_CLE_FIXE")                 // 1 _ANCES_CLE_FIXE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1__ANCES_CLE_FIXE = Extraire_ligne(dataGEDCOM[ligne], 15);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
+                            EcrireBalise(ligne, dataGEDCOM[ligne]);
                             ligne++;
                         }
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WWW")                             // 1 WWW pour GRAMPS
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string WWW;
                         WWW = Extraire_ligne(dataGEDCOM[ligne], 3);
                         N1_WWW_liste.Add(WWW);
                         ligne++;
                     }
+                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SIGN")                             // 1 SIGN pour Heresis
+                    {
+                        Avoir_code_erreur();
+                        N1_SIGN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        if (N1_SIGN != null)
+                        {
+                            switch (N1_SIGN.ToUpper())
+                            {
+                                case "YES": N1_SIGN = "Oui"; break;
+                                case "NO": N1_SIGN = "Non"; break;
+                            }
+                        }
+                        ligne++;
+                        while (Extraire_niveau(ligne) > 1)
+                        {
+                            EcrireBalise(ligne, dataGEDCOM[ligne]);
+                            ligne++;
+                        }
+                    }
+                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _FIL")                             // 1 _FIL pour Heresis
+                    {
+                        Avoir_code_erreur();
+                        N1__FIL = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        if (N1__FIL != null)
+                        {
+                            switch (N1__FIL.ToUpper())
+                            {
+                                case "LEGITIMATE_CHILD": N1__FIL = "Enfant légitime"; break;
+                                case "ADULTEROUS_CHILD": N1__FIL = "Enfant adultérin"; break;
+                                case "RECOGNIZED_CHILD": N1__FIL = "Enfant reconnu"; break;
+                                case "NATURAL_CHILD": N1__FIL = "Enfant naturel"; break;
+                                case "CHILD_FOUND": N1__FIL = "Enfant trouvé"; break;
+                                case "ADOPTED_CHILD": N1__FIL = "Enfant adopté"; break;
+                                case "STILLBORN_CHILD": N1__FIL = "Mort - Né"; break;
+                                case "RELATIONSHIP_UNKNOW": N1__FIL = "Non Connue"; break;
+                            }
+                        }
+                        ligne++;
+                        while (Extraire_niveau(ligne) > 1)
+                        {
+                            EcrireBalise(ligne, dataGEDCOM[ligne]);
+                            ligne++;
+                        }
+                    }
+                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _CLS")                                // 1 CLS pour Heresis
+                    {
+                        N1__CLS = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        if (N1__CLS != null)
+                        {
+                            switch (N1__CLS.ToUpper())
+                            {
+                                case "YES": N1__CLS = "Oui"; break;
+                                case "NO": N1__CLS = "Non"; break;
+                            }
+                        }
+                        ligne++;
+                        while (Extraire_niveau(ligne) > 2)
+                        {
+                            EcrireBalise(ligne, dataGEDCOM[ligne]);
+                            ligne++;
+                        }
+                    }
                     else
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                         ligne++;
                     }
@@ -3838,7 +4373,10 @@ namespace GEDCOM
                     N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                     N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
                     N1_RIN = N1_RIN,
-                    N1_WWW_liste = N1_WWW_liste // GRAMPS
+                    N1_WWW_liste = N1_WWW_liste, // GRAMPS
+                    N1_SIGN = N1_SIGN, // Heridis
+                    N1__FIL = N1__FIL, // Heridis
+                    N1__CLS = N1__CLS // Heridis
                 });
             }
         }
@@ -3871,39 +4409,39 @@ namespace GEDCOM
             ligne++;
             while (Extraire_niveau(ligne) > niveau_I)
             {
-                string erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 try
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     Application.DoEvents();
                     if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONT")              // +1 CONT
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         note += "<br />" + Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONC")         // +1 CONC
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         note += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " REFN")         // +1 REFN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         USER_REFERENCE_NUMBER N1_REFN;
                         (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
                         N1_REFN_liste.Add(N1_REFN);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " RIN")          // +1 RIN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " SOUR")         // +1 SOUR
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string citation;
                         string source;
                         (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
@@ -3912,12 +4450,12 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CHAN")         // +1 CHAN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
                     else
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                         ligne++;
                     }
@@ -4085,43 +4623,43 @@ namespace GEDCOM
             
             while (Extraire_niveau(ligne) > 0)
             {
-                string erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 try
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                                 // 1 SUBM
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info_SUBMISSION_RECORD.N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMF")                            // 1 FAMF
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info_SUBMISSION_RECORD.N1_FAMF = Extraire_texte_balise(4, dataGEDCOM[ligne]);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 TEMP")                            // 1 TEMP
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info_SUBMISSION_RECORD.N1_TEMP = Extraire_texte_balise(4, dataGEDCOM[ligne]);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ANCE")                            // 1 ANCE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info_SUBMISSION_RECORD.N1_ANCE = Extraire_texte_balise(4, dataGEDCOM[ligne]);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 DESC")                            // 1 DESC
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info_SUBMISSION_RECORD.N1_DESC = Extraire_texte_balise(4, dataGEDCOM[ligne]);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ORDI")                            // 1 ORDI
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info_SUBMISSION_RECORD.N1_ORDI = Extraire_texte_balise(4, dataGEDCOM[ligne]);
                         if (info_SUBMISSION_RECORD.N1_ORDI.ToLower() == "yes") info_SUBMISSION_RECORD.N1_ORDI = "Oui";
                         if (info_SUBMISSION_RECORD.N1_ORDI.ToLower() == "no") info_SUBMISSION_RECORD.N1_ORDI = "Non";
@@ -4129,25 +4667,25 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         info_SUBMISSION_RECORD.N1_RIN = Extraire_texte_balise(3, dataGEDCOM[ligne]);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                            // 1 NOTE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string IDNote;
                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                         listeNoteID.Add(IDNote);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                            // 1 CHAN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (info_SUBMISSION_RECORD.N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
                     else
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                         ligne++;
                     }
@@ -4184,71 +4722,71 @@ namespace GEDCOM
             N0_ID = Extraire_ID(dataGEDCOM[ligne]);
             Tb_Status.Text = "Décodage du data. Lecture des chercheurs ID  " + N0_ID;
             ligne++;
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 while (Extraire_niveau(ligne) > 0)
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     Application.DoEvents();
                     if (Extraire_balise(dataGEDCOM[ligne]) == "1 NAME")                                 // 1 NAME
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
                         N1_NAME = Extraire_NAME(N1_NAME);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ADDR")                            // 1 ADDR
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (N1_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 PHON")                            // 2 PHON
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAX")                             // 2 FAX
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 EMAIL")                           // 2 EMAIL
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 5));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _EMAIL")                          // 2 _EMAIL
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 6));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WWW")                             // 2 WWW
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _WWW")                            // 2 WWW
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _URL")                            // 2 _URL 
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 LANG")                            // 1 LANG
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_LANG += Extraire_ligne(dataGEDCOM[ligne], 4);
                         if (N1_LANG.ToLower() == "english") N1_LANG = "Anglais";
                         if (N1_LANG.ToLower() == "french") N1_LANG = "Français";
@@ -4256,38 +4794,38 @@ namespace GEDCOM
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                            // 1 NOTE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string IDNote;
                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                         N1_NOTE_liste_ID.Add(IDNote);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                            // 1 OBJE
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         string IDObje;
                         (IDObje, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
                         N1_OBJE_ID_liste.Add(IDObje);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                            // 1 CHAN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_RIN += Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RFN")                             // 1 RFN
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         N1_RFN += Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
                     else
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         EcrireBalise(ligne, dataGEDCOM[ligne]);
                         ligne++;
                     }
@@ -4399,10 +4937,10 @@ namespace GEDCOM
         /// <returns>nom du fichier original ou convertie en UTF8</returns>
         public static string LireEnteteGEDCOM(string fichier)
         {
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 ligne = 0;
                 Info_HEADER.N1_CHAR = null;
                 List<string> entete = new List<string>();
@@ -4411,7 +4949,7 @@ namespace GEDCOM
                 Application.DoEvents();
                 System.IO.StreamReader fichierCodage = new System.IO.StreamReader(@fichier);
                 entete.Add(fichierCodage.ReadLine());
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 if (entete[0].Substring(0, 6) != "0 HEAD")
                 {
                     MessageBox.Show("Le fichier ne semble pas être un fichier au format GEDCOM.\r\n\r\n" + "\r\n\r\n", "GEDCOM ?",
@@ -4420,69 +4958,69 @@ namespace GEDCOM
                     return null;
                 }
                 string text;
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 do
                 {
                     text = fichierCodage.ReadLine();
                     entete.Add(text);
                 } while (text[0].ToString() != "0");
                 entete.Add("0 TRLR");
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 do
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     if (Extraire_balise(entete[ligne]) == "0 HEAD")                                     // 0 HEAD
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         ligne++;
                         while ((int)Char.GetNumericValue(entete[ligne][0]) > 0)
                         {
-                            erreur = Avoir_code_erreur();
+                            Avoir_code_erreur();
                             if (Extraire_balise(entete[ligne]) == "1 CHAR")                             // 1 CHAR
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 Info_HEADER.N1_CHAR = Extraire_ligne(entete[ligne], 4);
                                 ligne++;
 
                                 while ((int)Char.GetNumericValue(entete[ligne][0]) > 1)
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     ligne++;
                                 }
                             }
                             else if (Extraire_balise(entete[ligne]) == "1 GEDC")                        // 1 GEDC
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 ligne++;
                                 while ((int)Char.GetNumericValue(entete[ligne][0]) > 1)
                                 {
-                                    erreur = Avoir_code_erreur();
+                                    Avoir_code_erreur();
                                     if (Extraire_balise(entete[ligne]) == "2 FORM")                     // 2 FORM
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         Info_HEADER.N2_GEDC_FORM = Extraire_ligne(entete[ligne], 4);
                                         ligne++;
                                     }
                                     else
                                     {
-                                        erreur = Avoir_code_erreur();
+                                        Avoir_code_erreur();
                                         ligne++;
                                     }
                                 }
                             }
                             else
                             {
-                                erreur = Avoir_code_erreur();
+                                Avoir_code_erreur();
                                 ligne++;
                             }
                         }
                     }
                     ligne++;
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                 }
                 while (!entete[ligne].Contains("0 TRLR"));
                 fichierCodage.Close();
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 if (Info_HEADER.N1_CHAR == "IBMPC")
                 {
                     MessageBox.Show("Le fichier GEDCOM utilise le jeu de caractères IBMPC.\r\n\r\n" +
@@ -4503,7 +5041,7 @@ namespace GEDCOM
                     Info_HEADER.N1_CHAR == "ANSEL"
                    )
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     Tb_Status.Text = "DDDConvertion du fichier " + Path.GetFileName(fichier) + "de code de page " +
                         Info_HEADER.N1_CHAR + " en UTF8.";
                     Application.DoEvents();
@@ -4514,18 +5052,18 @@ namespace GEDCOM
                         Info_HEADER.N1_CHAR == "ANSEL"
                        )
                     {
-                        erreur = Avoir_code_erreur();
+                        Avoir_code_erreur();
                         byte[] ansiBytes = File.ReadAllBytes(fichier);
                         utf8String = Encoding.Default.GetString(ansiBytes);
                     }
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     string sansExtention = Path.GetFileNameWithoutExtension(fichier);
                     fichier = Path.GetTempPath() + "UTF8-" + sansExtention + ".gedCopie";
                     File.WriteAllText(fichier, utf8String);
                 }
                 Tb_Status.Text = "";
                 Application.DoEvents();
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 return fichier;
             }
             catch (Exception msg)
@@ -4544,10 +5082,10 @@ namespace GEDCOM
         }
         public static bool LireGEDCOM(string fichier)
         {
-            string erreur = Avoir_code_erreur();
+            Avoir_code_erreur();
             try
             {
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 dataGEDCOM = new List<string>();
                 dataGEDCOM.Clear();
                 string text;
@@ -4555,15 +5093,15 @@ namespace GEDCOM
                 Application.DoEvents();
                 long position = 0;
                 System.IO.StreamReader file = new System.IO.StreamReader(@fichier);
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 ligne = 0;
                 text = file.ReadLine();
                 dataGEDCOM.Add(text);
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 Info_HEADER.Nom_fichier_disque = fichier;
                 while ((text = file.ReadLine()) != null)
                 {
-                    erreur = Avoir_code_erreur();
+                    Avoir_code_erreur();
                     position += text.Length;
                     if (Info_HEADER.N1_CHAR.ToLower() == "ansel") text = Convertir_ANSEL(text);
                     if (text == "") text = "9 ESPACE";
@@ -4576,7 +5114,7 @@ namespace GEDCOM
                     ligne++;
                 }
                 file.Close();
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 // effacer fichier  si extention .gedCopie
                 if (Path.GetExtension(fichier) == ".gedCopie")
                 {
@@ -4585,7 +5123,7 @@ namespace GEDCOM
                         File.Delete(@fichier);
                     }
                 }
-                erreur = Avoir_code_erreur();
+                Avoir_code_erreur();
                 return true;
             }
             catch (Exception msg)
@@ -4833,33 +5371,41 @@ namespace GEDCOM
         }
         public static string AvoirPrenomPatronymeIndividu(string ID)
         {
-            if (ID == "") return "";
-            if (ID == " ") return "";
+            if (ID == "") return null;
+            if (ID == " ") return null;
+            if (ID == null) return null;
             bool Ok;
             List<PERSONAL_NAME_STRUCTURE> info;
             (Ok, info) = AvoirListeNom(ID);
             if (!Ok) return "";
-            string patronyme = info[0].N1_SURN;
-            string prenom = info[0].N1_GIVN;
-            if (prenom == "" && patronyme == "") return "";
+            string patronyme = info[0].N1_PERSONAL_NAME_PIECES.Nn_SURN;
+            string prenom = info[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN;
+            if (prenom == "" && patronyme == "") return null;
+            if (prenom == null && patronyme == null) return null;
             if (prenom == "") prenom = "?";
+            if (prenom == null) prenom = "?";
             if (patronyme == "") patronyme = "?";
+            if (patronyme == null) patronyme = "?";
             return prenom + " " + patronyme;
         }
         public static string AvoirPremierNomIndividu(string ID)
         {
-            if (ID == "") return "";
+            if (ID == "") return null;
+            if (ID == null) return null;
             bool Ok;
             List<PERSONAL_NAME_STRUCTURE> info;
             (Ok, info) = AvoirListeNom(ID);
-            if (!Ok) return "";
-
-            string patronyme = info[0].N1_SURN;
-            string prenom = info[0].N1_GIVN;
-            if (prenom == "" && patronyme == "") return info[0].N0_NAME;
+            if (!Ok) return null;
+            string patronyme = null;
+            string prenom = null;
+            if (info[0].N1_PERSONAL_NAME_PIECES != null)
+            {
+                patronyme = info[0].N1_PERSONAL_NAME_PIECES.Nn_SURN;
+                prenom = info[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN;
+            }
             if (prenom == null && patronyme == null) return info[0].N0_NAME;
-            if (prenom == "") prenom = "?";
-            if (patronyme == "") patronyme = "?";
+            if (prenom == null) prenom = "?";
+            if (patronyme == null) patronyme = "?";
             return patronyme + ", " + prenom;
         }
         public static string Convert_Age_GEDCOM(string age)
@@ -5753,7 +6299,7 @@ namespace GEDCOM
                     {
                         Btn_deboguer.Visible = true;
                         ligne.WriteLine(DateTime.Now);
-                        ligne.WriteLine("**********************************************************************");
+                        ligne.WriteLine("*** Deboguer **********************************************************");
                         ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
                         ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
                         ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
@@ -5773,7 +6319,7 @@ namespace GEDCOM
             {
                 {
                     MessageBox.Show("Debub Actif dans GEDCOM.\r\n\r\n" + code + " " + ligneCode + " " + 
-                        fonction + "-> " + message + "\r\n\r\n" + msg.Message, "G" + Avoir_code_erreur() + " problème ?",
+                        fonction + "-> " + message + "\r\n\r\n" + msg.Message, erreur + " problème ?",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Warning);
                 }

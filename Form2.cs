@@ -12,7 +12,6 @@ namespace GH
         {
             InitializeComponent();
         }
-
         private void Form2_Load(object sender, System.EventArgs e)
         {
             //this.Location = new Point(Properties.Settings.Default.Form1_location.X + 100, Properties.Settings.Default.Form1_location.Y + 20);

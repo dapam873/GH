@@ -311,9 +311,12 @@ namespace HTML
         }
         public string AssemblerPatronymePrenom(string patronyme, string prenom)
         {
-            if (prenom == "" && patronyme == "") return "";
+            if (prenom == null && patronyme == null) return null;
+            if (prenom == "" && patronyme == "") return null;
             if (prenom == "") prenom = "?";
+            if (prenom == null) prenom = "?";
             if (patronyme == "") patronyme = "?";
+            if (patronyme == null) patronyme = "?";
             return patronyme + ", " + prenom;
         }
         private static string Avoir_lien_chercheur(List<string> liste_chercheur_ID, List<ID_numero> liste_chercheur_ID_numero, int tab)
@@ -452,6 +455,10 @@ namespace HTML
                     {
                         texte += espace + "\t\t\t le " + date;
                     }
+                    if (info.N3_DATE_TIME != null)
+                    {
+                        texte += espace + info.N3_DATE_TIME;
+                    }
                 }
                 // si age
                 if (info.N1_EVEN.ToUpper() != "BIRT")
@@ -499,6 +506,18 @@ namespace HTML
                         tab + 3);
                 texte += temp;
                 texte += espace + "\n\t\t</td>\n";
+                texte += espace + "\t</tr>\n";
+            }
+            // _FNA Heridis
+            if (info.N2__FNA != null)
+            {
+                texte += espace + "\t<tr class=\"caseEvenement\">\n";
+                texte += espace + "\t\t<td class=\"caseEvenement evenementCol1\">\n";
+                texte += espace + "\t\t\tToujours en rechercche\n";
+                texte += espace + "\t\t</td>\n";
+                texte += espace + "\t\t<td class=\"caseEvenement\">\n";
+                texte += espace + "\t\t\t" + info.N2__FNA + "\n";
+                texte += espace + "\t\t</td>\n";
                 texte += espace + "\t</tr>\n";
             }
             // si type 
@@ -614,6 +633,7 @@ namespace HTML
                     }
                 }
             }
+            
             // adresse
             if (info.N2_ADDR != null)
             {
@@ -1482,22 +1502,38 @@ namespace HTML
                 {
                     // citation sur le nom
                     if (GH.Properties.Settings.Default.voir_reference)
-                        (liste_citation_ID_numero, _) = Verifier_liste(info_nom.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
+                        if (info_nom.N1_PERSONAL_NAME_PIECES != null)
+                            (liste_citation_ID_numero, _) = Verifier_liste(
+                                info_nom.N1_PERSONAL_NAME_PIECES.Nn_SOUR_citation_liste_ID, 
+                                liste_citation_ID_numero);
                     // note sur le nom
                     if (GH.Properties.Settings.Default.voir_note)
-                        (liste_note_ID_numero, _) = Verifier_liste(info_nom.N1_NOTE_liste_ID, liste_note_ID_numero);
+                        if (info_nom.N1_PERSONAL_NAME_PIECES != null)
+                            (liste_note_ID_numero, _) = Verifier_liste(
+                                info_nom.N1_PERSONAL_NAME_PIECES.Nn_NOTE_liste_ID,
+                                liste_note_ID_numero);
                     // citatation de FONE
                     if (GH.Properties.Settings.Default.voir_reference)
-                        (liste_citation_ID_numero, _) = Verifier_liste(info_nom.N2_FONE_SOUR_citation_liste_ID, liste_citation_ID_numero);
+                        if (info_nom.N1_FONE_name_pieces != null)
+                        {
+                            (liste_citation_ID_numero, _) = Verifier_liste(info_nom.N1_FONE_name_pieces.Nn_SOUR_citation_liste_ID,
+                            liste_citation_ID_numero);
+                        }
                     // note sur le FONE
                     if (GH.Properties.Settings.Default.voir_note)
-                        (liste_note_ID_numero, _) = Verifier_liste(info_nom.N2_FONE_NOTE_ID_liste, liste_note_ID_numero);
+                        if (info_nom.N1_FONE_name_pieces != null)
+                            (liste_note_ID_numero, _) = Verifier_liste(info_nom.N1_FONE_name_pieces.Nn_NOTE_liste_ID,
+                                liste_note_ID_numero);
                     // citatation de ROMN
                     if (GH.Properties.Settings.Default.voir_reference)
-                        (liste_citation_ID_numero, _) = Verifier_liste(info_nom.N2_ROMN_SOUR_citation_liste_ID, liste_citation_ID_numero);
+                        if (info_nom.N1_ROMN_name_pieces != null)
+                            (liste_citation_ID_numero, _) = Verifier_liste(info_nom.N1_ROMN_name_pieces.Nn_SOUR_citation_liste_ID,
+                                liste_citation_ID_numero);
                     // note sur le ROMN
                     if (GH.Properties.Settings.Default.voir_note)
-                        (liste_note_ID_numero, _) = Verifier_liste(info_nom.N2_ROMN_NOTE_ID_liste, liste_note_ID_numero);
+                        if (info_nom.N1_ROMN_name_pieces != null)
+                            (liste_note_ID_numero, _) = Verifier_liste(info_nom.N1_ROMN_name_pieces.Nn_NOTE_liste_ID,
+                                liste_note_ID_numero);
                 }
             }
             // association
@@ -1750,7 +1786,7 @@ namespace HTML
                         // si citation a media, extraire de media citation note 
                         if (info_citation.N1_OBJE_ID_liste != null)
                         {
-                            foreach( string media_ID in info_citation.N1_OBJE_ID_liste)
+                            foreach ( string media_ID in info_citation.N1_OBJE_ID_liste)
                             {
                                 GEDCOMClass.MULTIMEDIA_RECORD info_media = GEDCOMClass.Avoir_info_media(media_ID);
                                 // note
@@ -1767,7 +1803,6 @@ namespace HTML
                                 }
                             }
                         }
-
                         // source
                         if (info_citation.N0_ID_source != null)
                         {
@@ -1803,14 +1838,20 @@ namespace HTML
                         {
                             GEDCOMClass.SOURCE_RECORD info_source = GEDCOMClass.Avoir_info_SOURCE(liste_source_ID_numero[f1].ID);
                             // dépôt
+                            
                             if (info_source.N1_REPO_info != null)
                             {
-                                List<string> liste_ID = new List<string>
+                                
+                                if (info_source.N1_REPO_info.N0_ID != null) 
+                                { 
+                                    List<string> liste_ID = new List<string>
                                     {
                                         info_source.N1_REPO_info.N0_ID
                                     };
-                                (liste_repo_ID_numero, modifier) = Verifier_liste(liste_ID, liste_repo_ID_numero);
-                                if (modifier) looper = true;
+                                    (liste_repo_ID_numero, modifier) = Verifier_liste(liste_ID, liste_repo_ID_numero);
+                                    if (modifier) looper = true;
+                                }
+                                
                                 // note
                                 if (GH.Properties.Settings.Default.voir_note)
                                 {
@@ -1831,7 +1872,7 @@ namespace HTML
                             if (modifier) looper = true;
                         }
                     }
-                        // avoir note de Date de changement dans source depot note
+                    // avoir note de Date de changement dans source depot note
                     if (GH.Properties.Settings.Default.voir_date_changement)
                     {
                         if (GH.Properties.Settings.Default.voir_reference)
@@ -1918,22 +1959,27 @@ namespace HTML
         }
         public string Avoir_premier_nom_individu(GEDCOMClass.INDIVIDUAL_RECORD info_individu)
         {
-            if (info_individu == null) return "";
-            if (info_individu.N1_NAME_liste == null) return "";
-            if (info_individu.N1_NAME_liste[0].N1_GIVN != null || info_individu.N1_NAME_liste[0].N1_SURN != null)
+            if (info_individu == null) return null;
+            if (info_individu.N1_NAME_liste == null) return null;
+            if (info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES != null)
             {
-                string patronyme = info_individu.N1_NAME_liste[0].N1_SURN;
-                string prenom = info_individu.N1_NAME_liste[0].N1_GIVN;
-                if (prenom == "" && patronyme == "") return info_individu.N1_NAME_liste[0].N0_NAME;
-                if (prenom == null && patronyme == null) return info_individu.N1_NAME_liste[0].N0_NAME;
-                if (prenom == "") prenom = "?";
-                if (patronyme == "") patronyme = "?";
-                return patronyme + ", " + prenom;
+                if (info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN != null ||
+                    info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN != null)
+                {
+                    string patronyme = info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN;
+                    string prenom = info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN;
+                    if (prenom == "" && patronyme == "") return info_individu.N1_NAME_liste[0].N0_NAME;
+                    if (prenom == null && patronyme == null) return info_individu.N1_NAME_liste[0].N0_NAME;
+                    if (prenom == "") prenom = "?";
+                    if (patronyme == "") patronyme = "?";
+                    return patronyme + ", " + prenom;
+                }
             }
             else
             {
                 return info_individu.N1_NAME_liste[0].N0_NAME;
             }
+            return info_individu.N1_NAME_liste[0].N0_NAME;
         }
 
         private static (string, List<ID_numero>) Avoir_lien_repo(string ID_repo, List<ID_numero> liste_repo_ID_numero, int tab)
@@ -2921,6 +2967,8 @@ namespace HTML
                 infoFamille.N1_RIN != null ||
                 infoFamille.N1_NOTE_liste_ID.Count > 0 ||
                 infoFamille.N1_SUBM_liste_ID.Count > 0 ||
+                infoFamille.N1_TYPU != null ||
+                infoFamille.N1__UST != null ||
                 OkDate
                 )
             {
@@ -2930,14 +2978,19 @@ namespace HTML
 
 
                 // TYPU pour Ancestrologie
-                infoFamille.N1_TYPU = "1";
                 if (infoFamille.N1_TYPU != null)
                 {
                     texte += "\t\t\t\t\t\t<div>\n";
                     texte += "\t\t\t\t\t\t\tType d'union (Ancestrologie) " + infoFamille.N1_TYPU + "\n";
                     texte += "\t\t\t\t\t\t</div>\n";
                 }
-
+                // _UST pour Heridis
+                if (infoFamille.N1__UST != null)
+                {
+                    texte += "\t\t\t\t\t\t<div>\n";
+                    texte += "\t\t\t\t\t\t\tType d'union (Heridis) " + infoFamille.N1__UST + "\n";
+                    texte += "\t\t\t\t\t\t</div>\n";
+                }
                 //nombre d'enfant
                 if (infoFamille.N1_NCHI != null)
                 {
@@ -3385,6 +3438,17 @@ namespace HTML
                     texte += "\t\t\t\t\t</td>\n";
                     texte += "\t\t\t\t</tr>\n";
                 }
+                if (InfoGEDCOM.N3_GEDC_FORM_VERS != null)
+                    texte += "\t\t\t\t<tr>\n";
+                    texte += "\t\t\t\t\t<td class=\"indexCol1\">\n";
+                    texte += "\t\t\t\t\t\tForme version" + "\n";
+                    texte += "\t\t\t\t\t</td>\n";
+                    texte += "\t\t\t\t\t<td>\n";
+                    texte += "\t\t\t\t\t\t" + InfoGEDCOM.N3_GEDC_FORM_VERS + "\n";
+                    texte += "\t\t\t\t\t</td>\n";
+                    texte += "\t\t\t\t</tr>\n";
+
+
                 // Fichier original
                 if (InfoGEDCOM.N1_FILE != null)
                 {
@@ -3431,6 +3495,18 @@ namespace HTML
                     texte += "\t\t\t\t\t<td>\n";
                     texte += "\t\t\t\t\t\t" + InfoGEDCOM.N1_CHAR + "\n";
                     if (InfoGEDCOM.N2_CHAR_VERS != "") texte += "\t\t\t\t\t\tVersion " + InfoGEDCOM.N2_CHAR_VERS + "\n";
+                    texte += "\t\t\t\t\t</td>\n";
+                    texte += "\t\t\t\t</tr>\n";
+                }
+                // _GUID Herisis
+                if (InfoGEDCOM.N1__GUID != null)
+                {
+                    texte += "\t\t\t\t<tr>\n";
+                    texte += "\t\t\t\t\t<td>\n";
+                    texte += "\t\t\t\t\t\tIdentificateur global unique" + "\n";
+                    texte += "\t\t\t\t\t</td>\n";
+                    texte += "\t\t\t\t\t<td>\n";
+                    texte += "\t\t\t\t\t\t" + InfoGEDCOM.N1__GUID + "\n";
                     texte += "\t\t\t\t\t</td>\n";
                     texte += "\t\t\t\t</tr>\n";
                 }
@@ -4585,15 +4661,18 @@ namespace HTML
                     string nom2 = null;
                     if (infoNom.N0_NAME != null)
                         nom1 = infoNom.N0_NAME;
-                    if (infoNom.N1_SURN != null || infoNom.N1_GIVN != null)
+                    if (infoNom.N1_PERSONAL_NAME_PIECES != null)
                     {
-                        string titre = infoNom.N1_NPFX;
-                        if (titre != null) titre += " ";
-                        string prefix = infoNom.N1_SPFX;
-                        if (prefix != null) prefix += " ";
-                        string suffix = infoNom.N1_NSFX;
-                        if (suffix != null) suffix = ", " + suffix;
-                        nom2 = titre + prefix + infoNom.N1_SURN + ", " + infoNom.N1_GIVN + suffix;
+                        if (infoNom.N1_PERSONAL_NAME_PIECES.Nn_SURN != null || infoNom.N1_PERSONAL_NAME_PIECES.Nn_GIVN != null)
+                        {
+                            string titre = infoNom.N1_PERSONAL_NAME_PIECES.Nn_NPFX;
+                            if (titre != null) titre += " ";
+                            string prefix = infoNom.N1_PERSONAL_NAME_PIECES.Nn_SPFX;
+                            if (prefix != null) prefix += " ";
+                            string suffix = infoNom.N1_PERSONAL_NAME_PIECES.Nn_NSFX;
+                            if (suffix != null) suffix = ", " + suffix;
+                            nom2 = titre + prefix + infoNom.N1_PERSONAL_NAME_PIECES.Nn_SURN + ", " + infoNom.N1_PERSONAL_NAME_PIECES.Nn_GIVN + suffix;
+                        }
                     }
                     texte += "\t\t\t\t<div>\n";
                     texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
@@ -4634,55 +4713,66 @@ namespace HTML
                             texte += "\t\t\t\t</div>\n";
                         }
                     }
-                    // surnom
-                    if (infoNom.N1_NICK != null)
+                    if (infoNom.N1_PERSONAL_NAME_PIECES != null)
                     {
-                        texte += "\t\t\t\t<div>\n";
-                        texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                        texte += "\t\t\t\t\t\t&nbsp;\n";
-                        texte += "\t\t\t\t\t</span>\n";
-                        texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                        texte += "\t\t\t\t\t\tSurnom " + infoNom.N1_NICK + "\n";
-                        texte += "\t\t\t\t\t</span>\n";
-                        texte += "\t\t\t\t</div>\n";
-                    }
-                    
-                    if (infoNom.N1_SOUR_citation_liste_ID != null)
-                    {
-                        texte += "\t\t\t\t<div>\n";
-                        texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                        texte += "\t\t\t\t\t\t&nbsp;\n";
-                        texte += "\t\t\t\t\t</span>\n";
-                        texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                        temp = Avoir_lien_citation_source(infoNom.N1_SOUR_citation_liste_ID, liste_citation_ID_numero, 6);
-                        texte += temp;
-                        texte += "\t\t\t\t\t</span>\n";
-                        texte += "\t\t\t\t</div>\n";
-                    }
-                    if (infoNom.N1_NOTE_liste_ID.Count() > 0)
-                    {
-                        texte += "\t\t\t\t<div>\n";
-                        texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                        texte += "\t\t\t\t\t\t&nbsp;\n";
-                        texte += "\t\t\t\t\t</span>\n";
-                        texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                        texte += Avoir_lien_note(infoNom.N1_NOTE_liste_ID, liste_note_ID_numero, true, 6);
-                        texte += "\t\t\t\t\t</span>\n";
-                        texte += "\t\t\t\t</div>\n";
+                        // surnom
+                        if (infoNom.N1_PERSONAL_NAME_PIECES.Nn_NICK != null)
+                        {
+                            texte += "\t\t\t\t<div>\n";
+                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                            texte += "\t\t\t\t\t\t&nbsp;\n";
+                            texte += "\t\t\t\t\t</span>\n";
+                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                            texte += "\t\t\t\t\t\tSurnom " + infoNom.N1_PERSONAL_NAME_PIECES.Nn_NICK + "\n";
+                            texte += "\t\t\t\t\t</span>\n";
+                            texte += "\t\t\t\t</div>\n";
+                        }
+                        if (infoNom.N1_PERSONAL_NAME_PIECES.Nn_SOUR_citation_liste_ID != null)
+                        {
+                            texte += "\t\t\t\t<div>\n";
+                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                            texte += "\t\t\t\t\t\t&nbsp;\n";
+                            texte += "\t\t\t\t\t</span>\n";
+                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                            temp = Avoir_lien_citation_source(infoNom.N1_PERSONAL_NAME_PIECES.Nn_SOUR_citation_liste_ID, liste_citation_ID_numero, 6);
+                            texte += temp;
+                            texte += "\t\t\t\t\t</span>\n";
+                            texte += "\t\t\t\t</div>\n";
+                        }
+                        if (infoNom.N1_PERSONAL_NAME_PIECES.Nn_NOTE_liste_ID.Count() > 0)
+                        {
+                            texte += "\t\t\t\t<div>\n";
+                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                            texte += "\t\t\t\t\t\t&nbsp;\n";
+                            texte += "\t\t\t\t\t</span>\n";
+                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                            texte += Avoir_lien_note(infoNom.N1_PERSONAL_NAME_PIECES.Nn_NOTE_liste_ID, liste_note_ID_numero, true, 6);
+                            texte += "\t\t\t\t\t</span>\n";
+                            texte += "\t\t\t\t</div>\n";
+                        }
                     }
                     // FONE
                     string nom3 = null;
                     string nom4 = null;
-                    string prefixFONE = infoNom.N2_FONE_SPFX;
-                    if (prefixFONE != null) prefixFONE += " ";
-                    string suffixFONE = infoNom.N2_FONE_NSFX;
-                    if (suffixFONE != null) suffixFONE = ", " + suffixFONE;
-                    string surnomFONE = infoNom.N2_FONE_NICK;
-                    string titreFONE = infoNom.N2_FONE_NPFX;
-                    if (titreFONE != null) titreFONE += " ";
-                    if (infoNom.N2_FONE_SURN != null || infoNom.N2_FONE_GIVN != null)
+                    string prefixFONE = null;
+                    string suffixFONE = null;
+                    string surnomFONE = null;
+                    string titreFONE = null;
+                    if (infoNom.N1_FONE_name_pieces != null)
                     {
-                        nom4 = titreFONE + prefixFONE + infoNom.N2_FONE_SURN + ", " + infoNom.N2_FONE_GIVN + suffixFONE;
+                        prefixFONE = infoNom.N1_FONE_name_pieces.Nn_SPFX;
+                        if (prefixFONE != null) prefixFONE += " ";
+                        suffixFONE = infoNom.N1_FONE_name_pieces.Nn_NSFX;
+                        if (suffixFONE != null) suffixFONE = ", " + suffixFONE;
+                        surnomFONE = infoNom.N1_FONE_name_pieces.Nn_NICK;
+                        titreFONE = infoNom.N1_FONE_name_pieces.Nn_NPFX;
+                        if (titreFONE != null) titreFONE += " ";
+
+                        if (infoNom.N1_FONE_name_pieces.Nn_SURN != null || infoNom.N1_FONE_name_pieces.Nn_GIVN != null)
+                        {
+                            nom4 = titreFONE + prefixFONE + infoNom.N1_FONE_name_pieces.Nn_SURN + ", " +
+                                infoNom.N1_FONE_name_pieces.Nn_GIVN + suffixFONE;
+                        }
                     }
                     nom3 = infoNom.N1_FONE;
                     if (nom3 != null || nom4 != null)
@@ -4720,56 +4810,68 @@ namespace HTML
                             texte += "\t\t\t\t\t</span>\n";
                         }
                         texte += "\t\t\t\t</div>\n";
-                        // surnom FONE
-                        if (infoNom.N2_FONE_NICK != null)
+                        if (infoNom.N1_FONE_name_pieces != null)
                         {
-                            texte += "\t\t\t\t<div>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                            texte += "\t\t\t\t\t\t&nbsp;\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                            texte += "\t\t\t\t\t\tSurnom " + infoNom.N2_FONE_NICK + "\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t</div>\n";
-                        }
-                        // SOUR FONE
-                        if (infoNom.N2_FONE_SOUR_citation_liste_ID != null)
-                        {
-                            texte += "\t\t\t\t<div>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                            texte += "\t\t\t\t\t\t&nbsp;\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                            texte += Avoir_lien_citation_source(infoNom.N2_FONE_SOUR_citation_liste_ID, liste_citation_ID_numero, 6);
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t</div>\n";
-                        }
-                        // note FONE
-                        if (infoNom.N2_FONE_NOTE_ID_liste != null)
-                        {
-                            texte += "\t\t\t\t<div>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                            texte += "\t\t\t\t\t\t&nbsp;\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                            texte += Avoir_lien_note(infoNom.N2_FONE_NOTE_ID_liste, liste_note_ID_numero, true, 6);
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t</div>\n";
+                            // surnom FONE
+                            if (infoNom.N1_FONE_name_pieces.Nn_NICK != null)
+                            {
+                                texte += "\t\t\t\t<div>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                                texte += "\t\t\t\t\t\t&nbsp;\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                                texte += "\t\t\t\t\t\tSurnom " + infoNom.N1_FONE_name_pieces.Nn_NICK + "\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t</div>\n";
+                            }
+                            // SOUR FONE
+                            if (infoNom.N1_FONE_name_pieces.Nn_SOUR_citation_liste_ID != null)
+                            {
+                                texte += "\t\t\t\t<div>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                                texte += "\t\t\t\t\t\t&nbsp;\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                                texte += Avoir_lien_citation_source(infoNom.N1_FONE_name_pieces.Nn_SOUR_citation_liste_ID, 
+                                    liste_citation_ID_numero, 6);
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t</div>\n";
+                            }
+                            // note FONE
+                            if (infoNom.N1_FONE_name_pieces.Nn_NOTE_liste_ID != null)
+                            {
+                                texte += "\t\t\t\t<div>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                                texte += "\t\t\t\t\t\t&nbsp;\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                                texte += Avoir_lien_note(infoNom.N1_FONE_name_pieces.Nn_NOTE_liste_ID, liste_note_ID_numero, true, 6);
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t</div>\n";
+                            }
                         }
                     }
                     // ROMN
                     string nom5 = null;
                     string nom6 = null;
-                    string prefixROMN = infoNom.N2_ROMN_SPFX;
-                    if (prefixROMN != null) prefixROMN += " ";
-                    string suffixROMN = infoNom.N2_ROMN_NSFX;
-                    if (suffixROMN != null) suffixROMN = ", " + suffixROMN;
-                    string surnomROMN = infoNom.N2_ROMN_NICK;
-                    string titreROMN = infoNom.N2_ROMN_NPFX;
-                    if (titreROMN != null) titreROMN += " ";
-                    if (infoNom.N2_ROMN_SURN != null || infoNom.N2_ROMN_GIVN != null)
+                    string prefixROMN = null;
+                    string suffixROMN = null;
+                    string surnomROMN = null;
+                    string titreROMN = null;
+                    if (infoNom.N1_ROMN_name_pieces != null)
                     {
-                        nom6 = titreROMN + prefixROMN + infoNom.N2_ROMN_SURN + ", " + infoNom.N2_ROMN_GIVN + suffixROMN;
+                        prefixROMN = infoNom.N1_ROMN_name_pieces.Nn_SPFX;
+                        if (prefixROMN != null) prefixROMN += " ";
+                        suffixROMN = infoNom.N1_ROMN_name_pieces.Nn_NSFX;
+                        if (suffixROMN != null) suffixROMN = ", " + suffixROMN;
+                        surnomROMN = infoNom.N1_ROMN_name_pieces.Nn_NICK;
+                        titreROMN = infoNom.N1_ROMN_name_pieces.Nn_NPFX;
+                        if (titreROMN != null) titreROMN += " ";
+                        if (infoNom.N1_ROMN_name_pieces.Nn_SURN != null || infoNom.N1_ROMN_name_pieces.Nn_GIVN != null)
+                        {
+                            nom6 = titreROMN + prefixROMN + infoNom.N1_ROMN_name_pieces.Nn_SURN + ", " +
+                                infoNom.N1_ROMN_name_pieces.Nn_GIVN + suffixROMN;
+                        }
                     }
                     nom5 = infoNom.N1_ROMN;
                     if (nom5 != null || nom6 != null)
@@ -4807,41 +4909,46 @@ namespace HTML
                             texte += "\t\t\t\t\t</span>\n";
                         }
                         texte += "\t\t\t\t</div>\n";
-                        // surnom ROMN
-                        if (infoNom.N2_FONE_NICK != null)
+                        if (infoNom.N1_ROMN_name_pieces != null)
                         {
-                            texte += "\t\t\t\t<div>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                            texte += "\t\t\t\t\t\t&nbsp;\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                            texte += "\t\t\t\t\t\tSurnom " + infoNom.N2_ROMN_NICK + "\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t</div>\n";
-                        }
-                        // SOUR ROMN
-                        if (infoNom.N2_ROMN_SOUR_citation_liste_ID != null)
-                        {
-                            texte += "\t\t\t\t<div>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                            texte += "\t\t\t\t\t\t&nbsp;\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                            texte += Avoir_lien_citation_source(infoNom.N2_ROMN_SOUR_citation_liste_ID, liste_citation_ID_numero, 6);
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t</div>\n";
-                        }
-                        // NOTE ROMN
-                        if (infoNom.N2_ROMN_NOTE_ID_liste != null)
-                        {
-                            texte += "\t\t\t\t<div>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
-                            texte += "\t\t\t\t\t\t&nbsp;\n";
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                            texte += Avoir_lien_note(infoNom.N2_ROMN_NOTE_ID_liste, liste_note_ID_numero, true, 6);
-                            texte += "\t\t\t\t\t</span>\n";
-                            texte += "\t\t\t\t</div>\n";
+                            // surnom ROMN
+                            if (infoNom.N1_ROMN_name_pieces.Nn_NICK != null)
+                            {
+                                texte += "\t\t\t\t<div>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                                texte += "\t\t\t\t\t\t&nbsp;\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                                texte += "\t\t\t\t\t\tSurnom " + infoNom.N1_ROMN_name_pieces.Nn_NICK + "\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t</div>\n";
+                            }
+                            // SOUR ROMN
+                            if (infoNom.N1_ROMN_name_pieces.Nn_SOUR_citation_liste_ID != null)
+                            {
+                                texte += "\t\t\t\t<div>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                                texte += "\t\t\t\t\t\t&nbsp;\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                                texte += Avoir_lien_citation_source(infoNom.N1_ROMN_name_pieces.Nn_SOUR_citation_liste_ID,
+                                    liste_citation_ID_numero, 6);
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t</div>\n";
+                            }
+                            // NOTE ROMN
+                            if (infoNom.N1_ROMN_name_pieces.Nn_NOTE_liste_ID != null)
+                            {
+                                texte += "\t\t\t\t<div>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                                texte += "\t\t\t\t\t\t&nbsp;\n";
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                                texte += Avoir_lien_note(infoNom.N1_ROMN_name_pieces.Nn_NOTE_liste_ID,
+                                    liste_note_ID_numero, true, 6);
+                                texte += "\t\t\t\t\t</span>\n";
+                                texte += "\t\t\t\t</div>\n";
+                            }
                         }
                     }
                 }
@@ -4856,13 +4963,16 @@ namespace HTML
                     string nom_ALIA = null;
                     if (Ok_nom_Alia)
                     {
-                        if (alia_individu.N1_NAME_liste[0].N1_SURN != null ||
-                            alia_individu.N1_NAME_liste[0].N1_GIVN != null
-                            )
+                        if (alia_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES != null)
                         {
-                            nom_ALIA = AssemblerPatronymePrenom(
-                                    alia_individu.N1_NAME_liste[0].N1_SURN,
-                                    alia_individu.N1_NAME_liste[0].N1_GIVN);
+                            if (alia_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN != null ||
+                                alia_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN != null
+                                )
+                            {
+                                nom_ALIA = AssemblerPatronymePrenom(
+                                        alia_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN,
+                                        alia_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN);
+                            }
                         }
                         else
                         {
@@ -4904,6 +5014,52 @@ namespace HTML
                 texte += "\t\t\t\t\t\t" + genre + " " +
                     "<img style =\"height:16px;vertical-align:middle\" src=\"" + fichierSex +
                     "\" alt=\"\" />\n";
+                texte += "\t\t\t\t\t</span>\n";
+                texte += "\t\t\t\t</div>\n";
+            }
+            // SIGH Heridis
+            if (infoIndividu.N1_SIGN != null)
+            {
+                if (infoIndividu.N1_SIGN == "Oui")
+                {
+                    texte += Separation("moyen", 4);
+                    texte += "\t\t\t\t<div>\n";
+                    texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                    texte += "\t\t\t\t\t\tSIGN(Heridis)\n";
+                    texte += "\t\t\t\t\t</span>\n";
+                    texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                    texte += "\t\t\t\t\t\t" + infoIndividu.N1_SIGN + "\n";
+                    texte += "\t\t\t\t\t</span>\n";
+                    texte += "\t\t\t\t</div>\n";
+                }
+            }
+            // filiation  Heridis
+            if (infoIndividu.N1__CLS != null)
+            {
+                if (infoIndividu.N1__CLS == "Oui")
+                {
+                    texte += Separation("moyen", 4);
+                    texte += "\t\t\t\t<div>\n";
+                    texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                    texte += "\t\t\t\t\t\tIndividu sans postérité\n";
+                    texte += "\t\t\t\t\t</span>\n";
+                    texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                    texte += "\t\t\t\t\t\t" + infoIndividu.N1__CLS + "\n";
+                    texte += "\t\t\t\t\t</span>\n";
+                    texte += "\t\t\t\t</div>\n";
+                }
+            }
+
+            // filiation  Heridis
+            if (infoIndividu.N1__FIL != null)
+            {
+                texte += Separation("moyen", 4);
+                texte += "\t\t\t\t<div>\n";
+                texte += "\t\t\t\t\t<span class=\"detail_col1\">\n";
+                texte += "\t\t\t\t\t\tFiliation\n";
+                texte += "\t\t\t\t\t</span>\n";
+                texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
+                texte += "\t\t\t\t\t\t" + infoIndividu.N1__FIL + "\n";
                 texte += "\t\t\t\t\t</span>\n";
                 texte += "\t\t\t\t</div>\n";
             }
@@ -5451,15 +5607,16 @@ namespace HTML
                     {
                         groupe_media = true;
                         int totalMedia = infoIndividu.N1_OBJE_liste.Count;
-                        int nombreMedia = 0;
-                        foreach (string IDMedia in infoIndividu.N1_OBJE_liste)
+                        //int nombreMedia = 0;
+                        /*foreach (string IDMedia in infoIndividu.N1_OBJE_liste)
                         {
                             if (IDMedia != IDPortrait)
                             {
                                 nombreMedia++;
                             }
                         }
-                        if (nombreMedia > 0)
+                        */
+                        //if (nombreMedia > 0)
                         {
                             texte += Separation("large", 4);
                             texte += "<a id=\"groupe_media\"></a>\n";
@@ -5467,7 +5624,7 @@ namespace HTML
                             texte += "\t\t\t\t<table class=\"titre\">\n";
                             texte += "\t\t\t\t\t<tr>\n";
                             texte += "\t\t\t\t\t\t<td>\n";
-                            if (nombreMedia == 1)
+                            if (infoIndividu.N1_OBJE_liste.Count == 1)
                                 texte += "\t\t\t\t\t\t\tMédia\n";
                             else
                                 texte += "\t\t\t\t\t\t\tMédias\n";
@@ -5914,6 +6071,37 @@ namespace HTML
                             texte += espace + "\t\t\t</td>\n";
                             texte += espace + "\t\t</tr>\n";
                         }
+                        // _QUAL Heridis
+                        // _QUAL__SOUR Heridis
+                        if (info_citation.N2__QUAL__SOUR != null)
+                        {
+                            texte += espace + "\t\t<tr>\n";
+                            texte += espace + "\t\t\t<td>\n";
+                            texte += espace + "\t\t\t\tQualité de la source: " + info_citation.N2__QUAL__SOUR + " (Heridis)\n";
+                            texte += Separation("mince", tab + 4);
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t</tr>\n";
+                        }
+                        // _QUAL__INFO Heridis
+                        if (info_citation.N2__QUAL__INFO != null)
+                        {
+                            texte += espace + "\t\t<tr>\n";
+                            texte += espace + "\t\t\t<td>\n";
+                            texte += espace + "\t\t\t\tQualité de l'information: " + info_citation.N2__QUAL__INFO + " (Heridis)\n";
+                            texte += Separation("mince", tab + 4);
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t</tr>\n";
+                        }
+                        // _QUAL__EVID Heridis
+                        if (info_citation.N2__QUAL__EVID != null)
+                        {
+                            texte += espace + "\t\t<tr>\n";
+                            texte += espace + "\t\t\t<td>\n";
+                            texte += espace + "\t\t\t\tQualité de la preuve: " + info_citation.N2__QUAL__EVID + " (Heridis)\n";
+                            texte += Separation("mince", tab + 4);
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t</tr>\n";
+                        }
                         // note
                         if (info_citation.N1_NOTE_liste_ID != null)
                         {
@@ -6120,6 +6308,8 @@ namespace HTML
                             texte += espace + "\t\t\t</td>\n";
                             texte += espace + "\t\t</tr>\n";
                         }
+
+                        // EVEN ancestrologie
                         if (info_source.N1_EVEN !=null)
                         {
                             texte += espace + "\t\t<tr>\n";
@@ -6128,6 +6318,16 @@ namespace HTML
                             texte += espace + "\t\t\t</td>\n";
                             texte += espace + "\t\t\t<td>\n";
                             texte += espace + "\t\t\t\t" + info_source.N1_EVEN;
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t</tr>\n";
+                        }
+                        // QUAY Heridis
+                        if (info_source.N1_QUAY != null)
+                        {
+                            texte += espace + "\t\t<tr>\n";
+                            texte += espace + "\t\t\t<td>\n";
+                            texte += espace + "\t\t\t\tQualité de la source: " + info_source.N1_QUAY + " (Heridis)\n";
+                            texte += Separation("mince", tab + 4);
                             texte += espace + "\t\t\t</td>\n";
                             texte += espace + "\t\t</tr>\n";
                         }
@@ -6216,6 +6416,27 @@ namespace HTML
                             texte += espace + "\t\t\t</td>\n";
                             texte += espace + "\t\t</tr>\n";
                         }
+                        // DATE
+                        if (info_source.N1_DATE != null)
+                        {
+                            string date = null;
+                            if (GH.Properties.Settings.Default.date_longue)
+                            {
+                                date = GEDCOMClass.ConvertirDateTexte(info_source.N1_DATE);
+                            }
+                            else
+                            {
+                                date = info_source.N1_DATE;
+                            }
+                            texte += espace + "\t\t<tr>\n";
+                            texte += espace + "\t\t\t<td style=\"width:150px\">\n";
+                            texte += espace + "\t\t\t\tDate (Herisis):\n";
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t\t<td>\n";
+                            texte += espace + "\t\t\t\t" + date + "\n";
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t</tr>\n";
+                        }
                         // AUTH
                         if (info_source.N1_AUTH != null)
                         {
@@ -6240,6 +6461,19 @@ namespace HTML
                             texte += espace + "\t\t\t</td>\n";
                             texte += espace + "\t\t</tr>\n";
                         }
+                        // TYPE HERIDIS
+                        if (info_source.N1_ABBR != null)
+                        {
+                            texte += espace + "\t\t<tr>\n";
+                            texte += espace + "\t\t\t<td style=\"width:150px\">\n";
+                            texte += espace + "\t\t\t\tTYPE (Heridis):\n";
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t\t<td>\n";
+                            texte += espace + "\t\t\t\t" + info_source.N1_TYPE + "\n";
+                            texte += espace + "\t\t\t</td>\n";
+                            texte += espace + "\t\t</tr>\n";
+                        }
+
                         // PUBL
                         if (info_source.N1_PUBL != null)
                         {
@@ -6324,15 +6558,19 @@ namespace HTML
                                 texte += espace + "\t\t\t</td>\n";
                                 texte += espace + "\t\t</tr>\n";
                             }
-                            texte += espace + "\t\t<tr>\n";
-                            texte += espace + "\t\t\t<td style=\"width:150px\">\n";
-                            texte += espace + "\t\t\t\t\t&nbsp;\n";
-                            texte += espace + "\t\t\t</td>\n";
-                            texte += espace + "\t\t\t<td>\n";
-                            (temp, liste_repo_ID_numero) = Avoir_lien_repo(info_source.N1_REPO_info.N0_ID, liste_repo_ID_numero, tab + 4);
-                            texte += espace + "\t\t\t\t" + temp + "\n";
-                            texte += espace + "\t\t\t</td>\n";
-                            texte += espace + "\t\t</tr>\n";
+                            if (info_source.N1_REPO_info.N0_ID != null)
+                                if (info_source.N1_REPO_info.N0_ID != "")
+                                {
+                                texte += espace + "\t\t<tr>\n";
+                                texte += espace + "\t\t\t<td style=\"width:150px\">\n";
+                                texte += espace + "\t\t\t\t\t&nbsp;\n";
+                                texte += espace + "\t\t\t</td>\n";
+                                texte += espace + "\t\t\t<td>\n";
+                                (temp, liste_repo_ID_numero) = Avoir_lien_repo(info_source.N1_REPO_info.N0_ID, liste_repo_ID_numero, tab + 4);
+                                texte += espace + "\t\t\t\t" + temp + "\n";
+                                texte += espace + "\t\t\t</td>\n";
+                                texte += espace + "\t\t</tr>\n";
+                                }
                         }
                         // NOTE
                         if (info_source.N1_NOTE_liste_ID.Count > 0)
@@ -6563,6 +6801,24 @@ namespace HTML
                 texte += espace + "\t<tr>\n";
                 texte += espace + "\t\t<td style=\"border:0px solid #0e0;text-align:left\">\n";
                 texte += espace + "\t\t\t\t" + infoMedia.N2_FILE_TITL + "\n";
+                texte += espace + "\t\t</td>\n";
+                texte += espace + "\t</tr>\n";
+            }
+            // DATE Heridis
+            string date;
+            if (GH.Properties.Settings.Default.date_longue)
+            {
+                date = GEDCOMClass.ConvertirDateTexte(infoMedia.N1__DATE);
+            }
+            else
+            {
+                date = infoMedia.N1__DATE;
+            }
+            if (date != null)
+            {
+                texte += espace + "\t<tr>\n";
+                texte += espace + "\t\t<td style=\"border:0px solid #0e0;text-align:left\">\n";
+                texte += espace + "\t\t\t\t" + date + "\n";
                 texte += espace + "\t\t</td>\n";
                 texte += espace + "\t</tr>\n";
             }

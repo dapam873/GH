@@ -12,6 +12,7 @@ namespace GH
         {
             InitializeComponent();
         }
+        ToolTip t1 = new ToolTip();
         private void CbVoirID_CheckedChanged(object sender, EventArgs e)
         {
             if (CbVoirID.Checked)
@@ -268,6 +269,32 @@ namespace GH
         private void Btn_dossierMedia_Click(object sender, EventArgs e)
         {
             AvoirDossierMedias();
+        }
+
+        private void Btn_dossierHTML_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Choisir le dossier HTML", Btn_dossierHTML);
+        }
+
+        private void Btn_dossierMedia_MouseHover(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.voir_ToolTip)
+                t1.Show("Choisir le dossier média", Btn_dossierHTML);
+        }
+
+        private void CbToolTip_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CbToolTip.Checked)
+            {
+                Properties.Settings.Default.voir_ToolTip = true;
+                CbToolTip.Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.voir_ToolTip = false;
+                CbToolTip.Checked = false;
+            }
         }
     }
 }
