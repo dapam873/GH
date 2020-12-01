@@ -25,7 +25,7 @@ namespace GH
             {
                 version = Assembly.GetExecutingAssembly().GetName().Version;
             }
-            VersionLb.Text = "Version " + version.Major + "." + version.Minor + "B";
+            VersionLb.Text = "Version " + version.Major + "." + version.Minor;
 
         }
 

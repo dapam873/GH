@@ -237,7 +237,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.BackgroundImage = global::GH.Properties.Resources.beta;
             this.ClientSize = new System.Drawing.Size(284, 411);
             this.Controls.Add(this.Btn_Fermer);
             this.Controls.Add(this.label11);

@@ -139,7 +139,7 @@ namespace GH
         {
             InitializeComponent();
         }
-        ToolTip t1 = new ToolTip();
+        readonly ToolTip t1 = new ToolTip();
         private void OuvrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!Directory.Exists(Properties.Settings.Default.DossierHTML))

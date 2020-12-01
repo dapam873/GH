@@ -4534,19 +4534,9 @@ namespace HTML
             bool OkLIN;
             (OkLIN, listeInfoNom) = GEDCOMClass.AvoirListeNom(IDIndividu);
             string fichierSex;
-            string genre = infoIndividu.N1_SEX;
-            string genreTxt = null;
-            if (genre == "M")
-            {
-                genreTxt = "masculin";
-            };
-            if (genreTxt == "F")
-            {
-                genre = "féminin";
-            };
             // avoir le portrait
             string fichierPortrait;
-            string IDPortrait = null;
+            string IDPortrait;
             GEDCOMClass.MULTIMEDIA_RECORD portraitInfo;
             if (infoIndividu.N1_OBJE_liste.Count > 0)
             {
@@ -4564,11 +4554,11 @@ namespace HTML
             }
             else
             {
-                if (genre == "M")
+                if (infoIndividu.N1_SEX == "Masculin")
                 {
                     fichierPortrait = "../commun/masculin.png";
                 }
-                else if (genre == "F")
+                else if (infoIndividu.N1_SEX == "Féminin")
                 {
                     fichierPortrait = "../commun/feminin.png";
                 }
@@ -4577,12 +4567,12 @@ namespace HTML
                     fichierPortrait = "../commun/neutre.png";
                 }
             }
-            if (genre == "M")
+            if (infoIndividu.N1_SEX == "Mascullin")
             {
                 fichierSex = "../commun/male.svg";
 
             }
-            else if (genre == "F")
+            else if (infoIndividu.N1_SEX == "Féminin")
             {
                 fichierSex = "../commun/femelle.svg";
             }
@@ -5011,7 +5001,7 @@ namespace HTML
                 texte += "\t\t\t\t\t\tGenre\n";
                 texte += "\t\t\t\t\t</span>\n";
                 texte += "\t\t\t\t\t<span class=\"detail_col2\">\n";
-                texte += "\t\t\t\t\t\t" + genre + " " +
+                texte += "\t\t\t\t\t\t" + infoIndividu.N1_SEX + " " +
                     "<img style =\"height:16px;vertical-align:middle\" src=\"" + fichierSex +
                     "\" alt=\"\" />\n";
                 texte += "\t\t\t\t\t</span>\n";
@@ -5142,6 +5132,10 @@ namespace HTML
                         texte += "\t\t\t\t\t\t[" + info_ASSO.N0_ASSO + "]\n";
                     }
                     texte += "\t\t\t\t\t\tRelation " + info_ASSO.N1_RELA + "\n";
+                    if (info_ASSO.N1_TYPE != null)
+                    {
+                        texte += "\t\t\t\t\t\tType: " + info_ASSO.N1_TYPE + "\n";
+                    }
                     // source association
                     List<string> listeLien = new List<string>();
                     texte += Avoir_lien_citation_source(info_ASSO.N1_SOUR_citation_liste_ID, liste_citation_ID_numero, 5);
