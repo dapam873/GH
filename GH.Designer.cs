@@ -84,6 +84,7 @@
             this.Btn_cadre_individu = new System.Windows.Forms.Button();
             this.Btn_cadre_famille = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.Tb_version = new System.Windows.Forms.TextBox();
             this.menuPrincipal.SuspendLayout();
             this.Gb_info_GEDCOM.SuspendLayout();
             this.SuspendLayout();
@@ -782,12 +783,20 @@
             this.Btn_cadre_famille.TabIndex = 143;
             this.Btn_cadre_famille.UseVisualStyleBackColor = false;
             // 
+            // Tb_version
+            // 
+            this.Tb_version.Location = new System.Drawing.Point(302, 32);
+            this.Tb_version.Name = "Tb_version";
+            this.Tb_version.Size = new System.Drawing.Size(248, 20);
+            this.Tb_version.TabIndex = 144;
+            // 
             // GH
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(1235, 461);
+            this.Controls.Add(this.Tb_version);
             this.Controls.Add(this.Btn_erreur);
             this.Controls.Add(this.Btn_balise);
             this.Controls.Add(this.Btn_deboguer);
@@ -893,6 +902,7 @@
         private System.Windows.Forms.Button Btn_cadre_individu;
         private System.Windows.Forms.Button Btn_cadre_famille;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.TextBox Tb_version;
     }
 }
 

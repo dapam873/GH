@@ -2869,7 +2869,7 @@ namespace GEDCOM
             if (!GH.Properties.Settings.Default.balise || GH.Properties.Settings.Default.DossierHTML == "") return;
             System.Windows.Forms.Button Btn_balise = Application.OpenForms["GH"].Controls["Btn_balise"] as 
                 System.Windows.Forms.Button;
-            string fichier = GH.Properties.Settings.Default.DossierHTML + "\\balise.txt";
+            string fichier = GH.Properties.Settings.Default.DossierHTML + @"\balise.txt";
             try
             {
                 using (StreamWriter ligne = File.AppendText(fichier))
@@ -3416,7 +3416,7 @@ namespace GEDCOM
             System.Windows.Forms.Button Btn_erreur = Application.OpenForms["GH"].Controls["Btn_erreur"] as System.Windows.Forms.Button;
             //code = Path.GetFileName(code);
             //code = code[0].ToString().ToUpper();
-            string fichier = GH.Properties.Settings.Default.DossierHTML + "\\erreur.txt";
+            string fichier = GH.Properties.Settings.Default.DossierHTML + @"\erreur.txt";
             try
             {
                 using (StreamWriter ligne = File.AppendText(fichier))
@@ -6810,7 +6810,7 @@ namespace GEDCOM
             string message_log = String.Format("Erreur {0,-7 } {1}\r\n{2,-15 }{3}", erreur, message, "",raison );
             reponse = MessageBox.Show("Erreur " + erreur + ". " + message + "\r\n" + raison +
                 "\r\n\r\n" +
-                "L'erreur a été enregisté dans le fichier " + GH.Properties.Settings.Default.DossierHTML + "\\erreur.txt\r\n",
+                "L'erreur a été enregisté dans le fichier " + GH.Properties.Settings.Default.DossierHTML + @"\erreur.txt\r\n",
                 "Erreur " + erreur + " problème ?",
                 MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Warning); ;
@@ -6824,7 +6824,7 @@ namespace GEDCOM
             System.Windows.Forms.Button Btn_deboguer = Application.OpenForms["GH"].Controls["Btn_deboguer"] as System.Windows.Forms.Button;
             code = Path.GetFileName(code);
             code = code[0].ToString().ToUpper();
-            string fichier = GH.Properties.Settings.Default.DossierHTML + "\\deboguer.txt";
+            string fichier = GH.Properties.Settings.Default.DossierHTML + @"\deboguer.txt";
             try
             {
                 using (StreamWriter ligne = File.AppendText(fichier))

@@ -1,6 +1,6 @@
 ﻿namespace GH
 {
-    partial class Form2
+    partial class A_propos
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(A_propos));
             this.label6 = new System.Windows.Forms.Label();
             this.Label18 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -118,6 +118,7 @@
             this.VersionLb.TabIndex = 126;
             this.VersionLb.Text = "V n.nn";
             this.VersionLb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.VersionLb.Click += new System.EventHandler(this.VersionLb_Click);
             // 
             // label1
             // 
@@ -232,7 +233,7 @@
             this.Btn_Fermer.UseVisualStyleBackColor = false;
             this.Btn_Fermer.Click += new System.EventHandler(this.Btn_Fermer_Click);
             // 
-            // Form2
+            // A_propos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -260,7 +261,7 @@
             this.MaximumSize = new System.Drawing.Size(300, 450);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(300, 450);
-            this.Name = "Form2";
+            this.Name = "A_propos";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "À propos";
             this.TopMost = true;

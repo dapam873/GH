@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace GH
 {
-    public partial class Form2 : Form
+    public partial class A_propos : Form
     {
-        public Form2()
+        public A_propos()
         {
             InitializeComponent();
         }
@@ -25,7 +25,7 @@ namespace GH
             {
                 version = Assembly.GetExecutingAssembly().GetName().Version;
             }
-            VersionLb.Text = "Version " + version.Major + "." + version.Minor;
+            VersionLb.Text = "Version " + version.Major + "." + version.Minor + "." + version.Build;
 
         }
 
@@ -37,6 +37,11 @@ namespace GH
         private void Btn_Fermer_Click(object sender, System.EventArgs e)
         {
             this.Close();
+        }
+
+        private void VersionLb_Click(object sender, System.EventArgs e)
+        {
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\squirrel.windows.2.0.1\build\squirrel.windows.props" Condition="Exists('packages\squirrel.windows.2.0.1\build\squirrel.windows.props')" />
   <Import Project="packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.props" Condition="Exists('packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.props')" />
   <Import Project="packages\Microsoft.DiaSymReader.Native.1.7.0\build\Microsoft.DiaSymReader.Native.props" Condition="Exists('packages\Microsoft.DiaSymReader.Native.1.7.0\build\Microsoft.DiaSymReader.Native.props')" />
   <Import Project="packages\Microsoft.AspNetCore.Razor.Design.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Razor.Design.props" Condition="Exists('packages\Microsoft.AspNetCore.Razor.Design.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Razor.Design.props')" />
@@ -29,7 +30,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>0.4.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -83,6 +84,15 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DeltaCompressionDotNet, Version=1.1.0.0, Culture=neutral, PublicKeyToken=1d14d6e5194e7f4a, processorArchitecture=MSIL">
+      <HintPath>packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaCompressionDotNet.MsDelta, Version=1.1.0.0, Culture=neutral, PublicKeyToken=46b2138a390abf55, processorArchitecture=MSIL">
+      <HintPath>packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.MsDelta.dll</HintPath>
+    </Reference>
+    <Reference Include="DeltaCompressionDotNet.PatchApi, Version=1.1.0.0, Culture=neutral, PublicKeyToken=3e8888ee913ed789, processorArchitecture=MSIL">
+      <HintPath>packages\DeltaCompressionDotNet.1.1.0\lib\net20\DeltaCompressionDotNet.PatchApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Antiforgery, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.AspNetCore.Antiforgery.2.1.0\lib\netstandard2.0\Microsoft.AspNetCore.Antiforgery.dll</HintPath>
     </Reference>
@@ -291,11 +301,32 @@
     <Reference Include="Microsoft.Win32.Registry, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Win32.Registry.4.5.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.11.2.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>packages\Mono.Cecil.0.11.2\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.Bson.1.0.1\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Squirrel, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\squirrel.windows.2.0.1\lib\Net45\NuGet.Squirrel.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress, Version=0.17.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>packages\SharpCompress.0.17.1\lib\net45\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="Squirrel, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\squirrel.windows.2.0.1\lib\Net45\Squirrel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -494,17 +525,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="GH.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="GH.Designer.cs">
+      <DependentUpon>GH.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form2.cs">
+    <Compile Include="A_propos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <Compile Include="A_propos.Designer.cs">
+      <DependentUpon>A_propos.cs</DependentUpon>
     </Compile>
     <Compile Include="gedcom.cs" />
     <Compile Include="html.cs" />
@@ -517,11 +548,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="GH.resx">
+      <DependentUpon>GH.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form2.resx">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <EmbeddedResource Include="A_propos.resx">
+      <DependentUpon>A_propos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="parametre.resx">
       <DependentUpon>parametre.cs</DependentUpon>
@@ -619,6 +650,7 @@
     <Error Condition="!Exists('packages\Microsoft.DiaSymReader.Native.1.7.0\build\Microsoft.DiaSymReader.Native.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.DiaSymReader.Native.1.7.0\build\Microsoft.DiaSymReader.Native.props'))" />
     <Error Condition="!Exists('packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.props'))" />
     <Error Condition="!Exists('packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.targets'))" />
+    <Error Condition="!Exists('packages\squirrel.windows.2.0.1\build\squirrel.windows.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\squirrel.windows.2.0.1\build\squirrel.windows.props'))" />
   </Target>
   <Import Project="packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.targets" Condition="Exists('packages\Microsoft.AspNetCore.Mvc.Razor.Extensions.2.1.0\build\netstandard2.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.targets')" />
 </Project>

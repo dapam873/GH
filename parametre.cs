@@ -12,7 +12,7 @@ namespace GH
         {
             InitializeComponent();
         }
-        ToolTip t1 = new ToolTip();
+        readonly ToolTip t1 = new ToolTip();
         private void CbVoirID_CheckedChanged(object sender, EventArgs e)
         {
             if (CbVoirID.Checked)

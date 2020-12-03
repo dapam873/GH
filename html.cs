@@ -63,22 +63,22 @@ namespace HTML
                         {
                             if (sousDossier == "index")
                             {
-                                fichierPortrait = "commun\\media_manquant.svg";
+                                fichierPortrait = @"commun\media_manquant.svg";
                             }
                             else
                             {
-                                fichierPortrait = "../commun\\media_manquant.svg";
+                                fichierPortrait = @"..\commun\media_manquant.svg";
                             }
                         }
                         else
                         {
                             if (sousDossier == "index")
                             {
-                                fichierPortrait = "individus\\medias\\" + fichierPortrait;
+                                fichierPortrait = @"individus\medias\" + fichierPortrait;
                             }
                             else
                             {
-                                fichierPortrait = "medias\\" + fichierPortrait;
+                                fichierPortrait = @"medias\" + fichierPortrait;
                             }
                         }
                         texte += espace + "\t\t\t<br /><img class=\"portrait\" src=\"" + fichierPortrait + "\" alt=\"\" />\n";
@@ -3397,7 +3397,7 @@ namespace HTML
             Verifier_liste(InfoGEDCOM.N1_SUBM_liste_ID, liste_SUBMITTER_ID_numero);
             GEDCOMClass.SUBMISSION_RECORD Info_SUBMISSION_RECORD = GEDCOMClass.AvoirInfoSUBMISSION_RECORD();
             Verifier_liste(Info_SUBMISSION_RECORD.N1_SUBM_liste_ID, liste_SUBMITTER_ID_numero);
-            string nomFichier = @dossierSortie + "/index.html";
+            string nomFichier = @dossierSortie + @"\index.html";
             string texte = "";
             string temp;
             bool groupe_GEDCOM = true;
@@ -4012,8 +4012,8 @@ namespace HTML
         public void Index_famille_conjoint(string dossierSortie)
         {
             ListView lvChoixFamille = Application.OpenForms["GH"].Controls["lvChoixFamille"] as ListView;
-            string origine = "../";
-            string nomFichier = @dossierSortie + "/familles/" + "indexConjoint.html";
+            string origine = @"..\";
+            string nomFichier = @dossierSortie + @"\familles\" + "indexConjoint.html";
             if (File.Exists(nomFichier))
             {
                 File.Delete(nomFichier);
@@ -4139,7 +4139,7 @@ namespace HTML
                         {
                             erreur = Avoir_code_erreur();
                             Animation(true);
-                            System.IO.File.WriteAllText(@dossierSortie + "/familles/mDiver.html", texte);
+                            System.IO.File.WriteAllText(@dossierSortie + @"\familles\mDiver.html", texte);
                             //Message_HTML("Génération index conjoint  ", "Diver");
                             Application.DoEvents();
                         }
@@ -4149,7 +4149,7 @@ namespace HTML
                             Animation(true);
                             //Message_HTML("Génération index conjoint  ", "lettre " + (char)(f + 65));
                             Application.DoEvents();
-                            System.IO.File.WriteAllText(@dossierSortie + "/familles/m" + (char)(f + 65) + ".html", texte);
+                            System.IO.File.WriteAllText(@dossierSortie + @"\familles\m" + (char)(f + 65) + ".html", texte);
                         }
                     }
                     catch (Exception msg)
@@ -4164,8 +4164,8 @@ namespace HTML
         }
         public void Index_famille_conjointe(string dossierSortie)
         {
-            string origine = "../";
-            string nomFichier = @dossierSortie + "//familles//" + "indexConjointe.html";
+            string origine = @"..\";
+            string nomFichier = @dossierSortie + @"\familles\" + "indexConjointe.html";
             ListView lvChoixFamille = Application.OpenForms["GH"].Controls["lvChoixFamille"] as ListView;
             if (File.Exists(nomFichier))
             {
@@ -4295,7 +4295,7 @@ namespace HTML
                             Animation(true);
                             //Message_HTML("Génération index conjointe  ", "Divert");
                             Application.DoEvents();
-                            System.IO.File.WriteAllText(@dossierSortie + "/familles/fDiver.html", texte);
+                            System.IO.File.WriteAllText(@dossierSortie + @"\familles\fDiver.html", texte);
                             if (GH.GH.annuler) return;
                         }
                         else
@@ -4304,7 +4304,7 @@ namespace HTML
                             Animation(true);
                             //Message_HTML("Génération index conjointe  ", "lettre " + (char)(f + 65));
                             Application.DoEvents();
-                            System.IO.File.WriteAllText(@dossierSortie + "/familles/f" + (char)(f + 65) + ".html", texte);
+                            System.IO.File.WriteAllText(@dossierSortie + @"\familles\f" + (char)(f + 65) + ".html", texte);
                             if (GH.GH.annuler) return;
                         }
                     }
@@ -4320,7 +4320,7 @@ namespace HTML
         }
         public void Index_individu(string dossierSortie)
         {
-            string nomFichier = @dossierSortie + "/individus/" + "index.html";
+            string nomFichier = @dossierSortie + @"\individus\" + "index.html";
             ListView lvChoixIndividu = Application.OpenForms["GH"].Controls["lvChoixIndividu"] as ListView;
             if (File.Exists(nomFichier))
             {
@@ -4463,7 +4463,7 @@ namespace HTML
                             Animation(true);
                             //Message_HTML("Génération index individu  ", "Diver");
                             Application.DoEvents();
-                            System.IO.File.WriteAllText(@dossierSortie + "/individus/Diver.html", texte);
+                            System.IO.File.WriteAllText(@dossierSortie + @"\individus\Diver.html", texte);
                             if (GH.GH.annuler) return;
                         }
                         else
@@ -4472,7 +4472,7 @@ namespace HTML
                             Animation(true);
                             // Message_HTML("Génération index individu  ", "lettre " + (char)(f + 65));
                             Application.DoEvents();
-                            System.IO.File.WriteAllText(@dossierSortie + "/individus/" + (char)(f + 65) + ".html", texte);
+                            System.IO.File.WriteAllText(@dossierSortie + @"\individus\" + (char)(f + 65) + ".html", texte);
                             if (GH.GH.annuler) return;
                         }
                     }
@@ -4591,8 +4591,8 @@ namespace HTML
             {
                 age = Avoir_age(dateNaissance, dateDeces);
             }
-            string nomFichierIndividu = dossierSortie + "\\individus\\" + IDIndividu + ".html";
-            if (!menu) nomFichierIndividu = dossierSortie + "\\individus\\page.html";
+            string nomFichierIndividu = dossierSortie + @"\individus\" + IDIndividu + ".html";
+            if (!menu) nomFichierIndividu = dossierSortie + @"\individus\page.html";
             if (File.Exists(nomFichierIndividu))
             {
                 File.Delete(nomFichierIndividu);
