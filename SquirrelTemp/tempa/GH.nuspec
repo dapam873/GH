@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>GH</id>
+    <version>1.0.1</version>
+    <title>GEDCOM-HTML</title>
+    <authors>DAPAM</authors>
+    <owners>
+    </owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://pambrun.net/</projectUrl>
+    <description>Permet d'extraire les informations d'un fichier GEDCOM sous forme de fichier HTML pour tous les individus et toutes les familles.</description>
+    <language>ca-FR</language>
+  </metadata>
+</package>

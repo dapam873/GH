@@ -38,6 +38,7 @@
             this.ParamètresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aideToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.BienvenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.àProposToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LvChoixFamille = new System.Windows.Forms.ListView();
             this.lblVersionProgramme = new System.Windows.Forms.Label();
@@ -84,7 +85,6 @@
             this.Btn_cadre_individu = new System.Windows.Forms.Button();
             this.Btn_cadre_famille = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.Tb_version = new System.Windows.Forms.TextBox();
             this.menuPrincipal.SuspendLayout();
             this.Gb_info_GEDCOM.SuspendLayout();
             this.SuspendLayout();
@@ -149,6 +149,7 @@
             // 
             this.aideToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aideToolStripMenuItem1,
+            this.BienvenuToolStripMenuItem,
             this.àProposToolStripMenuItem});
             this.aideToolStripMenuItem.Name = "aideToolStripMenuItem";
             this.aideToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
@@ -157,14 +158,21 @@
             // aideToolStripMenuItem1
             // 
             this.aideToolStripMenuItem1.Name = "aideToolStripMenuItem1";
-            this.aideToolStripMenuItem1.Size = new System.Drawing.Size(122, 22);
+            this.aideToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.aideToolStripMenuItem1.Text = "&Aide";
             this.aideToolStripMenuItem1.Click += new System.EventHandler(this.AideToolStripMenuItem1_Click);
+            // 
+            // BienvenuToolStripMenuItem
+            // 
+            this.BienvenuToolStripMenuItem.Name = "BienvenuToolStripMenuItem";
+            this.BienvenuToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.BienvenuToolStripMenuItem.Text = "Bienvenu";
+            this.BienvenuToolStripMenuItem.Click += new System.EventHandler(this.BienvenuToolStripMenuItem_Click);
             // 
             // àProposToolStripMenuItem
             // 
             this.àProposToolStripMenuItem.Name = "àProposToolStripMenuItem";
-            this.àProposToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.àProposToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.àProposToolStripMenuItem.Text = "À &propos";
             this.àProposToolStripMenuItem.Click += new System.EventHandler(this.ÀProposToolStripMenuItem_Click);
             // 
@@ -783,20 +791,12 @@
             this.Btn_cadre_famille.TabIndex = 143;
             this.Btn_cadre_famille.UseVisualStyleBackColor = false;
             // 
-            // Tb_version
-            // 
-            this.Tb_version.Location = new System.Drawing.Point(302, 32);
-            this.Tb_version.Name = "Tb_version";
-            this.Tb_version.Size = new System.Drawing.Size(248, 20);
-            this.Tb_version.TabIndex = 144;
-            // 
             // GH
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(1235, 461);
-            this.Controls.Add(this.Tb_version);
             this.Controls.Add(this.Btn_erreur);
             this.Controls.Add(this.Btn_balise);
             this.Controls.Add(this.Btn_deboguer);
@@ -902,7 +902,7 @@
         private System.Windows.Forms.Button Btn_cadre_individu;
         private System.Windows.Forms.Button Btn_cadre_famille;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.TextBox Tb_version;
+        private System.Windows.Forms.ToolStripMenuItem BienvenuToolStripMenuItem;
     }
 }
 

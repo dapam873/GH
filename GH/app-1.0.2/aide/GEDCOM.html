@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+		<Title>GH Aide</Title>
+		<link rel="stylesheet" type="text/css" href="aide.css">
+        <meta charset="UTF-8">
+        <noscript><meta http-equiv="refresh" content="0; url=pasJavaScript.html" /></noscript>
+	</HEAD>
+	<body lang="fr-CA">
+        <table class="menu">
+<div class="beta"></div><! à effacer à la publication final********************** !>
+            <tr>
+                <td class="menuCol1">
+                    <script src="menu.js"></script>
+                </td>
+                <td class="menuCol2">
+                    <h1>
+                        GEDCOM
+                    </h1>
+                    <p>
+                        GEDCOM (acronyme de genealogical data communication, « communication de données généalogiques ») 
+                        est une spécification pour l'échange de données. Développé par l'Église de Jésus-Christ des 
+                        saints des derniers jours, ce format est plus particulièrement utilisé en généalogie pour 
+                        permettre l'échange de données entre plusieurs applications ou logiciels de généalogie;
+                        toutefois rien n'empêche d'utiliser cette spécification pour gérer d'autres types de données
+                        reliant des individus entre eux.
+                    </p>
+                    <p>
+                        Les informations figurent dans un fichier texte d'extension .ged​ et sont formatées pour 
+                        permettre aux logiciels de les utiliser. C'est un système à balises – comme HTML – 
+                        avec différents niveaux hiérarchiques sans imbrication.
+                    </p>
+                    <p>
+                        Il permet d'avoir des enregistrements concernant :
+                        <div style="margin-left:1in;">
+                               ● chaque personne
+                        </div>
+                        <div style="margin-left:1in;">
+                               ● chaque famille
+                        </div>
+                        <div style="margin-left:1in;">
+                               ● chaque évènement
+                        </div>
+                        <div style="margin-left:1in;">
+                               ● chaque source
+                        </div>
+                        <div style="margin-left:1in;">
+                               ● chaque dépôt
+                        </div>
+                        <div style="margin-left:1in;">
+                               ● chaque note
+                        </div>
+                        <div style="margin-left:1in;">
+                               ● chaque enregistrement multimédia
+                        </div>
+                    </p>
+                    <p>
+                        Tous ces enregistrements sont liés entre eux selon des conventions et respectent une grammaire 
+                        spécifique et précisément décrite.
+                    </p>
+                    <p>
+                        Un fichier GEDCOM est rédigé en texte seul, ASCII ou ANSEL, le jeu de caractères pouvant être 
+                        UTF-8, ISO-8859-1, ISO-8859-15 ou UTF-16. 
+                    </p>
+                    <p>
+                       Le fichier GEDCOM peut être lu avec un éditeur de texte tel Bloc-notes de Windows, Notepad++, etc.
+                    </p>
+                    <p>
+                        Voici le début d'un fichier GEDCOM
+                    </p>
+                    <pre>
+0 HEAD                                                   
+1 SOUR Gramps                                              
+2 VERS GrampsAIO64-5.1.2-1
+2 NAME Gramps
+1 DATE 27 FEB 2020
+2 TIME 15:49:33
+1 SUBM @SUBM@
+1 FILE C:\Users\dapam\Documents\GH\Lerousse.ged
+1 COPR Copyright (c) 2020 Roger Lerousse.
+1 GEDC
+2 VERS 5.5.1
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+1 LANG French
+0 @SUBM@ SUBM
+1 NAME Roger Lerousse
+1 ADDR
+0 @I0000@ INDI
+1 NAME Roger /Dr Lerousse/ dit Lerouge
+2 TYPE Nom usuel
+2 GIVN Roger
+2 SPFX Dr
+2 SURN Lerousse
+2 NSFX dit Lerouge
+2 NPFX Phd
+2 NICK Rog
+1 NAME Joseph André Roger /Lerousse/
+2 TYPE Nom de baptême
+2 GIVN Joseph André Roger
+2 SURN Lerousse
+2 SOUR @S0000@
+3 PAGE quatre-vingt-douzième feuillet B832
+3 DATA
+                    </pre>
+                    <p>
+                        Le début donne l'information du logiciel qui a exporté le fichier GEDCOM. 
+                        Nom du logiciel, sa version, date et heure de la création, etc., suivit de l'auteur des entrées.
+                    </p>
+                    <p>
+                    </p>
+                    La balise «0 @I0000@ INDI» indique le début de l'information du premier individu avec ID I0000.
+                    <p>
+                        Information tirer du site de Wikipédia pour plus d'information consultez la page 
+                        <a href="https://fr.wikipedia.org/wiki/GEDCOM"><u>https://fr.wikipedia.org/wiki/GEDCOM</u></a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

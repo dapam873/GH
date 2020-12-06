@@ -141,18 +141,40 @@ namespace GH
         public GH()
         {
             InitializeComponent();
-            Verifier_mise_a_jour(); //nnn 
-
+            var task = Verifier_mise_a_jour();
+            //Verifier_mise_a_jour();
+            //task.Wait();
+            task.ToString();
         }
+#pragma warning disable CS1998 // Cette méthode async n'a pas d'opérateur 'await' et elle s'exécutera de façon synchrone
         private async Task Verifier_mise_a_jour() //nnn
+#pragma warning restore CS1998 // Cette méthode async n'a pas d'opérateur 'await' et elle s'exécutera de façon synchrone
         {
-            //using (var manager = new UpdateManager("https://github.com/dapam873/GH")) // adresse web pour le mise à jour
-            using (var manager = new UpdateManager(@"D:\Data\Mega\GH\Publication")) // dossier pour le mise à jour
-            {
-                await manager.UpdateApp();
-
-                Tb_version.Text += "  Verifier_mise_a_jour";
+            //using (var manager = new UpdateManager("https://github.com/dapam873/GH")) // adresse web pour la mise à jour
+            using (var manager = new UpdateManager(@"D:\Data\Mega\GH\GH\Releases", "GH" )) // dossier pour la mise à jour
+            { 
+                //await manager.UpdateApp();
+                //Assembly assembly = Assembly.GetExecutingAssembly();
+                
+                SquirrelAwareApp.HandleEvents(
+                    onInitialInstall: v => manager.CreateShortcutForThisExe(),
+                    onAppUpdate: v => manager.CreateShortcutForThisExe(),
+                    onAppUninstall: v => manager.RemoveShortcutForThisExe(),
+                    onFirstRun: () => Voir_Bienvenu()
+                );
+                
+                
             }
+        }
+        private void Voir_Bienvenu()
+        {
+            Form l = new Bienvenu
+            {
+                StartPosition = FormStartPosition.Manual,
+                Left = 70,
+                Top = 60
+            };
+            l.ShowDialog(this);
         }
         readonly ToolTip t1 = new ToolTip();
         private void OuvrirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -459,18 +481,15 @@ namespace GH
         }
         private void GH_Load(object sender, EventArgs e)
         {
-            System.Version version;
-            try
+            //system.Version version;
+            /*try
             {
                 version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
             }
             catch
             {
                 version = Assembly.GetExecutingAssembly().GetName().Version;
-            }
-            Tb_version.Text = "Version " + version.Major + "." + version.Minor + "." + version.Build;
-
-
+            }*/
             this.Visible = false;
             this.WindowState = Properties.Settings.Default.Form1_State;
             this.Location = Properties.Settings.Default.Form1_location;
@@ -1604,6 +1623,17 @@ namespace GH
         {
             if (Properties.Settings.Default.voir_ToolTip)
                 t1.Show("Arrêter l'opération", Btn_annuler);
+        }
+
+        private void BienvenuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form l = new Bienvenu
+            {
+                StartPosition = FormStartPosition.Manual,
+                Left = this.Left + 145,
+                Top = this.Top + 100
+            };
+            l.ShowDialog(this);
         }
     }
     internal class ListViewItemComparer : IComparer

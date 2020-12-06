@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+		<Title>GH Aide</Title>
+		<link rel="stylesheet" type="text/css" href="aide.css">
+        <meta charset="UTF-8">
+        <noscript><meta http-equiv="refresh" content="0; url=pasJavaScript.html" /></noscript>
+	</HEAD>
+	<body lang="fr-CA">
+<div class="beta"></div><! à effacer à la publication final********************** !>
+        <table class="menu" >
+            <tr>
+                <td class="menuCol1">
+                    <script src="menu.js"></script>
+                </td>
+                <td class="menuCol2">
+                    <h1>
+                        Paramètre
+                    </h1>
+                    <img class="centre" src="parametre.png" />
+                    <h2>Dossier HTML</h2>
+                    <p>
+                        On tape dans ce champ le nom du dossier qui va servir à enregistrer les fichiers générés par GH au format HTML. 
+                        Dans ce dossier, il sera créé un dossier portant le même nom que le fichier GEDCOM sans son extension.
+                    </p>
+                    <p>
+                        En cliquant sur <img style="height:16px" src="dossier.png" />, on ouvre une fenêtre pour sélection un dossier ou en créer un à l'endroit désiré.
+                    </p>
+                    <p>
+                        Si l'arrière-plan du champ est rouge, le dossier n'existe pas.
+                    </p>
+                    <h2>Dossier média</h2>
+                    <p>
+                        On tape dans ce champ le nom du dossier qui contient les fichiers des médias référencés dans le fichier GEDCOM si le besoin est.
+                    </p>
+                    <p>
+                        On n'a probablement pas à le faire, si le fichier GEDCON a été généré sur votre ordinateur et que les fichiers n'ont pas été déplacés.
+                    </p>
+                    <p>
+                        On doit le faire, s'il y a des médias référencés dans le fichier GEDCOM qui ne sont pas dans les dossiers 
+                    spécifiés sur votre ordinateur, mais sont plutôt tous regroupés dans un autre dossier de votre ordinateur, sélectionner ce dossier.
+                    </p>    
+                    <p>
+                        On doit le faire, si on vous donne un fichier GEDCOM et les fichiers médias provenant d'une autre source que votre ordinateur. 
+                    </p>
+                    <p>
+                        En cliquant sur <img style="height:16px" src="dossier.png" />, on ouvre une fenêtre pour sélection un dossier ou en créer un à l'endroit désiré.
+                    </p>
+                    <p>
+                        Si l'arrière-plan du champ est rouge, le dossier n'existe pas.
+                    </p>
+                    <h2>Voir ID</h2>
+                    <p>
+                        Chaque fiche dans le fichier GEDCOM a une identification unique. Cocher l'option si vous voulez voir l'information dans la fiche.
+                    </p>
+                    <h2>Photo principale</h2>
+                    <p>
+                        Cochez la case si vous voulez voir le premier média spécifié pour une fiche individu ou de famille. De préférence, 
+                        dans le logiciel de généalogie si possible placez une photo et non un document. 
+                    </p>
+                    <h2>Voir média</h2>
+                    <p>
+                        Cochez la case si vous voulez voir tous les médias disponibles pour consultation dans les fiches HTML générées. 
+                    </p>    
+                    <h2>Voir date de changement</h2>
+                    <p>
+                        Cochez la case si vous voulez voir la date de la dernière mise à jour de l'information.
+                    </p>
+                    <h2>Date longue</h2>
+                    <p>
+                        Cochez la case si vous voulez avoir la date longue. C'est-à-dire 1<sup>er</sup> janvier 2020 au lieu de 2020/01/01
+                    </p>
+                    <h2>Voir référence</h2>
+                    <p>
+                        Cochez la case si vous voulez voir les sources (citations) des informations.
+                    </p>
+                    <h2>Voir note</h2>
+                    <p>
+                        Cochez la case si vous voulez voir les notes.
+                    </p>
+                    <h2>Balise</h2>
+                    <p>
+                        Chaque ligne d'un fichier GEDCOM commence par une balise qui détermine le contenu de la ligne. 
+                    </p>
+                    <p>
+                        Certains logiciels de généalogie utilisent leurs propres balises. Si GH n'interprète pas certaines balises 
+                        et que l'option est cochée, les lignes seront enregistrées dans le fichier balise.txt dans le 
+                        dossier HTML.
+                    </p>
+                    <p>
+                        Ce fichier pourra être soumis au développeur, avec si possible le fichier 
+                        GEDCOM, pour analyse. Une mise à jour du logiciel pourrait ensuite lire ses balises et afficher les informations dans les rapports.
+                    </p>
+                    <p>
+                        Le fichier balise.txt et le fichier GEDCOM peuvent-être éditer par l'usager. 
+                        Si son ficher GEDCOM contient des informations confidentielles, il doit les remplacer pas des astérisques avant des envoyé au développeur.
+                    </p>
+                    <h2>Déboguer</h2>
+                    <p>
+                        Cette case est temporaire et paraitra dans GH en développement et dans la version Beta.
+                    </p>
+                    <p>
+                        Si la case est cochée, GH enregistres des informations sur le déroulement du logiciel dans le fichier deboguer.txt dans le 
+                        dossier HTML.
+                        Ce fichier pourra être soumis au développeur, avec si possible le fichier 
+                        GEDCOM, pour analyse.
+                    </p>
+                    <p>
+                        Le fichier deboguer.txt et le fichier GEDCOM peuvent-être éditer par l'usager. 
+                        Si son ficher GEDCOM contient des informations confidentielles, il doit les remplacer pas des astérisques avant des envoyé au développeur.
+                    </p>
+                    <H2>Fermer</H2>
+                    <p>
+                        Ferme la fenêtre. Les changements sont enregistrés aux moments de la modification. 
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
