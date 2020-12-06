@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Tb_text.Text" xml:space="preserve">
-    <value>XX Ce logiciel est fourni «tel quel», sans aucune garantie expresse ou implicite. Les auteurs ne pourront en aucun cas être tenus responsables des dommages résultant de l'utilisation de ce logiciel.
+    <value>Ce logiciel est fourni «tel quel», sans aucune garantie expresse ou implicite. Les auteurs ne pourront en aucun cas être tenus responsables des dommages résultant de l'utilisation de ce logiciel.
 
 La permission est donnée à quiconque d'utiliser ce logiciel à des fins personnelles, de le redistribuer librement. Il n'est pas permis de faire un usage commercial, et de ne pas le modifier sous réserve des restrictions suivantes:</value>
   </data>
