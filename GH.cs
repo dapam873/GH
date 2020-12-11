@@ -150,20 +150,18 @@ namespace GH
         private async Task Verifier_mise_a_jour() //nnn
 #pragma warning restore CS1998 // Cette méthode async n'a pas d'opérateur 'await' et elle s'exécutera de façon synchrone
         {
-            //using (var manager = new UpdateManager("https://github.com/dapam873/GH")) // adresse web pour la mise à jour
-            using (var manager = new UpdateManager(@"D:\Data\Mega\GH\GH\Releases", "GH" )) // dossier pour la mise à jour
+            using (var manager = new UpdateManager("https://github.com/dapam873/GH")) // adresse web pour la mise à jour
+            //using (var manager = new UpdateManager(@"D:\Data\Mega\GH\GH\Releases", "GH" )) // dossier pour la mise à jour
             { 
                 //await manager.UpdateApp();
                 //Assembly assembly = Assembly.GetExecutingAssembly();
                 
                 SquirrelAwareApp.HandleEvents(
-                    onInitialInstall: v => manager.CreateShortcutForThisExe(),
-                    onAppUpdate: v => manager.CreateShortcutForThisExe(),
-                    onAppUninstall: v => manager.RemoveShortcutForThisExe(),
+                    onInitialInstall: v => { manager.CreateShortcutForThisExe(); manager.CreateUninstallerRegistryEntry(); },
+                    onAppUpdate: v => { manager.CreateShortcutForThisExe(); manager.CreateUninstallerRegistryEntry(); },
+                    onAppUninstall: v => { manager.RemoveShortcutForThisExe(); manager.RemoveUninstallerRegistryEntry(); },
                     onFirstRun: () => Voir_Bienvenu()
                 );
-                
-                
             }
         }
         private void Voir_Bienvenu()

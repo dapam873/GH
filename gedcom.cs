@@ -84,11 +84,13 @@ namespace GEDCOM
         public static List<string> dataGEDCOM = new List<string>();
         public class ADDRESS_STRUCTURE
         {
+            // GEDCOM54.pdf             p.27
             // 5.5_LDS_1996-01-02.pdf   p.29
             // 5.5.1_LDS_2019-11-15.pdf p.31
             // 5.5.5_Annotations_TJ.pdf p.64
-                                                                //ADDRESS_STRUCTURE:=
+            //                                                      ADDRESS_STRUCTURE:=
             public string N0_ADDR;                              //  n ADDR <ADDRESS_LINE>               {1:1}
+                                                                //                                          V5.4    p.27
                                                                 //                                          V5.5    p.37
                                                                 //                                          V5.5.1  p.41
                                                                 //                                          V5.5.5 p.97
@@ -120,6 +122,7 @@ namespace GEDCOM
                                                                 //                                          V5.5.1  p.41
                                                                 //                                          v5.5.5  p.76
             public string N1_CTRY;                              //      +1 CTRY <ADDRESS_COUNTRY>       {0:1}
+                                                                //                                          V5.4    p.34
                                                                 //                                          V5.5    p.37
                                                                 //                                          V5.5.1  p.41
                                                                 //                                          v5.5.5  p.76
@@ -144,64 +147,75 @@ namespace GEDCOM
             public string N1_TYPE;                          //          +1 TYPE <RECORD_TYPE>
                                                             //                                                  V5.5    p.51
             public string N1_RELA;                          //          +1 RELA <RELATION_IS_DESCRIPTOR>    {1:1}
+                                                            //                                                  V5.4    p.45
                                                             //                                                  V5.5    p.52
                                                             //                                                  V5.5.1  p.60
                                                             //                                                  V5.5.5  p.104
 
             public List<string> N1_SOUR_citation_liste_ID;  //          +1 <<SOURCE_CITATION>>              {0:M}
+                                                            //                                                  V5.4    p.31
                                                             //                                                  V5.5    p.34
                                                             //                                                  V5.5.1  p.39
                                                             //                                                  V5.5.5  p.73
-            
+
             public List<string> N1_SOUR_source_liste_ID;    //          +1 généré par l'appication
             public List<string> N1_NOTE_liste_ID;           //          +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                            //                                                  V5.4    p.30
                                                             //                                                  V5.5    p.33
                                                             //                                                  V5.5.1  p.37
                                                             //                                                  v5.5.5  p.71
         }
         public class CHANGE_DATE
         {
+            // GEDCOM54.pdf             p.27
             // 5.5_LDS_1996-01-02.pdf   p.29
             // 5.5.1_LDS_2019-11-15.pdf p.31
             // 5.5.5_Annotations_TJ.pdf p.66
-                                                            //CHANGE_DATE:=
-                                                            //  n CHAN                                      {1:1}
-                                                            //                                                  V5.5
-                                                            //                                                  V5.5.1
-                                                            //                                                  V5.5.5
+            //                                                  CHANGE_DATE:=
+            //                                                  n CHAN                                      {1:1}
+            //                                                                                                  V5.5
+            //                                                                                                  V5.5.1
+            //                                                                                                  V5.5.5
             public string N1_CHAN_DATE;                     //      +1 DATE <DATE_EXACT>                    {1:1}
+                                                            //                                                  V5.4    p.35
                                                             //                                                  V5.5    p.39
                                                             //                                                  V5.5.1  p.44
                                                             //                                                  V5.5.5  p.83
             public string N2_CHAN_DATE_TIME;                //          +2 TIME <TIME_VALUE>                {0:1}
+                                                            //                                                  V5.4    p.47
                                                             //                                                  V5.5    p.55
                                                             //                                                  V5.5.1  p.63
                                                             //                                                  V5.5.5  p.107
             public List<string> N1_CHAN_NOTE_ID_liste;      //          +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                            //                                                  V5.4    p.30
                                                             //                                                  V5.5    p.33
                                                             //                                                  V5.5.1  p.37
                                                             //                                                  V5.5.5  p.71
         }
         public class CHILD_TO_FAMILY_LINK
         {
+            // GEDCOM54.pdf             p.27
             // 5.5_LDS_1996-01-02.pdf   p.29
             // 5.5.1_LDS_2019-11-15.pdf p.31
             // 5.5.5_Annotations_TJ.pdf p.67
-                                                            //  CHILD_TO_FAMILY_LINK:=
+            //  CHILD_TO_FAMILY_LINK:=
             public string N0_FAMC;                          //      n FAMC @<XREF:FAM>@                     {1:1}
+                                                            //                                                  V5.4
                                                             //                                                  V5.5
                                                             //                                                  V5.5.1  p.24
                                                             //                                                  V5.5.5  P.108
             public string N1_PEDI;                          //          +1 PEDI <PEDIGREE_LINKAGE_TYPE>     {0:1}
+                                                            //                                                  V5.3    p.43
                                                             //                                                  V5.5    p.50
                                                             //                                                  V5.5.1  p.57
                                                             //                                                  V5.5.5  p.99
             public string N1_STAT;                          //          +1 STAT <CHILD_LINKAGE_STATUS>      {0:1}
                                                             //                                                  V5.5.1  p.44
             public List<string> N1_NOTE_liste_ID;           //          +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                            //                                                  V5.4    p.30
                                                             //                                                  V5.5    p.33
-                                                            //                                              V5.5.1  p.37
-                                                            //                                              v5.5.5  p.71
+                                                            //                                                  V5.5.1  p.37
+                                                            //                                                  v5.5.5  p.71
         }
         public class EVENT_ATTRIBUTE_STRUCTURE
         {
@@ -212,12 +226,17 @@ namespace GEDCOM
             //                      5.5.1_LDS_2019-11-15 p.34
             //                      5.5.5_Annotations_TJ p.69
             //      INDIVIDUAL_EVENT_STRUCTURE
+            //                      GEDCOM54.pdf         p.28
             //                      5.5.1_LDS_2019-11-15 p.34
             //                      5.5.5_Annotations_TJ p.69
+            //      INDIVIDUAL_ATTRIBUTE_STRUCTURE
+            //                      GEDCOM54.pdf         p.28
             //      FAMILY_EVENT_DETAIL
+            //                      GEDCOM54.pdf         p.27
             //                      5.5.1_LDS_2019-11-15 p.32
             //                      5.5.5_Annotations_TJ p.67
             //      EVENT_DETAIL    
+            //                      GEDCOM54.pdf         p.27
             //                      5.5_LDS_1996-01-02.pdf   p.29
             //                      5.5.1_LDS_2019-11-15.pdf p.32
             //                      5.5.5_Annotations_TJ.pdf p.67
@@ -243,10 +262,12 @@ namespace GEDCOM
                                                             //                                                  V5.5.1  p.38
                                                             //                                                  V5.5.5  p.72
             public ADDRESS_STRUCTURE N2_ADDR;               //  n <<ADDRESS_STRUCTURE>>                     {0:1}
+                                                            //                                                  V5.4    p.27
                                                             //                                                  V5.5    p.29
                                                             //                                                  V5.5.1  p.31
                                                             //                                                  V5.5.5  p.64
             public List<string> N2_PHON_liste;              //  n PHON <PHONE_NUMBER>                       {0:3}
+                                                            //                                                  V5.4    p.43
                                                             //                                                  V5.5    p.50
                                                             //                                                  V5.5.1  p.57
                                                             //                                                  V5.5.5  p.99
@@ -260,6 +281,7 @@ namespace GEDCOM
                                                             //                                                  V5.5.1  p.42
                                                             //                                                  V5.5.5  p.76
             public string N2_AGNC;                          //  n AGNC <RESPONSIBLE_AGENCY>                 {0:1}
+                                                            //                                          V5.4    p.45
                                                             //                                                  V5.5    p.34
                                                             //                                                  V5.5.1  p.60
                                                             //                                                  V5.5.5  p.104
@@ -267,46 +289,55 @@ namespace GEDCOM
                                                             //                                                  V5.5.1  p.60
                                                             //                                                  V5.5.5  p.104
             public string N2_CAUS;                          //  n CAUS <CAUSE_OF_EVENT>                     {0:1} 
+                                                            //                                                  V5.4    p.35
                                                             //                                                  V5.5    p.38
                                                             //                                                  V5.5.1  p.78
                                                             //                                                  V5.5.5  p.72
             public string N2_RESN;                          //  n RESN <RESTRICTION_NOTICE>                 {0:1}
                                                             //                                                  V5.5.1  p.60
             public List<string> N2_NOTE_liste_ID;           //  n <<NOTE_STRUCTURE>>                        {0:M}
+                                                            //                                                  V5.4    p.30
                                                             //                                                  V5.5    p.33
                                                             //                                                  V5.5.1  p.37
                                                             //                                                  V5.5.5  p.71
             public List<string> N2_SOUR_citation_liste_ID;  //  n <<SOURCE_CITATION>>                       {0:M}
+                                                            //                                                  V5.4    p.31
                                                             //                                                  V5.5    p.34
                                                             //                                                  V5.5.1  p.39
                                                             //                                                  V5.5.5  p.73
             public List<string> N2_SOUR_source_liste_ID;
             public List<string> N2_OBJE_liste_ID;           //  n <<MULTIMEDIA_LINK>>                       {0:M}
+                                                            //                                                  V5.4    p.30
                                                             //                                                  V5.5    p.33 p.26
                                                             //                                                  V5.5.1  p.37 p.26
                                                             //                                                  V5.5.5  p.71
                                                             // FAMILY_EVENT_DETAIL
                                                             //  n HUSB {0:1}
             public string N3_HUSB_AGE;                      //      +1 AGE <AGE_AT_EVENT>                   {1:1}
+                                                            //                                                  V5.4    p.34
                                                             //                                                  V5.5    p.37
                                                             //                                                  V5.5.1  p.42
                                                             //                                                  V5.5.5  p.77
             public string N3_WIFE_AGE;                      //      +1 AGE <AGE_AT_EVENT>                   {1:1}
+                                                            //                                                  V5.4    p.34
                                                             //                                                  V5.5    p.37
                                                             //                                                  V5.5.1  p.42
                                                             //                                                  v5.5.5  p.77
                                                             // INDIVIDUAL_EVENT_DETAIL:=
             public string N2_AGE;                           //  n AGE <AGE_AT_EVENT>
+                                                            //                                                  V5.4    p.34
                                                             //                                                  V5.5    p.37
                                                             //                                                  V5.5.1  p.42
                                                             //                                                  V5.5.5  p.77
                                                             // INDIVIDUAL_EVENT_STRUCTURE:=
             public string N2_FAMC;                          //      +1 FAMC @<XREF:FAM>@                    {0:1}
+                                                            //                                                  V5.4
                                                             //                                                  V5.5    p.55
                                                             //                                                  V5.5.1  p.24
                                                             //                                                  V5.5.5  p.108
 
             public string N2_FAMC_ADOP;                     //         +2 ADOP<ADOPTED_BY_WHICH_PARENT>     {0:1}
+                                                            //                                                  V5.4    p.34
                                                             //                                                  V5.5    p.37
                                                             //                                                  V5.5.1  p.42
                                                             //                                                  V5.5.5  p.76
@@ -320,44 +351,54 @@ namespace GEDCOM
         }
         public class FAM_RECORD
         {
+            // GEDCOM54.pdf             p.22
             // 5.5_LDS_1996-01-02.pdf   p29
             // 5.5.1_LDS_2019-11-15.pdf p.24
             // 5.5.5_Annotations_TJ.pdf p.58 FAM_GROUP_RECORD
             //                                                          FAM_RECORD:=
             public string N0_ID;                                        //    n @<XREF:FAM>@ FAM                {1:1}
+                                                                        //                                          V5.4
                                                                         //                                          V5.5
                                                                         //                                          V5.5.1
                                                                         //                                          v5.5.5
             public string N1_RESN;                                      //    +1 RESN <RESTRICTION_NOTICE>      {0:1) 
                                                                         //                                          V5.5.1  p.60
             public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //    +1 <<FAMILY_EVENT_STRUCTURE>>     {0:M}
+                                                                        //                                          V5.4    p.27
                                                                         //                                          V5.5    p.30
                                                                         //                                          V5.5.1  p.32
                                                                         //                                          v5.5.5  p.67
             public string N1_HUSB;                                      //    +1 HUSB @<XREF:INDI>@             {0:1}
+                                                                        //                                          V5.4    p.48
                                                                         //                                          V5.5    p.55
                                                                         //                                          V5.5.1  p.25
                                                                         //                                          v5.5.5  p.108
             public string N1_WIFE;                                      //    +1 WIFE @<XREF:INDI>@             {0:1} p.25
+                                                                        //                                          V5.4    p.48
                                                                         //                                          V5.5    p.55
                                                                         //                                          V5.5.1  p.25
                                                                         //                                          v5.5.5  p.108
             public List<string> N1_CHIL_liste_ID;                       //    +1 CHIL @<XREF:INDI>@             {0:M}
+                                                                        //                                          V5.4    p.48
                                                                         //                                          V5.5    p.55
                                                                         //                                          V5.5.1  p.25
                                                                         //                                          v5.5.5  p.108
             public string N1_NCHI;                                      //    +1 NCHI <COUNT_OF_CHILDREN>       {0:1}
+                                                                        //                                          V5.4    p.35
                                                                         //                                          V5.5    p.39
                                                                         //                                          V5.5.1  p.44
                                                                         //                                          v5.5.5  p.79
             public List<string> N1_SUBM_liste_ID;                       //    +1 SUBM @<XREF:SUBM>@             {0:M}
+                                                                        //                                          V5.4
                                                                         //                                          V5.5    p.55
                                                                         //                                          V5.5.1  p.28
                                                                         //                                          v5.5.5  p.79
             public LDS_SPOUSE_SEALING N1_SLGS;                          //    +1 <<LDS_SPOUSE_SEALING>>         {0:M}
+                                                                        //                                          V5.4    p.30
                                                                         //                                          V5.5    p.33
                                                                         //                                          V5.5.1  p.36
             public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //    +1 REFN <USER_REFERENCE_NUMBER>   {0:M}
+                                                                        //                                          V5.4    p.47
                                                                         //                                          V5.5    p.55
                                                                         //                                          V5.5.1  p.63
                                                                         //                                          v5.5.5  p.107
@@ -370,19 +411,23 @@ namespace GEDCOM
                                                                         //                                          V5.5.1  p.63
                                                                         //                                          v5.5.5  p.78
             public CHANGE_DATE N1_CHAN;                                 //    +1 <<CHANGE_DATE>>                {0:1}
+                                                                        //                                          V5.4    p.27
                                                                         //                                          V5.5    p.29
                                                                         //                                          V5.5.1  p.31
                                                                         //                                          v5.5.5  p.66
             public List<string> N1_NOTE_liste_ID;                       //    +1 <<NOTE_STRUCTURE>>             {0:M}
+                                                                        //                                          V5.4    p.30
                                                                         //                                          V5.5    p.33
                                                                         //                                          V5.5.1  p.37
                                                                         //                                          v5.5.5  p.71
             public List<string> N1_SOUR_citation_liste_ID;              //    +1 <<SOURCE_CITATION>>            {0:M}
+                                                                        //                                          V5.4    p.31
                                                                         //                                          V5.5    p.34
                                                                         //                                          V5.5.1  p.39
                                                                         //                                          v5.5.5  p.73
             public List<string> N1_SOUR_source_liste_ID;
             public List<string> N1_OBJE_liste;                          //    +1 <<MULTIMEDIA_LINK>>            {0:M}
+                                                                        //                                          V5.4    p.30
                                                                         //                                          V5.5    p.33 p.26
                                                                         //                                          V5.5.1  p.37 p.26
                                                                         //                                          v5.5.5  p.71
@@ -393,67 +438,85 @@ namespace GEDCOM
         }
         public class INDIVIDUAL_RECORD
         {
+            // GEDCOM54.pdf             p.22
             // 5.5_LDS_1996-01-02.pdf   p25
             // 5.5.1_LDS_2019-11-15.pdf p.25 
             // 5.5.5_Annotations_TJ.pdf p.61
-                                                                        //  INDIVIDUAL_RECORD
+            //  INDIVIDUAL_RECORD
             public string N0_ID;                                        //      n @XREF:INDI@ INDI                          {1:1}
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5
                                                                         //                                                      V5.5.1
                                                                         //                                                      V5.5.5
             public string N1_RESN;                                      //          +1 RESN <RESTRICTION_NOTICE>            {0:1}
+                                                                        //                                                      V5.4    p.45
                                                                         //                                                      V5.5    p.52
                                                                         //                                                      V5.5.1  p.60
             public List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste;         //          +1 <<PERSONAL_NAME_STRUCTURE>>          {0:M}
+                                                                        //                                                      V5.4    p.31
                                                                         //                                                      V5.5    p.34
                                                                         //                                                      V5.5.1  p.38
                                                                         //                                                      V5.5.5  p.72
             public string N1_SEX;                                       //          +1 SEX <SEX_VALUE>                      {0:1}
+                                                                        //                                                      V5.4    p.45
                                                                         //                                                      V5.5    p.53
                                                                         //                                                      V5.5.1  p.61
                                                                         //                                                      V5.5.5  p.105
             public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //          +1 <<INDIVIDUAL_EVENT_STRUCTURE>>       {0:M}
+                                                                        //                                                      V5.4    p.28
                                                                         //                                                      V5.5    p.31
                                                                         //                                                      V5.5.1  p.34
                                                                         //                                                      V5.5.5  p.69
             public List<EVENT_ATTRIBUTE_STRUCTURE> N1_Attribute_liste;  //          +1 <<INDIVIDUAL_ATTRIBUTE_STRUCTURE>>   {0:M}
+                                                                        //                                                      V5.4    p.28
                                                                         //                                                      V5.5    p.30
                                                                         //                                                      V5.5.1  p.33
                                                                         //                                                      V5.5.5  p.67
             public List<LDS_INDIVIDUAL_ORDINANCE> N1_LDS_liste;         //          +1 <<LDS_INDIVIDUAL_ORDINANCE>>         {0:M}
+                                                                        //                                                      V5.4    p.30
                                                                         //                                                      V5.5    p.32
                                                                         //                                                      V5.5.1  p.35
             public CHILD_TO_FAMILY_LINK N1_FAMC;                        //          +1 <<CHILD_TO_FAMILY_LINK>>             {0:M}
+                                                                        //                                                      V5.4    p.27
                                                                         //                                                      V5.5    p.32
                                                                         //                                                      V5.5.1  p.31
                                                                         //                                                      V5.5.5  p.67
             public List<SPOUSE_TO_FAMILY_LINK> N1_FAMS_liste_Conjoint;  //          +1 <<SPOUSE_TO_FAMILY_LINK>>            {0:M}
+                                                                        //                                                      V5.4    p.32
                                                                         //                                                      V5.5    p.35
                                                                         //                                                      V5.5.1  p.40
                                                                         //                                                      V5.5.5  p.75
             public List<string> N1_SUBM_liste_ID;                       //          +1 SUBM @<XREF:SUBM>@                   {0:M}
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5    p.55
                                                                         //                                                      V5.5.1  p.28
             public List<ASSOCIATION_STRUCTURE> N1_ASSO_liste;           //          +1 <<ASSOCIATION_STRUCTURE>>            {0:M}
+                                                                        //                                                      V5.4    p.48
                                                                         //                                                      V5.5    p.29
                                                                         //                                                      V5.5.1  p.31
                                                                         //                                                      V5.5.5  p.65
             public List<string> N1_ALIA_liste_ID;                       //          +1 ALIA @<XREF:INDI>@                   {0:M}
+                                                                        //                                                      V5.4    p.48
                                                                         //                                                      V5.5    p.55
                                                                         //                                                      V5.5.1  p.25
             public List<string> N1_ANCI_liste_ID;                       //          +1 ANCI @<XREF:SUBM>@                   {0:M}
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5    p.55
                                                                         //                                                      V5.5.1  p.28
             public List<string> N1_DESI_liste_ID;                       //          +1 DESI @<XREF:SUBM>@                   {0:M}
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5    p.55
                                                                         //                                                      V5.5.1  p.28
             public string N1_RFN;                                       //          +1 RFN <PERMANENT_RECORD_FILE_NUMBER>   {0:1}
+                                                                        //                                                      V5.4    p.43
                                                                         //                                                      V5.5    p.50
                                                                         //                                                      V5.5.1  p.57
             public string N1_AFN;                                       //          +1 AFN <ANCESTRAL_FILE_NUMBER>          {0:1}
+                                                                        //                                                      V5.4    p.34
                                                                         //                                                      V5.5    p.38
                                                                         //                                                      V5.5.1  p.42
             public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M}
+                                                                        //                                                      V5.4    p.47
                                                                         //                                                      V5.5    p.55
                                                                         //                                                      V5.5.1  p.63 p.64
                                                                         //                                                      V5.5.5  p.107
@@ -468,19 +531,24 @@ namespace GEDCOM
                                                                         //                                                      V5.5.1  p.43
                                                                         //                                                      V5.5.5  p.78
             public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1}
+                                                                        //                                                      V5.4    p.27
                                                                         //                                                      V5.5    p.29
                                                                         //                                                      V5.5.1  p.31
-                                                                        //                                                      v5.5.5  p.66
+
+            //                                                      v5.5.5  p.66
             public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                        //                                                      V5.4    p.30
                                                                         //                                                      V5.5    p.33
                                                                         //                                                      V5.5.1  p.37
                                                                         //                                                      v5.5.5  p.71
             public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M}
+                                                                        //                                                      V5.4    p.31
                                                                         //                                                      V5.5    p.34
                                                                         //                                                      V5.5.1  p.39
                                                                         //                                                      v5.5.5  p.73
             public List<string> N1_SOUR_source_liste_ID;
             public List<string> N1_OBJE_liste;                          //          +1 <<MULTIMEDIA_LINK>>                  {0:M}
+                                                                        //                                                      V5.4    p.30
                                                                         //                                                      V5.5    p.33 p.26
                                                                         //                                                      V5.5.1  p.37 p.26
                                                                         //                                                      v5.5.5  p.71
@@ -501,36 +569,43 @@ namespace GEDCOM
         }
         public struct HEADER
         {
-            // HEADER           5.5_LDS_1996-01-02.pdf p.23
-            // HEADER           5.5.1_LDS_1999-10-02.pdf p.23
-            // GEDCOM_HEADER    5.5.5_Annotations_TJ p.67
+            // HEADER           GEDCOM54.pdf                p.21
+            // HEADER           5.5_LDS_1996-01-02.pdf      p.23
+            // HEADER           5.5.1_LDS_1999-10-02.pdf    p.23
+            // GEDCOM_HEADER    5.5.5_Annotations_TJ        p.67
 
-                                                            //      n HEAD                                              {1:1}
-                                                            //                                                              V5.5    p.23
-                                                            //                                                              V5.5.1  p.23
-                                                            //                                                              V5.5.5  p.56
+            //                                                      n HEAD                                              {1:1}
+            //                                                                                                              V5.5    p.23
+            //                                                                                                              V5.5.1  p.23
+            //                                                                                                              V5.5.5  p.56
 
-            public string N1_SOUR;                          //      +1 SOUR <APPROVED_SYSTEM_ID>                        {1:1} 
+            public string N1_SOUR;                          //      +1 SOUR <APPROVED_SYSTEM_ID>                        {1:1}
+                                                            //                                                              V5.4    p.34
                                                             //                                                              V5.5    p.38
                                                             //                                                              V5.5.1  p.42
                                                             //                                                              V5.5.5  p.57
             public string N2_SOUR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1}
+                                                            //                                                              V5.4    p.47
                                                             //                                                              V5.5    p.55
                                                             //                                                              V5.5.1  p.64
                                                             //                                                              V5.5.5  p.106
             public string N2_SOUR_NAME;                     //          +2 NAME <NAME_OF_PRODUCT>                       {0:1}
+                                                            //                                                              V5.4    p.41
                                                             //                                                              V5.5    p.48
                                                             //                                                              V5.5.1  p.54
                                                             //                                                              V5.5.5  p.96
             public string N2_SOUR_CORP;                     //          +2 CORP <NAME_OF_BUSINESS>                      {0:1}
+                                                            //                                                              V5.4    p.41
                                                             //                                                              V5.5    p.48
                                                             //                                                              V5.5.1  p.54
                                                             //                                                              V5.5.5  p.96
             public ADDRESS_STRUCTURE N3_SOUR_CORP_ADDR;     //              +3 <<ADDRESS_STRUCTURE>>                    {0:1}
+                                                            //                                                              V5.4    p.27
                                                             //                                                              V5.5    p.29
                                                             //                                                              V5.5.1  p.31
                                                             //                                                              V5.5.5  p.64
             public List<string> N3_SOUR_CORP_PHON_liste;    //              +3 PHON <PHONE_NUMBER>                      {0:3}
+                                                            //                                                              V5.4    p.43
                                                             //                                                              V5.5    p.50
                                                             //                                                              V5.5.1  p.57
                                                             //                                                              V5.5.5  p.75
@@ -544,75 +619,93 @@ namespace GEDCOM
                                                             //                                                              V5.5.1  p.42
                                                             //                                                              V5.5.5  p.76
             public string N2_SOUR_DATA;                     //          +2 DATA <NAME_OF_SOURCE_DATA>                   {0:1}
+                                                            //                                                              V5.4    p.41
                                                             //                                                              V5.5    p.48
                                                             //                                                              V5.5.1  p.54
                                                             //                                                              V5.5.5  p.
             public string N3_SOUR_DATA_DATE;                //              +3 DATE <PUBLICATION_DATE>                  {0:1}
+                                                            //                                                              V5.4    p.44
                                                             //                                                              V5.5    p.51
                                                             //                                                              V5.5.1  p.59
                                                             //                                                              V5.5.5  p.103
             public string N3_SOUR_DATA_CORP;                //              +3 COPR <COPYRIGHT_SOURCE_DATA>             {0:1}
+                                                            //                                                              V5.4    p.35
                                                             //                                                              V5.5    p.39
                                                             //                                                              V5.5.1  p.44
                                                             //                                                              V5.5.5  p.79
                                                             //                  +4 [CONT|CONC]<COPYRIGHT_SOURCE_DATA>   {0:M}
                                                             //                                                              V5.5.1  p.44
             public string N1_DEST;                          //      +1 DEST <RECEIVING_SYSTEM_NAME>                     {0:1}
+                                                            //                                                              V5.4    p.44
                                                             //                                                              V5.5    p.51
                                                             //                                                              V5.5.1  p.59
                                                             //                                                              V5.5.5  p.103
             public string N1_DATE;                          //      +1 DATE <TRANSMISSION_DATE>                         {0:1}
+                                                            //                                                              V5.4    p.44
                                                             //                                                              V5.5    p.55
                                                             //                                                              V5.5.1  p.63
                                                             //                                                              V5.5.5  p.93
             public string N2_DATE_TIME;                     //          +2 TIME <TIME_VALUE>                            {0:1}
+                                                            //                                                              V5.4    p.47
                                                             //                                                              V5.5    p.55
                                                             //                                                              V5.5.1  p.63
                                                             //                                                              V5.5.5  p.107
             public List<string> N1_SUBM_liste_ID;           //      +1 SUBM @<XREF:SUBM>@                               {1:1}
+                                                            //                                                              V5.4
+                                                            //                                                              V5.4    p.24
                                                             //                                                              V5.5    p.55
                                                             //                                                              V5.5.1  p.28
                                                             //                                                              V5.5.5  p.108
             public string N1_SUBN;                          //      +1 SUBN @<XREF:SUBN>@                               {0:1}
+                                                            //                                                              V5.4    p.48
                                                             //                                                              V5.5    p.55
                                                             //                                                              V5.5.1  p.28
             public string N1_FILE;                          //      +1 FILE <FILE_NAME>                                 {0:1}
+                                                            //                                                              V5.4    p.39
                                                             //                                                              V5.5    p.23
                                                             //                                                              V5.5.1  p.50
                                                             //                                                              V5.5.5  p.93
             public string N1_COPR;                          //      +1 COPR <COPYRIGHT_GEDCOM_FILE>                     {0:1}
+                                                            //                                                              V5.4    p.35
                                                             //                                                              V5.5    p.39
                                                             //                                                              V5.5.1  p.55
                                                             //                                                              V5.5.5  p.79
                                                             //      +1 GEDC                                             {1:1}      
             public string N2_GEDC_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {1:1}
+                                                            //                                                              V5.4    p.47
                                                             //                                                              V5.5    p.55
                                                             //                                                              V5.5.1  p.64
                                                             //                                                              V5.5.5  p.
             public string N2_GEDC_FORM;                     //          +2 FORM <GEDCOM_FORM>                           {1:1}
+                                                            //                                                              V5.4    p.39
                                                             //                                                              V5.5    p.44
                                                             //                                                              V5.5.1  p.50
                                                             //                                                              V5.5.5  p.
             public string N3_GEDC_FORM_VERS;                //              +3 VERS <GEDCOM_VERSION_NUMBER>             {1:1}
                                                             //                                                              V5.5.5  p.49
             public string N1_CHAR;                          //      +1 CHAR <CHARACTER_SET>                             {1:1} p.44 V5.5.1
+                                                            //                                                              V5.4    p.35
                                                             //                                                              V5.5    p.39
                                                             //                                                              V5.5.1  p.44
                                                             //                                                              V5.5.5  p.47
             public string N2_CHAR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1} p.64 V5.5.1
+                                                            //                                                              V5.4    p.47
                                                             //                                                              V5.5    p.55
                                                             //                                                              V5.5.1  p.64
             public string N1_LANG;                          //      +1 LANG <LANGUAGE_OF_TEXT>                          {0:1}
+                                                            //                                                              V5.4    p.39
                                                             //                                                              V5.5    p.45
                                                             //                                                              V5.5.1  p.51
                                                             //                                                              V5.5.5  p.94
             public string N1_PLAC;                          //      +1 PLAC                                             {0:1}      V5.
                                                             //                                                              V5.5
                                                             //                                                              V5.5.1
-            public string N2_PLAC_FORM;                     //          +2 FORM <PLACE_HIERARCHY>                       {1:1} p.58 V5.5.1
+            public string N2_PLAC_FORM;                     //          +2 FORM <PLACE_HIERARCHY>                       {1:1}
+                                                            //                                                              V5.4    p.44
                                                             //                                                              V5.5    p.51
                                                             //                                                              V5.5.1  p.58
-            public string N1_NOTE;                          //      +1 NOTE <GEDCOM_CONTENT_DESCRIPTION>                {0:1} p.50 V5.5.1 V5.5.5
+            public string N1_NOTE;                          //      +1 NOTE <GEDCOM_CONTENT_DESCRIPTION>                {0:1}
+                                                            //                                                              V5.4    p.39
                                                             //                                                              V5.5    p.44
                                                             //                                                              V5.5.1  p.50
                                                             //                                                              V5.5.5  p.93
@@ -628,80 +721,101 @@ namespace GEDCOM
         }
         public class LDS_INDIVIDUAL_ORDINANCE
         {
+            // GEDCOM54.pdf             p.30
             // 5.5_LDS_1996-01-02.pdf   p.32
             // 5.5.1_LDS_1999-10-02.pdf p.36
-                                                                        // LDS_INDIVIDUAL_ORDINANCE
+            // LDS_INDIVIDUAL_ORDINANCE
             public string N0_Type;                                      //  n [ BAPL | CONL | ENDL | SLGC]      {1:1}      V5.5.1
             public string N1_DATE;                                      //      +1 DATE <DATE_LDS_ORD>          {0:1}
+                                                                        //                                          V5.4    p.36
                                                                         //                                          V5.5    p.41
                                                                         //                                          V5.5.1  p.46
             public string N1_TEMP;                                      //      +1 TEMP <TEMPLE_CODE>           {0:1}
+                                                                        //                                          V5.4    p.47
                                                                         //                                          V5.5    p.54
                                                                         //                                          V5.5.1  p.63
-            public string N1_PLAC;                                      //      +1 PLAC <PLACE_LIVING_ORDINANCE>{0:1}1
+            public string N1_PLAC;                                      //      +1 PLAC <PLACE_LIVING_ORDINANCE>{0:1}
+                                                                        //                                          V5.4    p.44
                                                                         //                                          V5.5    p.41
                                                                         //                                          V5.5.1  p.58
             public string N1_STAT;                                      //      +1 STAT <LDS_BAPTISM_DATE_STATUS>{0:1}
+                                                                        //                                          V5.4    p.39
                                                                         //                                          V5.5    p.45
                                                                         //                                          V5.5.1  p.37 p.26
 
             public string N2_STAT_DATE;                                 //          +2 DATE <CHANGE_DATE>       {1:1}
                                                                         //                                          V5.5.1  p.41
             public List<string> N1_NOTE_liste_ID;                       //      +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                        //                                          V5.4    p.30
                                                                         //                                          V5.5    p.33
                                                                         //                                          V5.5.1  p.51
             public List<string> N1_SOUR_citation_liste_ID;              //      +1 <<SOURCE_CITATION>>          {0:M}
+                                                                        //                                          V5.4    p.31
                                                                         //                                          V5.5    p.34
                                                                         //                                          V5.5.1  p.39
             public List<string> N1_SOUR_source_liste_ID;
             public string N1_FAMC;                                      //      +1 FAMC @<XREF:FAM>@            {1:1}
+                                                                        //                                          V5.4
                                                                         //                                          V5.5    p.55
                                                                         //                                          V5.5.1  p.24
         }
         public class LDS_SPOUSE_SEALING
         {
+            // GEDCOM54.pdf             p.30
             // 5.5.1_LDS_1999-10-02.pdf p.36
             // 5.5_LDS_1996-01-02.pdf   p.33
-                                                                        // LDS_SPOUSE_SEALING:=
-                                                                        //      n SLGS {1:1}
+            // LDS_SPOUSE_SEALING:=
+            //      n SLGS {1:1}
             public string N1_DATE;                                      //         +1 DATE <DATE_LDS_ORD>                       {0:1}
+                                                                        //                                                          V5.4    p.36
                                                                         //                                                          V5.5    p.41
                                                                         //                                                          V5.5.1  p.46
             public string N1_TEMP;                                      //         +1 TEMP <TEMPLE_CODE>                        {0:1}
+                                                                        //                                                          V5.4    p.47
                                                                         //                                                          V5.5    p.54
                                                                         //                                                          V5.5.1  p.63
-            public string N1_PLAC;                                      //         +1 PLAC <PLACE_LIVING_ORDINANCE>             {0:1} p.58 V5.5.1
+            public string N1_PLAC;                                      //         +1 PLAC <PLACE_LIVING_ORDINANCE>             {0:1}
+                                                                        //                                                          V5.4    p.44
                                                                         //                                                          V5.5    p.41
                                                                         //                                                          V5.5.1  p.58
             public string N1_STAT;                                      //         +1 STAT <LDS_SPOUSE_SEALING_DATE_STATUS>     {0:1}
+                                                                        //                                                          V5.4
                                                                         //                                                          V5.5    p.46
                                                                         //                                                          V5.5.1  p.52
             public string N2_STAT_DATE;                                 //             +2 DATE <CHANGE_DATE>                    {1:1}
                                                                         //                                                          V5.5.1  p.44
             public List<string> N1_NOTE_liste_ID;                       //         +1 <<NOTE_STRUCTURE>>                        {0:M}
+                                                                        //                                                          V5.4    p.30
                                                                         //                                                          V5.5    p.33
                                                                         //                                                          V5.5.1  p.37
             public List<string> N1_SOUR_citation_liste_ID;              //         +1 <<SOURCE_CITATION>>                       {0:M}
+                                                                        //                                                          V5.4    p.31
                                                                         //                                                          V5.5    p.34
                                                                         //                                                          V5.5.1  p.39
             public List<string> N1_SOUR_source_liste_ID;
         }
         public class MULTIMEDIA_RECORD 
         {
+            // GEDCOM54.pdf             p.23
             // 5.5_LDS_1996-01-02.pdf   p33
             // 5.5.1_LDS_1999-10-02.pdf p.26
             // 5.5.5_Annotations_TJ.pdf p.62
-                                                                        //  MULTIMEDIA_LINK:= V5.5
-                                                                        //  MULTIMEDIA_RECORD:= V5.5.1 V 5.5.5
+            //                                                              MULTIMEDIA_LINK:= V5.4
+            //                                                              MULTIMEDIA_LINK:= V5.5
+            //                                                              MULTIMEDIA_RECORD:= V5.5.1 V 5.5.5
             public string N0_ID;                                        //      n @XREF:OBJE@ OBJE                          {1:1}
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5    p.55
                                                                         //                                                      V5.5.1
                                                                         //                                                      V5.5.5
-            public string N1_FORM;                                      //          +1 +1 FORM <MULTIMEDIA_FORMAT>          {1:1}
+            public string N1_FORM;                                      //          +1 FORM <MULTIMEDIA_FORMAT>             {1:1}
+                                                                        //                                                      V5.4    p.41
                                                                         //                                                      V5.5    p.48
-            public string N1_TITL;                                      //          +1 FORM <MULTIMEDIA_FORMAT>             {0:1}
-                                                                        //                                                      v5.5 p.43
-            public string N1_FILE;                                      //          +1 FILE <MULTIMEDIA_FILE_REFN>          {1:M} p.54
+            public string N1_TITL;                                      //          +1 TITL <DESCRIPTIVE_TITLE>             {0:1}
+                                                                        //                                                      V5.4 p.41
+                                                                        //                                                      V5.5 p.43
+            public string N1_FILE;                                      //          +1 FILE <MULTIMEDIA_FILE_REFN>          {1:M}
+                                                                        //                                                      V5.4 p.41
                                                                         //                                                      V5.5    p.47
                                                                         //                                                      V5.5.1  p.54
                                                                         //                                                      V5.5.5  p.95
@@ -715,9 +829,11 @@ namespace GEDCOM
                                                                         //                                                      V5.5.1  p.48
                                                                         //                                                      V5.5.5  p.89
             public string N1_BLOB;                                      //          +1 BINARY_OBJECT                        {1:1}
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5
                                                                         //              +2 CONT <ENCODED_MULTIMEDIA_LINE>   {1:M} 
-                                                                        //                                                      V5.5 p.43
+            public string N1_EOBJ;                                      //          +1 EOBJ  END_OBJECT}                    {1:1}
+                                                                        //                                                      V5.4    p.62
             public string N1_OBJE;                                      //          +1 @<XREF:OBJE>@ chain to continued object  V5.5 
 
             public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M}
@@ -731,30 +847,36 @@ namespace GEDCOM
                                                                         //                                                      V5.5.1  p.43
                                                                         //                                                      V5.5.5  p.78
             public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                        //                                                      V5.4    p.30
                                                                         //                                                      V5.5    p.33
                                                                         //                                                      V5.5.1  p.37
                                                                         //                                                      V5.5.5  p.71
             public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M}
+                                                                        //                                                      V5.4    p.31
                                                                         //                                                      V5.5.1  p.39
                                                                         //                                                      V5.5.5  p.73
             public List<string> N1_SOUR_source_liste_ID;
             public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1}
+                                                                        //                                                      V5.4    p.27
                                                                         //                                                      V5.5.1  p.31
                                                                         //                                                      V5.5.5  p.66
-           
+
             public string N1__DATE;                                     //          +1                                          Herisis
         }
         public class NOTE_RECORD
         {
+            // GEDCOM54.pdf             p.23
             // 5.5_LDS_1996-01-02.pdf   p26
             // 5.5.1_LDS_1999-10-02.pdf p.27
             // 5.5.5_Annotations_TJ     p.71
-                                                                        // NOTE_RECORD:=
+            //                                                              NOTE_RECORD:=
             public string N0_ID;                                        //      n @<XREF:NOTE>@ NOTE <SUBMITTER_TEXT>       {1:1} 
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5   p.54
                                                                         //                                                      V5.5.1 p.63
                                                                         //                                                      V5.5.5 p.108
                                                                         //          +1 [CONC|CONT] <SUBMITTER_TEXT>         {0:M}
+                                                                        //                                                      V5.4
                                                                         //                                                      V5.5
                                                                         //                                                      V5.5.1 p.63
                                                                         // le texte est placé dans N0_NOTE_Texte
@@ -773,6 +895,7 @@ namespace GEDCOM
                                                                         //                                                      V5.5.1  p.43 
                                                                         //                                                      V5.5.5  p.78
             public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} 
+                                                                        //                                                      V5.4    p.31
                                                                         //                                                      V5.5    p.34
                                                                         //                                                      V5.5.1  p.39
                                                                         //                                                      V5.5.5  p.73
@@ -780,6 +903,7 @@ namespace GEDCOM
                                                                         // V5.5.5 p.73
             public List<string> N1_SOUR_source_liste_ID;
             public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} 
+                                                                        //                                                      V5.4    p.27
                                                                         //                                                      V5.5    p.29
                                                                         //                                                      V5.5.1  p.31
                                                                         //                                                      V5.5.5  p.66
@@ -789,14 +913,17 @@ namespace GEDCOM
         }
         public class PERSONAL_NAME_PIECES
         {
+            // GEDCOM54.pdf             p.31
             // 5.5_LDS_1996-01-02.pdf   p.37
             // 5.5.1_LDS_2019-11-15.pdf p.37
             // 5.5.5_Annotations_TJ.pdf p.71
             public string Nn_NPFX;                                      //      n NPFX <NAME_PIECE_PREFIX>  {0:1}
+                                                                        //                                      V5.4   p.42
                                                                         //                                      V5.5   p.48
                                                                         //                                      V5.5.1 p.55
                                                                         //                                      V5.5.5 p.97
             public string Nn_GIVN;                                      //      n GIVN <NAME_PIECE_GIVEN>   {0:1}
+                                                                        //                                      V5.4   p.42
                                                                         //                                      V5.5   p.49
                                                                         //                                      V5.5.1 p.55
                                                                         //                                      V5.5.5 p.97
@@ -809,30 +936,36 @@ namespace GEDCOM
                                                                         //                                      V5.5.1 p.56
                                                                         //                                      V5.5.5 p.98
             public string Nn_SURN;                                      //      n SURN <NAME_PIECE_SURNAME> {0:1}
+                                                                        //                                      V5.4   p.42
                                                                         //                                      V5.5   p.49
                                                                         //                                      V5.5.1 p.55
                                                                         //                                      V5.5.5 p.98
             public string Nn_NSFX;                                      //      n NSFX <NAME_PIECE_SUFFIX>  {0:1}
+                                                                        //                                      V5.4   p.42
                                                                         //                                      V5.5   p.49
                                                                         //                                      V5.5.1 p.55
                                                                         //                                      V5.5.5 p.98
             public List<string> Nn_NOTE_liste_ID;                       //      n <<NOTE_STRUCTURE>>        {0:M}
+                                                                        //                                      V5.4    p.30
                                                                         //                                      V5.5   p.33
                                                                         //                                      V5.5.1 p.37
                                                                         //                                      V5.5.5 p.71
             public List<string> Nn_SOUR_citation_liste_ID;              //      n <<SOURCE_CITATION>>       {0:M}
-            public List<string> Nn_SOUR_source_liste_ID;
+                                                                        //                                      V5.4    p.31
                                                                         //                                      V5.5   p.44
                                                                         //                                      V5.5.1 p.39
                                                                         //                                      V5.5.5 p.73
+            public List<string> Nn_SOUR_source_liste_ID;
         }
         public class PERSONAL_NAME_STRUCTURE
         {
+            // GEDCOM54.pdf             p.31
             // 5.5_LDS_1996-01-02.pdf   p.34
             // 5.5.1_LDS_2019-11-15.pdf p.38
             // 5.5.5_Annotations_TJ.pdf p.72
-                                                                        //  PERSONAL_NAME_STRUCTURE:=
+            //                                                              PERSONAL_NAME_STRUCTURE:=
             public string N0_NAME;                                      //      n NAME <NAME_PERSONAL>      {1:1}
+                                                                        //                                      V5.4
                                                                         //                                      V5.5   p.48
                                                                         //                                      V5.5.1 p.54
                                                                         //                                      V5.5.5 p.96
@@ -873,69 +1006,79 @@ namespace GEDCOM
         }
         public class PLACE_STRUCTURE
         {
+            // GEDCOM54.pdf             p.31
             // 5.5_LDS_1996-01-02.pdf   p.37
             // 5.5.1_LDS_2019-11-15.pdf p.38
             // 5.5.5_Annotations_TJ.pdf p.72
-                                                                // PLACE_STRUCTURE:=
+            // PLACE_STRUCTURE:=
             public string N0_PLAC;                              //  n PLAC <PLACE_NAME>                     {1:1}
-                                                                //                                              V5.5 p.51
-                                                                //                                              V5.5.1 p.58
-                                                                //                                              V5.5.5 p.100
+                                                                //                                              V5.4    p.44
+                                                                //                                              V5.5    p.51
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
             public string N1_FORM;                              //      +1 FORM <PLACE_HIERARCHY>           {0:1}
-                                                                //                                              V5.5.1 p.51
-                                                                //                                              V5.5.1 p.58
-                                                                //                                              V5.5.5 p.100
+                                                                //                                              V5.4    p.44
+                                                                //                                              V5.5.1  p.51
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
             public string N1_FONE;                              //      +1 FONE <PLACE_PHONETIC_VARIATION>  {0:M}
-                                                                //                                          V5.5.1 p.59
-                                                                //                                          V5.5.51 p.101
+                                                                //                                              V5.5.1  p.59
+                                                                //                                              V5.5.51 p.101
             public string N2_FONE_TYPE;                         //          +2 TYPE <PHONETIC_TYPE>         {1:1} p.57
-                                                                //                                          V5.5.1 p.57
-                                                                //                                          V5.5.51 p.100
+                                                                //                                              V5.5.1  p.57
+                                                                //                                              V5.5.51 p.100
             public string N1_ROMN;                              //      +1 ROMN <PLACE_ROMANIZED_VARIATION> {0:M} p.59
-                                                                //                                          V5.5.1 p.59
-                                                                //                                          V5.5.51 p.101
+                                                                //                                              V5.5.1  p.59
+                                                                //                                              V5.5.51 p.101
             public string N2_ROMN_TYPE;                         //          +2 TYPE <ROMANIZED_TYPE>        {1:1} p.61
-                                                                //                                          V5.5.1 p.61
-                                                                //                                          V5.5.5 p.105
+                                                                //                                              V5.5.1  p.61
+                                                                //                                              V5.5.5  p.105
                                                                 //      +1 MAP                              {0:1}
             public string N2_MAP_LATI;                          //          +2 LATI <PLACE_LATITUDE>        {1:1}
-                                                                //                                          V5.5.1 p.58
-                                                                //                                          V5.5.5 p.100
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
             public string N2_MAP_LONG;                          //          +2 LONG <PLACE_LONGITUDE>       {1:1}
-                                                                //                                          V5.5.1 p.58
-                                                                //                                          V5.5.5 p.100
-            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M} p.37
-                                                                //                                              V5.5   p.33
-                                                                //                                              V5.5.1 p.37
-                                                                //                                              V5.5.5 p.71
-
-            public List<string> N1_SOUR_citation_liste_ID;      //                                              V5.5   p.34
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
+            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                                //                                              V5.4    p.30
+                                                                //                                              V5.5    p.33
+                                                                //                                              V5.5.1  p.37
+                                                                //                                              V5.5.5  p.71
+            public List<string> N1_SOUR_citation_liste_ID;      //                                          {0:M}
+                                                                //                                              V5.4    p.31
+                                                                //                                              V5.5    p.34
                                                                 // pour GEDitCOM
             public List<string> N1_SOUR_source_liste_ID;        // pour GEDitCOM
         }
         public class REPOSITORY_RECORD 
         {
+            // GEDCOM54.pdf             p.24
             // 5.5_LDS_1996-01-02.pdf   p26
             // 5.5.1_LDS_2019-11-15.pdf p.27
             // 5.5.5_Annotations_TJ.pdf p.63
-                                                                        // REPOSITORY_RECORD:=
+            //                                                              REPOSITORY_RECORD:=
             public string N0_ID;                                        //  n @<XREF:REPO>@ REPO {1:1}
+                                                                        //                                          V5.4
                                                                         //                                          V5.5
                                                                         //                                          V5.5.1
                                                                         //                                          V5.5.5
 
             public string N1_NAME;                                      //      +1 NAME <NAME_OF_REPOSITORY>    {1:1}
-                                                                        //                                          V5.5   p.48
-                                                                        //                                          V5.5.1 p.54
-                                                                        //                                          V5.5.5 p.96
+                                                                        //                                          V5.5    p.41
+                                                                        //                                          V5.5    p.48
+                                                                        //                                          V5.5.1  p.54
+                                                                        //                                          V5.5.5  p.96
             public ADDRESS_STRUCTURE N1_ADDR;                           //      +1 <<ADDRESS_STRUCTURE>>            {0:1}
-                                                                        //                                          V5.5   p.29
-                                                                        //                                          V5.5.1 p.31
-                                                                        //                                          V5.5.5 p.64
+                                                                        //                                          V5.4    p.27
+                                                                        //                                          V5.5    p.29
+                                                                        //                                          V5.5.1  p.31
+                                                                        //                                          V5.5.5  p.64
             public List<string> N1_PHON_liste;                          //      n PHON <PHONE_NUMBER>               {0:3}
-                                                                        //                                          V5.5   p.50
-                                                                        //                                          V5.5.1 p.57
-                                                                        //                                          V5.5.5 p.99
+                                                                        //                                          V5.4    p.43
+                                                                        //                                          V5.5    p.50
+                                                                        //                                          V5.5.1  p.57
+                                                                        //                                          V5.5.5  p.99
             public List<string> N1_EMAIL_liste;                         //      n EMAIL <ADDRESS_EMAIL>             {0:3}
                                                                         //                                          V5.5.1 p.41
                                                                         //                                          V5.5.5 p.75
@@ -946,6 +1089,7 @@ namespace GEDCOM
                                                                         //                                          V5.5.1 p.42
                                                                         //                                          V5.5.5 p.76
             public List<string> N1_NOTE_liste_ID;                       //      +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                                        //                                          V5.4    p.30
                                                                         //                                          V5.5   p.33
                                                                         //                                          V5.5.1 p.37
                                                                         //                                          V5.5.5 p.71
@@ -962,39 +1106,47 @@ namespace GEDCOM
                                                                         //                                          V5.5.1 p.43
                                                                         //                                          V5.5.5 p.78
             public CHANGE_DATE N1_CHAN;                                 //      +1 <<CHANGE_DATE>>                  {0:1}
+                                                                        //                                          V5.4    p.27
                                                                         //                                          V5.5   p.29
                                                                         //                                          V5.5.1 p.54
                                                                         //                                          V5.5.5 p.66
         }
         public class SOURCE_CITATION
         {
-            // 5.5_LDS_1996-01-02.pdf   p34
+            // GEDCOM54.pdf             p.31
+            // 5.5_LDS_1996-01-02.pdf   p.34
             // 5.5.1_LDS_2019-11-15.pdf p.39
             // 5.5.5_Annotations_TJ.pdf p.73
-            //  SOURCE_CITATION:=
-            //      [      /* pointer to source record (preferred)*/
+            //                                                      SOURCE_CITATION:=
             public string N0_ID_source;                         //      n SOUR @<XREF:SOUR>@                {1:1}
+                                                                //      n SOUR <SOURCE_DESCRIPTION>         {1:1}
+                                                                //                                              V5.5   p.46
                                                                 //                                              V5.5   p.55
                                                                 //                                              V5.5.1 p.27
                                                                 //                                              V5.5.5 p.108
             public string N1_PAGE;                              //          +1 PAGE<WHERE_WITHIN_SOURCE>    {0:1}
+                                                                //                                              V5.4   p.48
                                                                 //                                              V5.5   p.55
                                                                 //                                              V5.5.1 p.64
                                                                 //                                              V5.5.5 p.107
             public string N1_EVEN;                              //          +1 EVEN<EVENT_TYPE_CITED_FROM>  {0:1}
+                                                                //                                              V5.4   p.38
                                                                 //                                              V5.5   p.43
                                                                 //                                              V5.5.1 p.49
                                                                 //                                              V5.5.5 p.92
             public string N2_EVEN_ROLE;                         //              +2 ROLE<ROLE_IN_EVENT>      {0:1}
+                                                                //                                              V5.4   p.38
                                                                 //                                              V5.5   p.53
                                                                 //                                              V5.5.1 p.61
                                                                 //                                              V5.5.5 p.104
                                                                 //          +1 DATA                         {0:1}
             public string N2_DATA_DATE;                         //              +2 DATE<ENTRY_RECORDING_DATE> {0:1}
+                                                                //                                              V5.4   p.37
                                                                 //                                              V5.5   p.43
                                                                 //                                              V5.5.1 p.48
                                                                 //                                              V5.5.5 p.91
             public string N2_DATA_TEXT;                         //              +2 TEXT<TEXT_FROM_SOURCE>   {0:M}
+                                                                //                                              V5.4   p.47
                                                                 //                                              V5.5   p.54
                                                                 //                                              V5.5.1 p.63
                                                                 //                                              V5.5.5 p.106
@@ -1002,18 +1154,20 @@ namespace GEDCOM
                                                                 //                                              V5.5
                                                                 //                                              V5.5.1
             public List<string> N1_OBJE_ID_liste;               //          +1 <<MULTIMEDIA_LINK>>          {0:M}
+                                                                //                                              V5.4    p.30
                                                                 //                                              V5.5    p.33 p.26
                                                                 //                                              V5.5.1  p.37 p.26
                                                                 //                                              v5.5.5  p.71
             public List<string> N1_NOTE_liste_ID;               //          +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                //                                              V5.4    p.30
                                                                 //                                              V5.5   p.33
                                                                 //                                              V5.5.1 p.37
                                                                 //                                              V5.5.5 p.71
             public string N1_QUAY;                              //          +1 QUAY<CERTAINTY_ASSESSMENT>   {0:1}
-                                                                //                                              V5.5   p.38
-                                                                //                                              V5.5.1 p.43
-                                                                //                                              V5.5.5 p.78
-                                                                //      |           /* Systems not using source records */
+                                                                //                                              V5.4    p.35
+                                                                //                                              V5.5    p.38
+                                                                //                                              V5.5.1  p.43
+                                                                //                                              V5.5.5  p.78
             public string N0_Titre;                             //      n SOUR <SOURCE_DESCRIPTION>         {1:1}
                                                                 //                                              V5.5   p.53
                                                                 //                                              V5.5.1 p.61
@@ -1034,75 +1188,89 @@ namespace GEDCOM
         }
         public class SOURCE_RECORD 
         {
+            // GEDCOM54.pdf             p.24
             // 5.5_LDS_1996-01-02.pdf   p26
             // 5.5.1_LDS_2019-11-15.pdf p.27
             // 5.5.5_Annotations_TJ.pdf p.63
-                                                                        //  SOURCE_RECORD:=
+            //                                                              SOURCE_RECORD:=
             public int N0_numero;                                       //      n numero assigné par application
             public string N0_ID;                                        //      n @<XREF:SOUR>@ SOUR                {1:1}
+                                                                        //                                              V5.4
                                                                         //                                              V5.5
                                                                         //                                              V5.5.1
                                                                         //                                              V5.5.5
                                                                         //          +1 DATA                         {0:1}
+                                                                        //                                              V5.4
                                                                         //                                              V5.5
                                                                         //                                              V5.5.1
                                                                         //                                              V5.5.5
             public string N2_DATA_EVEN;                                 //              +2 EVEN <EVENTS_RECORDED>   {0:M}
+                                                                        //                                              V5.4   p.38
                                                                         //                                              V5.5   p.44
                                                                         //                                              V5.5.1 p.50
                                                                         //                                              V5.5.5 p.92
             public string N3_DATA_DATE;                                 //                  +3 DATE <DATE_PERIOD>   {0:1}
+                                                                        //                                              V5.4   p.38
                                                                         //                                              V5.5   p.41
                                                                         //                                              V5.5.1 p.46
                                                                         //                                              V5.5.5 p.85
             public string N3_DATA_PLAC;                                 //                  +3 PLAC <SOURCE_JURISDICTION_PLACE>{0:1}
+                                                                        //                                              V5.4   p.46
                                                                         //                                              V5.5   p.54
                                                                         //                                              V5.5.1 p62
                                                                         //                                              V5.5.5 p.106
             public string N2_DATA_AGNC;                                 //              +2 AGNC <RESPONSIBLE_AGENCY>{0:1}
-                                                                        //                                              V5.5   p.54
-                                                                        //                                              V5.5.1 p.60
-                                                                        //                                              V5.5.5 p.104
+                                                                        //                                              V5.4    p.45
+                                                                        //                                              V5.5    p.54
+                                                                        //                                              V5.5.1  p.60
+                                                                        //                                              V5.5.5  p.104
             public List<string> N2_DATA_NOTE_liste_ID;                  //              +2 <<NOTE_STRUCTURE>>       {0:M}
-                                                                        //                                              V5.5   p.33
-                                                                        //                                              V5.5.1 p.37
-                                                                        //                                              V5.5.5 p.71
+                                                                        //                                              V5.4    p.30
+                                                                        //                                              V5.5    p.33
+                                                                        //                                              V5.5.1  p.37
+                                                                        //                                              V5.5.5  p.71
             public string N1_AUTH;                                      //          +1 AUTH <SOURCE_ORIGINATOR>     {0:1}
-                                                                        //                                              V5.5   p.54
-                                                                        //                                              V5.5.1 p.62
-                                                                        //                                              V5.5.5 p.106
+                                                                        //                                              V5.4    p.46
+                                                                        //                                              V5.5    p.54
+                                                                        //                                              V5.5.1  p.62
+                                                                        //                                              V5.5.5  p.106
                                                                         //              +2 [CONC|CONT] <SOURCE_ORIGINATOR>{0:M}
-                                                                        //                                              V5.5   p.54
+                                                                        //                                              V5.5    p.54
                                                                         //                                          V5.5.1 p.62
             public string N1_TITL;                                      //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE>{0:1}
-                                                                        //                                              V5.5   p.53
-                                                                        //                                              V5.5.1 p.62
-                                                                        //                                              V5.5.5 p.105
+                                                                        //                                              V5.4    p.46
+                                                                        //                                              V5.5    p.53
+                                                                        //                                              V5.5.1  p.62
+                                                                        //                                              V5.5.5  p.105
                                                                         //              +2 [CONC|CONT] <SOURCE_DESCRIPTIVE_TITLE>{0:M}
                                                                         //                                              V5.5   p.53
                                                                         //                                              V5.5.1
             public string N1_ABBR;                                      //          +1 ABBR <SOURCE_FILED_BY_ENTRY> {0:1}
-                                                                        //                                              V5.5   p.53
-                                                                        //                                              V5.5.1 p.62
-                                                                        //                                              V5.5.5 p.106
+                                                                        //                                              V5.4    p.46
+                                                                        //                                              V5.5    p.53
+                                                                        //                                              V5.5.1  p.62
+                                                                        //                                              V5.5.5  p.106
             public string N1_PUBL;                                      //          +1 PUBL <SOURCE_PUBLICATION_FACTS>{0:1}
-                                                                        //                                              V5.5   p.54
-                                                                        //                                              V5.5.1 p.62
-                                                                        //                                              V5.5.5 p.106
+                                                                        //                                              V5.4    p.46
+                                                                        //                                              V5.5    p.54
+                                                                        //                                              V5.5.1  p.62
+                                                                        //                                              V5.5.5  p.106
                                                                         //              +2 [CONC|CONT] <SOURCE_PUBLICATION_FACTS>{0:M}
                                                                         //                                              V5.5   p.54
                                                                         //                                              V5.5.1 p.62
             public string N1_TEXT;                                      //          +1 TEXT <TEXT_FROM_SOURCE>      {0:1}
-                                                                        //                                              V5.5   p.54
-                                                                        //                                              V5.5.1 p.63
-                                                                        //                                              V5.5.5 p.106
+                                                                        //                                              V5.4    p.47
+                                                                        //                                              V5.5    p.54
+                                                                        //                                              V5.5.1  p.63
+                                                                        //                                              V5.5.5  p.106
                                                                         //              +2 [CONC|CONT] <TEXT_FROM_SOURCE>{0:M}
                                                                         //                                              V5.5   p.54
                                                                         //                                              V5.5.1 p.63
             public SOURCE_REPOSITORY_CITATION N1_REPO_info;             //          +1 <<SOURCE_REPOSITORY_CITATION>>{0:M}
-                                                                        //                                              V5.5   p.35
-                                                                        //                                              V5.5.1 p.40
-                                                                        //                                              V5.5.5 p.74
+                                                                        //                                              V5.4    p.32
+                                                                        //                                              V5.5    p.35
+                                                                        //                                              V5.5.1  p.40
+                                                                        //                                              V5.5.5  p.74
             public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER> {0:M}
                                                                         //                                              V5.5   p.55
                                                                         //                                              V5.5.1 p.63 p.64
@@ -1116,14 +1284,17 @@ namespace GEDCOM
                                                                         //                                              V5.5.1 p.43
                                                                         //                                              V5.5.5 p.78
             public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>              {0:1}
+                                                                        //                                              V5.4   p.27
                                                                         //                                              V5.5   p.29
                                                                         //                                              V5.5.1 p.31
                                                                         //                                              V5.5.5 p.66
             public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                        //                                              V5.4    p.30
                                                                         //                                              V5.5   p.33
                                                                         //                                              V5.5.1 p.37
                                                                         //                                              V5.5.5 p.71
             public List<string> N1_OBJE_liste_ID;                       //          +1 <<MULTIMEDIA_LINK>>          {0:M}
+                                                                        //                                              V5.4    p.30
                                                                         //                                              V5.5   p.33 p.26
                                                                         //                                              V5.5.1 p.37 p.26
                                                                         //                                              v5.5.5 p.71
@@ -1134,25 +1305,30 @@ namespace GEDCOM
         }
         public class SOURCE_REPOSITORY_CITATION
         {
+            // GEDCOM54.pdf             p.32
             // 5.5_LDS_1996-01-02.pdf   p34
             // 5.5.1_LDS_2019-11-15.pdf p.40
             // 5.5.5_Annotations_TJ.pdf p.74
-                                                                // SOURCE_REPOSITORY_CITATION:=
+            //                                                  SOURCE_REPOSITORY_CITATION:=
             public string N0_ID;                                //  n REPO [ @XREF:REPO@ | <NULL>]          {1:1}
+                                                                //                                              V5.5
                                                                 //                                              V5.5   p.55
                                                                 //                                              V5.5.1 p.27
                                                                 //                                              V5.5.5 p.108
             public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M}
-                                                                //                                              V5.5   p.33
-                                                                //                                              V5.5.1 p.37
+                                                                //                                              V5.4    p.30
+                                                                //                                              V5.5    p.33
+                                                                //                                              V5.5.1  p.37
             public string N1_CALN;                              //      +1 CALN <SOURCE_CALL_NUMBER>        {0:M}
-                                                                //                                              V5.5   p.53
-                                                                //                                              V5.5.1 p.61
-                                                                //                                              V5.5.5 p.105
+                                                                //                                              V5.4    p.43
+                                                                //                                              V5.5    p.53
+                                                                //                                              V5.5.1  p.61
+                                                                //                                              V5.5.5  p.105
             public string N2_CALN_MEDI;                         //          +2 MEDI <SOURCE_MEDIA_TYPE>     {0:1}
-                                                                //                                              V5.5   p.54
-                                                                //                                              V5.5.1 p.62
-                                                                //                                              V5.5.5 p.106
+                                                                //                                              V5.4    p.46
+                                                                //                                              V5.5    p.54
+                                                                //                                              V5.5.1  p.62
+                                                                //                                              V5.5.5  p.106
                                                                 //          [ audio | book | card | electronic | 
                                                                 //              fiche | film | magazine |
                                                                 //              manuscript | map | newspaper | 
@@ -1160,76 +1336,94 @@ namespace GEDCOM
         }
         public class SPOUSE_TO_FAMILY_LINK 
         {
+            // GEDCOM54.pdf             p.32
             // 5.5_LDS_1996-01-02.pdf   p35
             // 5.5.1_LDS_2019-11-15.pdf p.40
             // 5.5.5_Annotations_TJ.pdf p.75
-                                                                //  SPOUSE_TO_FAMILY_LINK:=
+            //                                                      SPOUSE_TO_FAMILY_LINK:=
             public string N0_ID;                                //      n FAMS @<XREF:FAM>@                 {1:1}
+                                                                //                                              V5.4
                                                                 //                                              V5.5   p.55
                                                                 //                                              V5.5.1 p.24
                                                                 //                                              V5.5.5 p.75
             public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>               {0:M} 
+                                                                //                                              V5.4    p.30
                                                                 //                                              V5.5   p.33
                                                                 //                                              V5.5.1 p.37
                                                                 //                                              V5.5.5 p.71
         }
         public class SUBMISSION_RECORD
         {
+            // GEDCOM54.pdf             p.24
             // 5.5_LDS_1996-01-02.pdf   p27
             // 5.5.1_LDS_2019-11-15.pdf p.28
             // 5.5.5_Annotations_TJ.pdf pas utiliser
-                                                                //  SUBMISSION_RECORD:=
+            //                                                      SUBMISSION_RECORD:=
             public string N0_ID;                                //  n @XREF:SUBN@ SUBN                          {1:1}
+                                                                //                                                  V5.4
                                                                 //                                                  V5.5
                                                                 //                                                  V5.5.1
-            public List<string> N1_SUBM_liste_ID;               //      +1 SUBM @XREF:SUBM@                     {0:1} 
-                                                                //                                                  V5.5 p.55
-                                                                //                                                  V5.5.1 p.28
+            public List<string> N1_SUBM_liste_ID;               //      +1 SUBM @XREF:SUBM@                     {0:1}
+                                                                //                                                  V5.4
+                                                                //                                                  V5.5    p.55
+                                                                //                                                  V5.5.1  p.28
             public string N1_FAMF;                              //      +1 FAMF <NAME_OF_FAMILY_FILE>           {0:1}
-                                                                //                                                  V5.5 p.48
-                                                                //                                                  V5.5.1 p.54
+                                                                //                                                  V5.4    p.41
+                                                                //                                                  V5.5    p.48
+                                                                //                                                  V5.5.1  p.54
             public string N1_TEMP;                              //      +1 TEMP <TEMPLE_CODE>                   {0:1}
-                                                                //                                                  V5.5 p.54
-                                                                //                                                  V5.5.1 p.63
+                                                                //                                                  V5.4    p.47
+                                                                //                                                  V5.5    p.54
+                                                                //                                                  V5.5.1  p.63
             public string N1_ANCE;                              //      +1 ANCE <GENERATIONS_OF_ANCESTORS>      {0:1} 
-                                                                //                                                  V5.5 p.44
+                                                                //                                                  V5.4    p.39
+                                                                //                                                  V5.5    p.44
                                                                 //                                                  V5.5.1
             public string N1_DESC;                              //      +1 DESC <GENERATIONS_OF_DESCENDANTS>    {0:1}
-                                                                //                                                  V5.5 p.44
-                                                                //                                                  V5.5.1 p.50
+                                                                //                                                  V5.4    p.39
+                                                                //                                                  V5.5    p.44
+                                                                //                                                  V5.5.1  p.50
             public string N1_ORDI;                              //      +1 ORDI <ORDINANCE_PROCESS_FLAG>        {0:1}
-                                                                //                                                  V5.5 p.50
-                                                                //                                                  V5.5.1 p.57
+                                                                //                                                  V5.4    p.43
+                                                                //                                                  V5.5    p.50
+                                                                //                                                  V5.5.1  p.57
             public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
-                                                                //                                                  V5.5 p.38
-                                                                //                                                  V5.5.1 p.43
+                                                                //                                                  V5.5    p.38
+                                                                //                                                  V5.5.1  p.43
             public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                //                                                  V5.4    p.30
                                                                 //                                                  V5.5.1  p.37
                                                                 //                                                  v5.5.5  p.71
-                                                                //                                              V5.5.1 p.37
+                                                                //                                                  V5.5.1  p.37
             public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>>                      {0:1}
+                                                                //                                                  V5.4    p.27
                                                                 //                                                  V5.5.1  p.31
                                                                 //                                                  V5.5.5  p.66
         }
         public class SUBMITTER_RECORD
         {
+            // GEDCOM54.pdf             p.24
             // 5.5_LDS_1996-01-02.pdf   p27
             // 5.5.1_LDS_2019-11-15.pdf p.28
             // 5.5.5_Annotations_TJ.pdf p.63
-                                                                //  SUBMITTER_RECORD:=
+            //                                                       SUBMITTER_RECORD:=
             public string N0_ID;                                //      n @<XREF:SUBM>@ SUBM                    {1:1}
+                                                                //                                                  V5.4
                                                                 //                                                  V5.5
                                                                 //                                                  V5.5.1
                                                                 //                                                  V5.5.5
             public string N1_NAME;                              //      +1 NAME <SUBMITTER_NAME>                {1:1}
-                                                                //                                                  V5.5 p.54
-                                                                //                                                  V5.5.1 p.63
-                                                                //                                                  V5.5.5 p.106
+                                                                //                                                  V5.4    p.31
+                                                                //                                                  V5.5    p.54
+                                                                //                                                  V5.5.1  p.63
+                                                                //                                                  V5.5.5  p.106
             public ADDRESS_STRUCTURE N1_ADDR;                   //      +1 <<ADDRESS_STRUCTURE>>                {0:1}
+                                                                //                                                  V5.4    p.27
                                                                 //                                                  V5.5    p.29
                                                                 //                                                  V5.5.1  p.31
                                                                 //                                                  V5.5.5  p.64
             public List<string> N1_PHON_liste;                  //      n PHON <PHONE_NUMBER>                   {0:3}
+                                                                //                                                  V5.4    p.43
                                                                 //                                                  V5.5    p.50
                                                                 //                                                  V5.5.1  p.57
                                                                 //                                                  V5.5.5  p.99
@@ -1243,34 +1437,41 @@ namespace GEDCOM
                                                                 //                                                  V5.5.1 p.42
                                                                 //                                                  V5.5.5  p.76
             public List<string> N1_OBJE_ID_liste;               //      +1 <<MULTIMEDIA_LINK>>                  {0:M}
+                                                                //                                                  V5.4    p.30
                                                                 //                                                  V5.5    p.33 p.26
                                                                 //                                                  V5.5.1  p.37 p.26
                                                                 //                                                  v5.5.5  p.71
             public string N1_LANG;                              //      +1 LANG <LANGUAGE_PREFERENCE>           {0:3}
+                                                                //                                                  V5.4    p.39
                                                                 //                                                  V5.5    p.45
                                                                 //                                                  V5.5.1 p.51
             public string N1_RFN;                               //      +1 RFN <SUBMITTER_REGISTERED_RFN>       {0:1}
+                                                                //                                                  V5.4    p.47
                                                                 //                                                  V5.5    p.54
                                                                 //                                                  V5.5.1  p.63
             public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
                                                                 //                                                  V5.5    p.38
                                                                 //                                                  V5.5.1  p.43
             public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>                   {0:M}
-                                                                //                                          V5.5    p.33
-                                                                //                                          V5.5.1  p.37
-                                                                //                                          v5.5.5  p.71
-                                                                //                                              V5.5.1 p.37
+                                                                //                                                  V5.4    p.30
+                                                                //                                                  V5.5    p.33
+                                                                //                                                  V5.5.1  p.37
+                                                                //                                                  V5.5.5  p.71
+                                                                //                                                  V5.5.1  p.37
             public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>>                      {0:1}
-                                                                //                                          V5.5    p.29
-                                                                //                                          V5.5.1  p.31
-                                                                //                                          v5.5.5  p.66
+                                                                //                                                  V5.4    p.27
+                                                                //                                                  V5.5    p.29
+                                                                //                                                  V5.5.1  p.31
+                                                                //                                                  V5.5.5  p.66
         }
         public class USER_REFERENCE_NUMBER
         {
+            // GEDCOM54.pdf             p.47
             // 5.5_LDS_1996-01-02.pdf   
             // 5.5.1_LDS_2019-11-15.pdf p.63
             // 5.5.5_Annotations_TJ.pdf p.107
             public string N0_REFN;
+                                                                //                                          V5.4. p.47
                                                                 //                                          V5.5. p.55
                                                                 //                                          V5.5.1 p.63
                                                                 //                                          V5.5.5 p.107
@@ -1717,29 +1918,31 @@ namespace GEDCOM
                 Avoir_code_erreur();
                 while (Extraire_niveau(ligne) > 0)
                 {
+                    string baliseN1 = Extraire_balise(dataGEDCOM[ligne]);
                     Avoir_code_erreur();
                     Application.DoEvents();
-                    if (Extraire_balise(dataGEDCOM[ligne]) == "1 FORM")                                 // 1 FORM v5.5
+                    if (baliseN1 == "1 FORM")                                 // 1 FORM v5.
                     {
                         Avoir_code_erreur();
                         N1_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
-                    if (Extraire_balise(dataGEDCOM[ligne]) == "1 TITL")                                 // 1 TITL v5.5
+                    else if (baliseN1 == "1 TITL")                                 // 1 TITL v5.5
                     {
                         Avoir_code_erreur();
                         N1_TITL = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILE")                            // 1 FILLE
+                    else if (baliseN1 == "1 FILE")                            // 1 FILLE
                     {
                         Avoir_code_erreur();
                         N1_FILE = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
+                            string baliseN2 = Extraire_balise(dataGEDCOM[ligne]);
                             Avoir_code_erreur();
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                         // 2 FORM
+                            if (baliseN2 == "2 FORM")                                                   // 2 FORM
                             {
                                 Avoir_code_erreur();
                                 N2_FILE_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
@@ -1747,7 +1950,8 @@ namespace GEDCOM
                                 while (Extraire_niveau(ligne) > 2)
                                 {
                                     Avoir_code_erreur();
-                                    if (Extraire_balise(dataGEDCOM[ligne]) == "3 TYPE")                 // 3 FORM TYPE
+                                    string baliseN3 = Extraire_balise(dataGEDCOM[ligne]);
+                                    if (baliseN3 == "3 TYPE")                                       // 3 FORM TYPE
                                     {
                                         Avoir_code_erreur();
                                         N3_FILE_FORM_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
@@ -1762,21 +1966,22 @@ namespace GEDCOM
                                     }
                                 }
                             }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 TITL")                    // 2 TITL
+                            else if (baliseN2 == "2 TITL")                                               // 2 TITL
                             {
                                 Avoir_code_erreur();
                                 N2_FILE_TITL = Extraire_ligne(dataGEDCOM[ligne], 4);
                                 ligne++;
                                 while (Extraire_niveau(ligne) > 2)
                                 {
+                                    string baliseN3 = Extraire_balise(dataGEDCOM[ligne]);
                                     Avoir_code_erreur();
-                                    if (Extraire_balise(dataGEDCOM[ligne]) == "3 CONC")                 // 2 CONC
+                                    if (baliseN3 == "3 CONC")                                           // 2 CONC
                                     {
                                         Avoir_code_erreur();
                                         N2_FILE_TITL += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                                         ligne++;
                                     }
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 CONT")            // 2 CONT
+                                    else if (baliseN3 == "3 CONT")                                      // 2 CONT
                                     {
                                         Avoir_code_erreur();
                                         N2_FILE_TITL += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
@@ -1798,27 +2003,27 @@ namespace GEDCOM
                             }
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
+                    else if (baliseN1 == "1 REFN")                            // 1 REFN
                     {
                         Avoir_code_erreur();
                         USER_REFERENCE_NUMBER N1_REFN;
                         (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
                         N1_REFN_liste.Add(N1_REFN);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
+                    else if (baliseN1 == "1 RIN")                             // 1 RIN
                     {
                         Avoir_code_erreur();
                         N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                            // 1 NOTE
+                    else if (baliseN1 == "1 NOTE")                            // 1 NOTE
                     {
                         Avoir_code_erreur();
                         string IDNote;
                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                         N1_NOTE_liste_ID.Add(IDNote);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 BLOB")                            // 1 BLOB v5.5
+                    else if (baliseN1 == "1 BLOB")                                                      // 1 BLOB V5.4 V5.5
                     {
                         Avoir_code_erreur();
                         N1_BLOB = "blob";
@@ -1827,9 +2032,9 @@ namespace GEDCOM
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
+                            string baliseN2 = Extraire_balise(dataGEDCOM[ligne]);
                             Avoir_code_erreur();
-                            Avoir_code_erreur();
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                             // 2 CONT
+                            if (baliseN2 == "2 CONT")                                                   // 2 CONT
                             {
                                 Avoir_code_erreur();
                                 ligne++;
@@ -1842,7 +2047,11 @@ namespace GEDCOM
                             }
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                                // 1 OBJE v5.5
+                    else if (baliseN1 == "1 EOBJ")                                                      // 1 EOBJ V5.4
+                    {
+                        ligne++;
+                    }
+                    else if (baliseN1 == "1 OBJE")                                // 1 OBJE v5.5
                     {
                         Avoir_code_erreur();
                         ligne++;
@@ -1853,7 +2062,7 @@ namespace GEDCOM
                             ligne++;
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                                // 1 SOUR
+                    else if (baliseN1 == "1 SOUR")                                // 1 SOUR
                     {
                         Avoir_code_erreur();
                         string citation;
@@ -1862,18 +2071,17 @@ namespace GEDCOM
                         if (citation != null) N1_SOUR_citation_liste_ID.Add(citation);
                         if (source != null) N1_SOUR_source_liste_ID.Add(source);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                // 1 CHAN changer date
+                    else if (baliseN1 == "1 CHAN")                                // 1 CHAN changer date
                     {
                         Avoir_code_erreur();
                         (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _DATE")                           // _DATE Heridis
+                    else if (baliseN1 == "1 _DATE")                           // _DATE Heridis
                     {
                         Avoir_code_erreur();
                         N1__DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 5));
                         ligne++;
                     }
-
                     else
                     {
                         Avoir_code_erreur();
@@ -1893,8 +2101,8 @@ namespace GEDCOM
                 liste_MULTIMEDIA_RECORD.Add(new MULTIMEDIA_RECORD()
                 {
                     N0_ID = N0_ID,
-                    N1_FORM = N1_FORM, //v5.5
-                    N1_TITL = N1_TITL, // v5.5
+                    N1_FORM = N1_FORM,
+                    N1_TITL = N1_TITL,
                     N1_FILE = N1_FILE,
                     N2_FILE_FORM = N2_FILE_FORM,
                     N3_FILE_FORM_TYPE = N3_FILE_FORM_TYPE,
@@ -1902,8 +2110,8 @@ namespace GEDCOM
                     N1_REFN_liste = N1_REFN_liste,
                     N1_RIN = N1_RIN,
                     N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                    N1_BLOB = N1_BLOB, // v5.5
-                    N1_OBJE = N1_OBJE, // v5.5
+                    N1_BLOB = N1_BLOB,
+                    N1_OBJE = N1_OBJE,
                     N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                     N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
                     N1_CHAN = N1_CHAN,
@@ -3342,9 +3550,7 @@ namespace GEDCOM
                         if (dataGEDCOM[ligne].Length > 7)
                         {
                             Avoir_code_erreur();
-                            Info_HEADER.N1_LANG = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                            if (Info_HEADER.N1_LANG.ToLower() == "english") Info_HEADER.N1_LANG = "Anglais";
-                            if (Info_HEADER.N1_LANG.ToLower() == "french") Info_HEADER.N1_LANG = "Français";
+                            Info_HEADER.N1_LANG = Language(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
                         }
                         ligne++;
                     }
@@ -5321,9 +5527,7 @@ namespace GEDCOM
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 LANG")                            // 1 LANG
                     {
                         Avoir_code_erreur();
-                        N1_LANG += Extraire_ligne(dataGEDCOM[ligne], 4);
-                        if (N1_LANG.ToLower() == "english") N1_LANG = "Anglais";
-                        if (N1_LANG.ToLower() == "french") N1_LANG = "Français";
+                        N1_LANG += Language(Extraire_ligne(dataGEDCOM[ligne], 4));
                         ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                            // 1 NOTE
@@ -5469,6 +5673,104 @@ namespace GEDCOM
         /// </summary>
         /// <param name="fichier"></param>
         /// <returns>nom du fichier original ou convertie en UTF8</returns>
+        
+        private static string Language(string langue)
+        {
+            langue = langue.ToLower();
+            switch (langue)
+            {
+                case "afrikaans": langue = "Afrikaans"; break;
+                case "albanian": langue = "Albanais"; break;
+                case "anglo-saxon": langue = "Anglo-Saxon"; break;
+                case "catalan": langue = "Catalan"; break;
+                case "catalan spn": langue = "Catalan Spn"; break;
+                case "czech": langue = "Tchèque"; break;
+                case "danish": langue = "Danois"; break;
+                case "dutch": langue = "Néerlandais"; break;
+                case "anglais": langue = "Anglais"; break;
+                case "english": langue = "Anglais"; break;
+                case "esperanto": langue = "Espéranto"; break;
+                case "estonian": langue = "Estonien"; break;
+                case "faroese": langue = "Féroïen"; break;
+                case "finnish": langue = "Finlandais"; break;
+                case "français": langue = "Français"; break;
+                case "french": langue = "Français"; break;
+                case "german": langue = "Allemand"; break;
+                case "hawaiian": langue = "Hawaïen"; break;
+                case "hungarian": langue = "Hongrois"; break;
+                case "icelandic": langue = "Islandais"; break;
+                case "indonesian": langue = "Indonésien"; break;
+                case "italian": langue = "Italien"; break;
+                case "latvian": langue = "Letton"; break;
+                case "lithuanian": langue = "Lituanien"; break;
+                case "navaho": langue = "Navaho"; break;
+                case "norwegian": langue = "Norvégien"; break;
+                case "polish": langue = "Polonais"; break;
+                case "portuguese": langue = "Portugais"; break;
+                case "romanian": langue = "Roumain"; break;
+                case "serbo croa": langue = "Serbo Croa"; break;
+                case "slovak": langue = "Slovaque"; break;
+                case "slovene": langue = "Slovène"; break;
+                case "spanish": langue = "Espagnol"; break;
+                case "swedish": langue = "Suédois"; break;
+                case "turkish": langue = "Turc"; break;
+                case "wendic": langue = "Wendic"; break;
+                // other languages not supported until unicode	// Autres Langues Non Prises En Charge Jusqu'à Unicode
+                case "amharic": langue = "Amharique"; break;
+                case "arabic": langue = "Arabe"; break;
+                case "armenian": langue = "Arménien"; break;
+                case "assamese": langue = "Assamais"; break;
+                case "belorusian": langue = "Bélarus"; break;
+                case "bengali": langue = "Bengali"; break;
+                case "braj": langue = "Braj"; break;
+                case "bulgarian": langue = "Bulgare"; break;
+                case "burmese": langue = "Birman"; break;
+                case "cantonese": langue = "Cantonais"; break;
+                case "church-slavic": langue = "Église-Slave"; break;
+                case "dogri": langue = "Dogri"; break;
+                case "georgian": langue = "Géorgien"; break;
+                case "greek": langue = "Grec"; break;
+                case "gujarati": langue = "Gujarati"; break;
+                case "hebrew": langue = "Hébreu"; break;
+                case "hindi": langue = "Hindi"; break;
+                case "japanese": langue = "Japonais"; break;
+                case "kannada": langue = "Kannada"; break;
+                case "khmer": langue = "Khmer"; break;
+                case "konkani": langue = "Konkani"; break;
+                case "korean": langue = "Coréen"; break;
+                case "lahnda": langue = "Lahnda"; break;
+                case "lao": langue = "Laotien"; break;
+                case "macedonian": langue = "Macédonie"; break;
+                case "maithili": langue = "Maithili"; break;
+                case "malayalam": langue = "Malayalam"; break;
+                case "mandrin": langue = "Mandrin"; break;
+                case "manipuri": langue = "Manipuri"; break;
+                case "marathi": langue = "Marathi"; break;
+                case "mewari": langue = "Mewari"; break;
+                case "nepali": langue = "Népalais"; break;
+                case "oriya": langue = "Oriya"; break;
+                case "pahari": langue = "Pahari"; break;
+                case "pali": langue = "Pali"; break;
+                case "panjabi": langue = "Panjabi"; break;
+                case "persian": langue = "Persan"; break;
+                case "prakrit": langue = "Prakrit"; break;
+                case "pusto": langue = "Pusto"; break;
+                case "rajasthani": langue = "Rajasthan"; break;
+                case "russian": langue = "Russe"; break;
+                case "sanskrit": langue = "Sanskrit"; break;
+                case "serb": langue = "Serbe"; break;
+                case "tagalog": langue = "Tagalog"; break;
+                case "tamil": langue = "Tamil"; break;
+                case "telugu": langue = "Telugu"; break;
+                case "thai": langue = "Thaïlandais"; break;
+                case "tibetan": langue = "Tibétain"; break;
+                case "ukrainian": langue = "Ukrainien"; break;
+                case "urdu": langue = "Ourdou"; break;
+                case "vietnamese": langue = "Vietnamien"; break;
+                case "yiddish": langue = "Yiddish"; break;
+            }
+            return langue;
+        }
         public static string LireEnteteGEDCOM(string fichier)
         {
             Avoir_code_erreur();
