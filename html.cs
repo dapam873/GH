@@ -40,11 +40,11 @@ namespace HTML
                 texte += espace + "\t\t\t<span class=\"chercheur\">" + item.numero.ToString() + "</span>\n";
                 texte += espace + "\t\t\t\t<span style=\"display:table-cell;text-align:top; padding-left:5px\">\n";
                 texte += espace + "\t\t\t\t\t" + info.N1_NAME + "\n";
-                if (GH.Properties.Settings.Default.deboguer) texte += espace + "\t\t\t\t\t\t\t\t{" + info.N0_ID + "}\n";
+                if (GH.GH.ParaVoirID) texte += espace + "\t\t\t\t\t\t\t\t[" + info.N0_ID + "]\n";
                 texte += espace + "\t\t\t\t</span>\n";
                 texte += espace + "\t\t</td>\n";
                 texte += espace + "\t<tr>\n";
-                if ((info.N1_OBJE_ID_liste.Count > 0) && (GH.Properties.Settings.Default.photo_principal))
+                if ((info.N1_OBJE_ID_liste.Count > 0) && (GH.GH.ParaVoirPhotoPrincipal))
                 {
                     texte += espace + "\t<tr>\n";
                     texte += espace + "\t\t<td  class=\"indexCol1\">\n";
@@ -215,7 +215,7 @@ namespace HTML
                     texte += "\t\t\t\t</tr>\n";
                 }
                 // si changement de date
-                if (info.N1_CHAN != null && GH.Properties.Settings.Default.voir_date_changement)
+                if (info.N1_CHAN != null && GH.GH.ParaVoirDateChangement)
                 {
                     GEDCOMClass.CHANGE_DATE N1_CHAN = info.N1_CHAN;
                     if (N1_CHAN.N1_CHAN_DATE != "")
@@ -321,7 +321,7 @@ namespace HTML
         }
         private static string Avoir_lien_chercheur(List<string> liste_chercheur_ID, List<ID_numero> liste_chercheur_ID_numero, int tab)
         {
-            if (!GH.Properties.Settings.Default.voir_reference) return "";
+            if (!GH.GH.ParaVoirReference) return "";
             if (liste_chercheur_ID.Count() == 0) return "";
             string espace = Tabulation(tab);
             string texte = "";
@@ -350,7 +350,7 @@ namespace HTML
         }
         private static string Avoir_lien_citation_source(List<string> liste_citation_ID, List<ID_numero> liste_citation_ID_numero, int tab)
         {
-            if (!GH.Properties.Settings.Default.voir_reference)
+            if (!GH.GH.ParaVoirReference)
                 return "";
             if (liste_citation_ID.Count() == 0) return "";
             string espace = Tabulation(tab);
@@ -425,7 +425,7 @@ namespace HTML
                 }
                 // date
                 string date;
-                if (GH.Properties.Settings.Default.date_longue)
+                if (GH.GH.ParaDateLonque)
                 {
                     date = GEDCOMClass.ConvertirDateTexte(info.N2_DATE);
                 }
@@ -1042,7 +1042,7 @@ namespace HTML
                 }
             }
             // media
-            if (GH.Properties.Settings.Default.voir_media)
+            if (GH.GH.ParaVoirMedia)
             {
                 if (info.N2_OBJE_liste_ID.Count > 0)
                 {
@@ -1186,22 +1186,22 @@ namespace HTML
             // info famille
             GEDCOMClass.FAM_RECORD info_famille = GEDCOMClass.Avoir_info_famille(ID_famille);
             // citation famille
-            if (GH.Properties.Settings.Default.voir_reference)
+            if (GH.GH.ParaVoirReference)
                 (liste_citation_ID_numero, _) = Verifier_liste(info_famille.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
             // cnote famille
-            if (GH.Properties.Settings.Default.voir_note)
+            if (GH.GH.ParaVoirNote)
                 (liste_note_ID_numero, _) = Verifier_liste(info_famille.N1_NOTE_liste_ID, liste_note_ID_numero);
             // note de SLGS
-            if (GH.Properties.Settings.Default.voir_note)
+            if (GH.GH.ParaVoirNote)
                 (liste_note_ID_numero, _) = Verifier_liste(info_famille.N1_SLGS.N1_NOTE_liste_ID, liste_note_ID_numero);
             // chercheur
-            if (GH.Properties.Settings.Default.voir_chercheur)
+            if (GH.GH.ParaVoirChercheur)
                 (liste_SUBMITTER_ID_numero, _) = Verifier_liste(info_famille.N1_SUBM_liste_ID, liste_SUBMITTER_ID_numero);
             // citation SLGS
-            if (GH.Properties.Settings.Default.voir_reference)
+            if (GH.GH.ParaVoirReference)
                 (liste_citation_ID_numero, _) = Verifier_liste(info_famille.N1_SLGS.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
             // Groupe média
-            if (GH.Properties.Settings.Default.voir_media)
+            if (GH.GH.ParaVoirMedia)
             {
                 if (info_famille.N1_OBJE_liste != null)
                 {
@@ -1211,14 +1211,14 @@ namespace HTML
                         if (info_media != null)
                         {
                             // note du media
-                            if (GH.Properties.Settings.Default.voir_note)
+                            if (GH.GH.ParaVoirNote)
                                 (liste_note_ID_numero, _) = Verifier_liste(info_media.N1_NOTE_liste_ID, liste_note_ID_numero);
                             // citation du media
-                            if (GH.Properties.Settings.Default.voir_reference)
+                            if (GH.GH.ParaVoirReference)
                                 (liste_citation_ID_numero, _) = Verifier_liste(info_media.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                         }
                         // avoir note de Date de changement
-                        if (GH.Properties.Settings.Default.voir_date_changement)
+                        if (GH.GH.ParaVoirDateChangement)
                             (liste_note_ID_numero, _) = Verifier_liste(info_media.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                     }
                 }
@@ -1229,26 +1229,26 @@ namespace HTML
                 foreach (GEDCOMClass.EVENT_ATTRIBUTE_STRUCTURE info_evenement in info_famille.N1_EVENT_Liste)
                 {
                     // citation evenement
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         (liste_citation_ID_numero, _) = Verifier_liste(info_evenement.N2_SOUR_citation_liste_ID, liste_citation_ID_numero);
                     // note PLAC
                     // if PLAC n'est pas null
                     if (info_evenement.N2_PLAC != null)
                     {
                         // note de PLAC
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_evenement.N2_PLAC.N1_NOTE_liste_ID, liste_note_ID_numero);
                         // citation PLAC
-                        if (GH.Properties.Settings.Default.voir_reference)
+                        if (GH.GH.ParaVoirReference)
                             (liste_citation_ID_numero, _) = Verifier_liste(info_evenement.N2_PLAC.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                     }
                     // note de l'adresse
                     // if adresse n'est pas null
                     if (info_evenement.N2_ADDR != null)
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_evenement.N2_ADDR.N1_NOTE_liste_ID, liste_note_ID_numero);
                     // note événement
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         (liste_note_ID_numero, _) = Verifier_liste(info_evenement.N2_NOTE_liste_ID, liste_note_ID_numero);
                     // media
                     if (info_evenement.N2_OBJE_liste_ID != null)
@@ -1257,22 +1257,21 @@ namespace HTML
                         {
                             GEDCOMClass.MULTIMEDIA_RECORD media_info = GEDCOMClass.Avoir_info_media(media_ID);
                             // note
-                            if (GH.Properties.Settings.Default.voir_note)
+                            if (GH.GH.ParaVoirNote)
                                 (liste_note_ID_numero, _) = Verifier_liste(media_info.N1_NOTE_liste_ID, liste_note_ID_numero);
                             // citation
-                            if (GH.Properties.Settings.Default.voir_reference)
+                            if (GH.GH.ParaVoirReference)
                                 (liste_citation_ID_numero, _) = Verifier_liste(media_info.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                             // note date de chagement
-                            if (GH.Properties.Settings.Default.voir_date_changement)
+                            if (GH.GH.ParaVoirDateChangement)
                                 (liste_note_ID_numero, _) = Verifier_liste(media_info.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                         }
                     }
                 }
             }
             // groupe chercheur
-            if (GH.Properties.Settings.Default.voir_chercheur)
+            if (GH.GH.ParaVoirChercheur)
             {
-
                 if (liste_SUBMITTER_ID_numero != null)
                 {
                     foreach (ID_numero item in liste_SUBMITTER_ID_numero)
@@ -1280,24 +1279,24 @@ namespace HTML
                         GEDCOMClass.SUBMITTER_RECORD info_chercheur = GEDCOMClass.Avoir_info_chercheur(item.ID);
                         // note de adresse du chercheur
                         GEDCOMClass.ADDRESS_STRUCTURE Info_adresse = info_chercheur.N1_ADDR;
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(Info_adresse.N1_NOTE_liste_ID, liste_note_ID_numero);
                         // note du chercheur
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_chercheur.N1_NOTE_liste_ID, liste_note_ID_numero);
                         // avoir note de Date de changement
-                        if (GH.Properties.Settings.Default.voir_date_changement)
+                        if (GH.GH.ParaVoirDateChangement)
                             (liste_note_ID_numero, _) = Verifier_liste(info_chercheur.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                     }
                 }
             }
             // avoir note de Date de changement de individu
-            if (GH.Properties.Settings.Default.voir_date_changement)
+            if (GH.GH.ParaVoirDateChangement)
                 (liste_note_ID_numero, _) = Verifier_liste(info_famille.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
             // avoir note de Date de changement dans source depot note
-            if (GH.Properties.Settings.Default.voir_date_changement)
+            if (GH.GH.ParaVoirDateChangement)
             {
-                if (GH.Properties.Settings.Default.voir_reference)
+                if (GH.GH.ParaVoirReference)
                 {
                     // source
                     foreach (ID_numero ID_numero in liste_source_ID_numero)
@@ -1317,7 +1316,7 @@ namespace HTML
                     }
                 }
                 // note
-                if (GH.Properties.Settings.Default.voir_note)
+                if (GH.GH.ParaVoirNote)
                 {
                     for (int f = 0; f < liste_note_ID_numero.Count; f++)
                     //foreach (ID_numero ID_numero in liste_note_ID_numero)
@@ -1328,7 +1327,7 @@ namespace HTML
                 }
             }
             // loop pour note citation source depot media
-            if (GH.Properties.Settings.Default.voir_reference || liste_citation_ID_numero != null)
+            if (GH.GH.ParaVoirReference || liste_citation_ID_numero != null)
             {
                 bool looper;
                 bool modifier;
@@ -1342,7 +1341,7 @@ namespace HTML
                         GEDCOMClass.SOURCE_CITATION info_citation = GEDCOMClass.Avoir_info_citation(liste_citation_ID_numero[f1].ID);
                         // citation
                         // note
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                         {
                             (liste_note_ID_numero, modifier) = Verifier_liste(info_citation.N1_NOTE_liste_ID, liste_note_ID_numero);
                             if (modifier) looper = true;
@@ -1354,13 +1353,13 @@ namespace HTML
                             {
                                 GEDCOMClass.MULTIMEDIA_RECORD info_media = GEDCOMClass.Avoir_info_media(media_ID);
                                 // note
-                                if (GH.Properties.Settings.Default.voir_note)
+                                if (GH.GH.ParaVoirNote)
                                 {
                                     (liste_note_ID_numero, modifier) = Verifier_liste(info_media.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                                     if (modifier) looper = true;
                                 }
                                 // citation
-                                if (GH.Properties.Settings.Default.voir_reference)
+                                if (GH.GH.ParaVoirReference)
                                 {
                                     (liste_citation_ID_numero, modifier) = Verifier_liste(info_media.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                                     if (modifier) looper = true;
@@ -1372,7 +1371,7 @@ namespace HTML
                         if (info_citation.N0_ID_source != null)
                         {
                             GEDCOMClass.SOURCE_RECORD info_source = GEDCOMClass.Avoir_info_SOURCE(info_citation.N0_ID_source);
-                            if (GH.Properties.Settings.Default.voir_reference)
+                            if (GH.GH.ParaVoirReference)
                             {
                                 {
                                     List<string> liste_ID = new List<string>
@@ -1384,7 +1383,7 @@ namespace HTML
                                 }
                             }
                             // note
-                            if (GH.Properties.Settings.Default.voir_note)
+                            if (GH.GH.ParaVoirNote)
                             {
                                 // note de la source
                                 (liste_note_ID_numero, modifier) = Verifier_liste(info_source.N1_NOTE_liste_ID, liste_note_ID_numero);
@@ -1393,6 +1392,9 @@ namespace HTML
                                 (liste_note_ID_numero, modifier) = Verifier_liste(info_source.N2_DATA_NOTE_liste_ID, liste_note_ID_numero);
                                 if (modifier) looper = true;
                             }
+
+
+
                         }
                     }
                     // note dépôt dans source
@@ -1412,7 +1414,7 @@ namespace HTML
                                 (liste_repo_ID_numero, modifier) = Verifier_liste(liste_ID, liste_repo_ID_numero);
                                 if (modifier) looper = true;
                                 // note
-                                if (GH.Properties.Settings.Default.voir_note)
+                                if (GH.GH.ParaVoirNote)
                                 {
                                     (liste_note_ID_numero, modifier) = Verifier_liste(info_source.N1_REPO_info.N1_NOTE_liste_ID, liste_note_ID_numero);
                                     if (modifier) looper = true;
@@ -1420,11 +1422,23 @@ namespace HTML
                             }
                         }
                     }
+                    // note dans dépôt
+                    if (liste_repo_ID_numero != null)
+                    {
+                        foreach (ID_numero item in liste_repo_ID_numero)
+                        {
+                            GEDCOMClass.REPOSITORY_RECORD info_repo = GEDCOMClass.Avoir_info_repo(item.ID);
+                            if (info_repo.N1_NOTE_liste_ID != null)
+                            {
+                                (liste_note_ID_numero, modifier) = Verifier_liste(info_repo.N1_NOTE_liste_ID, liste_note_ID_numero);
+                                if (modifier) looper = true;
+                            }
+                        }
+                    }
                     // citation dans note
-                    //foreach (ID_numero liste_ID_numero in liste_note_ID_numero)
                     for (int f1 = 0; f1 < liste_note_ID_numero.Count; f1++)
                     {
-                        if (GH.Properties.Settings.Default.voir_reference)
+                        if (GH.GH.ParaVoirReference)
                         {
                             GEDCOMClass.NOTE_RECORD info_note = GEDCOMClass.Avoir_Info_Note(liste_note_ID_numero[f1].ID);
                             (liste_citation_ID_numero, modifier) = Verifier_liste(info_note.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
@@ -1432,9 +1446,9 @@ namespace HTML
                         }
                     }
                     // avoir note de Date de changement dans source depot note
-                    if (GH.Properties.Settings.Default.voir_date_changement)
+                    if (GH.GH.ParaVoirDateChangement)
                     {
-                        if (GH.Properties.Settings.Default.voir_reference)
+                        if (GH.GH.ParaVoirReference)
                         {
                             // source
                             foreach (ID_numero ID_numero in liste_source_ID_numero)
@@ -1458,7 +1472,7 @@ namespace HTML
                             }
                         }
                         // note
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                         {
                             for (int f = 0; f < liste_note_ID_numero.Count; f++)
                             //foreach (ID_numero ID_numero in liste_note_ID_numero)
@@ -1490,7 +1504,7 @@ namespace HTML
             GEDCOMClass.INDIVIDUAL_RECORD info_individu;
             (_, info_individu) = GEDCOMClass.Avoir_info_individu(ID_individu);
             // citation de l'individu
-            if (GH.Properties.Settings.Default.voir_reference)
+            if (GH.GH.ParaVoirReference)
                 (liste_citation_ID_numero, _) = Verifier_liste(info_individu.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
             // liste de nom
             List<GEDCOMClass.PERSONAL_NAME_STRUCTURE> listeInfoNom;
@@ -1501,36 +1515,36 @@ namespace HTML
                 foreach (GEDCOM.GEDCOMClass.PERSONAL_NAME_STRUCTURE info_nom in listeInfoNom)
                 {
                     // citation sur le nom
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         if (info_nom.N1_PERSONAL_NAME_PIECES != null)
                             (liste_citation_ID_numero, _) = Verifier_liste(
                                 info_nom.N1_PERSONAL_NAME_PIECES.Nn_SOUR_citation_liste_ID, 
                                 liste_citation_ID_numero);
                     // note sur le nom
-                    if (GH.Properties.Settings.Default.voir_note)
+                    if (GH.GH.ParaVoirNote)
                         if (info_nom.N1_PERSONAL_NAME_PIECES != null)
                             (liste_note_ID_numero, _) = Verifier_liste(
                                 info_nom.N1_PERSONAL_NAME_PIECES.Nn_NOTE_liste_ID,
                                 liste_note_ID_numero);
                     // citatation de FONE
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         if (info_nom.N1_FONE_name_pieces != null)
                         {
                             (liste_citation_ID_numero, _) = Verifier_liste(info_nom.N1_FONE_name_pieces.Nn_SOUR_citation_liste_ID,
                             liste_citation_ID_numero);
                         }
                     // note sur le FONE
-                    if (GH.Properties.Settings.Default.voir_note)
+                    if (GH.GH.ParaVoirNote)
                         if (info_nom.N1_FONE_name_pieces != null)
                             (liste_note_ID_numero, _) = Verifier_liste(info_nom.N1_FONE_name_pieces.Nn_NOTE_liste_ID,
                                 liste_note_ID_numero);
                     // citatation de ROMN
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         if (info_nom.N1_ROMN_name_pieces != null)
                             (liste_citation_ID_numero, _) = Verifier_liste(info_nom.N1_ROMN_name_pieces.Nn_SOUR_citation_liste_ID,
                                 liste_citation_ID_numero);
                     // note sur le ROMN
-                    if (GH.Properties.Settings.Default.voir_note)
+                    if (GH.GH.ParaVoirNote)
                         if (info_nom.N1_ROMN_name_pieces != null)
                             (liste_note_ID_numero, _) = Verifier_liste(info_nom.N1_ROMN_name_pieces.Nn_NOTE_liste_ID,
                                 liste_note_ID_numero);
@@ -1542,41 +1556,41 @@ namespace HTML
                 foreach (GEDCOMClass.ASSOCIATION_STRUCTURE info_ASSO in info_individu.N1_ASSO_liste)
                 {
                     // citation
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         (liste_citation_ID_numero, _) = Verifier_liste(info_ASSO.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                     // note
-                    if (GH.Properties.Settings.Default.voir_note)
+                    if (GH.GH.ParaVoirNote)
                         (liste_note_ID_numero, _) = Verifier_liste(info_ASSO.N1_NOTE_liste_ID, liste_note_ID_numero);
                 }
             }
             // ANCI
-            if (GH.Properties.Settings.Default.voir_chercheur)
+            if (GH.GH.ParaVoirChercheur)
                 (liste_SUBMITTER_ID_numero, _) = Verifier_liste(info_individu.N1_ANCI_liste_ID, liste_SUBMITTER_ID_numero);
             // DESI
-            if (GH.Properties.Settings.Default.voir_chercheur)
+            if (GH.GH.ParaVoirChercheur)
                 (liste_SUBMITTER_ID_numero, _) = Verifier_liste(info_individu.N1_DESI_liste_ID, liste_SUBMITTER_ID_numero);
             // note individu
-            if (GH.Properties.Settings.Default.voir_note)
+            if (GH.GH.ParaVoirNote)
                 (liste_note_ID_numero, _) = Verifier_liste(info_individu.N1_NOTE_liste_ID, liste_note_ID_numero);
             // chercheur
-            if (GH.Properties.Settings.Default.voir_chercheur)
+            if (GH.GH.ParaVoirChercheur)
                 (liste_SUBMITTER_ID_numero, _) = Verifier_liste(info_individu.N1_SUBM_liste_ID, liste_SUBMITTER_ID_numero);
             // Groupe conjoint
             // note conjoint
-            if (GH.Properties.Settings.Default.voir_note)
+            if (GH.GH.ParaVoirNote)
             {
                 foreach (GEDCOMClass.SPOUSE_TO_FAMILY_LINK infoLienConjoint in info_individu.N1_FAMS_liste_Conjoint)
                     (liste_note_ID_numero, _) = Verifier_liste(infoLienConjoint.N1_NOTE_liste_ID, liste_note_ID_numero);
             }
             // Groupe parent
             // note famille
-            if (GH.Properties.Settings.Default.voir_note)
+            if (GH.GH.ParaVoirNote)
             {
                 GEDCOMClass.CHILD_TO_FAMILY_LINK infoFamille = GEDCOMClass.AvoirInfoFamilleEnfant(ID_individu);
                 (liste_note_ID_numero, _) = Verifier_liste(infoFamille.N1_NOTE_liste_ID, liste_note_ID_numero);
             }
             // Groupe média
-            if (GH.Properties.Settings.Default.voir_media)
+            if (GH.GH.ParaVoirMedia)
             {
                 if (info_individu.N1_OBJE_liste != null)
                 {
@@ -1586,14 +1600,14 @@ namespace HTML
                         if (info_media != null)
                         {
                             // note du media
-                            if (GH.Properties.Settings.Default.voir_note)
+                            if (GH.GH.ParaVoirNote)
                                 (liste_note_ID_numero, _) = Verifier_liste(info_media.N1_NOTE_liste_ID, liste_note_ID_numero);
                             // citation du media
-                            if (GH.Properties.Settings.Default.voir_reference)
+                            if (GH.GH.ParaVoirReference)
                                 (liste_citation_ID_numero, _) = Verifier_liste(info_media.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                         }
                         // avoir note de Date de changement
-                        if (GH.Properties.Settings.Default.voir_date_changement)
+                        if (GH.GH.ParaVoirDateChangement)
                             (liste_note_ID_numero, _) = Verifier_liste(info_media.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                     }
                 }
@@ -1604,9 +1618,9 @@ namespace HTML
                 foreach (GEDCOMClass.LDS_INDIVIDUAL_ORDINANCE info_LDS in info_individu.N1_LDS_liste)
                 {
                     // citation d'ordonnance
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         (liste_citation_ID_numero, _) = Verifier_liste(info_LDS.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
-                    if (GH.Properties.Settings.Default.voir_note)
+                    if (GH.GH.ParaVoirNote)
                         // note d'ordonnance
                         (liste_note_ID_numero, _) = Verifier_liste(info_LDS.N1_NOTE_liste_ID, liste_note_ID_numero);
                 }
@@ -1617,26 +1631,26 @@ namespace HTML
                 foreach (GEDCOMClass.EVENT_ATTRIBUTE_STRUCTURE info_evenement in info_individu.N1_EVENT_Liste)
                 {
                     // citation evenement
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         (liste_citation_ID_numero, _) = Verifier_liste(info_evenement.N2_SOUR_citation_liste_ID, liste_citation_ID_numero);
                     // note PLAC
                     // if PLAC n'est pas null
                     if (info_evenement.N2_PLAC != null)
                     {
                         // note de PLAC
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_evenement.N2_PLAC.N1_NOTE_liste_ID, liste_note_ID_numero);
                         // citation PLAC
-                        if (GH.Properties.Settings.Default.voir_reference)
+                        if (GH.GH.ParaVoirReference)
                             (liste_citation_ID_numero, _) = Verifier_liste(info_evenement.N2_PLAC.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                     }
                     // note de l'adresse
                     // if adresse n'est pas null
                     if (info_evenement.N2_ADDR != null)
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_evenement.N2_ADDR.N1_NOTE_liste_ID, liste_note_ID_numero);
                     // note événement
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         (liste_note_ID_numero, _) = Verifier_liste(info_evenement.N2_NOTE_liste_ID, liste_note_ID_numero);
                     // media
                     if (info_evenement.N2_OBJE_liste_ID != null)
@@ -1645,13 +1659,13 @@ namespace HTML
                         {
                             GEDCOMClass.MULTIMEDIA_RECORD media_info = GEDCOMClass.Avoir_info_media(media_ID);
                             // note
-                            if (GH.Properties.Settings.Default.voir_note)
+                            if (GH.GH.ParaVoirNote)
                                 (liste_note_ID_numero, _) = Verifier_liste(media_info.N1_NOTE_liste_ID, liste_note_ID_numero);
                             // citation
-                            if (GH.Properties.Settings.Default.voir_reference)
+                            if (GH.GH.ParaVoirReference)
                                 (liste_citation_ID_numero, _) = Verifier_liste(media_info.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                             // note date de chagement
-                            if (GH.Properties.Settings.Default.voir_date_changement)
+                            if (GH.GH.ParaVoirDateChangement)
                                 (liste_note_ID_numero, _) = Verifier_liste(media_info.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                         }
                     }
@@ -1663,27 +1677,27 @@ namespace HTML
                 foreach (GEDCOMClass.EVENT_ATTRIBUTE_STRUCTURE info_attribut in info_individu.N1_Attribute_liste)
                 {
                     // citation attribut
-                    if (GH.Properties.Settings.Default.voir_reference)
+                    if (GH.GH.ParaVoirReference)
                         (liste_citation_ID_numero, _) = Verifier_liste(info_attribut.N2_SOUR_citation_liste_ID, liste_citation_ID_numero);
                     // if PLAC n'est pas null
                     if (info_attribut.N2_PLAC != null)
                     {
                         // note PLAC
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_attribut.N2_PLAC.N1_NOTE_liste_ID, liste_note_ID_numero);
                         // citation PLAC
-                        if (GH.Properties.Settings.Default.voir_reference)
+                        if (GH.GH.ParaVoirReference)
                             (liste_citation_ID_numero, _) = Verifier_liste(info_attribut.N2_PLAC.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                     }
                     // si ADDR n'est pas null
                     if (info_attribut.N2_ADDR != null)
                     {
                         // note de l'adresse
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_attribut.N2_ADDR.N1_NOTE_liste_ID, liste_note_ID_numero);
                     }
                     // note attribut
-                    if (GH.Properties.Settings.Default.voir_note)
+                    if (GH.GH.ParaVoirNote)
                         (liste_note_ID_numero, _) = Verifier_liste(info_attribut.N2_NOTE_liste_ID, liste_note_ID_numero);
                     // media
                     if (info_attribut.N2_OBJE_liste_ID != null)
@@ -1692,22 +1706,21 @@ namespace HTML
                         {
                             GEDCOMClass.MULTIMEDIA_RECORD media_info = GEDCOMClass.Avoir_info_media(media_ID);
                             // note
-                            if (GH.Properties.Settings.Default.voir_note)
+                            if (GH.GH.ParaVoirNote)
                                 (liste_note_ID_numero, _) = Verifier_liste(media_info.N1_NOTE_liste_ID, liste_note_ID_numero);
                             // citation
-                            if (GH.Properties.Settings.Default.voir_reference)
+                            if (GH.GH.ParaVoirReference)
                                 (liste_citation_ID_numero, _) = Verifier_liste(media_info.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                             // note date de chagement
-                            if (GH.Properties.Settings.Default.voir_date_changement)
+                            if (GH.GH.ParaVoirDateChangement)
                                 (liste_note_ID_numero, _) = Verifier_liste(media_info.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                         }
                     }
                 }
             }
             // groupe chercheur
-            if (GH.Properties.Settings.Default.voir_chercheur)
+            if (GH.GH.ParaVoirChercheur)
             {
-
                 if (liste_SUBMITTER_ID_numero != null)
                 {
                     foreach (ID_numero item in liste_SUBMITTER_ID_numero)
@@ -1715,24 +1728,24 @@ namespace HTML
                         GEDCOMClass.SUBMITTER_RECORD info_chercheur = GEDCOMClass.Avoir_info_chercheur(item.ID);
                         // note de adresse du chercheur
                         GEDCOMClass.ADDRESS_STRUCTURE Info_adresse = info_chercheur.N1_ADDR;
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(Info_adresse.N1_NOTE_liste_ID, liste_note_ID_numero);
                         // note du chercheur
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                             (liste_note_ID_numero, _) = Verifier_liste(info_chercheur.N1_NOTE_liste_ID, liste_note_ID_numero);
                         // avoir note de Date de changement
-                        if (GH.Properties.Settings.Default.voir_date_changement)
+                        if (GH.GH.ParaVoirDateChangement)
                             (liste_note_ID_numero, _) = Verifier_liste(info_chercheur.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                     }
                 }
             }
             // avoir note de Date de changement de individu
-            if (GH.Properties.Settings.Default.voir_date_changement)
+            if (GH.GH.ParaVoirDateChangement)
                 (liste_note_ID_numero, _) = Verifier_liste(info_individu.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
             // avoir note de Date de changement dans source depot note
-            if (GH.Properties.Settings.Default.voir_date_changement)
+            if (GH.GH.ParaVoirDateChangement)
             {
-                if (GH.Properties.Settings.Default.voir_reference)
+                if (GH.GH.ParaVoirReference)
                 {
                     // source
                     foreach (ID_numero ID_numero in liste_source_ID_numero)
@@ -1752,7 +1765,7 @@ namespace HTML
                     }
                 }
                 // note
-                if (GH.Properties.Settings.Default.voir_note)
+                if (GH.GH.ParaVoirNote)
                 {
                     for (int f = 0; f < liste_note_ID_numero.Count; f++)
                     //foreach (ID_numero ID_numero in liste_note_ID_numero)
@@ -1763,7 +1776,7 @@ namespace HTML
                 }
             }
             // loop pour note citation source depot media
-            if (GH.Properties.Settings.Default.voir_reference || liste_citation_ID_numero != null)
+            if (GH.GH.ParaVoirReference || liste_citation_ID_numero != null)
             {
                 bool looper;
                 bool modifier;
@@ -1777,7 +1790,7 @@ namespace HTML
                         GEDCOMClass.SOURCE_CITATION info_citation = GEDCOMClass.Avoir_info_citation(liste_citation_ID_numero[f1].ID);
                         // citation
                         // note
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                         {
                             // note de citation
                             (liste_note_ID_numero, modifier) = Verifier_liste(info_citation.N1_NOTE_liste_ID, liste_note_ID_numero);
@@ -1790,13 +1803,13 @@ namespace HTML
                             {
                                 GEDCOMClass.MULTIMEDIA_RECORD info_media = GEDCOMClass.Avoir_info_media(media_ID);
                                 // note
-                                if (GH.Properties.Settings.Default.voir_note)
+                                if (GH.GH.ParaVoirNote)
                                 {
                                     (liste_note_ID_numero, modifier) = Verifier_liste(info_media.N1_CHAN.N1_CHAN_NOTE_ID_liste, liste_note_ID_numero);
                                     if (modifier) looper = true;
                                 }
                                 // citation
-                                if (GH.Properties.Settings.Default.voir_reference)
+                                if (GH.GH.ParaVoirReference)
                                 {
                                     (liste_citation_ID_numero, modifier) = Verifier_liste(info_media.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
                                     if (modifier) looper = true;
@@ -1807,7 +1820,7 @@ namespace HTML
                         if (info_citation.N0_ID_source != null)
                         {
                             GEDCOMClass.SOURCE_RECORD info_source = GEDCOMClass.Avoir_info_SOURCE(info_citation.N0_ID_source);
-                            if (GH.Properties.Settings.Default.voir_reference)
+                            if (GH.GH.ParaVoirReference)
                             {
                                 {
                                     List<string> liste_ID = new List<string>
@@ -1819,12 +1832,12 @@ namespace HTML
                                 }
                             }
                             // note
-                            if (GH.Properties.Settings.Default.voir_note)
+                            if (GH.GH.ParaVoirNote)
                             {
                                 // note de citation
                                 (liste_note_ID_numero, modifier) = Verifier_liste(info_source.N1_NOTE_liste_ID, liste_note_ID_numero);
                                 if (modifier) looper = true;
-                                //node de DATA
+                                //note de DATA
                                 (liste_note_ID_numero, modifier) = Verifier_liste(info_source.N2_DATA_NOTE_liste_ID, liste_note_ID_numero);
                                 if (modifier) looper = true;
                             }
@@ -1838,22 +1851,19 @@ namespace HTML
                         {
                             GEDCOMClass.SOURCE_RECORD info_source = GEDCOMClass.Avoir_info_SOURCE(liste_source_ID_numero[f1].ID);
                             // dépôt
-                            
                             if (info_source.N1_REPO_info != null)
                             {
-                                
-                                if (info_source.N1_REPO_info.N0_ID != null) 
-                                { 
-                                    List<string> liste_ID = new List<string>
-                                    {
-                                        info_source.N1_REPO_info.N0_ID
-                                    };
-                                    (liste_repo_ID_numero, modifier) = Verifier_liste(liste_ID, liste_repo_ID_numero);
-                                    if (modifier) looper = true;
+                                List<string> liste_ID = new List<string>
+                                {
+                                    info_source.N1_REPO_info.N0_ID
+                                };
+                                (liste_repo_ID_numero, modifier) = Verifier_liste(liste_ID, liste_repo_ID_numero);
+                                if (modifier)
+                                {
+                                    looper = true;
                                 }
-                                
                                 // note
-                                if (GH.Properties.Settings.Default.voir_note)
+                                if (GH.GH.ParaVoirNote)
                                 {
                                     (liste_note_ID_numero, modifier) = Verifier_liste(info_source.N1_REPO_info.N1_NOTE_liste_ID, liste_note_ID_numero);
                                     if (modifier) looper = true;
@@ -1861,11 +1871,24 @@ namespace HTML
                             }
                         }
                     }
+                    // note dans dépôt
+                    if (liste_repo_ID_numero != null)
+                    {
+                        foreach(ID_numero item in liste_repo_ID_numero)
+                        {
+                            GEDCOMClass.REPOSITORY_RECORD info_repo = GEDCOMClass.Avoir_info_repo(item.ID);
+                            if (info_repo.N1_NOTE_liste_ID != null)
+                            {
+                                (liste_note_ID_numero, modifier) = Verifier_liste(info_repo.N1_NOTE_liste_ID, liste_note_ID_numero);
+                                if (modifier) looper = true;
+                            }
+                        }
+                    }
                     // citation dans note
                     //foreach (ID_numero liste_ID_numero in liste_note_ID_numero)
                     for (int f1 = 0; f1 < liste_note_ID_numero.Count; f1++)
                     {
-                        if (GH.Properties.Settings.Default.voir_reference) 
+                        if (GH.GH.ParaVoirReference) 
                         {
                             GEDCOMClass.NOTE_RECORD info_note = GEDCOMClass.Avoir_Info_Note(liste_note_ID_numero[f1].ID);
                             (liste_citation_ID_numero, modifier) = Verifier_liste(info_note.N1_SOUR_citation_liste_ID, liste_citation_ID_numero);
@@ -1873,9 +1896,9 @@ namespace HTML
                         }
                     }
                     // avoir note de Date de changement dans source depot note
-                    if (GH.Properties.Settings.Default.voir_date_changement)
+                    if (GH.GH.ParaVoirDateChangement)
                     {
-                        if (GH.Properties.Settings.Default.voir_reference)
+                        if (GH.GH.ParaVoirReference)
                         {
                             // source
                             foreach (ID_numero ID_numero in liste_source_ID_numero)
@@ -1901,7 +1924,7 @@ namespace HTML
                             }
                         }
                         // note
-                        if (GH.Properties.Settings.Default.voir_note)
+                        if (GH.GH.ParaVoirNote)
                         {
                             for (int f = 0; f < liste_note_ID_numero.Count; f++)
                             //foreach (ID_numero ID_numero in liste_note_ID_numero)
@@ -1922,7 +1945,7 @@ namespace HTML
         }
         private static string Avoir_lien_note( List<string> liste_ID, List<ID_numero> liste_note_ID_numero,bool majuscule, int tab)
         {
-            if (!GH.Properties.Settings.Default.voir_note) return null;
+            if (!GH.GH.ParaVoirNote) return null;
             if (liste_ID == null) return null;
             if (liste_ID.Count == 0) return null;
             //liste_note_ID_numero = //Verifier_liste(liste_ID, liste_note_ID_numero);
@@ -2108,7 +2131,7 @@ namespace HTML
         }
         private static string Avoir_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
         {
-            return "H" + sourceLineNumber;
+            return "HT" + sourceLineNumber;
         }
         private string AvoirFamilleConjointeIndex()
         {
@@ -2187,8 +2210,8 @@ namespace HTML
         }
         private static string Carte(int NumeroCarte, string LATI, string LONG, string info, int tab)
         {
-            if (!GH.Properties.Settings.Default.voir_carte) return "";
-            string espace = Tabulation(tab); ;
+            if (!GH.GH.ParaVoirCarte) return "";
+            string espace = Tabulation(tab);
             string texte = espace + "<div id=\"map" + NumeroCarte.ToString() + "\" class=\"carte\"></div>\n";
             texte += espace + "<script>\n";
             texte += espace + "\t// Initialiser Leaflet\n";
@@ -2224,9 +2247,9 @@ namespace HTML
             }
             else
             {
-                if (GH.Properties.Settings.Default.DossierMedia != "")
+                if (GH.GH.ParaDosssierMedia != "")
                 {
-                    source = GH.Properties.Settings.Default.DossierMedia + "/" + fichierSource;
+                    source = GH.GH.ParaDosssierMedia + "/" + fichierSource;
                 }
             }
             if (File.Exists(source) && fichierSource != "")
@@ -2242,7 +2265,7 @@ namespace HTML
             int tab, 
             bool multi_ligne = false)
         {
-            if (GH.Properties.Settings.Default.voir_date_changement == false) 
+            if (GH.GH.ParaVoirDateChangement == false) 
                 return "";
             if (
                 info.N1_CHAN_DATE != null ||
@@ -2267,7 +2290,7 @@ namespace HTML
         }
         private static bool DossierHTMLValide()
         {
-            if (!Directory.Exists(GH.Properties.Settings.Default.DossierHTML))
+            if (!Directory.Exists(GH.GH.ParaDosssierHTML))
             {
                 MessageErreur("S.V.P. Spécifiez dans les paramêtres, le dossier des fiches HTML.");
                 return false;
@@ -2312,7 +2335,7 @@ namespace HTML
                         texte += espace + "\t\t\t\t\t" + info.N1_NAME + "\n";
 
 
-                        if (GH.Properties.Settings.Default.deboguer) texte += espace + "\t\t\t\t\t" + " {" + info.N0_ID + "}\n";
+                        if (GH.GH.ParaVoirID) texte += espace + "\t\t\t\t\t" + " [" + info.N0_ID + "]\n";
                         texte += espace + "\t\t\t\t</span>\n";
                         texte += espace + "\t\t\t</td>\n";
                         texte += espace + "\t\t</tr>\n";
@@ -2452,7 +2475,7 @@ namespace HTML
                             texte += espace + "\t\t</tr>\n";
                         }
                         // date changement *********************************************************************************************
-                        if (info.N1_CHAN != null && GH.Properties.Settings.Default.voir_date_changement)
+                        if (info.N1_CHAN != null && GH.GH.ParaVoirDateChangement)
                         {
                             texte += espace + "\t\t<tr>\n";
                             texte += espace + "\t\t\t<td style=\"border:0px solid #0e0;text-align:left;\" colspan=2>\n";
@@ -2475,7 +2498,7 @@ namespace HTML
                         texte += espace + "\t\t\t\t<span class=\"depot\">" + record.numero.ToString() + "</span> \n";
                         texte += espace + "\t\t\t\t<span style=\"display:table-cell;text-align:top; padding-left:5px\">\n";
                         texte += espace + "\t\t\t\t\tInformation manquante dans le fichier GEDCOM\n";
-                        if (GH.Properties.Settings.Default.deboguer) texte += espace + "\t\t\t\t" + " {" + record.ID + "}\n";
+                        if (GH.GH.ParaVoirID) texte += espace + "\t\t\t\t" + " [" + record.ID + "]\n";
                         texte += espace + "\t\t\t\t</span>\n";
                         texte += espace + "\t\t\t</td>\n";
                         texte += espace + "\t\t</tr>\n";
@@ -2594,7 +2617,7 @@ namespace HTML
                 }
                 if (info_LDS.N1_DATE != null)
                 {
-                    if (GH.Properties.Settings.Default.date_longue)
+                    if (GH.GH.ParaDateLonque)
                     {
                         date = GEDCOMClass.ConvertirDateTexte(info_LDS.N1_DATE);
                     }
@@ -2643,7 +2666,7 @@ namespace HTML
                     texte += espace + "\t\t\t" + info_LDS.N1_STAT + "\n";
                     if (info_LDS.N2_STAT_DATE != null)
                     {
-                        if (GH.Properties.Settings.Default.date_longue)
+                        if (GH.GH.ParaDateLonque)
                         {
                             date = GEDCOMClass.ConvertirDateTexte(info_LDS.N2_STAT_DATE);
                         }
@@ -2746,7 +2769,7 @@ namespace HTML
             string texte = null;
             string IDConjointTexte = null;
             string IDConjointeTexte = null;
-            if (GH.Properties.Settings.Default.VoirID == true)
+            if (GH.GH.ParaVoirID == true)
             {
                 if (infoFamille.N1_HUSB != "")
                     IDConjointTexte = " [" + infoFamille.N1_HUSB + "]";
@@ -2768,7 +2791,7 @@ namespace HTML
             texte += "\t\t\t\t<tr>\n";
             texte += "\t\t\t\t\t<td>\n";
             texte += "\t\t\t\t\t\tFamille\n";
-            if (GH.Properties.Settings.Default.VoirID == true)
+            if (GH.GH.ParaVoirID == true)
             {
                 texte += "\t\t\t\t\t\t<div style=\"font-size:small\">[" + IDFamille + "]</div>" + "\n";
             }
@@ -2811,7 +2834,7 @@ namespace HTML
             texte += "\t\t\t\t\t\t" + nomConjoint + IDConjointTexte + "\n";
             texte += "\t\t\t\t\t</td>\n";
             string date_naissance_conjoint;
-            if (GH.Properties.Settings.Default.date_longue)
+            if (GH.GH.ParaDateLonque)
             {
                 date_naissance_conjoint = GEDCOMClass.ConvertirDateTexte(NaissanceConjoint.N2_DATE);
             }
@@ -2823,7 +2846,7 @@ namespace HTML
             texte += "\t\t\t\t\t\t" + date_naissance_conjoint + "\n";
             texte += "\t\t\t\t\t</td>\n";
             string date_deces_conjoint;
-            if (GH.Properties.Settings.Default.date_longue)
+            if (GH.GH.ParaDateLonque)
             {
                 date_deces_conjoint = GEDCOMClass.ConvertirDateTexte(DecesConjoint.N2_DATE);
             }
@@ -2877,7 +2900,7 @@ namespace HTML
                 string date_SLGS;
                 if (infoFamille.N1_SLGS.N1_DATE != null)
                 {
-                    if (GH.Properties.Settings.Default.date_longue)
+                    if (GH.GH.ParaDateLonque)
                     {
                         date_SLGS = GEDCOMClass.ConvertirDateTexte(infoFamille.N1_SLGS.N1_DATE);
                     }
@@ -2905,7 +2928,7 @@ namespace HTML
                 }
                 if (infoFamille.N1_SLGS.N2_STAT_DATE != null)
                 {
-                    if (GH.Properties.Settings.Default.date_longue)
+                    if (GH.GH.ParaDateLonque)
                     {
                         date_SLGS = GEDCOMClass.ConvertirDateTexte(infoFamille.N1_SLGS.N2_STAT_DATE);
                     }
@@ -2927,7 +2950,7 @@ namespace HTML
             // date naissance conjointe
             texte += "\t\t\t\t\t</td class=\"cellule2LTF date\">\n";
             string date_naissance_conjointe;
-            if (GH.Properties.Settings.Default.date_longue)
+            if (GH.GH.ParaDateLonque)
             {
                 date_naissance_conjointe = GEDCOMClass.ConvertirDateTexte(NaissanceConjointe.N2_DATE);
             }
@@ -2939,7 +2962,7 @@ namespace HTML
             texte += "\t\t\t\t\t\t" + date_naissance_conjointe + "\n";
             texte += "\t\t\t\t\t</td>\n";
             string date_deces_conjointe;
-            if (GH.Properties.Settings.Default.date_longue)
+            if (GH.GH.ParaDateLonque)
             {
                 date_deces_conjointe = GEDCOMClass.ConvertirDateTexte(DecesConjointe.N2_DATE);
             }
@@ -2957,7 +2980,7 @@ namespace HTML
             if ((infoFamille.N1_CHAN.N1_CHAN_DATE != null ||
                 infoFamille.N1_CHAN.N2_CHAN_DATE_TIME !=null ||
                 infoFamille.N1_CHAN.N1_CHAN_NOTE_ID_liste != null)
-                 && GH.Properties.Settings.Default.voir_date_changement
+                 && GH.GH.ParaVoirDateChangement
                 )
             {
                 OkDate = true;
@@ -3016,7 +3039,7 @@ namespace HTML
                     texte += "\t\t\t\t\t\t</div>\n";
                 }
                 // chercheur
-                if (infoFamille.N1_SUBM_liste_ID.Count > 0 && GH.Properties.Settings.Default.voir_chercheur)
+                if (infoFamille.N1_SUBM_liste_ID.Count > 0 && GH.GH.ParaVoirChercheur)
                 {
                     texte += Separation("mince", 5);
                     texte += "\t\t\t\t\t<div>\n";
@@ -3081,7 +3104,7 @@ namespace HTML
                 {
                     if (IDEnfant != null)
                     {
-                        if (GH.Properties.Settings.Default.VoirID)
+                        if (GH.GH.ParaVoirID)
                         {
                             txtIDEfant = " [" + IDEnfant + "]";
                         }
@@ -3130,7 +3153,7 @@ namespace HTML
                         }
                         texte += "\t\t\t\t\t\t</td>\n";
                         string date_naissance_enfant;
-                        if (GH.Properties.Settings.Default.date_longue)
+                        if (GH.GH.ParaDateLonque)
                         {
                             date_naissance_enfant = GEDCOMClass.ConvertirDateTexte(NaissanceEnfant.N2_DATE);
                         }
@@ -3142,7 +3165,7 @@ namespace HTML
                         texte += "\t\t\t\t\t\t\t" + date_naissance_enfant + "\n";
                         texte += "\t\t\t\t\t\t</td>\n";
                         string date_deces_enfant;
-                        if (GH.Properties.Settings.Default.date_longue)
+                        if (GH.GH.ParaDateLonque)
                         {
                             date_deces_enfant = GEDCOMClass.ConvertirDateTexte(DecesEnfant.N2_DATE);
                         }
@@ -3177,7 +3200,7 @@ namespace HTML
                 texte += Groupe("fin", 3);
             }
             // média *******************************************************************************************************
-            if (GH.Properties.Settings.Default.voir_media == true && infoFamille.N1_OBJE_liste.Count > 0)
+            if (GH.GH.ParaVoirMedia == true && infoFamille.N1_OBJE_liste.Count > 0)
             {
                 if (infoFamille.N1_OBJE_liste != null)
                 {
@@ -3589,7 +3612,7 @@ namespace HTML
                     texte += "\t\t\t\t\t</td>\n";
                     texte += "\t\t\t\t\t<td>\n";
                     string date;
-                    if (GH.Properties.Settings.Default.date_longue)
+                    if (GH.GH.ParaDateLonque)
                     {
                         date = GEDCOMClass.ConvertirDateTexte(InfoGEDCOM.N1_DATE);
                     }
@@ -3728,7 +3751,7 @@ namespace HTML
                     }
                     // si changement de date
                     GEDCOMClass.CHANGE_DATE N1_CHAN = Info_SUBMISSION_RECORD.N1_CHAN;
-                    if (N1_CHAN != null && GH.Properties.Settings.Default.voir_date_changement)
+                    if (N1_CHAN != null && GH.GH.ParaVoirDateChangement)
                     {
                         if (N1_CHAN.N1_CHAN_DATE != null)
                         {
@@ -3917,7 +3940,7 @@ namespace HTML
                         texte += "\t\t\t\t\t<td>\n";
                         if (InfoGEDCOM.N2_SOUR_DATA != null) texte += "\t\t\t\t\t\t" + InfoGEDCOM.N2_SOUR_DATA + "\n";
                         string date;
-                        if (GH.Properties.Settings.Default.date_longue)
+                        if (GH.GH.ParaDateLonque)
                         {
                             date = GEDCOMClass.ConvertirDateTexte(InfoGEDCOM.N3_SOUR_DATA_DATE);
                         }
@@ -3984,6 +4007,11 @@ namespace HTML
                         3);
                 texte += temp;
             }
+
+            
+
+
+
             // menu hamburger
             texte += "\t\t\t\t<div class=\"hamburger\">\n";
             texte += "\t\t\t\t\t<button class=\"boutonHamburger\"></button>\n";
@@ -4528,6 +4556,7 @@ namespace HTML
             string IDCourantIndividu = IDIndividu;
             // Récupérer les informations de l'individu
             GEDCOMClass.INDIVIDUAL_RECORD infoIndividu;
+            
             (_, infoIndividu) = GEDCOMClass.Avoir_info_individu(IDIndividu);
             string nom = GEDCOMClass.AvoirPremierNomIndividu(IDIndividu);
             List<GEDCOMClass.PERSONAL_NAME_STRUCTURE> listeInfoNom;
@@ -4621,7 +4650,7 @@ namespace HTML
             {
                 texte += "\t\t\t\t\t\t\t<div style=\"font-size:small\"><strong>Adopter</strong></div>" + "\n";
             }
-            if (GH.Properties.Settings.Default.VoirID == true)
+            if (GH.GH.ParaVoirID == true)
             {
                 texte += "\t\t\t\t\t\t<div style=\"font-size:small\">[" + IDIndividu + "]</div>" + "\n";
             }
@@ -4629,7 +4658,7 @@ namespace HTML
             texte += "\t\t\t\t</tr>\n";
             texte += "\t\t\t</table>\n";
             texte += "\t\t\t<div style=\"border: 2px solid #000;border-top:0px solid #000;padding:10px;min-height:300px;\">\n";
-            if (GH.Properties.Settings.Default.photo_principal)
+            if (GH.GH.ParaVoirPhotoPrincipal)
             {
                 texte += "\t\t\t\t<img class=\"portrait\" src=\"" + fichierPortrait + "\" alt=\"\" />\n";
             }
@@ -4970,7 +4999,7 @@ namespace HTML
                         }
                     }
                     string txtID = null;
-                    if (GH.Properties.Settings.Default.VoirID == true)
+                    if (GH.GH.ParaVoirID == true)
                     {
                         txtID = " [" + ID + "]";
                     }
@@ -5039,7 +5068,6 @@ namespace HTML
                     texte += "\t\t\t\t</div>\n";
                 }
             }
-
             // filiation  Heridis
             if (infoIndividu.N1__FIL != null)
             {
@@ -5127,7 +5155,7 @@ namespace HTML
                         texte += "\t\t\t\t\t\t<a class=\"ficheIndividuGris\"></a>\n";
                     }
                     texte += "\t\t\t\t\t\t" + GEDCOMClass.AvoirPremierNomIndividu(info_ASSO.N0_ASSO);
-                    if (GH.Properties.Settings.Default.VoirID == true)
+                    if (GH.GH.ParaVoirID == true)
                     {
                         texte += "\t\t\t\t\t\t[" + info_ASSO.N0_ASSO + "]\n";
                     }
@@ -5248,16 +5276,9 @@ namespace HTML
                 }
             }
             // note ********************************************************************************************************
-            if (infoIndividu.N1_NOTE_liste_ID.Count() > 0)
-            {
-                texte += Separation("moyen", 4);
-                texte += "\t\t\t\t<div>\n";
-                texte += Avoir_lien_note(infoIndividu.N1_NOTE_liste_ID, liste_note_ID_numero, true, 5);
-                texte += "\t\t\t\t</div>\n";
-            }
             //texte += "\t\t\t\t</div>\n";
             // chercheur
-            if (infoIndividu.N1_SUBM_liste_ID.Count > 0 && GH.Properties.Settings.Default.voir_chercheur)
+            if (infoIndividu.N1_SUBM_liste_ID.Count > 0 && GH.GH.ParaVoirChercheur)
             {
                 texte += Separation("mince", 5);
                 texte += "\t\t\t\t\t<div>\n";
@@ -5300,7 +5321,7 @@ namespace HTML
                 {
                     string IDFamilleConjoint = infoLienConjoint.N0_ID;
                     string txtIDFamille;
-                    if (GH.Properties.Settings.Default.VoirID == true)
+                    if (GH.GH.ParaVoirID == true)
                     {
                         txtIDFamille = " [" + IDFamilleConjoint + "]";
                     }
@@ -5346,13 +5367,13 @@ namespace HTML
                     {
                         texte += "\t\t\t\t\t\t\t<a class=\"ficheIndividuGris\"></a>\n";
                     }
-                    if (GH.Properties.Settings.Default.VoirID)
+                    if (GH.GH.ParaVoirID)
                         texte += "[" + infoLienConjoint.N0_ID + "]\n";
                     texte += "\t\t\t\t\t\t</td>\n";
                     texte += "\t\t\t\t\t\t<td class=\"cellule2LMF\">\n";
                     texte += "\t\t\t\t\t\t\t" + nomConjoint + "\n";
 
-                    if (GH.Properties.Settings.Default.VoirID == true)
+                    if (GH.GH.ParaVoirID == true)
                     {
                         texte += "\t\t\t\t\t\t<span style=\"font-size:small\">[" +
                             IDConjoint + "]</span>" + "\n";
@@ -5364,7 +5385,7 @@ namespace HTML
                     texte += "\t\t\t\t\t\t</td>\n";
                     texte += "\t\t\t\t\t\t<td class=\"cellule2LMF\">\n";
                     string date = null;
-                    if (GH.Properties.Settings.Default.date_longue)
+                    if (GH.GH.ParaDateLonque)
                     {
                         date = GEDCOMClass.ConvertirDateTexte(NaissanceConjoint.N2_DATE);
                     }
@@ -5375,7 +5396,7 @@ namespace HTML
                     texte += "\t\t\t\t\t\t\t" + date + "\n";
                     texte += "\t\t\t\t\t\t</td>\n";
                     texte += "\t\t\t\t\t\t<td class=\"cellule2LMF\">\n";
-                    if (GH.Properties.Settings.Default.date_longue)
+                    if (GH.GH.ParaDateLonque)
                     {
                         date = GEDCOMClass.ConvertirDateTexte(DecesConjoint.N2_DATE);
                     }
@@ -5421,7 +5442,7 @@ namespace HTML
                 // afficher ou pas le ID
                 string txtIDPere = null;
                 string txtIDMere = null;
-                if (GH.Properties.Settings.Default.VoirID == true)
+                if (GH.GH.ParaVoirID == true)
                 {
                     if (pereID != null && nomPere != null)
                     {
@@ -5439,7 +5460,7 @@ namespace HTML
                 texte += "\t\t\t\t\t<tr>\n";
                 texte += "\t\t\t\t\t\t<td>\n";
                 texte += "\t\t\t\t\t\tParent\n";
-                if (GH.Properties.Settings.Default.VoirID == true)
+                if (GH.GH.ParaVoirID == true)
                 {
                     texte += "\t\t\t\t\t\t<div style=\"font-size:small\">[" + infoFamille.N0_FAMC + "]</div>" + "\n";
                 }
@@ -5493,7 +5514,7 @@ namespace HTML
                 texte += "\t\t\t\t\t\t</td>\n";
                 texte += "\t\t\t\t\t\t<td class=\"cellule2LMF\">" + nomPere + txtIDPere + "</td>\n";
                 string date;
-                if (GH.Properties.Settings.Default.date_longue)
+                if (GH.GH.ParaDateLonque)
                 {
                     date = GEDCOMClass.ConvertirDateTexte(NaissancePere.N2_DATE);
                 }
@@ -5502,7 +5523,7 @@ namespace HTML
                     date = NaissancePere.N2_DATE;
                 }
                 texte += "\t\t\t\t\t\t<td class=\"date cellule2LMF\">" + date + "</td>\n";
-                if (GH.Properties.Settings.Default.date_longue)
+                if (GH.GH.ParaDateLonque)
                 {
                     date = GEDCOMClass.ConvertirDateTexte(DecesPere.N2_DATE);
                 }
@@ -5533,7 +5554,7 @@ namespace HTML
                 texte += "\t\t\t\t\t\t\tMère\n";
                 texte += "\t\t\t\t\t\t</td>\n";
                 texte += "\t\t\t\t\t\t<td class=\"cellule2LMF\">" + nomMere + txtIDMere + "</td>\n";
-                if (GH.Properties.Settings.Default.date_longue)
+                if (GH.GH.ParaDateLonque)
                 {
                     date = GEDCOMClass.ConvertirDateTexte(NaissanceMere.N2_DATE);
                 }
@@ -5542,7 +5563,7 @@ namespace HTML
                     date = NaissanceMere.N2_DATE;
                 }
                 texte += "\t\t\t\t\t\t<td class=\"date cellule2LMF\">" + date + "</td>\n";
-                if (GH.Properties.Settings.Default.date_longue)
+                if (GH.GH.ParaDateLonque)
                 {
                     date = GEDCOMClass.ConvertirDateTexte(DecesMere.N2_DATE);
                 }
@@ -5595,7 +5616,7 @@ namespace HTML
             }
             //@média Groupe ****************************************************************************
             {
-                if (GH.Properties.Settings.Default.voir_media)
+                if (GH.GH.ParaVoirMedia)
                 {
                     if (infoIndividu.N1_OBJE_liste != null)
                     {
@@ -5755,6 +5776,9 @@ namespace HTML
                 texte += temp;
             }
             // @Depot Groupe ***************************************************************************
+
+
+
             (temp, groupe_depot) =  Groupe_depot( liste_note_ID_numero, liste_repo_ID_numero, 3);
             texte += temp;
             // @note Groupe ****************************************************************************
@@ -5945,7 +5969,7 @@ namespace HTML
                             texte += espace + "\t\t</tr>\n";
                         }
                         // media
-                        if (GH.Properties.Settings.Default.voir_media)
+                        if (GH.GH.ParaVoirMedia)
                         {
                             erreur = Avoir_code_erreur();
                             if (info_citation.N1_OBJE_ID_liste.Count > 0)
@@ -6019,7 +6043,7 @@ namespace HTML
                             texte += espace + "\t\t<tr>\n";
                             texte += espace + "\t\t\t<td>\n";
                             texte += espace + "\t\t\t\t<div style=\"border:0px solid #00F;padding-left:.5in;\">Data: ";
-                            if (GH.Properties.Settings.Default.date_longue)
+                            if (GH.GH.ParaDateLonque)
                             {
                                 texte += GEDCOMClass.ConvertirDateTexte(info_citation.N2_DATA_DATE);
                             }
@@ -6165,7 +6189,7 @@ namespace HTML
                     texte += espace + "\t\t\t\t<span class=\"note\">" + liste_note_ID_numero[f].numero.ToString() + "</span>\n";
                     texte += espace + "\t\t\t\t<span style=\"display:table-cell;text-align:top; padding-left:5px\">\n";
                     texte += espace + "\t\t\t\t\t" + info_note.N0_NOTE_Texte + "\n";
-                    if (GH.Properties.Settings.Default.deboguer) texte += "\t\t\t\t {" + info_note.N0_ID + "}\n";
+                    if (GH.GH.ParaVoirID) texte += "\t\t\t\t [" + info_note.N0_ID + "]\n";
                     texte += espace + "\t\t\t\t</span>\n";
                     temp = Avoir_lien_citation_source(info_note.N1_SOUR_citation_liste_ID, liste_citation_ID_numero, tab + 4);
                     texte += temp;
@@ -6192,7 +6216,7 @@ namespace HTML
                     texte += espace + "\t\t\t</td>\n";
                     texte += espace + "\t\t</tr>\n";
                 }
-                if (info_note.N1_CHAN.N1_CHAN_DATE != null && GH.Properties.Settings.Default.voir_date_changement)
+                if (info_note.N1_CHAN.N1_CHAN_DATE != null && GH.GH.ParaVoirDateChangement)
                 {
                     texte += espace + "\t\t<tr>\n";
                     texte += espace + "\t\t\t<td>\n";
@@ -6252,14 +6276,14 @@ namespace HTML
                     texte += espace + "\t\t\t\t<span class=\"source\">" + item_source.numero.ToString() + "</span> \n";
                     texte += espace + "\t\t\t\t<span style=\"display:table-cell;text-align:top; padding-left:5px\">\n";
                     texte += espace + "\t\t\t\t\t" + info_source.N1_TITL + "\n";
-                    if (GH.Properties.Settings.Default.deboguer)
-                        texte += espace + "\t\t\t\t\t" + " {" + info_source.N0_ID + "}\n";
+                    if (GH.GH.ParaVoirID)
+                        texte += espace + "\t\t\t\t\t" + " [" + info_source.N0_ID + "]\n";
                     texte += espace + "\t\t\t\t</span>\n";
                     texte += espace + "\t\t\t</td>\n";
                     texte += espace + "\t\t</tr>\n";
                     {
                         // média source
-                        if (info_source.N1_OBJE_liste_ID.Count > 0 && GH.Properties.Settings.Default.voir_media)
+                        if (info_source.N1_OBJE_liste_ID.Count > 0 && GH.GH.ParaVoirMedia)
                         {
                             int totalOBJE = info_source.N1_OBJE_liste_ID.Count;
                             texte += espace + "\t\t<tr>\n";
@@ -6414,7 +6438,7 @@ namespace HTML
                         if (info_source.N1_DATE != null)
                         {
                             string date = null;
-                            if (GH.Properties.Settings.Default.date_longue)
+                            if (GH.GH.ParaDateLonque)
                             {
                                 date = GEDCOMClass.ConvertirDateTexte(info_source.N1_DATE);
                             }
@@ -6576,7 +6600,7 @@ namespace HTML
                             texte += espace + "\t\t</tr>\n";
                         }
                         // date de changement
-                        if (GH.Properties.Settings.Default.voir_date_changement)
+                        if (GH.GH.ParaVoirDateChangement)
                         {
                             if (info_source.N1_CHAN != null)
                             {
@@ -6773,11 +6797,11 @@ namespace HTML
             texte += espace + "\t\t</td>\n";
             texte += espace + "\t</tr>\n";
             // ID
-            if (GH.Properties.Settings.Default.deboguer)
+            if (GH.GH.ParaVoirID)
             {
                 texte += espace + "\t<tr>\n";
                 texte += espace + "\t\t<td style=\"border:0px solid #0e0;text-align:center\">\n";
-                texte += espace + "\t\t\t\t{" + infoMedia.N0_ID + "}\n";
+                texte += espace + "\t\t\t\t[" + infoMedia.N0_ID + "]\n";
                 texte += espace + "\t\t</td>\n";
                 texte += espace + "\t</tr>\n";
             }
@@ -6800,7 +6824,7 @@ namespace HTML
             }
             // DATE Heridis
             string date;
-            if (GH.Properties.Settings.Default.date_longue)
+            if (GH.GH.ParaDateLonque)
             {
                 date = GEDCOMClass.ConvertirDateTexte(infoMedia.N1__DATE);
             }
@@ -6844,7 +6868,7 @@ namespace HTML
             texte += espace + "\t\t</td>\n";
             texte += espace + "\t</tr>\n";
             // référence
-            if (infoMedia.N1_SOUR_citation_liste_ID != null && GH.Properties.Settings.Default.voir_reference)
+            if (infoMedia.N1_SOUR_citation_liste_ID != null && GH.GH.ParaVoirReference)
             {
                 texte += espace + "\t<tr>\n";
                 texte += espace + "\t\t<td style=\"border:0px solid #0e0;text-align:left\">\n";
@@ -6855,7 +6879,7 @@ namespace HTML
             }
             // si a une date de changement
             GEDCOMClass.CHANGE_DATE N1_CHAN = infoMedia.N1_CHAN;
-            if (GH.Properties.Settings.Default.voir_date_changement)
+            if (GH.GH.ParaVoirDateChangement)
             {
                 if (N1_CHAN != null)
                 {
@@ -6883,7 +6907,7 @@ namespace HTML
             List<ID_numero> liste_note_ID_numero,
             int tab)
         {
-            if(GH.Properties.Settings.Default.voir_chercheur == false || liste.Count == 0)
+            if(GH.GH.ParaVoirChercheur == false || liste.Count == 0)
                 return ("", false);
             string espace = Tabulation(tab);
             string texte = "";
