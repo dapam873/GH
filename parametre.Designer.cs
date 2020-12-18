@@ -245,6 +245,9 @@
             this.CbVoirInfoBulle.AutoSize = true;
             this.CbVoirInfoBulle.Location = new System.Drawing.Point(193, 195);
             this.CbVoirInfoBulle.Name = "CbVoirInfoBulle";
+            this.CbVoirInfoBulle.Size = new System.Drawing.Size(86, 17);
+            this.CbVoirInfoBulle.TabIndex = 0;
+            this.CbVoirInfoBulle.Text = "Voir info&bulle";
             this.CbVoirInfoBulle.UseVisualStyleBackColor = true;
             this.CbVoirInfoBulle.CheckedChanged += new System.EventHandler(this.CbToolTip_CheckedChanged);
             // 
