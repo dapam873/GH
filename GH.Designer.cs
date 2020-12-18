@@ -58,33 +58,33 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.Btn_voir_fiche_individu = new System.Windows.Forms.Button();
             this.Tb_Status = new System.Windows.Forms.TextBox();
             this.RechercheIndividuTB = new System.Windows.Forms.TextBox();
             this.RechercheFamilleTB = new System.Windows.Forms.TextBox();
             this.LvChoixIndividu = new System.Windows.Forms.ListView();
-            this.AvantFamilleB = new System.Windows.Forms.Button();
-            this.ApresFamilleB = new System.Windows.Forms.Button();
-            this.RechercheFamilleB = new System.Windows.Forms.Button();
-            this.ApresIndividuB = new System.Windows.Forms.Button();
-            this.AvantIndividuB = new System.Windows.Forms.Button();
-            this.RechercheIndividuB = new System.Windows.Forms.Button();
             this.Lb_HTML_1 = new System.Windows.Forms.Label();
             this.Lb_HTML_2 = new System.Windows.Forms.Label();
             this.Lb_HTML_3 = new System.Windows.Forms.Label();
             this.Lb_HTML_4 = new System.Windows.Forms.Label();
             this.Lb_animation = new System.Windows.Forms.Label();
-            this.Btn_total = new System.Windows.Forms.Button();
-            this.Btn_annuler = new System.Windows.Forms.Button();
-            this.Btn_annuler_HTML = new System.Windows.Forms.Button();
-            this.Btn_voir_fiche_famille = new System.Windows.Forms.Button();
-            this.Btn_deboguer = new System.Windows.Forms.Button();
-            this.Btn_balise = new System.Windows.Forms.Button();
-            this.Btn_erreur = new System.Windows.Forms.Button();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.Btn_cadre_individu = new System.Windows.Forms.Button();
             this.Btn_cadre_famille = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.Btn_erreur = new System.Windows.Forms.Button();
+            this.Btn_balise = new System.Windows.Forms.Button();
+            this.Btn_deboguer = new System.Windows.Forms.Button();
+            this.Btn_voir_fiche_famille = new System.Windows.Forms.Button();
+            this.Btn_annuler_HTML = new System.Windows.Forms.Button();
+            this.Btn_annuler = new System.Windows.Forms.Button();
+            this.Btn_total = new System.Windows.Forms.Button();
+            this.Btn_voir_fiche_individu = new System.Windows.Forms.Button();
+            this.AvantFamilleB = new System.Windows.Forms.Button();
+            this.ApresFamilleB = new System.Windows.Forms.Button();
+            this.RechercheFamilleB = new System.Windows.Forms.Button();
+            this.AvantIndividuB = new System.Windows.Forms.Button();
+            this.ApresIndividuB = new System.Windows.Forms.Button();
+            this.RechercheIndividuB = new System.Windows.Forms.Button();
             this.menuPrincipal.SuspendLayout();
             this.Gb_info_GEDCOM.SuspendLayout();
             this.SuspendLayout();
@@ -158,21 +158,21 @@
             // aideToolStripMenuItem1
             // 
             this.aideToolStripMenuItem1.Name = "aideToolStripMenuItem1";
-            this.aideToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.aideToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
             this.aideToolStripMenuItem1.Text = "&Aide";
             this.aideToolStripMenuItem1.Click += new System.EventHandler(this.AideToolStripMenuItem1_Click);
             // 
             // BienvenuToolStripMenuItem
             // 
             this.BienvenuToolStripMenuItem.Name = "BienvenuToolStripMenuItem";
-            this.BienvenuToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.BienvenuToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.BienvenuToolStripMenuItem.Text = "Bienvenu";
             this.BienvenuToolStripMenuItem.Click += new System.EventHandler(this.BienvenuToolStripMenuItem_Click);
             // 
             // àProposToolStripMenuItem
             // 
             this.àProposToolStripMenuItem.Name = "àProposToolStripMenuItem";
-            this.àProposToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.àProposToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.àProposToolStripMenuItem.Text = "À &propos";
             this.àProposToolStripMenuItem.Click += new System.EventHandler(this.ÀProposToolStripMenuItem_Click);
             // 
@@ -373,27 +373,6 @@
             this.label1.TabIndex = 93;
             this.label1.Text = "Information du fichier GEDCOM";
             // 
-            // Btn_voir_fiche_individu
-            // 
-            this.Btn_voir_fiche_individu.BackColor = System.Drawing.Color.Blue;
-            this.Btn_voir_fiche_individu.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_voir_fiche_individu.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_voir_fiche_individu.FlatAppearance.BorderSize = 0;
-            this.Btn_voir_fiche_individu.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.Btn_voir_fiche_individu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.Btn_voir_fiche_individu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_voir_fiche_individu.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
-            this.Btn_voir_fiche_individu.ForeColor = System.Drawing.Color.White;
-            this.Btn_voir_fiche_individu.Image = ((System.Drawing.Image)(resources.GetObject("Btn_voir_fiche_individu.Image")));
-            this.Btn_voir_fiche_individu.Location = new System.Drawing.Point(1046, 305);
-            this.Btn_voir_fiche_individu.Name = "Btn_voir_fiche_individu";
-            this.Btn_voir_fiche_individu.Size = new System.Drawing.Size(58, 44);
-            this.Btn_voir_fiche_individu.TabIndex = 124;
-            this.Btn_voir_fiche_individu.Tag = "";
-            this.Btn_voir_fiche_individu.UseVisualStyleBackColor = false;
-            this.Btn_voir_fiche_individu.Click += new System.EventHandler(this.Btn_voir_fiche_Click);
-            this.Btn_voir_fiche_individu.MouseHover += new System.EventHandler(this.Btn_voir_fiche_individu_MouseHover);
-            // 
             // Tb_Status
             // 
             this.Tb_Status.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
@@ -443,123 +422,6 @@
             this.LvChoixIndividu.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LvChoixIndividu_ColumnClick);
             this.LvChoixIndividu.SelectedIndexChanged += new System.EventHandler(this.ChoixLVIndividu_SelectedIndexChanged);
             this.LvChoixIndividu.DoubleClick += new System.EventHandler(this.LvChoixIndividu_DoubleClick);
-            // 
-            // AvantFamilleB
-            // 
-            this.AvantFamilleB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.AvantFamilleB.BackgroundImage = global::GH.Properties.Resources.flecheGauche_22_20;
-            this.AvantFamilleB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.AvantFamilleB.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.AvantFamilleB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.AvantFamilleB.FlatAppearance.BorderSize = 0;
-            this.AvantFamilleB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.AvantFamilleB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.AvantFamilleB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AvantFamilleB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AvantFamilleB.ForeColor = System.Drawing.Color.Transparent;
-            this.AvantFamilleB.Location = new System.Drawing.Point(957, 253);
-            this.AvantFamilleB.Name = "AvantFamilleB";
-            this.AvantFamilleB.Size = new System.Drawing.Size(22, 20);
-            this.AvantFamilleB.TabIndex = 6;
-            this.AvantFamilleB.UseVisualStyleBackColor = false;
-            this.AvantFamilleB.Click += new System.EventHandler(this.AvantConjointeB_Click);
-            // 
-            // ApresFamilleB
-            // 
-            this.ApresFamilleB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.ApresFamilleB.BackgroundImage = global::GH.Properties.Resources.flecheDroite_22_20;
-            this.ApresFamilleB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ApresFamilleB.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ApresFamilleB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.ApresFamilleB.FlatAppearance.BorderSize = 0;
-            this.ApresFamilleB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.ApresFamilleB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.ApresFamilleB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ApresFamilleB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ApresFamilleB.ForeColor = System.Drawing.Color.Transparent;
-            this.ApresFamilleB.Location = new System.Drawing.Point(992, 253);
-            this.ApresFamilleB.Name = "ApresFamilleB";
-            this.ApresFamilleB.Size = new System.Drawing.Size(22, 20);
-            this.ApresFamilleB.TabIndex = 7;
-            this.ApresFamilleB.UseVisualStyleBackColor = false;
-            this.ApresFamilleB.Click += new System.EventHandler(this.ApresConjointeB_Click);
-            // 
-            // RechercheFamilleB
-            // 
-            this.RechercheFamilleB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheFamilleB.BackgroundImage = global::GH.Properties.Resources.loupe20;
-            this.RechercheFamilleB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.RechercheFamilleB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheFamilleB.FlatAppearance.BorderSize = 0;
-            this.RechercheFamilleB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheFamilleB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheFamilleB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RechercheFamilleB.ForeColor = System.Drawing.Color.Transparent;
-            this.RechercheFamilleB.Location = new System.Drawing.Point(662, 250);
-            this.RechercheFamilleB.Name = "RechercheFamilleB";
-            this.RechercheFamilleB.Size = new System.Drawing.Size(30, 30);
-            this.RechercheFamilleB.TabIndex = 112;
-            this.RechercheFamilleB.TabStop = false;
-            this.RechercheFamilleB.UseVisualStyleBackColor = false;
-            // 
-            // ApresIndividuB
-            // 
-            this.ApresIndividuB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.ApresIndividuB.BackgroundImage = global::GH.Properties.Resources.flecheDroite_22_20;
-            this.ApresIndividuB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ApresIndividuB.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ApresIndividuB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.ApresIndividuB.FlatAppearance.BorderSize = 0;
-            this.ApresIndividuB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.ApresIndividuB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.ApresIndividuB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ApresIndividuB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ApresIndividuB.ForeColor = System.Drawing.Color.Transparent;
-            this.ApresIndividuB.Location = new System.Drawing.Point(992, 37);
-            this.ApresIndividuB.Name = "ApresIndividuB";
-            this.ApresIndividuB.Size = new System.Drawing.Size(22, 20);
-            this.ApresIndividuB.TabIndex = 3;
-            this.ApresIndividuB.UseVisualStyleBackColor = false;
-            this.ApresIndividuB.Click += new System.EventHandler(this.ApresIndividuB_Click);
-            // 
-            // AvantIndividuB
-            // 
-            this.AvantIndividuB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.AvantIndividuB.BackgroundImage = global::GH.Properties.Resources.flecheGauche_22_20;
-            this.AvantIndividuB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.AvantIndividuB.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.AvantIndividuB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
-            this.AvantIndividuB.FlatAppearance.BorderSize = 0;
-            this.AvantIndividuB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.AvantIndividuB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.AvantIndividuB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AvantIndividuB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AvantIndividuB.ForeColor = System.Drawing.Color.Transparent;
-            this.AvantIndividuB.Location = new System.Drawing.Point(957, 37);
-            this.AvantIndividuB.Name = "AvantIndividuB";
-            this.AvantIndividuB.Size = new System.Drawing.Size(22, 20);
-            this.AvantIndividuB.TabIndex = 2;
-            this.AvantIndividuB.UseVisualStyleBackColor = false;
-            this.AvantIndividuB.Click += new System.EventHandler(this.AvantIndividuB_Click);
-            // 
-            // RechercheIndividuB
-            // 
-            this.RechercheIndividuB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheIndividuB.BackgroundImage = global::GH.Properties.Resources.loupe20;
-            this.RechercheIndividuB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.RechercheIndividuB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheIndividuB.FlatAppearance.BorderSize = 0;
-            this.RechercheIndividuB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheIndividuB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.RechercheIndividuB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RechercheIndividuB.ForeColor = System.Drawing.Color.Transparent;
-            this.RechercheIndividuB.Location = new System.Drawing.Point(661, 32);
-            this.RechercheIndividuB.Name = "RechercheIndividuB";
-            this.RechercheIndividuB.Size = new System.Drawing.Size(30, 30);
-            this.RechercheIndividuB.TabIndex = 107;
-            this.RechercheIndividuB.TabStop = false;
-            this.RechercheIndividuB.Text = " ";
-            this.RechercheIndividuB.UseVisualStyleBackColor = false;
             // 
             // Lb_HTML_1
             // 
@@ -626,147 +488,6 @@
             this.Lb_animation.Text = "▀▄▀▄▀▄";
             this.Lb_animation.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // Btn_total
-            // 
-            this.Btn_total.BackColor = System.Drawing.Color.Blue;
-            this.Btn_total.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_total.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_total.FlatAppearance.BorderSize = 0;
-            this.Btn_total.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.Btn_total.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.Btn_total.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_total.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
-            this.Btn_total.ForeColor = System.Drawing.Color.White;
-            this.Btn_total.Image = global::GH.Properties.Resources.total;
-            this.Btn_total.Location = new System.Drawing.Point(1046, 361);
-            this.Btn_total.Name = "Btn_total";
-            this.Btn_total.Size = new System.Drawing.Size(170, 88);
-            this.Btn_total.TabIndex = 134;
-            this.Btn_total.UseVisualStyleBackColor = false;
-            this.Btn_total.Click += new System.EventHandler(this.Btn_HTML_Click);
-            this.Btn_total.MouseHover += new System.EventHandler(this.Btn_total_MouseHover);
-            // 
-            // Btn_annuler
-            // 
-            this.Btn_annuler.BackColor = System.Drawing.Color.Transparent;
-            this.Btn_annuler.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_annuler.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_annuler.FlatAppearance.BorderSize = 0;
-            this.Btn_annuler.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.Btn_annuler.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.Btn_annuler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_annuler.Font = new System.Drawing.Font("Arial Black", 11F, System.Drawing.FontStyle.Bold);
-            this.Btn_annuler.ForeColor = System.Drawing.Color.White;
-            this.Btn_annuler.Image = global::GH.Properties.Resources.arret;
-            this.Btn_annuler.Location = new System.Drawing.Point(481, 190);
-            this.Btn_annuler.Name = "Btn_annuler";
-            this.Btn_annuler.Size = new System.Drawing.Size(70, 70);
-            this.Btn_annuler.TabIndex = 135;
-            this.Btn_annuler.Text = " &Arrêt";
-            this.Btn_annuler.UseVisualStyleBackColor = false;
-            this.Btn_annuler.Click += new System.EventHandler(this.Btn_annuler_Click);
-            this.Btn_annuler.MouseHover += new System.EventHandler(this.Btn_annuler_MouseHover);
-            // 
-            // Btn_annuler_HTML
-            // 
-            this.Btn_annuler_HTML.BackColor = System.Drawing.Color.Transparent;
-            this.Btn_annuler_HTML.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_annuler_HTML.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_annuler_HTML.FlatAppearance.BorderSize = 0;
-            this.Btn_annuler_HTML.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-            this.Btn_annuler_HTML.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-            this.Btn_annuler_HTML.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_annuler_HTML.Font = new System.Drawing.Font("Arial Black", 11F, System.Drawing.FontStyle.Bold);
-            this.Btn_annuler_HTML.ForeColor = System.Drawing.Color.White;
-            this.Btn_annuler_HTML.Image = global::GH.Properties.Resources.arret;
-            this.Btn_annuler_HTML.Location = new System.Drawing.Point(1100, 378);
-            this.Btn_annuler_HTML.Name = "Btn_annuler_HTML";
-            this.Btn_annuler_HTML.Size = new System.Drawing.Size(70, 70);
-            this.Btn_annuler_HTML.TabIndex = 136;
-            this.Btn_annuler_HTML.Text = " &Arrêt";
-            this.Btn_annuler_HTML.UseVisualStyleBackColor = false;
-            this.Btn_annuler_HTML.Click += new System.EventHandler(this.Btn_anuler_HTML_Click);
-            // 
-            // Btn_voir_fiche_famille
-            // 
-            this.Btn_voir_fiche_famille.BackColor = System.Drawing.Color.Blue;
-            this.Btn_voir_fiche_famille.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_voir_fiche_famille.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_voir_fiche_famille.FlatAppearance.BorderSize = 0;
-            this.Btn_voir_fiche_famille.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.Btn_voir_fiche_famille.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.Btn_voir_fiche_famille.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_voir_fiche_famille.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
-            this.Btn_voir_fiche_famille.ForeColor = System.Drawing.Color.White;
-            this.Btn_voir_fiche_famille.Image = global::GH.Properties.Resources.ficheFamilleNoir;
-            this.Btn_voir_fiche_famille.Location = new System.Drawing.Point(1113, 305);
-            this.Btn_voir_fiche_famille.Name = "Btn_voir_fiche_famille";
-            this.Btn_voir_fiche_famille.Size = new System.Drawing.Size(58, 44);
-            this.Btn_voir_fiche_famille.TabIndex = 137;
-            this.Btn_voir_fiche_famille.UseVisualStyleBackColor = false;
-            this.Btn_voir_fiche_famille.Click += new System.EventHandler(this.Btn_voir_fiche_famille_Click);
-            this.Btn_voir_fiche_famille.MouseHover += new System.EventHandler(this.Btn_voir_fiche_famille_MouseHover);
-            // 
-            // Btn_deboguer
-            // 
-            this.Btn_deboguer.BackColor = System.Drawing.Color.Blue;
-            this.Btn_deboguer.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_deboguer.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_deboguer.FlatAppearance.BorderSize = 0;
-            this.Btn_deboguer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.Btn_deboguer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.Btn_deboguer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_deboguer.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
-            this.Btn_deboguer.ForeColor = System.Drawing.Color.White;
-            this.Btn_deboguer.Image = global::GH.Properties.Resources.deboguer;
-            this.Btn_deboguer.Location = new System.Drawing.Point(1109, 224);
-            this.Btn_deboguer.Name = "Btn_deboguer";
-            this.Btn_deboguer.Size = new System.Drawing.Size(44, 48);
-            this.Btn_deboguer.TabIndex = 138;
-            this.Btn_deboguer.UseVisualStyleBackColor = false;
-            this.Btn_deboguer.Click += new System.EventHandler(this.Btn_deboguer_Click);
-            this.Btn_deboguer.MouseHover += new System.EventHandler(this.Btn_deboguer_MouseHover);
-            // 
-            // Btn_balise
-            // 
-            this.Btn_balise.BackColor = System.Drawing.Color.Blue;
-            this.Btn_balise.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_balise.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_balise.FlatAppearance.BorderSize = 0;
-            this.Btn_balise.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.Btn_balise.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.Btn_balise.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_balise.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
-            this.Btn_balise.ForeColor = System.Drawing.Color.White;
-            this.Btn_balise.Image = ((System.Drawing.Image)(resources.GetObject("Btn_balise.Image")));
-            this.Btn_balise.Location = new System.Drawing.Point(1046, 224);
-            this.Btn_balise.Name = "Btn_balise";
-            this.Btn_balise.Size = new System.Drawing.Size(44, 48);
-            this.Btn_balise.TabIndex = 139;
-            this.Btn_balise.UseVisualStyleBackColor = false;
-            this.Btn_balise.Click += new System.EventHandler(this.Btn_balise_Click);
-            this.Btn_balise.MouseHover += new System.EventHandler(this.Btn_balise_MouseHover);
-            // 
-            // Btn_erreur
-            // 
-            this.Btn_erreur.BackColor = System.Drawing.Color.Blue;
-            this.Btn_erreur.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_erreur.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.Btn_erreur.FlatAppearance.BorderSize = 0;
-            this.Btn_erreur.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
-            this.Btn_erreur.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.Btn_erreur.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_erreur.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
-            this.Btn_erreur.ForeColor = System.Drawing.Color.White;
-            this.Btn_erreur.Image = global::GH.Properties.Resources.erreur;
-            this.Btn_erreur.Location = new System.Drawing.Point(1170, 224);
-            this.Btn_erreur.Name = "Btn_erreur";
-            this.Btn_erreur.Size = new System.Drawing.Size(44, 48);
-            this.Btn_erreur.TabIndex = 140;
-            this.Btn_erreur.UseVisualStyleBackColor = false;
-            this.Btn_erreur.Click += new System.EventHandler(this.Btn_erreur_Click);
-            this.Btn_erreur.MouseHover += new System.EventHandler(this.Btn_erreur_MouseHover);
-            // 
             // Btn_cadre_individu
             // 
             this.Btn_cadre_individu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -790,6 +511,286 @@
             this.Btn_cadre_famille.Size = new System.Drawing.Size(368, 37);
             this.Btn_cadre_famille.TabIndex = 143;
             this.Btn_cadre_famille.UseVisualStyleBackColor = false;
+            // 
+            // Btn_erreur
+            // 
+            this.Btn_erreur.BackColor = System.Drawing.Color.Blue;
+            this.Btn_erreur.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_erreur.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_erreur.FlatAppearance.BorderSize = 0;
+            this.Btn_erreur.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.Btn_erreur.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.Btn_erreur.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_erreur.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
+            this.Btn_erreur.ForeColor = System.Drawing.Color.White;
+            this.Btn_erreur.Image = global::GH.Properties.Resources.erreur;
+            this.Btn_erreur.Location = new System.Drawing.Point(1170, 224);
+            this.Btn_erreur.Name = "Btn_erreur";
+            this.Btn_erreur.Size = new System.Drawing.Size(44, 48);
+            this.Btn_erreur.TabIndex = 140;
+            this.Btn_erreur.UseVisualStyleBackColor = false;
+            this.Btn_erreur.Click += new System.EventHandler(this.Btn_erreur_Click);
+            this.Btn_erreur.MouseHover += new System.EventHandler(this.Btn_erreur_MouseHover);
+            // 
+            // Btn_balise
+            // 
+            this.Btn_balise.BackColor = System.Drawing.Color.Blue;
+            this.Btn_balise.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_balise.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_balise.FlatAppearance.BorderSize = 0;
+            this.Btn_balise.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.Btn_balise.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.Btn_balise.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_balise.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
+            this.Btn_balise.ForeColor = System.Drawing.Color.White;
+            this.Btn_balise.Image = ((System.Drawing.Image)(resources.GetObject("Btn_balise.Image")));
+            this.Btn_balise.Location = new System.Drawing.Point(1046, 224);
+            this.Btn_balise.Name = "Btn_balise";
+            this.Btn_balise.Size = new System.Drawing.Size(44, 48);
+            this.Btn_balise.TabIndex = 139;
+            this.Btn_balise.UseVisualStyleBackColor = false;
+            this.Btn_balise.Click += new System.EventHandler(this.Btn_balise_Click);
+            this.Btn_balise.MouseHover += new System.EventHandler(this.Btn_balise_MouseHover);
+            // 
+            // Btn_deboguer
+            // 
+            this.Btn_deboguer.BackColor = System.Drawing.Color.Blue;
+            this.Btn_deboguer.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_deboguer.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_deboguer.FlatAppearance.BorderSize = 0;
+            this.Btn_deboguer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.Btn_deboguer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.Btn_deboguer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_deboguer.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
+            this.Btn_deboguer.ForeColor = System.Drawing.Color.White;
+            this.Btn_deboguer.Image = global::GH.Properties.Resources.deboguer;
+            this.Btn_deboguer.Location = new System.Drawing.Point(1109, 224);
+            this.Btn_deboguer.Name = "Btn_deboguer";
+            this.Btn_deboguer.Size = new System.Drawing.Size(44, 48);
+            this.Btn_deboguer.TabIndex = 138;
+            this.Btn_deboguer.UseVisualStyleBackColor = false;
+            this.Btn_deboguer.Click += new System.EventHandler(this.Btn_deboguer_Click);
+            this.Btn_deboguer.MouseHover += new System.EventHandler(this.Btn_deboguer_MouseHover);
+            // 
+            // Btn_voir_fiche_famille
+            // 
+            this.Btn_voir_fiche_famille.BackColor = System.Drawing.Color.Blue;
+            this.Btn_voir_fiche_famille.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_voir_fiche_famille.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_voir_fiche_famille.FlatAppearance.BorderSize = 0;
+            this.Btn_voir_fiche_famille.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.Btn_voir_fiche_famille.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.Btn_voir_fiche_famille.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_voir_fiche_famille.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
+            this.Btn_voir_fiche_famille.ForeColor = System.Drawing.Color.White;
+            this.Btn_voir_fiche_famille.Image = global::GH.Properties.Resources.ficheFamilleNoir;
+            this.Btn_voir_fiche_famille.Location = new System.Drawing.Point(1113, 305);
+            this.Btn_voir_fiche_famille.Name = "Btn_voir_fiche_famille";
+            this.Btn_voir_fiche_famille.Size = new System.Drawing.Size(58, 44);
+            this.Btn_voir_fiche_famille.TabIndex = 137;
+            this.Btn_voir_fiche_famille.UseVisualStyleBackColor = false;
+            this.Btn_voir_fiche_famille.Click += new System.EventHandler(this.Btn_voir_fiche_famille_Click);
+            this.Btn_voir_fiche_famille.MouseHover += new System.EventHandler(this.Btn_voir_fiche_famille_MouseHover);
+            // 
+            // Btn_annuler_HTML
+            // 
+            this.Btn_annuler_HTML.BackColor = System.Drawing.Color.Transparent;
+            this.Btn_annuler_HTML.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_annuler_HTML.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_annuler_HTML.FlatAppearance.BorderSize = 0;
+            this.Btn_annuler_HTML.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.Btn_annuler_HTML.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.Btn_annuler_HTML.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_annuler_HTML.Font = new System.Drawing.Font("Arial Black", 11F, System.Drawing.FontStyle.Bold);
+            this.Btn_annuler_HTML.ForeColor = System.Drawing.Color.White;
+            this.Btn_annuler_HTML.Image = global::GH.Properties.Resources.arret;
+            this.Btn_annuler_HTML.Location = new System.Drawing.Point(1100, 378);
+            this.Btn_annuler_HTML.Name = "Btn_annuler_HTML";
+            this.Btn_annuler_HTML.Size = new System.Drawing.Size(70, 70);
+            this.Btn_annuler_HTML.TabIndex = 136;
+            this.Btn_annuler_HTML.Text = " &Arrêt";
+            this.Btn_annuler_HTML.UseVisualStyleBackColor = false;
+            this.Btn_annuler_HTML.Click += new System.EventHandler(this.Btn_anuler_HTML_Click);
+            // 
+            // Btn_annuler
+            // 
+            this.Btn_annuler.BackColor = System.Drawing.Color.Transparent;
+            this.Btn_annuler.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_annuler.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_annuler.FlatAppearance.BorderSize = 0;
+            this.Btn_annuler.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.Btn_annuler.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.Btn_annuler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_annuler.Font = new System.Drawing.Font("Arial Black", 11F, System.Drawing.FontStyle.Bold);
+            this.Btn_annuler.ForeColor = System.Drawing.Color.White;
+            this.Btn_annuler.Image = global::GH.Properties.Resources.arret;
+            this.Btn_annuler.Location = new System.Drawing.Point(481, 190);
+            this.Btn_annuler.Name = "Btn_annuler";
+            this.Btn_annuler.Size = new System.Drawing.Size(70, 70);
+            this.Btn_annuler.TabIndex = 135;
+            this.Btn_annuler.Text = " &Arrêt";
+            this.Btn_annuler.UseVisualStyleBackColor = false;
+            this.Btn_annuler.Click += new System.EventHandler(this.Btn_annuler_Click);
+            this.Btn_annuler.MouseHover += new System.EventHandler(this.Btn_annuler_MouseHover);
+            // 
+            // Btn_total
+            // 
+            this.Btn_total.BackColor = System.Drawing.Color.Blue;
+            this.Btn_total.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_total.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_total.FlatAppearance.BorderSize = 0;
+            this.Btn_total.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.Btn_total.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.Btn_total.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_total.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
+            this.Btn_total.ForeColor = System.Drawing.Color.White;
+            this.Btn_total.Image = global::GH.Properties.Resources.total;
+            this.Btn_total.Location = new System.Drawing.Point(1046, 361);
+            this.Btn_total.Name = "Btn_total";
+            this.Btn_total.Size = new System.Drawing.Size(170, 88);
+            this.Btn_total.TabIndex = 134;
+            this.Btn_total.UseVisualStyleBackColor = false;
+            this.Btn_total.Click += new System.EventHandler(this.Btn_HTML_Click);
+            this.Btn_total.MouseHover += new System.EventHandler(this.Btn_total_MouseHover);
+            // 
+            // Btn_voir_fiche_individu
+            // 
+            this.Btn_voir_fiche_individu.BackColor = System.Drawing.Color.Blue;
+            this.Btn_voir_fiche_individu.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Btn_voir_fiche_individu.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
+            this.Btn_voir_fiche_individu.FlatAppearance.BorderSize = 0;
+            this.Btn_voir_fiche_individu.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.Btn_voir_fiche_individu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.Btn_voir_fiche_individu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_voir_fiche_individu.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
+            this.Btn_voir_fiche_individu.ForeColor = System.Drawing.Color.White;
+            this.Btn_voir_fiche_individu.Image = ((System.Drawing.Image)(resources.GetObject("Btn_voir_fiche_individu.Image")));
+            this.Btn_voir_fiche_individu.Location = new System.Drawing.Point(1046, 305);
+            this.Btn_voir_fiche_individu.Name = "Btn_voir_fiche_individu";
+            this.Btn_voir_fiche_individu.Size = new System.Drawing.Size(58, 44);
+            this.Btn_voir_fiche_individu.TabIndex = 124;
+            this.Btn_voir_fiche_individu.Tag = "";
+            this.Btn_voir_fiche_individu.UseVisualStyleBackColor = false;
+            this.Btn_voir_fiche_individu.Click += new System.EventHandler(this.Btn_voir_fiche_Click);
+            this.Btn_voir_fiche_individu.MouseHover += new System.EventHandler(this.Btn_voir_fiche_individu_MouseHover);
+            // 
+            // AvantFamilleB
+            // 
+            this.AvantFamilleB.BackColor = System.Drawing.Color.Blue;
+            this.AvantFamilleB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.AvantFamilleB.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.AvantFamilleB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.AvantFamilleB.FlatAppearance.BorderSize = 0;
+            this.AvantFamilleB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.AvantFamilleB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.AvantFamilleB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AvantFamilleB.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+            this.AvantFamilleB.ForeColor = System.Drawing.Color.Transparent;
+            this.AvantFamilleB.Location = new System.Drawing.Point(956, 251);
+            this.AvantFamilleB.Name = "AvantFamilleB";
+            this.AvantFamilleB.Size = new System.Drawing.Size(27, 25);
+            this.AvantFamilleB.TabIndex = 6;
+            this.AvantFamilleB.Text = "◄";
+            this.AvantFamilleB.UseVisualStyleBackColor = false;
+            this.AvantFamilleB.Click += new System.EventHandler(this.AvantConjointeB_Click);
+            // 
+            // ApresFamilleB
+            // 
+            this.ApresFamilleB.BackColor = System.Drawing.Color.Blue;
+            this.ApresFamilleB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.ApresFamilleB.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ApresFamilleB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.ApresFamilleB.FlatAppearance.BorderSize = 0;
+            this.ApresFamilleB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.ApresFamilleB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.ApresFamilleB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ApresFamilleB.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ApresFamilleB.ForeColor = System.Drawing.Color.Transparent;
+            this.ApresFamilleB.Location = new System.Drawing.Point(991, 251);
+            this.ApresFamilleB.Name = "ApresFamilleB";
+            this.ApresFamilleB.Size = new System.Drawing.Size(27, 25);
+            this.ApresFamilleB.TabIndex = 7;
+            this.ApresFamilleB.Text = "►";
+            this.ApresFamilleB.UseVisualStyleBackColor = false;
+            this.ApresFamilleB.Click += new System.EventHandler(this.ApresConjointeB_Click);
+            // 
+            // RechercheFamilleB
+            // 
+            this.RechercheFamilleB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheFamilleB.BackgroundImage = global::GH.Properties.Resources.loupe20;
+            this.RechercheFamilleB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.RechercheFamilleB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheFamilleB.FlatAppearance.BorderSize = 0;
+            this.RechercheFamilleB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheFamilleB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheFamilleB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RechercheFamilleB.ForeColor = System.Drawing.Color.Transparent;
+            this.RechercheFamilleB.Location = new System.Drawing.Point(662, 249);
+            this.RechercheFamilleB.Name = "RechercheFamilleB";
+            this.RechercheFamilleB.Size = new System.Drawing.Size(30, 30);
+            this.RechercheFamilleB.TabIndex = 112;
+            this.RechercheFamilleB.TabStop = false;
+            this.RechercheFamilleB.UseVisualStyleBackColor = false;
+            // 
+            // AvantIndividuB
+            // 
+            this.AvantIndividuB.BackColor = System.Drawing.Color.Blue;
+            this.AvantIndividuB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.AvantIndividuB.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.AvantIndividuB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.AvantIndividuB.FlatAppearance.BorderSize = 0;
+            this.AvantIndividuB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.AvantIndividuB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.AvantIndividuB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AvantIndividuB.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AvantIndividuB.ForeColor = System.Drawing.Color.Transparent;
+            this.AvantIndividuB.Location = new System.Drawing.Point(956, 35);
+            this.AvantIndividuB.Margin = new System.Windows.Forms.Padding(0);
+            this.AvantIndividuB.Name = "AvantIndividuB";
+            this.AvantIndividuB.Size = new System.Drawing.Size(27, 25);
+            this.AvantIndividuB.TabIndex = 2;
+            this.AvantIndividuB.Text = "◄";
+            this.AvantIndividuB.UseVisualStyleBackColor = false;
+            this.AvantIndividuB.Click += new System.EventHandler(this.AvantIndividuB_Click);
+            // 
+            // ApresIndividuB
+            // 
+            this.ApresIndividuB.BackColor = System.Drawing.Color.Blue;
+            this.ApresIndividuB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.ApresIndividuB.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ApresIndividuB.FlatAppearance.BorderColor = System.Drawing.Color.SteelBlue;
+            this.ApresIndividuB.FlatAppearance.BorderSize = 0;
+            this.ApresIndividuB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
+            this.ApresIndividuB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.ApresIndividuB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ApresIndividuB.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ApresIndividuB.ForeColor = System.Drawing.Color.Transparent;
+            this.ApresIndividuB.Location = new System.Drawing.Point(991, 35);
+            this.ApresIndividuB.Name = "ApresIndividuB";
+            this.ApresIndividuB.Size = new System.Drawing.Size(27, 25);
+            this.ApresIndividuB.TabIndex = 3;
+            this.ApresIndividuB.Text = "►";
+            this.ApresIndividuB.UseVisualStyleBackColor = false;
+            this.ApresIndividuB.Click += new System.EventHandler(this.ApresIndividuB_Click);
+            // 
+            // RechercheIndividuB
+            // 
+            this.RechercheIndividuB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheIndividuB.BackgroundImage = global::GH.Properties.Resources.loupe20;
+            this.RechercheIndividuB.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.RechercheIndividuB.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheIndividuB.FlatAppearance.BorderSize = 0;
+            this.RechercheIndividuB.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheIndividuB.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.RechercheIndividuB.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RechercheIndividuB.ForeColor = System.Drawing.Color.Transparent;
+            this.RechercheIndividuB.Location = new System.Drawing.Point(661, 32);
+            this.RechercheIndividuB.Name = "RechercheIndividuB";
+            this.RechercheIndividuB.Size = new System.Drawing.Size(30, 30);
+            this.RechercheIndividuB.TabIndex = 107;
+            this.RechercheIndividuB.TabStop = false;
+            this.RechercheIndividuB.Text = " ";
+            this.RechercheIndividuB.UseVisualStyleBackColor = false;
             // 
             // GH
             // 

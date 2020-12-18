@@ -37,17 +37,15 @@
             this.CbVoirPhotoPrincipal = new System.Windows.Forms.CheckBox();
             this.CbVoirMedia = new System.Windows.Forms.CheckBox();
             this.CbVoirDateChangement = new System.Windows.Forms.CheckBox();
-            this.CbBalise = new System.Windows.Forms.CheckBox();
             this.CbDateLongue = new System.Windows.Forms.CheckBox();
             this.CbVoirNote = new System.Windows.Forms.CheckBox();
             this.CbVoirReference = new System.Windows.Forms.CheckBox();
-            this.CbDeboguer = new System.Windows.Forms.CheckBox();
             this.CbVoirChercheur = new System.Windows.Forms.CheckBox();
             this.CbVoirCarte = new System.Windows.Forms.CheckBox();
             this.Btn_Fermer = new System.Windows.Forms.Button();
             this.Btn_dossierHTML = new System.Windows.Forms.Button();
             this.Btn_dossierMedia = new System.Windows.Forms.Button();
-            this.CbToolTip = new System.Windows.Forms.CheckBox();
+            this.CbVoirInfoBulle = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // TbDossierMedia
@@ -130,17 +128,6 @@
             this.CbVoirDateChangement.UseVisualStyleBackColor = true;
             this.CbVoirDateChangement.CheckedChanged += new System.EventHandler(this.CbVoirDateChangement_CheckedChanged);
             // 
-            // CbBalise
-            // 
-            this.CbBalise.AutoSize = true;
-            this.CbBalise.Location = new System.Drawing.Point(193, 172);
-            this.CbBalise.Name = "CbBalise";
-            this.CbBalise.Size = new System.Drawing.Size(54, 17);
-            this.CbBalise.TabIndex = 12;
-            this.CbBalise.Text = "&Balise";
-            this.CbBalise.UseVisualStyleBackColor = true;
-            this.CbBalise.CheckedChanged += new System.EventHandler(this.CbBalise_CheckedChanged);
-            // 
             // CbDateLongue
             // 
             this.CbDateLongue.AutoSize = true;
@@ -155,7 +142,7 @@
             // CbVoirNote
             // 
             this.CbVoirNote.AutoSize = true;
-            this.CbVoirNote.Location = new System.Drawing.Point(193, 126);
+            this.CbVoirNote.Location = new System.Drawing.Point(193, 149);
             this.CbVoirNote.Name = "CbVoirNote";
             this.CbVoirNote.Size = new System.Drawing.Size(68, 17);
             this.CbVoirNote.TabIndex = 10;
@@ -166,7 +153,7 @@
             // CbVoirReference
             // 
             this.CbVoirReference.AutoSize = true;
-            this.CbVoirReference.Location = new System.Drawing.Point(193, 103);
+            this.CbVoirReference.Location = new System.Drawing.Point(193, 126);
             this.CbVoirReference.Name = "CbVoirReference";
             this.CbVoirReference.Size = new System.Drawing.Size(92, 17);
             this.CbVoirReference.TabIndex = 9;
@@ -174,21 +161,10 @@
             this.CbVoirReference.UseVisualStyleBackColor = true;
             this.CbVoirReference.CheckedChanged += new System.EventHandler(this.CbVoirReference_CheckedChanged);
             // 
-            // CbDeboguer
-            // 
-            this.CbDeboguer.AutoSize = true;
-            this.CbDeboguer.Location = new System.Drawing.Point(193, 198);
-            this.CbDeboguer.Name = "CbDeboguer";
-            this.CbDeboguer.Size = new System.Drawing.Size(73, 17);
-            this.CbDeboguer.TabIndex = 13;
-            this.CbDeboguer.Text = "D&éboguer";
-            this.CbDeboguer.UseVisualStyleBackColor = true;
-            this.CbDeboguer.CheckedChanged += new System.EventHandler(this.CbDeboguer_CheckedChanged);
-            // 
             // CbVoirChercheur
             // 
             this.CbVoirChercheur.AutoSize = true;
-            this.CbVoirChercheur.Location = new System.Drawing.Point(24, 219);
+            this.CbVoirChercheur.Location = new System.Drawing.Point(193, 103);
             this.CbVoirChercheur.Name = "CbVoirChercheur";
             this.CbVoirChercheur.Size = new System.Drawing.Size(95, 17);
             this.CbVoirChercheur.TabIndex = 8;
@@ -199,7 +175,7 @@
             // CbVoirCarte
             // 
             this.CbVoirCarte.AutoSize = true;
-            this.CbVoirCarte.Location = new System.Drawing.Point(193, 149);
+            this.CbVoirCarte.Location = new System.Drawing.Point(193, 172);
             this.CbVoirCarte.Name = "CbVoirCarte";
             this.CbVoirCarte.Size = new System.Drawing.Size(139, 17);
             this.CbVoirCarte.TabIndex = 11;
@@ -264,16 +240,13 @@
             this.Btn_dossierMedia.Click += new System.EventHandler(this.Btn_dossierMedia_Click);
             this.Btn_dossierMedia.MouseHover += new System.EventHandler(this.Btn_dossierMedia_MouseHover);
             // 
-            // CbToolTip
+            // CbVoirInfoBulle
             // 
-            this.CbToolTip.AutoSize = true;
-            this.CbToolTip.Location = new System.Drawing.Point(193, 219);
-            this.CbToolTip.Name = "CbToolTip";
-            this.CbToolTip.Size = new System.Drawing.Size(69, 17);
-            this.CbToolTip.TabIndex = 139;
-            this.CbToolTip.Text = "Inf&o-bulle";
-            this.CbToolTip.UseVisualStyleBackColor = true;
-            this.CbToolTip.CheckedChanged += new System.EventHandler(this.CbToolTip_CheckedChanged);
+            this.CbVoirInfoBulle.AutoSize = true;
+            this.CbVoirInfoBulle.Location = new System.Drawing.Point(193, 195);
+            this.CbVoirInfoBulle.Name = "CbVoirInfoBulle";
+            this.CbVoirInfoBulle.UseVisualStyleBackColor = true;
+            this.CbVoirInfoBulle.CheckedChanged += new System.EventHandler(this.CbToolTip_CheckedChanged);
             // 
             // Parametre
             // 
@@ -281,17 +254,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(397, 244);
-            this.Controls.Add(this.CbToolTip);
+            this.Controls.Add(this.CbVoirInfoBulle);
             this.Controls.Add(this.Btn_dossierMedia);
             this.Controls.Add(this.Btn_dossierHTML);
             this.Controls.Add(this.Btn_Fermer);
             this.Controls.Add(this.CbVoirCarte);
             this.Controls.Add(this.CbVoirChercheur);
-            this.Controls.Add(this.CbDeboguer);
             this.Controls.Add(this.CbVoirReference);
             this.Controls.Add(this.CbVoirNote);
             this.Controls.Add(this.CbDateLongue);
-            this.Controls.Add(this.CbBalise);
             this.Controls.Add(this.CbVoirDateChangement);
             this.Controls.Add(this.CbVoirMedia);
             this.Controls.Add(this.CbVoirPhotoPrincipal);
@@ -321,16 +292,14 @@
         private System.Windows.Forms.CheckBox CbVoirPhotoPrincipal;
         private System.Windows.Forms.CheckBox CbVoirMedia;
         private System.Windows.Forms.CheckBox CbVoirDateChangement;
-        private System.Windows.Forms.CheckBox CbBalise;
         private System.Windows.Forms.CheckBox CbDateLongue;
         private System.Windows.Forms.CheckBox CbVoirNote;
         private System.Windows.Forms.CheckBox CbVoirReference;
-        private System.Windows.Forms.CheckBox CbDeboguer;
         private System.Windows.Forms.CheckBox CbVoirChercheur;
         private System.Windows.Forms.CheckBox CbVoirCarte;
         private System.Windows.Forms.Button Btn_Fermer;
         private System.Windows.Forms.Button Btn_dossierHTML;
         private System.Windows.Forms.Button Btn_dossierMedia;
-        private System.Windows.Forms.CheckBox CbToolTip;
+        private System.Windows.Forms.CheckBox CbVoirInfoBulle;
     }
 }

@@ -67,6 +67,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using TextBox = System.Windows.Forms.TextBox;
+using System.Reflection;
 
 namespace GEDCOM
 {
@@ -1002,7 +1003,6 @@ namespace GEDCOM
                                                                         //                                  V5.5.5 p.105
             // extra
             public List<string> N1_ALIA_liste;                          //              +1 ALIA  alia dans BROSKEEP
-
         }
         public class PLACE_STRUCTURE
         {
@@ -1575,7 +1575,7 @@ namespace GEDCOM
         }
         private static void Avoir_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
         {
-            erreur = "G" + sourceLineNumber;
+            erreur = "GE" + sourceLineNumber;
         }
         private static string Avoir_type_media(string TYPE)
         {
@@ -1608,7 +1608,7 @@ namespace GEDCOM
                 N2_STAT_DATE = null,
                 N1_NOTE_liste_ID = new List<string>(),
                 N1_SOUR_citation_liste_ID = new List<string>(),
-                N1_SOUR_source_liste_ID = new List<string>()
+                N1_SOUR_source_liste_ID = new List<string>(),
             };
             int niveau_I = Extraire_niveau(ligne);
             string niveau_S = niveau_I.ToString();
@@ -1662,8 +1662,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -1683,8 +1682,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             return (info, ligne);
@@ -1742,8 +1740,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -1763,8 +1760,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             return (info, ligne);
@@ -1793,10 +1789,7 @@ namespace GEDCOM
                     ajouter = true;
                     if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " FILE")      // +1 FILLE
                     {
-                        if (dataGEDCOM[ligne].Length > 7)
-                        {
-                            N2_FILE = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                        }
+                        N2_FILE = Extraire_ligne(dataGEDCOM[ligne],4);
                         ligne++;
                         while (Extraire_niveau(ligne) > niveau_I + 1) // > +1
                         {
@@ -1808,49 +1801,35 @@ namespace GEDCOM
                                 {
                                     if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 3).ToString() + " TYPE")// +3 TYPE
                                     {
-                                        if (dataGEDCOM[ligne].Length > 7)
-                                        {
-                                            N3_FORM_TYPE = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                                        }
+                                        N3_FORM_TYPE = Extraire_ligne(dataGEDCOM[ligne],4);
                                         ligne++;
                                     }
                                     else
                                     {
-                                        EcrireBalise(ligne);
-                                        ligne++;
+                                        ligne = EcrireBalise(ligne);
                                     }
                                 }
                             }
                             else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " TITL")// +2 TITL
                             {
-                                if (dataGEDCOM[ligne].Length > 7)
-                                {
-                                    N2_TITL = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                                    ligne++;
-                                }
+                                N2_TITL = Extraire_ligne(dataGEDCOM[ligne],4);
+                                ligne++;
                             }
                             else
                             {
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " FORM") // +1 FORM
                     {
-                        if (dataGEDCOM[ligne].Length > 7)
-                        {
-                            N2_FORM = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                            ligne++;
-                        }
+                        N2_FORM = Extraire_ligne(dataGEDCOM[ligne],4);
+                        ligne++;
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " TITL") // +1 TITL
                     {
-                        if (dataGEDCOM[ligne].Length > 7)
-                        {
-                            N2_TITL = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
+                            N2_TITL = Extraire_ligne(dataGEDCOM[ligne],4);
                             ligne++;
-                        }
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
                     {
@@ -1866,8 +1845,7 @@ namespace GEDCOM
                     }
                     else
                     {
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
             }
@@ -1884,7 +1862,7 @@ namespace GEDCOM
                     N1_RIN = N1_RIN,
                     N1_NOTE_liste_ID = N1_NOTE_liste_ID,
                     N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                    N1_CHAN = N1_CHAN
+                    N1_CHAN = N1_CHAN,
                 });
             }
             return (N0_ID, ligne);
@@ -1961,8 +1939,7 @@ namespace GEDCOM
                                     else
                                     {
                                         Avoir_code_erreur();
-                                        EcrireBalise(ligne);
-                                        ligne++;
+                                        ligne = EcrireBalise(ligne);
                                     }
                                 }
                             }
@@ -1990,16 +1967,14 @@ namespace GEDCOM
                                     else
                                     {
                                         Avoir_code_erreur();
-                                        EcrireBalise(ligne);
-                                        ligne++;
+                                        ligne = EcrireBalise(ligne);
                                     }
                                 }
                             }
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -2042,8 +2017,7 @@ namespace GEDCOM
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -2051,15 +2025,14 @@ namespace GEDCOM
                     {
                         ligne++;
                     }
-                    else if (baliseN1 == "1 OBJE")                                // 1 OBJE v5.5
+                    else if (baliseN1 == "1 OBJE")                                                      // 1 OBJE v5.5
                     {
                         Avoir_code_erreur();
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
                             Avoir_code_erreur();
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                     else if (baliseN1 == "1 SOUR")                                // 1 SOUR
@@ -2085,9 +2058,7 @@ namespace GEDCOM
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
-
+                        ligne = EcrireBalise(ligne);
                     }
                 }
             }
@@ -2115,7 +2086,7 @@ namespace GEDCOM
                     N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                     N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
                     N1_CHAN = N1_CHAN,
-                    N1__DATE = N1__DATE // Herisis
+                    N1__DATE = N1__DATE, // Herisis
                 });
             }
         }
@@ -2201,8 +2172,7 @@ namespace GEDCOM
                                         else
                                         {
                                             Avoir_code_erreur();
-                                            EcrireBalise(ligne);
-                                            ligne++;
+                                            ligne = EcrireBalise(ligne);
                                         }
                                     }
                                 }
@@ -2222,8 +2192,7 @@ namespace GEDCOM
                                 else
                                 {
                                     Avoir_code_erreur();
-                                    EcrireBalise(ligne);
-                                    ligne++;
+                                    ligne = EcrireBalise(ligne);
                                 }
                             }
                         }
@@ -2257,8 +2226,7 @@ namespace GEDCOM
                                 else
                                 {
                                     Avoir_code_erreur();
-                                    EcrireBalise(ligne);
-                                    ligne++;
+                                    ligne = EcrireBalise(ligne);
                                 }
                             }
                         }
@@ -2286,11 +2254,9 @@ namespace GEDCOM
                                 else
                                 {
                                     Avoir_code_erreur();
-                                    EcrireBalise(ligne);
-                                    ligne++;
+                                    ligne = EcrireBalise(ligne);
                                 }
                             }
-
                         }
                         else if (baliseN1 == "1 PUBL")                                                      // 1 PUBL
                         {
@@ -2321,8 +2287,7 @@ namespace GEDCOM
                                 else
                                 {
                                     Avoir_code_erreur();
-                                    EcrireBalise(ligne);
-                                    ligne++;
+                                    ligne = EcrireBalise(ligne);
                                 }
                             }
                         }
@@ -2401,8 +2366,7 @@ namespace GEDCOM
                         else
                         {
                             Avoir_code_erreur();
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                     catch (Exception msg)
@@ -2444,7 +2408,7 @@ namespace GEDCOM
                     N1_EVEN = N1_EVEN,
                     N1_QUAY = N1_QUAY,
                     N1_TYPE = N1_TYPE,
-                    N1_DATE = N1_DATE
+                    N1_DATE = N1_DATE,
                 });
             }
             return (N0_ID, ligne);
@@ -2464,10 +2428,7 @@ namespace GEDCOM
             info.N1_NOTE_liste_ID = new List<string>();
             info.N1_SOUR_citation_liste_ID = new List<string>(); // pour GEDitCOM
             info.N1_SOUR_source_liste_ID = new List<string>(); // pour GEDitCOM
-            if (dataGEDCOM[ligne].Length > 7)
-            {
-                info.N0_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);                                    // PLAC
-            }
+            info.N0_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);                                    // PLAC
             ligne++;
             while (Extraire_niveau(ligne) > niveau_I)
             {
@@ -2486,12 +2447,10 @@ namespace GEDCOM
                         {
                             info.N2_FONE_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
                             ligne++;
-
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -2508,8 +2467,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -2534,8 +2492,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -2555,8 +2512,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             return (info, ligne);
@@ -2575,7 +2531,7 @@ namespace GEDCOM
                 N1_NOTE_liste_ID = null,
                 N1_REFN_liste = null,
                 N1_RIN = null,
-                N1_CHAN = null
+                N1_CHAN = null,
             };
             List<string> N1_PHON_liste = new List<string>();
             List<string> N1_EMAIL_liste = new List<string>();
@@ -2619,8 +2575,7 @@ namespace GEDCOM
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -2693,8 +2648,7 @@ namespace GEDCOM
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
             }
@@ -2742,8 +2696,7 @@ namespace GEDCOM
             string N2__QUAL__SOUR = null; // Herisis
             string N2__QUAL__INFO = null; // Heridis
             string N2__QUAL__EVID = null; // Heridis
-
-        int niveau_I = Extraire_niveau(ligne);
+            int niveau_I = Extraire_niveau(ligne);
             var itemSourceOld = new SOURCE_CITATION();
             N0_ID_source = Extraire_ID(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
             if (N0_ID_source == null) N0_Titre = Extraire_texte_ligne1(dataGEDCOM[ligne]);
@@ -2806,15 +2759,13 @@ namespace GEDCOM
                                 }
                                 else
                                 {
-                                    ligne++;
-                                    EcrireBalise(ligne);
+                                    ligne = EcrireBalise(ligne);
                                 }
                             }
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -2826,10 +2777,7 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " EVEN")     // +1 EVEN
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        N1_EVEN = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                    }
+                    N1_EVEN = Extraire_ligne(dataGEDCOM[ligne],4);
                     ligne++;
                     while (Extraire_niveau(ligne) > niveau_I + 1)
                     {
@@ -2840,18 +2788,13 @@ namespace GEDCOM
                         }
                         else
                         {
-
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " QUAY")     // +1 QUAY
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        N1_QUAY = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                    }
+                    N1_QUAY = Extraire_ligne(dataGEDCOM[ligne],4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " _QUAL")     // +1 _QUAL Heridis
@@ -2876,15 +2819,13 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             // verifie si la ciation à de l'information ou seulement le ID de la source
@@ -2944,7 +2885,26 @@ namespace GEDCOM
             liste_REPOSITORY_RECORD = new List<REPOSITORY_RECORD>();
             liste_REPOSITORY_RECORD = new List<REPOSITORY_RECORD>();
             long dataGEDCOMCount = dataGEDCOM.Count;
-                SiBaliseZero("0 @SUBMISSION@ SUBN");                                                    // 0 SUBM
+            // 0 HEAD
+            Tb_Status.Text = "Décodage du data. Lecture de l'entête";
+            Application.DoEvents();
+            ligne = 0;
+            do
+            {
+                if (SiBaliseZero(dataGEDCOM[ligne]) == "HEAD")                                          // 0 HEAD
+                {
+                    if (GH.GH.annuler) return (false);
+                    Extraire_HEADER(ligne);
+                    break;
+                }
+                else
+                {
+                    ligne++;
+                }
+            } while (ligne < dataGEDCOM.Count - 1);
+            if (GH.GH.annuler) return (false);
+
+            SiBaliseZero("0 @SUBMISSION@ SUBN");                                                    // 0 SUBM
                 ligne = 0;
                 Tb_Status.Text = "Décodage du data. Lecture des chercheurs";
                 Application.DoEvents();
@@ -2961,24 +2921,7 @@ namespace GEDCOM
                     }
                 } while (ligne < dataGEDCOMCount - 1);
                 if (GH.GH.annuler) return (false);
-                // 0 HEAD
-                Tb_Status.Text = "Décodage du data. Lecture de l'entête";
-                Application.DoEvents();
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "HEAD")                                          // 0 HEAD
-                    {
-                        if (GH.GH.annuler) return (false);
-                        Extraire_HEADER(ligne);
-                        break;
-                    }
-                    else
-                    {
-                        ligne++;
-                    }
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
+                
                 //                                                                                          0 NOTE
                 ligne = 0;
                 Tb_Status.Text = "Décodage du data. Lecture des notes";
@@ -3066,48 +3009,106 @@ namespace GEDCOM
             //Z X C V("Analyse du data complèter"); // ne pas effacer cette lignes
             return true;
         }
-        private static void EcrireBalise
+        private static int  EcrireBalise
             (
             int numeroLigne,
+            //[CallerFilePath] string code = "",
             //string infoLigne,
             [CallerLineNumber] int ligneCode = 0,
             [CallerMemberName] string fonction = null
             )
         {
-            if (!GH.Properties.Settings.Default.balise || GH.Properties.Settings.Default.DossierHTML == "") return;
-            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GH"].Controls["Btn_balise"] as 
+            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GH"].Controls["Btn_balise"] as
                 System.Windows.Forms.Button;
-            string fichier = GH.Properties.Settings.Default.DossierHTML + @"\balise.txt";
+            string fichier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\balise.html";
             try
             {
                 using (StreamWriter ligne = File.AppendText(fichier))
                 {
-                    if (!TagInfoGEDCOM && Info_HEADER.N2_SOUR_NAME != "")
+                    if (!TagInfoGEDCOM)
                     {
-
+                        ligne.WriteLine(
+                            "<style>\n" +
+                            "    h1{color:#00F}\n" +
+                            "    .col0{width:150px;vertical-align:top;}\n " +
+                            "    .col1{width:90px;vertical-align:top;}\n " +
+                            "    .col2{width:50px;vertical-align:top;}\n " +
+                            "    .col3{width:330px;vertical-align:top;}\n " +
+                            "    .col4{vertical-align:top;}\n " +
+                            "</style>");
                         Btn_balise.Visible = true;
-                        ligne.WriteLine(DateTime.Now);
-                        ligne.WriteLine("*** Balise *************************************************************");
-                        ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
-                        ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
-                        ligne.WriteLine("Copyright: " + Info_HEADER.N1_COPR);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_GEDC_VERS);
-                        ligne.WriteLine("Code charactère: " + Info_HEADER.N1_CHAR);
-                        ligne.WriteLine("Langue: " + Info_HEADER.N1_LANG);
-                        ligne.WriteLine("Fichier sur le disque: " + Info_HEADER.Nom_fichier_disque);
-                        ligne.WriteLine("***********************************************************************");
-                        TagInfoGEDCOM = true;
+                        //ligne.WriteLine(DateTime.Now);
+                        ligne.WriteLine("<h1>Balise</h1>");
+                        ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
+                        ligne.WriteLine("\t<tr><td style=\"width:200px\">Nom</td><td>" + Info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + Info_HEADER.N2_SOUR_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Date</td><td>" + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Copyright</td><td>" + Info_HEADER.N1_COPR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + Info_HEADER.N2_GEDC_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + Info_HEADER.N1_CHAR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Langue</td><td>" + Info_HEADER.N1_LANG + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + Info_HEADER.Nom_fichier_disque + "<td></tr>");
+                        System.Version version;
+                        try
+                        {
+                            version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        }
+                        catch
+                        {
+                            version = Assembly.GetExecutingAssembly().GetName().Version;
+                        }
+                        ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                        ligne.WriteLine("</table>");
+                        ligne.WriteLine(
+                            "<table>" +
+                            "<tr>" +
+                            "<td class=\"col0\">" +
+                            "Date heure" +
+                            "</td>" +
+                            "<td class=\"col2\">" +
+                            "Ligne" +
+                            "</td>" +
+                            "<td class=\"col3\">" +
+                            "Routine" +
+                            "</td>" +
+                            "<td class=\"col2\">" +
+                            "Ligne" +
+                            "</td>" +
+                            "<td>" +
+                            "Message" +
+                            "</td>" +
+                            "</table>" +
+                            "<hr>");
                     }
-                    //string s = String.Format("{0,5} {1,-30:G} {2,5} ►{3}◄ ", ligneCode, fonction, numeroLigne, infoLigne);
-                    string s = String.Format("{0,5} {1,5} {2,-35:G} ►{3}◄ ", ligneCode, numeroLigne + 1, fonction,  dataGEDCOM[numeroLigne]);
+                    string s = String.Format(
+                        "<table>" +
+                        "<tr>" +
+                        "<td class=\"col0\">" +
+                        "{0}" +
+                        "</td>" +
+                        "<td class=\"col2\">" +
+                        "{1}" +
+                        "</td>" +
+                        "<td class=\"col3\">" +
+                        "{2}" +
+                        "</td>" +
+                        "<td class=\"col2\">" +
+                        "{3}" +
+                        "</td>" +
+                        "<td>" +
+                        "{4}" +
+                        "</td>" +
+                        "</tr>" +
+                        "</table>" +
+                        "<hr>", DateTime.Now, ligneCode, fonction,  numeroLigne + 1,  dataGEDCOM[numeroLigne]);
                     ligne.WriteLine(s);
+                    TagInfoGEDCOM = true;
                 }
             }
             catch (Exception msg)
             {
                 DialogResult reponse;
-                reponse = MessageBox.Show("Ne peut écrire le fichier balise.txt.\r\n\r\n" +
+                reponse = MessageBox.Show("Ne peut écrire le fichier balise.html.\r\n\r\n" +
                     msg.Message +
                     "\r\n\r\n",
                     "Erreur " + erreur + " problème ?",
@@ -3116,6 +3117,8 @@ namespace GEDCOM
                 if (reponse == System.Windows.Forms.DialogResult.Cancel)
                     GH.GH.annuler = true;
             }
+            
+            return numeroLigne++;
         }
 
         
@@ -3322,8 +3325,7 @@ namespace GEDCOM
                                     else
                                     {
                                         Avoir_code_erreur();
-                                        EcrireBalise(ligne);
-                                        ligne++;
+                                        ligne = EcrireBalise(ligne);
                                     }
                                 }
                             }
@@ -3370,25 +3372,21 @@ namespace GEDCOM
                                             else
                                             {
                                                 Avoir_code_erreur();
-                                                EcrireBalise(ligne);
-                                                ligne++;
+                                                ligne = EcrireBalise(ligne);
                                             }
                                         }
-
                                     }
                                     else
                                     {
                                         Avoir_code_erreur();
-                                        EcrireBalise(ligne);
-                                        ligne++;
+                                        ligne = EcrireBalise(ligne);
                                     }
                                 }
                             }
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -3403,18 +3401,14 @@ namespace GEDCOM
                             if (Extraire_balise(dataGEDCOM[ligne]) == "2 TIME")                             // 2 TIME
                             {
                                 Avoir_code_erreur();
-                                if (dataGEDCOM[ligne].Length > 7)
-                                {
-                                    Avoir_code_erreur();
-                                    Info_HEADER.N2_DATE_TIME = dataGEDCOM[ligne].Substring(7);
-                                }
+
+                                Info_HEADER.N2_DATE_TIME = Extraire_ligne(dataGEDCOM[ligne],4);
                                 ligne++;
                             }
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -3430,14 +3424,13 @@ namespace GEDCOM
                         if (dataGEDCOM[ligne].Length > 7)
                         {
                             Avoir_code_erreur();
-                            Info_HEADER.N1_FILE = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
+                            Info_HEADER.N1_FILE = Extraire_ligne(dataGEDCOM[ligne],4);
                             ligne++;
                         }
                         else
                         {
                             Avoir_code_erreur();
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                     else if (balise_1 == "1 SUBN")                                // 1 SUBN
@@ -3485,16 +3478,14 @@ namespace GEDCOM
                                     else
                                     {
                                         Avoir_code_erreur();
-                                        EcrireBalise(ligne);
-                                        ligne++;
+                                        ligne = EcrireBalise(ligne);
                                     }
                                 }
                             }
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -3515,8 +3506,7 @@ namespace GEDCOM
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -3538,20 +3528,14 @@ namespace GEDCOM
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
-
                         }
                     }
-                    else if (balise_1 == "1 LANG")                                // 1 LANG
+                    else if (balise_1 == "1 LANG")                                                      // 1 LANG
                     {
                         Avoir_code_erreur();
-                        if (dataGEDCOM[ligne].Length > 7)
-                        {
-                            Avoir_code_erreur();
-                            Info_HEADER.N1_LANG = Language(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
-                        }
+                        Info_HEADER.N1_LANG = Language(Extraire_ligne(dataGEDCOM[ligne],4));
                         ligne++;
                     }
                     else if (balise_1 == "1 COPR")                                                      // 1 COPR
@@ -3560,7 +3544,7 @@ namespace GEDCOM
                         Info_HEADER.N1_COPR = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
-                    else if (balise_1 == "1 NOTE")                                // 1 NOTE
+                    else if (balise_1 == "1 NOTE")                                                      // 1 NOTE
                     {
                         Avoir_code_erreur();
                         Info_HEADER.N1_NOTE = Extraire_texte_ligne1(dataGEDCOM[ligne]);
@@ -3579,8 +3563,7 @@ namespace GEDCOM
                             }
                             else
                             {
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                     }
@@ -3593,8 +3576,7 @@ namespace GEDCOM
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
             }
@@ -3614,46 +3596,75 @@ namespace GEDCOM
         }
         public static void Erreur_log(
             string message = "")
-            //[CallerFilePath] string code = "",
-            //[CallerLineNumber] int ligneCode = 0,
-            //[CallerMemberName] string fonction = null)
         {
-            if (!GH.Properties.Settings.Default.deboguer || GH.Properties.Settings.Default.DossierHTML == "") return;
             System.Windows.Forms.Button Btn_erreur = Application.OpenForms["GH"].Controls["Btn_erreur"] as System.Windows.Forms.Button;
-            //code = Path.GetFileName(code);
-            //code = code[0].ToString().ToUpper();
-            string fichier = GH.Properties.Settings.Default.DossierHTML + @"\erreur.txt";
+            string fichier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\erreur.html";
             try
             {
                 using (StreamWriter ligne = File.AppendText(fichier))
                 {
                     if (!LogErreur)
                     {
+                        ligne.WriteLine(
+                            "<style>\n" +
+                            "    h1{color:#00F}\n" +
+                            "    .col0{width:150px;vertical-align:top;}\n " +
+                            "    .col1{width:90px;vertical-align:top;}\n " +
+                            "    .col2{width:50px;vertical-align:top;}\n " +
+                            "    .col3{width:330px;vertical-align:top;}\n " +
+                            "    .col4{vertical-align:top;}\n " +
+                            "</style>");
                         Btn_erreur.Visible = true;
-                        ligne.WriteLine("*** Erreur ************************************************************");
-                        ligne.WriteLine("");
-                        ligne.WriteLine("Liste des erreurs dans le code GH");
-                        ligne.WriteLine("");
-                        ligne.WriteLine("SVP contactez le développeur en copiant l'adresse suivante dans votre. ");
-                        ligne.WriteLine("navigateur https://pambrun.net/communication/form.php?PAGE=GH.exe");
-                        ligne.WriteLine("L'information aidera a corrigé le problème.");
-                        ligne.WriteLine("**********************************************************************");
-                        ligne.WriteLine("Version de GH " + Application.ProductVersion);
-                        ligne.WriteLine("Installer dans le dossier " + Application.ExecutablePath);
-                        ligne.WriteLine("**********************************************************************");
-                        ligne.WriteLine("Information sur le fichier GEDCOM");
-                        ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
-                        ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
-                        ligne.WriteLine("Copyright: " + Info_HEADER.N1_COPR);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_GEDC_VERS);
-                        ligne.WriteLine("Code charactère: " + Info_HEADER.N1_CHAR);
-                        ligne.WriteLine("Langue: " + Info_HEADER.N1_LANG);
-                        ligne.WriteLine("Fichier sur le disque: " + Info_HEADER.Nom_fichier_disque);
-                        ligne.WriteLine("**********************************************************************");
+                        ligne.WriteLine("<h1>Erreur</h1>");
+                        ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
+                        ligne.WriteLine("\t<tr><td style=\"width:200px\">Nom</td><td>" + Info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + Info_HEADER.N2_SOUR_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Date</td><td>" + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Copyright</td><td>" + Info_HEADER.N1_COPR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + Info_HEADER.N2_GEDC_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + Info_HEADER.N1_CHAR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Langue</td><td>" + Info_HEADER.N1_LANG + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + Info_HEADER.Nom_fichier_disque + "<td></tr>");
+                        System.Version version;
+                        try
+                        {
+                            version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        }
+                        catch
+                        {
+                            version = Assembly.GetExecutingAssembly().GetName().Version;
+                        }
+                        ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                        ligne.WriteLine("</table>");
                         LogErreur = true;
+                        ligne.WriteLine(
+                            "<table>" +
+                            "<tr>" +
+                            "<td class=\"col0\">" +
+                            "Date heure" +
+                            "</td>" +
+                            "<td>" +
+                            "Message" +
+                            "</td>" +
+                            "</table>" +
+                            "<hr>");
                     }
-                    ligne.WriteLine(/*code + " " + ligneCode + ">" + fonction + "-> " + "►" + */message /*+ "◄"*/);
+                    string s = String.Format(
+                        "<table>" +
+                        "<tr>" +
+                        "<td class=\"col0\">" +
+                        "{0}" +
+                        "</td>" +
+                        "<td>" +
+                        "{1}" +
+                        "</td>" +
+                        "</tr>" +
+                        "</table>" +
+                        "<hr>",
+                        DateTime.Now,  message);
+                    ligne.WriteLine(s);
+
+                    //ligne.WriteLine(/*code + " " + ligneCode + ">" + fonction + "-> " + "►" + */message /*+ "◄"*/);
                 }
             }
             catch (Exception msg)
@@ -3692,58 +3703,37 @@ namespace GEDCOM
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " ADR1")     // +1 ADR1
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        info.N1_ADR1 = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    }
+                    info.N1_ADR1 = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " ADR2")     // +1 ADR2
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        info.N1_ADR2 = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    }
+                    info.N1_ADR2 = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " ADR3")     // +1 ADR3
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        info.N1_ADR3 = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    }
+                    info.N1_ADR3 = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CITY")     // +1 CITY
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        info.N1_CITY = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    }
+                    info.N1_CITY = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " STAE")     // +1 STAE
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        info.N1_STAE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    }
+                    info.N1_STAE = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CTRY")     // +1 CTRY
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        info.N1_CTRY = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    }
+                    info.N1_CTRY = Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " POST")     // +1 POST
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        info.N1_POST = Extraire_ligne(dataGEDCOM[ligne], 4); ;
-                    }
+                    info.N1_POST = Extraire_ligne(dataGEDCOM[ligne], 4); ;
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE pour GRAMPS
@@ -3754,8 +3744,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
@@ -3807,8 +3796,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             info.N0_ASSO = N0_ASSO;
@@ -3842,8 +3830,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -3855,8 +3842,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             info.N1_CHAN_DATE = N1_CHAN_DATE;
@@ -3900,8 +3886,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
@@ -3931,7 +3916,7 @@ namespace GEDCOM
                 description = null,
                 N2__ANCES_ORDRE = null, // Ancestrologie
                 N2__ANCES_XINSEE = null,  // Ancestrologie
-                N2__FNA = null, // Heredis
+                N2__FNA = null // Heredis
             };
             List<string> N2_PHON_liste = new List<string>();
             List<string> N2_EMAIL_liste = new List<string>();
@@ -3965,8 +3950,7 @@ namespace GEDCOM
                 if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                                     // 2 CONC
                 {
                     Avoir_code_erreur();
-                    if (dataGEDCOM[ligne].Length > 7)
-                        extraEVEN += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
+                    extraEVEN += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
                     ligne++;
                 }
                 else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                                // 2 CONT
@@ -4016,8 +4000,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -4128,8 +4111,7 @@ namespace GEDCOM
                         else
                         {
                             Avoir_code_erreur();
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -4149,8 +4131,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -4170,8 +4151,7 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
@@ -4203,16 +4183,12 @@ namespace GEDCOM
                     ligne++;
                     while (Extraire_niveau(ligne) > 2)
                     {
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
-               
-
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             Avoir_code_erreur();
@@ -4372,8 +4348,7 @@ namespace GEDCOM
                         else
                         {
                             Avoir_code_erreur();
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                     else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SLGS")                                // 1 SLGS
@@ -4426,14 +4401,12 @@ namespace GEDCOM
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
             }
             catch (Exception msg)
             {
-
                 string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
                 Voir_message(message, msg.Message, erreur);
             }
@@ -4459,7 +4432,7 @@ namespace GEDCOM
                     N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
                     N1_CHAN = N1_CHAN,
                     N1_TYPU = N1_TYPU,
-                    N1__UST = N1__UST
+                    N1__UST = N1__UST,
                 });
             }
             return (N0_ID, ligne);
@@ -4822,8 +4795,7 @@ namespace GEDCOM
                             else
                             {
                                 Avoir_code_erreur();
-                                EcrireBalise(ligne);
-                                ligne++;
+                                ligne = EcrireBalise(ligne);
                             }
                         }
                         N1_NAME_liste.Add(itemNom);
@@ -4853,13 +4825,13 @@ namespace GEDCOM
                         (N1_LDS, ligne) = Extraire_LDS_INDIVIDUAL_ORDINANCE(ligne);
                         N1_LDS_liste.Add(N1_LDS);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILA")                            // 1 FILA dans Ancestrologie
+                    else if (baliseN1 == "1 FILA")                            // 1 FILA dans Ancestrologie
                     {
                         Avoir_code_erreur();
                         N1_FILA = Extraire_ligne(dataGEDCOM[ligne], 4);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SEX")                             // 1 SEX
+                    else if (baliseN1 == "1 SEX")                             // 1 SEX
                     {
                         Avoir_code_erreur();
                         N1_SEX = Extraire_ligne(dataGEDCOM[ligne], 3);
@@ -4873,7 +4845,7 @@ namespace GEDCOM
                         }
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                            // 1 SUBM
+                    else if (baliseN1 == "1 SUBM")                            // 1 SUBM
                     {
                         Avoir_code_erreur();
                         if (dataGEDCOM[ligne].Length > 7)
@@ -4883,67 +4855,66 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ASSO")                            // 1 ASSO
+                    else if (baliseN1 == "1 ASSO")                            // 1 ASSO
                     {
                         Avoir_code_erreur();
                         ASSOCIATION_STRUCTURE info;
                         (info, ligne) = Extraire_ASSOCIATION_STRUCTURE(ligne);
                         N1_ASSO_liste.Add(info);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ALIA")                            // 1 ALIA
+                    else if (baliseN1 == "1 ALIA")                            // 1 ALIA
                     {
                         Avoir_code_erreur();
                         N1_ALIA_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ANCI")                            // 1 ANCI
+                    else if (baliseN1 == "1 ANCI")                            // 1 ANCI
                     {
                         Avoir_code_erreur();
                         N1_ANCI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 DESI")                            // 1 DESI
+                    else if (baliseN1 == "1 DESI")                            // 1 DESI
                     {
                         Avoir_code_erreur();
                         N1_DESI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RFN")                             // 1 RFN
+                    else if (baliseN1 == "1 RFN")                             // 1 RFN
                     {
                         Avoir_code_erreur();
                         N1_RFN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 AFN")                             // 1 AFN
+                    else if (baliseN1 == "1 AFN")                             // 1 AFN
                     {
                         Avoir_code_erreur();
                         N1_AFN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMS")                            // 1 FAMS conjoint/spouse
+                    else if (baliseN1 == "1 FAMS")                            // 1 FAMS conjoint/spouse
                     {
                         Avoir_code_erreur();
                         SPOUSE_TO_FAMILY_LINK info;// = new SPOUSE_TO_FAMILY_LINK();
                         (info, ligne) = Extraire_SPOUSE_TO_FAMILY_LINK(ligne);
                         N1_FAMS_liste_Conjoint.Add(info);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
+                    else if (baliseN1 == "1 REFN")                            // 1 REFN
                     {
                         Avoir_code_erreur();
                         USER_REFERENCE_NUMBER N1_REFN;
                         (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
                         N1_REFN_liste.Add(N1_REFN);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMC")                            // 1 FAMC enfant de la famille
+                    else if (baliseN1 == "1 FAMC")                            // 1 FAMC enfant de la famille
                     {
                         Avoir_code_erreur();
                         (N1_FAMC, ligne) = Extraire_CHILD_TO_FAMILY_LINK(ligne);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                            // 1 SOUR
+                    else if (baliseN1 == "1 SOUR")                            // 1 SOUR
                     {
                         Avoir_code_erreur();
                         string citation;
@@ -4952,48 +4923,46 @@ namespace GEDCOM
                         if (citation != null) N1_SOUR_citation_liste_ID.Add(citation);
                         if (source != null) N1_SOUR_source_liste_ID.Add(source);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                            // 1 OBJE individu
+                    else if (baliseN1 == "1 OBJE")                            // 1 OBJE individu
                     {
                         Avoir_code_erreur();
                         string ID_OBJE;
                         (ID_OBJE, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
                         N1_OBJE_liste.Add(ID_OBJE);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                            // 1 NOTE
+                    else if (baliseN1 == "1 NOTE")                            // 1 NOTE
                     {
                         Avoir_code_erreur();
                         string IDNote;
                         (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
                         N1_NOTE_liste_ID.Add(IDNote);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                            // 1 CHAN
+                    else if (baliseN1 == "1 CHAN")                            // 1 CHAN
                     {
                         Avoir_code_erreur();
                         (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")
+                    else if (baliseN1 == "1 RIN")
                     {
                         Avoir_code_erreur();
                         N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _ANCES_CLE_FIXE")                 // 1 _ANCES_CLE_FIXE
+                    else if (baliseN1 == "1 _ANCES_CLE_FIXE")                 // 1 _ANCES_CLE_FIXE
                     {
                         Avoir_code_erreur();
                         N1__ANCES_CLE_FIXE = Extraire_ligne(dataGEDCOM[ligne], 15);
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WWW")                             // 1 WWW pour GRAMPS
+                    else if (baliseN1 == "1 WWW")                             // 1 WWW pour GRAMPS
                     {
                         Avoir_code_erreur();
                         string WWW;
@@ -5001,7 +4970,7 @@ namespace GEDCOM
                         N1_WWW_liste.Add(WWW);
                         ligne++;
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SIGN")                             // 1 SIGN pour Heresis
+                    else if (baliseN1 == "1 SIGN")                             // 1 SIGN pour Heresis
                     {
                         Avoir_code_erreur();
                         N1_SIGN = Extraire_ligne(dataGEDCOM[ligne], 4);
@@ -5016,11 +4985,10 @@ namespace GEDCOM
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _FIL")                             // 1 _FIL pour Heresis
+                    else if (baliseN1 == "1 _FIL")                             // 1 _FIL pour Heresis
                     {
                         Avoir_code_erreur();
                         N1__FIL = Extraire_ligne(dataGEDCOM[ligne], 4);
@@ -5041,11 +5009,10 @@ namespace GEDCOM
                         ligne++;
                         while (Extraire_niveau(ligne) > 1)
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _CLS")                                // 1 CLS pour Heresis
+                    else if (baliseN1 == "1 _CLS")                                // 1 CLS pour Heresis
                     {
                         N1__CLS = Extraire_ligne(dataGEDCOM[ligne], 4);
                         if (N1__CLS != null)
@@ -5059,17 +5026,14 @@ namespace GEDCOM
                         ligne++;
                         while (Extraire_niveau(ligne) > 2)
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
-
                 }
             }
             catch (Exception msg)
@@ -5116,7 +5080,7 @@ namespace GEDCOM
                     N1_WWW_liste = N1_WWW_liste, // GRAMPS
                     N1_SIGN = N1_SIGN, // Heridis
                     N1__FIL = N1__FIL, // Heridis
-                    N1__CLS = N1__CLS // Heridis
+                    N1__CLS = N1__CLS, // Heridis
                 });
             }
         }
@@ -5196,8 +5160,7 @@ namespace GEDCOM
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
                 catch (Exception msg)
@@ -5221,7 +5184,7 @@ namespace GEDCOM
                             N1_REFN_liste = N1_REFN_liste,
                             N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                             N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                            N1_CHAN = N1_CHAN
+                            N1_CHAN = N1_CHAN,
                         });
                         return (N0_ID, ligne);
                     }
@@ -5247,7 +5210,7 @@ namespace GEDCOM
                                         N1_RIN = infoNote.N1_RIN,
                                         N1_REFN_liste = infoNote.N1_REFN_liste,
                                         N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                                        N1_CHAN = N1_CHAN
+                                        N1_CHAN = N1_CHAN,
                                     });
                                     return (N0_ID, ligne);
                                 }
@@ -5259,14 +5222,15 @@ namespace GEDCOM
                 }
                 listeInfoNote.Add(new NOTE_RECORD()
                 {
+                    
                     N0_ID = N0_ID,
                     N0_NOTE_Texte = note,
                     N1_RIN = N1_RIN,
                     N1_REFN_liste = N1_REFN_liste,
                     N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                     N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                    N1_CHAN = N1_CHAN
-                });
+                    N1_CHAN = N1_CHAN,
+                }); ;
             }
             return ("", ligne);
         }
@@ -5276,7 +5240,7 @@ namespace GEDCOM
             {
                 N0_ID = null,
                 N1_CALN = null,
-                N2_CALN_MEDI = null
+                N2_CALN_MEDI = null,
             };
             List<string> N1_NOTE_liste_ID = new List<string>();
             int niveau_I = Extraire_niveau(ligne);
@@ -5304,15 +5268,13 @@ namespace GEDCOM
                         }
                         else
                         {
-                            EcrireBalise(ligne);
-                            ligne++;
+                            ligne = EcrireBalise(ligne);
                         }
                     }
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
@@ -5335,8 +5297,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
@@ -5344,7 +5305,6 @@ namespace GEDCOM
         }
         private static int Extraire_SUBMISSION_RECORD(int ligne)
         {
-
             info_SUBMISSION_RECORD.N0_ID = null;
             info_SUBMISSION_RECORD.N1_SUBM_liste_ID = new List<string>();
             info_SUBMISSION_RECORD.N1_FAMF = null;
@@ -5426,8 +5386,7 @@ namespace GEDCOM
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
                 catch (Exception msg)
@@ -5564,8 +5523,7 @@ namespace GEDCOM
                     else
                     {
                         Avoir_code_erreur();
-                        EcrireBalise(ligne);
-                        ligne++;
+                        ligne = EcrireBalise(ligne);
                     }
                 }
             }
@@ -5590,7 +5548,7 @@ namespace GEDCOM
                     N1_RIN = N1_RIN,
                     N1_RFN = N1_RFN,
                     N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                    N1_CHAN = N1_CHAN
+                    N1_CHAN = N1_CHAN,
                 });
             }
             return (ligne);
@@ -5599,7 +5557,6 @@ namespace GEDCOM
         {
             int niveau_I = Extraire_niveau(ligne);
             string TEXT;
-
             TEXT = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
             ligne++;
             while (Extraire_niveau(ligne) > niveau_I)
@@ -5625,8 +5582,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             return (TEXT, ligne);
@@ -5637,7 +5593,7 @@ namespace GEDCOM
             USER_REFERENCE_NUMBER info = new USER_REFERENCE_NUMBER
             {
                 N1_TYPE = "",
-                N0_REFN = Extraire_ligne(dataGEDCOM[ligne], 4)
+                N0_REFN = Extraire_ligne(dataGEDCOM[ligne], 4),
             };
             info.N0_REFN = Extraire_ligne(dataGEDCOM[ligne], 4);
             ligne++;
@@ -5651,8 +5607,7 @@ namespace GEDCOM
                 }
                 else
                 {
-                    EcrireBalise(ligne);
-                    ligne++;
+                    ligne = EcrireBalise(ligne);
                 }
             }
             return (info, ligne);
@@ -6160,6 +6115,17 @@ namespace GEDCOM
                 ListeID.Add(info.N0_ID);
             }
             return ListeID;
+        }
+        public static REPOSITORY_RECORD Avoir_info_repo(string ID)
+        {
+            foreach (REPOSITORY_RECORD info in liste_REPOSITORY_RECORD)
+            {
+                if (info.N0_ID == ID)
+                {
+                    return info;
+                }
+            }
+            return null;
         }
         public static FAM_RECORD Avoir_info_famille(string ID)
         {
@@ -7111,8 +7077,7 @@ namespace GEDCOM
             DialogResult reponse;
             string message_log = String.Format("Erreur {0,-7 } {1}\r\n{2,-15 }{3}", erreur, message, "",raison );
             reponse = MessageBox.Show("Erreur " + erreur + ". " + message + "\r\n" + raison +
-                "\r\n\r\n" +
-                "L'erreur a été enregisté dans le fichier " + GH.Properties.Settings.Default.DossierHTML + @"\erreur.txt\r\n",
+                "\r\n\r\n" ,
                 "Erreur " + erreur + " problème ?",
                 MessageBoxButtons.OKCancel,
                 MessageBoxIcon.Warning); ;
@@ -7122,33 +7087,92 @@ namespace GEDCOM
         }
         public static void ZXCV(string message = "", [CallerFilePath] string code = "", [CallerLineNumber] int ligneCode = 0, [CallerMemberName] string fonction = null)
         {
-            if (!GH.Properties.Settings.Default.deboguer || GH.Properties.Settings.Default.DossierHTML == "") return;
             System.Windows.Forms.Button Btn_deboguer = Application.OpenForms["GH"].Controls["Btn_deboguer"] as System.Windows.Forms.Button;
             code = Path.GetFileName(code);
-            code = code[0].ToString().ToUpper();
-            string fichier = GH.Properties.Settings.Default.DossierHTML + @"\deboguer.txt";
+            string fichier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\deboguer.html";
             try
             {
                 using (StreamWriter ligne = File.AppendText(fichier))
                 {
-                    if (!LogInfoGEDCOM && Info_HEADER.N2_SOUR_NAME != "")
+                    if (!LogInfoGEDCOM)
                     {
+                        ligne.WriteLine(
+                            "<style>\n" +
+                            "    h1{color:#00F}\n" +
+                            "    .col0{width:150px;vertical-align:top;}\n " +
+                            "    .col1{width:90px;vertical-align:top;}\n " +
+                            "    .col2{width:50px;vertical-align:top;}\n " +
+                            "    .col3{width:330px;vertical-align:top;}\n " +
+                            "    .col4{vertical-align:top;}\n " +
+                            "</style>");
                         Btn_deboguer.Visible = true;
-                        ligne.WriteLine(DateTime.Now);
-                        ligne.WriteLine("*** Deboguer **********************************************************");
-                        ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
-                        ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
-                        ligne.WriteLine("Copyright: " + Info_HEADER.N1_COPR);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_GEDC_VERS);
-                        ligne.WriteLine("Code charactère: " + Info_HEADER.N1_CHAR);
-                        ligne.WriteLine("Langue: " + Info_HEADER.N1_LANG);
-                        ligne.WriteLine("Fichier sur le disque: " + Info_HEADER.Nom_fichier_disque);
-                        ligne.WriteLine("**********************************************************************");
-                        LogInfoGEDCOM = true;
+                        ligne.WriteLine("<h1>Deboguer</h1>");
+                        ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
+                        ligne.WriteLine("\t<tr><td style=\"width:200px\">Nom</td><td>" + Info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + Info_HEADER.N2_SOUR_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Date</td><td>" + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Copyright</td><td>" + Info_HEADER.N1_COPR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + Info_HEADER.N2_GEDC_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + Info_HEADER.N1_CHAR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Langue</td><td>" + Info_HEADER.N1_LANG + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + Info_HEADER.Nom_fichier_disque + "<td></tr>");
+                        System.Version version;
+                        try
+                        {
+                            version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        }
+                        catch
+                        {
+                            version = Assembly.GetExecutingAssembly().GetName().Version;
+                        }
+                        ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                        ligne.WriteLine("</table>");
+                        ligne.WriteLine(
+                            "<table>" +
+                            "<tr>" +
+                            "<td class=\"col0\">" +
+                            "Date heure" +
+                            "</td>" +
+                            "<td class=\"col1\">" +
+                            "Code" +
+                            "</td>" +
+                            "<td class=\"col2\">" +
+                            "Ligne" +
+                            "</td>" +
+                            "<td class=\"col3\">" +
+                            "Routine" +
+                            "</td>" +
+                            "<td>" +
+                            "Message" +
+                            "</td>" +
+                            "</table>" +
+                            "<hr>");
                     }
-                    string s = String.Format("{0} {1,5} {2,-20:G} ►{3}◄", code, ligneCode, fonction, message);
+
+                    string s = String.Format(
+                        "<table>" +
+                        "<tr>" +
+                        "<td class=\"col0\">" +
+                        "{0}" +
+                        "</td>" +
+                        "<td class=\"col1\">" +
+                        "{1}" +
+                        "</td>" +
+                        "<td class=\"col2\">" +
+                        "{2}" +
+                        "</td>" +
+                        "<td class=\"col3\">" +
+                        "{3}" +
+                        "</td>" +
+                        "<td>" +
+                        "{4}" +
+                        "</td>" +
+                        "</tr>" +
+                        "</table>" +
+                        "<hr>",
+                        DateTime.Now,code, ligneCode, fonction, message);
                     ligne.WriteLine(s);
+                    LogInfoGEDCOM = true;
                 }
             }
             catch (Exception msg)

@@ -21,6 +21,7 @@ namespace GH
 {
     public partial class GH : Form
     {
+        
         public static bool annuler;
         public bool Ok_anuler = false;
         public readonly HTMLClass HTML = new HTMLClass();
@@ -138,6 +139,26 @@ namespace GH
         /// </summary>
         public int sosaCourant = 0;
         public static Form _Form1;
+
+        // paramètre
+        public static int ParaLocacionX;
+        public static int ParaLocacionY;
+        public static string ParaDosssierHTML;
+        public static string ParaDosssierMedia;
+        public static string ParaDosssierGEDCOM;
+        public static bool ParaVoirID;
+        public static bool ParaVoirPhotoPrincipal;
+        public static bool ParaVoirMedia;
+        
+        public static bool ParaDateLonque;
+
+        public static bool ParaVoirDateChangement;
+        public static bool ParaVoirChercheur;
+        public static bool ParaVoirReference;
+        public static bool ParaVoirNote;
+        public static bool ParaVoirCarte;
+        public static bool ParaVoirInfoBulle;
+
         public GH()
         {
             InitializeComponent();
@@ -177,7 +198,8 @@ namespace GH
         readonly ToolTip t1 = new ToolTip();
         private void OuvrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!Directory.Exists(Properties.Settings.Default.DossierHTML))
+            Avoir_code_erreur();
+            if (!Directory.Exists(ParaDosssierHTML))
             {
                 MessageBox.Show("S.V.P. Spécifiez dans les paramêtres, le dossier des fiches HTML.", "Erreur OTSI0213 Problème ?",
                                      MessageBoxButtons.OK,
@@ -187,22 +209,20 @@ namespace GH
             FichierGEDCOMaLire = "";
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.InitialDirectory = Properties.Settings.Default.DossierGEDCOM;
+                openFileDialog.InitialDirectory = ParaDosssierGEDCOM;
                 openFileDialog.Filter = "GEDCOM (*.ged)|*.ged|All files (*.*)|*.*";
                 openFileDialog.Title = "Lire le fichier";
                 openFileDialog.FilterIndex = 1;
                 openFileDialog.RestoreDirectory = true;
-
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     FichierGEDCOMaLire = openFileDialog.FileName;
                 }
-
             }
             // Si dialog retourne autre chose que ""
             if (FichierGEDCOMaLire != "")
             {
-                DossierSortie = Properties.Settings.Default.DossierHTML + @"\" + Path.GetFileNameWithoutExtension(FichierGEDCOMaLire);
+                DossierSortie = ParaDosssierHTML + @"\" + Path.GetFileNameWithoutExtension(FichierGEDCOMaLire);
 
                 if (Directory.Exists(DossierSortie))
                 {
@@ -220,6 +240,7 @@ namespace GH
                 }
             }
             if (GH.annuler) return;
+            Avoir_code_erreur();
             if (FichierGEDCOMaLire != "")
             {
                 Btn_annuler.Visible = true;
@@ -240,15 +261,16 @@ namespace GH
                     menuPrincipal.Visible = true;
                     return;
                 }
-                Properties.Settings.Default.DossierGEDCOM = Path.GetDirectoryName(FichierGEDCOMaLire);
+                ParaDosssierGEDCOM = Path.GetDirectoryName(FichierGEDCOMaLire);
                
-                if (Properties.Settings.Default.DossierHTML != "") CreerDossier();
+                if (ParaDosssierHTML != "") CreerDossier();
                 FichierGEDCOM = Path.GetFileName(FichierGEDCOMaLire);
                 this.Text = " " + FichierGEDCOM;
                 Tb_Status.Visible = false;
                 Btn_annuler.Visible = false;
                 annuler = false;
             }
+            Avoir_code_erreur();
             menuPrincipal.Visible = true;
         }
         //*************************** Function
@@ -262,22 +284,9 @@ namespace GH
             if (patronyme == null) patronyme = "?";
             return patronyme + ", " + prenom;
         }
-        private void AvoirDossierMedias()
-        {
-            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog
-            {
-                Description = "Où est le dossier de vos médias"
-            };
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                Properties.Settings.Default.DossierMedia = folderBrowserDialog1.SelectedPath;
-                TextBox dossierMedia = Application.OpenForms["Parametre"].Controls["TbDossierHTML"] as TextBox;
-                dossierMedia.Text = Properties.Settings.Default.DossierMedia;
-            }
-        }
         private static string Avoir_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
         {
-            return "F" + sourceLineNumber;
+            return "GH" + sourceLineNumber;
         }
         private void AvoirDossierPageWeb()
         {
@@ -287,9 +296,9 @@ namespace GH
             };
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
-                Properties.Settings.Default.DossierHTML = folderBrowserDialog1.SelectedPath;
+                ParaDosssierHTML = folderBrowserDialog1.SelectedPath;
                 TextBox dossierHTML = Application.OpenForms["Parametre"].Controls["TbDossierHTML"] as TextBox;
-                dossierHTML.Text = Properties.Settings.Default.DossierHTML;
+                dossierHTML.Text = ParaDosssierHTML;
             }
         }
         private void ChoixLVIndividu_SelectedIndexChanged(object sender, EventArgs e)
@@ -370,7 +379,7 @@ namespace GH
             DialogResult reponse;
             code = Path.GetFileName(code);
             code = code[0].ToString().ToUpper();
-            if (!Directory.Exists(Properties.Settings.Default.DossierHTML))
+            if (!Directory.Exists(ParaDosssierHTML))
             {
                 reponse = MessageBox.Show("S.V.P. Spécifiez dans les paramêtres, le dossier des fiches HTML.", "Erreur " + code + lineNumber + " " + caller + " Problème ?",
                                      MessageBoxButtons.OK,
@@ -425,11 +434,11 @@ namespace GH
             if (dossier != null)
                 dossier1 = dossier.ToString();
             Tb_Status.Text = "Effacement des anciens dossiers";
-            bool status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + @"\" + dossier1 + @"\commun");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + @"\" + dossier1 + @"\individus\medias");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + @"\" + dossier1 + @"\individus");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + @"\" + dossier1 + @"\familles\medias");
-            if (status) status = EffacerLeDossier1(Properties.Settings.Default.DossierHTML + @"\" + dossier1 + @"\familles");
+            bool status = EffacerLeDossier1(ParaDosssierHTML + @"\" + dossier1 + @"\commun");
+            if (status) status = EffacerLeDossier1(ParaDosssierHTML + @"\" + dossier1 + @"\individus\medias");
+            if (status) status = EffacerLeDossier1(ParaDosssierHTML + @"\" + dossier1 + @"\individus");
+            if (status) status = EffacerLeDossier1(ParaDosssierHTML + @"\" + dossier1 + @"\familles\medias");
+            if (status) status = EffacerLeDossier1(ParaDosssierHTML + @"\" + dossier1 + @"\familles");
             Tb_Status.Text = "";
             return status;
         }
@@ -438,20 +447,20 @@ namespace GH
             try
             {
                 //string dossier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH";
-                // si deboguer.txt existe efface fichiers
-                if (File.Exists(Properties.Settings.Default.DossierHTML + @"\deboguer.txt"))
+                // si deboguer.html existe efface fichiers
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\deboguer.html"))
                 {
-                    File.Delete(Properties.Settings.Default.DossierHTML + @"\deboguer.txt");
+                    File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\deboguer.html");
                 }
-                // si erreur.txt existe efface fichiers
-                if (File.Exists(Properties.Settings.Default.DossierHTML + @"\erreur.txt"))
+                // si erreur.html existe efface fichiers
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\erreur.html"))
                 {
-                    File.Delete(Properties.Settings.Default.DossierHTML + @"\erreur.txt");
+                    File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\erreur.html");
                 }
-                // si balise.txt existe efface fichiers
-                if (File.Exists(Properties.Settings.Default.DossierHTML + @"\balise.txt"))
+                // si balise.html existe efface fichiers
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\balise.html"))
                 {
-                    File.Delete(Properties.Settings.Default.DossierHTML + @"\balise.txt");
+                    File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\balise.html");
                 }
             }
             catch (Exception msg)
@@ -463,34 +472,188 @@ namespace GH
         }
         private void GH_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Properties.Settings.Default.Form1_State = this.WindowState;
-            if (this.WindowState == FormWindowState.Normal)
+            try
             {
-                // save location and size if the state is normal
-                Properties.Settings.Default.Form1_location = this.Location;
+                string Fichier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\GH.ini";
+                if (File.Exists(Fichier))
+                {
+                    File.Delete(Fichier);
+                }
+                using (StreamWriter ligne = File.CreateText(Fichier))
+                {
+                    if (this.WindowState == FormWindowState.Normal)
+                    {
+                        ligne.WriteLine("[Location X]");
+                        ligne.WriteLine(this.Location.X);
+                        ligne.WriteLine("[Location Y]");
+                        ligne.WriteLine(this.Location.Y);
+                    }
+                    else
+                    {
+                        ligne.WriteLine("[Location X]");
+                        ligne.WriteLine(this.RestoreBounds.Location.X);
+                        ligne.WriteLine("[Location Y]");
+                        ligne.WriteLine(this.RestoreBounds.Location.X);
+                    }
+
+                    ligne.WriteLine("[DossierHTML]");
+                    ligne.WriteLine(ParaDosssierHTML);
+                    ligne.WriteLine("[DossierMedia]");
+                    ligne.WriteLine(ParaDosssierMedia);
+                    ligne.WriteLine("[DossierGEDCOM]");
+                    ligne.WriteLine(GH.ParaDosssierGEDCOM);
+                    ligne.WriteLine("[VoirID]");
+                    if (ParaVoirID) {ligne.WriteLine("1");} else { ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirPhotoPrincipal]");
+                    if (ParaVoirPhotoPrincipal) {ligne.WriteLine("1");} else { ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirMedia]");
+                    if (ParaVoirMedia) {ligne.WriteLine("1");} else {ligne.WriteLine("0");}
+                    ligne.WriteLine("[DateLonque]");
+                    if (ParaDateLonque) {ligne.WriteLine("1");} else {ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirDateChangement]");
+                    if (ParaVoirDateChangement) { ligne.WriteLine("1");} else {ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirChercheur]");
+                    if (ParaVoirChercheur) {ligne.WriteLine("1");} else { ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirReference]");
+                    if (ParaVoirReference) {ligne.WriteLine("1");} else {ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirNote]");
+                    if (ParaVoirNote) {ligne.WriteLine("1");} else {ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirCarte]");
+                    if (ParaVoirCarte) { ligne.WriteLine("1");} else { ligne.WriteLine("0");}
+                    ligne.WriteLine("[VoirInfoBulle]");
+                    if (ParaVoirInfoBulle) { ligne.WriteLine("1");} else { ligne.WriteLine("0");}
+                }
             }
-            else
+            catch (Exception msg)
             {
-                // save the RestoreBounds if the form is minimized or maximized!
-                Properties.Settings.Default.Form1_location = this.RestoreBounds.Location;
+                {
+                    MessageBox.Show("Ne peut pas écrire les paramètres.\r\n\r\n" + msg.Message, "Problème ?",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Warning);
+                }
             }
-            // don't forget to save the settings
-            Properties.Settings.Default.Save();
         }
         private void GH_Load(object sender, EventArgs e)
         {
-            //system.Version version;
-            /*try
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH"))
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH");
+            // parametre valeur par défaut
+            ParaDosssierHTML = "";
+            ParaDosssierMedia = "";
+            ParaDosssierGEDCOM = "";
+            ParaVoirID = false;
+            ParaVoirPhotoPrincipal = true;
+            ParaVoirMedia = true;
+            ParaDateLonque = true;
+            ParaVoirDateChangement = true;
+            ParaVoirChercheur = true;
+            ParaVoirReference = true;
+            ParaVoirNote = true;
+            ParaVoirCarte = true;
+            ParaVoirInfoBulle = false;
+            string Fichier_parametre = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\GH.ini";
+            int position_X = 5;
+            int position_Y = 5;
+            bool position_Bonne = false;
+            if (File.Exists(Fichier_parametre))
             {
-                version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                string Ligne = "";
+                try
+                {
+                    using (StreamReader sr = File.OpenText(Fichier_parametre))
+                    {
+                        while ((Ligne = sr.ReadLine()) != null)
+                        {
+
+                            {
+                                if (Ligne == "[Location X]")
+                                {
+                                    position_X = Int32.Parse(sr.ReadLine());
+
+                                }
+                                if (Ligne == "[Location Y]")
+                                {
+                                    position_Y = Int32.Parse(sr.ReadLine());
+
+                                }
+                            }
+                            if (Ligne == "[DossierHTML]")
+                            {
+                                ParaDosssierHTML = sr.ReadLine();
+                                
+                            }
+                            if (Ligne == "[DossierMedia]")
+                            {
+                                ParaDosssierMedia = sr.ReadLine();
+                            }
+                            if (Ligne == "[DossierGEDCOM]")
+                            {
+                                ParaDosssierGEDCOM = sr.ReadLine();
+
+                            }
+                            if (Ligne == "[VoirID]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirID = true; else ParaVoirID = false;
+                            }
+                            if (Ligne == "[VoirPhotoPrincipal]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirPhotoPrincipal = true; else ParaVoirPhotoPrincipal = false;
+                            }
+                            if (Ligne == "[VoirMedia]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirMedia = true; else ParaVoirMedia = false;
+                            }
+                            if (Ligne == "[DateLonque]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaDateLonque = true; else ParaDateLonque = false;
+                            }
+                            if (Ligne == "[VoirDateChangement]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirDateChangement = true; else ParaVoirDateChangement = false;
+                            }
+                            if (Ligne == "[VoirChercheur]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirChercheur = true; else ParaVoirChercheur = false;
+                            }
+                            if (Ligne == "[VoirReference]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirReference = true; else ParaVoirReference = false;
+                            }
+                            if (Ligne == "[VoirNote]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirNote = true; else ParaVoirNote = false;
+                            }
+                            if (Ligne == "[VoirCarte]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirCarte = true; else ParaVoirCarte = false;
+                            }
+                            if (Ligne == "[VoirInfoBulle]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1") ParaVoirInfoBulle = true; else ParaVoirInfoBulle = false;
+                            }
+                        }
+                    }
+                }
+                catch (Exception msg)
+                {
+                    MessageBox.Show("Ne peut pas lire les paramètres.\r\n\r\n" + msg.Message, "Problème ?",
+                                     MessageBoxButtons.OK,
+                                     MessageBoxIcon.Warning);
+                }
+
             }
-            catch
-            {
-                version = Assembly.GetExecutingAssembly().GetName().Version;
-            }*/
             this.Visible = false;
-            this.WindowState = Properties.Settings.Default.Form1_State;
-            this.Location = Properties.Settings.Default.Form1_location;
+            //this.Location = Properties.Settings.Default.Form1_location;
             Btn_annuler.Visible = false;
             Btn_deboguer.Visible = false;
             Btn_erreur.Visible = false;
@@ -552,8 +715,25 @@ namespace GH
             LvChoixFamille.BackColor = Color.LightSkyBlue;
             Effacer_Log();
             PasConfidentiel("", "");
-            this.Visible = true;
             FormVisible(false);
+            foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+            {
+                if ((position_X >= screen.WorkingArea.Left ) && position_X <= (screen.WorkingArea.Width + screen.WorkingArea.Left) )
+                {
+                    if ((position_Y >= screen.WorkingArea.Top  ) && (position_Y <= screen.WorkingArea.Height - screen.WorkingArea.Top) )
+                    {
+                        position_Bonne = true;
+                    }
+                }
+            }
+            this.Left = 100;
+            this.Top = 100;
+            if (position_Bonne)
+            {
+                this.Left = Pixel_a_dpi(position_X);
+                this.Top = Pixel_a_dpi(position_Y);
+            }
+            this.Visible = true;
         }
         private bool LireFichierGEDCOM(string FichierGEDCOMaLire)
         {
@@ -889,6 +1069,7 @@ namespace GH
         {
             if (status)
             {
+
                 Btn_annuler.Visible = false;
                 Lb_animation.Visible = false;
                 Btn_total.Visible = true;
@@ -908,6 +1089,12 @@ namespace GH
                 Btn_annuler.Visible = false;
                 Btn_cadre_individu.Visible = true;
                 Btn_cadre_famille.Visible = true;
+                
+                AvantIndividuB.Visible = true;
+                ApresIndividuB.Visible = true;
+                AvantFamilleB.Visible = true;
+                ApresFamilleB.Visible = true;
+
             }
             else
             {
@@ -928,6 +1115,10 @@ namespace GH
                 Btn_cadre_famille.Visible = false;
                 Btn_cadre_individu.Visible = false;
                 Btn_cadre_famille.Visible = false;
+                AvantIndividuB.Visible = false;
+                ApresIndividuB.Visible = false;
+                AvantFamilleB.Visible = false;
+                ApresFamilleB.Visible = false;
             }
             Application.DoEvents();
         }
@@ -1054,10 +1245,6 @@ namespace GH
             };
             l.ShowDialog(this);
         }
-        private void DossierPageMédiasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AvoirDossierMedias();
-        }
         private void VoirIDToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
         {
             if (FichierGEDCOMaLire != "")
@@ -1135,26 +1322,35 @@ namespace GH
         }
         private void OuvrirDossierDesFichesHTMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!Directory.Exists(Properties.Settings.Default.DossierHTML))
+            if (!Directory.Exists(ParaDosssierHTML))
             {
                 MessageErreur("S.V.P. Spécifiez dans les paramêtres, le dossier des fiches HTML.");
                 return;
             }
-            System.Diagnostics.Process.Start(@Properties.Settings.Default.DossierHTML);
+            System.Diagnostics.Process.Start(@ParaDosssierHTML);
+        }
+        private int Pixel_a_dpi(float pixel)
+        {
+            float point;
+            Graphics g = CreateGraphics();
+            point = pixel * g.DpiX / g.DpiX;
+            g.Dispose();
+            int dpi = Convert.ToInt32(point);
+            return dpi;
         }
         private void RechercheIndividuTB_TextChanged(object sender, EventArgs e)
         {
             if (RechercheIndividuTB.Text == "")
             {
                 LvChoixIndividu.SelectedItems.Clear();
-                AvantIndividuB.Visible = true;
-                ApresIndividuB.Visible = true;
+                //AvantIndividuB.Visible = true;
+                //ApresIndividuB.Visible = true;
 
                 return;
             }
             string[] mots = RechercheIndividuTB.Text.ToLower().Split(' ');
-            AvantIndividuB.Visible = true;
-            ApresIndividuB.Visible = true;
+            //AvantIndividuB.Visible = true;
+            //ApresIndividuB.Visible = true;
             for (int f = 0; f < LvChoixIndividu.Items.Count; f++)
             {
                 bool Ok = true;
@@ -1179,13 +1375,13 @@ namespace GH
             if (RechercheFamilleTB.Text == "")
             {
                 LvChoixFamille.SelectedItems.Clear();
-                AvantFamilleB.Visible = true;
-                ApresFamilleB.Visible = true;
+                //AvantFamilleB.Visible = true;
+                //ApresFamilleB.Visible = true;
                 return;
             }
             string[] mots = RechercheFamilleTB.Text.ToLower().Split(' ');
-            AvantFamilleB.Visible = true;
-            ApresFamilleB.Visible = true;
+            //AvantFamilleB.Visible = true;
+            //ApresFamilleB.Visible = true;
             for (int f = 0; f < LvChoixFamille.Items.Count; f++)
             {
                 bool Ok = true;
@@ -1350,11 +1546,11 @@ namespace GH
         private void AvantConjointeB_Click(object sender, EventArgs e)
         {
             int index = 0;
-            AvantFamilleB.Visible = false;
-            ApresFamilleB.Visible = false;
-            if (RechercheFamilleTB.Text == "") return;
-            AvantFamilleB.Visible = true;
-            ApresFamilleB.Visible = true;
+            //AvantFamilleB.Visible = false;
+            //ApresFamilleB.Visible = false;
+            //if (RechercheFamilleTB.Text == "") return;
+            //AvantFamilleB.Visible = true;
+            //ApresFamilleB.Visible = true;
             string[] s = RechercheFamilleTB.Text.ToLower().Split(' ');
             if (LvChoixFamille.SelectedItems.Count > 0)
             {
@@ -1419,13 +1615,13 @@ namespace GH
         }
         private void BaliseBt_Click(object sender, EventArgs e)
         {
-            if (File.Exists(Properties.Settings.Default.DossierHTML + @"\balise.txt"))
-                Process.Start(Properties.Settings.Default.DossierHTML + @"\balise.txt");
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\balise.html"))
+                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\balise.html");
         }
         private void DeboguerTb_Click(object sender, EventArgs e)
         {
-            if (File.Exists(Properties.Settings.Default.DossierHTML + @"\deboguer.txt"))
-                Process.Start(Properties.Settings.Default.DossierHTML + @"\deboguer.txt");
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\deboguer.html"))
+                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\deboguer.html");
         }
         private void VoirDateDeChangementToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1533,18 +1729,19 @@ namespace GH
         private void Btn_anuler_HTML_Click(object sender, EventArgs e)
         {
             annuler = true;
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Arrêter l'opération", Btn_annuler_HTML);
         }
         private void Btn_balise_Click(object sender, EventArgs e)
         {
-            if (File.Exists(Properties.Settings.Default.DossierHTML + @"\balise.txt"))
-                Process.Start(Properties.Settings.Default.DossierHTML + @"\balise.txt");
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\balise.html"))
+                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\balise.html");
         }
         private void Btn_deboguer_Click(object sender, EventArgs e)
         {
-            if (File.Exists(Properties.Settings.Default.DossierHTML + @"\deboguer.txt"))
-                Process.Start(Properties.Settings.Default.DossierHTML + @"\deboguer.txt");
+            
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\deboguer.html"))
+                System.Diagnostics.Process.Start("file:///" + Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\deboguer.html");
         }
         private void Btn_voir_fiche_famille_Click(object sender, EventArgs e)
         {
@@ -1577,49 +1774,49 @@ namespace GH
         }
         private void Btn_erreur_Click(object sender, EventArgs e)
         {
-            if (File.Exists(Properties.Settings.Default.DossierHTML + @"\erreur.txt"))
-                Process.Start(Properties.Settings.Default.DossierHTML + @"\erreur.txt");
+            if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\erreur.html"))
+                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\erreur.html");
         }
 
         private void Btn_voir_fiche_individu_MouseHover(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Voir l'individu sélectionné", Btn_voir_fiche_individu);
         }
 
         private void Btn_voir_fiche_famille_MouseHover(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Voir la famille sélectionné", Btn_voir_fiche_famille);
         }
 
         private void Btn_total_MouseHover(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Voir tous les individus et les familles avec index", Btn_total);
         }
 
         private void Btn_balise_MouseHover(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Voir le journal des balises non reconnue", Btn_balise);
         }
 
         private void Btn_deboguer_MouseHover(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Voir le journal de deboque", Btn_deboguer);
         }
 
         private void Btn_erreur_MouseHover(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Voir le journal des erreurs", Btn_erreur);
         }
 
         private void Btn_annuler_MouseHover(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.voir_ToolTip)
+            if (ParaVoirInfoBulle)
                 t1.Show("Arrêter l'opération", Btn_annuler);
         }
 

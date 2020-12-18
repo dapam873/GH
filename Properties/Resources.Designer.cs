@@ -73,26 +73,6 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap attendre {
-            get {
-                object obj = ResourceManager.GetObject("attendre", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap attendre1 {
-            get {
-                object obj = ResourceManager.GetObject("attendre1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap attendre2 {
             get {
                 object obj = ResourceManager.GetObject("attendre2", resourceCulture);
@@ -103,49 +83,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap b191X80 {
-            get {
-                object obj = ResourceManager.GetObject("b191X80", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap b191X801_r {
-            get {
-                object obj = ResourceManager.GetObject("b191X801_r", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap balise {
             get {
                 object obj = ResourceManager.GetObject("balise", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap beta {
-            get {
-                object obj = ResourceManager.GetObject("beta", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap beta1 {
-            get {
-                object obj = ResourceManager.GetObject("beta1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -246,36 +186,6 @@ namespace GH.Properties {
         internal static System.Drawing.Bitmap ficheIndividuNoir {
             get {
                 object obj = ResourceManager.GetObject("ficheIndividuNoir", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flecheDroite_22_20 {
-            get {
-                object obj = ResourceManager.GetObject("flecheDroite_22_20", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flecheGauche {
-            get {
-                object obj = ResourceManager.GetObject("flecheGauche", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap flecheGauche_22_20 {
-            get {
-                object obj = ResourceManager.GetObject("flecheGauche_22_20", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

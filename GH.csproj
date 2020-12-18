@@ -624,13 +624,8 @@
     <None Include="bin\Debug\images\dossier_20.png" />
     <Content Include="GH.ico" />
     <None Include="Resources\b191X80_r.bmp" />
-    <Content Include="Resources\flecheDroite_22_20.png" />
     <None Include="Resources\loupe201.png" />
-    <None Include="Resources\flecheDroite_22_201.png" />
-    <Content Include="Resources\flecheGauche_22_20.png" />
-    <None Include="Resources\flecheGauche_22_201.png" />
     <Content Include="Resources\loupe20.png" />
-    <None Include="Resources\beta.png" />
     <None Include="Resources\GH150V2.png" />
     <None Include="Resources\DAPAMv5_201.png" />
   </ItemGroup>
