@@ -31,12 +31,12 @@ namespace GH
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Bienvenu));
             this.Tb_text = new System.Windows.Forms.TextBox();
-            this.Tb_1 = new System.Windows.Forms.TextBox();
-            this.Tb_2 = new System.Windows.Forms.TextBox();
-            this.Tb_3 = new System.Windows.Forms.TextBox();
-            this.Tb_MAJ = new System.Windows.Forms.TextBox();
-            this.Tb_MAJ_texte = new System.Windows.Forms.TextBox();
-            this.Btn_Fermer = new System.Windows.Forms.Button();
+            this.Ll_licence = new System.Windows.Forms.LinkLabel();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.TextBox1 = new System.Windows.Forms.TextBox();
+            this.Btn_fermer = new System.Windows.Forms.Button();
+            this.Pb_logo_GH = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.Pb_logo_GH)).BeginInit();
             this.SuspendLayout();
             // 
             // Tb_text
@@ -44,126 +44,110 @@ namespace GH
             this.Tb_text.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.Tb_text.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.Tb_text.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tb_text.Location = new System.Drawing.Point(14, 12);
-            this.Tb_text.MaximumSize = new System.Drawing.Size(905, 138);
-            this.Tb_text.MinimumSize = new System.Drawing.Size(905, 138);
+            this.Tb_text.Location = new System.Drawing.Point(190, 12);
             this.Tb_text.Multiline = true;
             this.Tb_text.Name = "Tb_text";
-            this.Tb_text.Size = new System.Drawing.Size(905, 138);
+            this.Tb_text.Size = new System.Drawing.Size(729, 61);
             this.Tb_text.TabIndex = 0;
             this.Tb_text.TabStop = false;
-            this.Tb_text.Text = resources.GetString("Tb_text.Text");
+            this.Tb_text.Text = "GEDCOM-HTML Ce logiciel permet d\'extraire les informations d\'un fichier GEDCOM\r\ns" +
+    "ous forme de fichier HTML pour tous les individus et toutes les familles.";
+            this.Tb_text.TextChanged += new System.EventHandler(this.Tb_text_TextChanged);
             // 
-            // Tb_1
+            // Ll_licence
             // 
-            this.Tb_1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.Tb_1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Tb_1.CausesValidation = false;
-            this.Tb_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tb_1.Location = new System.Drawing.Point(14, 155);
-            this.Tb_1.Multiline = true;
-            this.Tb_1.Name = "Tb_1";
-            this.Tb_1.Size = new System.Drawing.Size(905, 23);
-            this.Tb_1.TabIndex = 1;
-            this.Tb_1.TabStop = false;
-            this.Tb_1.Text = "1. L\'origine de ce logiciel ne doit pas être déformée; vous ne devez pas prétendr" +
-    "e avoir écrit le logiciel originel.";
+            this.Ll_licence.ActiveLinkColor = System.Drawing.Color.Transparent;
+            this.Ll_licence.AutoSize = true;
+            this.Ll_licence.DisabledLinkColor = System.Drawing.Color.Blue;
+            this.Ll_licence.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.Ll_licence.ForeColor = System.Drawing.Color.Blue;
+            this.Ll_licence.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.Ll_licence.LinkColor = System.Drawing.Color.Blue;
+            this.Ll_licence.LinkVisited = true;
+            this.Ll_licence.Location = new System.Drawing.Point(8, 299);
+            this.Ll_licence.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Ll_licence.Name = "Ll_licence";
+            this.Ll_licence.Size = new System.Drawing.Size(397, 20);
+            this.Ll_licence.TabIndex = 208;
+            this.Ll_licence.TabStop = true;
+            this.Ll_licence.Text = "Cliquez ici pour voir la licence GPLV3 officiel en anglais.";
+            this.Ll_licence.VisitedLinkColor = System.Drawing.Color.Blue;
+            this.Ll_licence.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Ll_licence_LinkClicked);
             // 
-            // Tb_2
+            // textBox2
             // 
-            this.Tb_2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.Tb_2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Tb_2.CausesValidation = false;
-            this.Tb_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tb_2.Location = new System.Drawing.Point(14, 198);
-            this.Tb_2.Multiline = true;
-            this.Tb_2.Name = "Tb_2";
-            this.Tb_2.Size = new System.Drawing.Size(905, 43);
-            this.Tb_2.TabIndex = 2;
-            this.Tb_2.TabStop = false;
-            this.Tb_2.Text = "2. Si vous utilisez ce logiciel dans un produit, un accusé de réception dans la d" +
-    "ocumentation du produit serait apprécié, mais n\'est pas requis.";
+            this.textBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
+            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox2.Location = new System.Drawing.Point(191, 98);
+            this.textBox2.Multiline = true;
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(729, 47);
+            this.textBox2.TabIndex = 211;
+            this.textBox2.TabStop = false;
+            this.textBox2.Text = "     Copyright (C) 2022 Daniel Pambrun\r\n\r\n";
             // 
-            // Tb_3
+            // TextBox1
             // 
-            this.Tb_3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.Tb_3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Tb_3.CausesValidation = false;
-            this.Tb_3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tb_3.Location = new System.Drawing.Point(14, 260);
-            this.Tb_3.Multiline = true;
-            this.Tb_3.Name = "Tb_3";
-            this.Tb_3.Size = new System.Drawing.Size(905, 30);
-            this.Tb_3.TabIndex = 3;
-            this.Tb_3.TabStop = false;
-            this.Tb_3.Text = "3. Cet avis ne peut être retiré ou modifié d\'aucune distribution.";
+            this.TextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
+            this.TextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextBox1.Location = new System.Drawing.Point(13, 182);
+            this.TextBox1.Multiline = true;
+            this.TextBox1.Name = "TextBox1";
+            this.TextBox1.Size = new System.Drawing.Size(906, 100);
+            this.TextBox1.TabIndex = 210;
+            this.TextBox1.TabStop = false;
+            this.TextBox1.Text = resources.GetString("TextBox1.Text");
+            this.TextBox1.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
             // 
-            // Tb_MAJ
+            // Btn_fermer
             // 
-            this.Tb_MAJ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.Tb_MAJ.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Tb_MAJ.CausesValidation = false;
-            this.Tb_MAJ.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tb_MAJ.Location = new System.Drawing.Point(7, 296);
-            this.Tb_MAJ.Multiline = true;
-            this.Tb_MAJ.Name = "Tb_MAJ";
-            this.Tb_MAJ.Size = new System.Drawing.Size(905, 30);
-            this.Tb_MAJ.TabIndex = 4;
-            this.Tb_MAJ.TabStop = false;
-            this.Tb_MAJ.Text = "Mise à jour du logiciel";
+            this.Btn_fermer.AutoSize = true;
+            this.Btn_fermer.BackgroundImage = global::GH.Properties.Resources.Btn_ok;
+            this.Btn_fermer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_fermer.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.Btn_fermer.FlatAppearance.BorderSize = 0;
+            this.Btn_fermer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.Btn_fermer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
+            this.Btn_fermer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_fermer.Location = new System.Drawing.Point(870, 274);
+            this.Btn_fermer.Margin = new System.Windows.Forms.Padding(0);
+            this.Btn_fermer.Name = "Btn_fermer";
+            this.Btn_fermer.Size = new System.Drawing.Size(50, 50);
+            this.Btn_fermer.TabIndex = 212;
+            this.Btn_fermer.UseVisualStyleBackColor = true;
+            this.Btn_fermer.Click += new System.EventHandler(this.Btn_fermer_Click_1);
             // 
-            // Tb_MAJ_texte
+            // Pb_logo_GH
             // 
-            this.Tb_MAJ_texte.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.Tb_MAJ_texte.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.Tb_MAJ_texte.CausesValidation = false;
-            this.Tb_MAJ_texte.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Tb_MAJ_texte.Location = new System.Drawing.Point(12, 332);
-            this.Tb_MAJ_texte.Multiline = true;
-            this.Tb_MAJ_texte.Name = "Tb_MAJ_texte";
-            this.Tb_MAJ_texte.Size = new System.Drawing.Size(905, 46);
-            this.Tb_MAJ_texte.TabIndex = 5;
-            this.Tb_MAJ_texte.TabStop = false;
-            this.Tb_MAJ_texte.Text = "C\'est-à-dire qu\'au démarrage du logiciel, s\'il y a une nouvelle  version disponib" +
-    "le, le téléchargement se fera. Au prochain démarrage du logiciel, il sera à jour" +
-    ".";
-            // 
-            // Btn_Fermer
-            // 
-            this.Btn_Fermer.BackColor = System.Drawing.Color.Blue;
-            this.Btn_Fermer.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Btn_Fermer.FlatAppearance.BorderSize = 0;
-            this.Btn_Fermer.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.Btn_Fermer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_Fermer.Font = new System.Drawing.Font("Arial Black", 10F, System.Drawing.FontStyle.Bold);
-            this.Btn_Fermer.ForeColor = System.Drawing.Color.White;
-            this.Btn_Fermer.Location = new System.Drawing.Point(844, 384);
-            this.Btn_Fermer.Name = "Btn_Fermer";
-            this.Btn_Fermer.Size = new System.Drawing.Size(75, 35);
-            this.Btn_Fermer.TabIndex = 137;
-            this.Btn_Fermer.Text = "Fermer";
-            this.Btn_Fermer.UseVisualStyleBackColor = false;
-            this.Btn_Fermer.Click += new System.EventHandler(this.Btn_Fermer_Click);
+            this.Pb_logo_GH.Image = global::GH.Properties.Resources.GH150V2;
+            this.Pb_logo_GH.Location = new System.Drawing.Point(13, 12);
+            this.Pb_logo_GH.Margin = new System.Windows.Forms.Padding(4);
+            this.Pb_logo_GH.Name = "Pb_logo_GH";
+            this.Pb_logo_GH.Size = new System.Drawing.Size(171, 158);
+            this.Pb_logo_GH.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Pb_logo_GH.TabIndex = 209;
+            this.Pb_logo_GH.TabStop = false;
             // 
             // Bienvenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.ClientSize = new System.Drawing.Size(933, 450);
-            this.Controls.Add(this.Btn_Fermer);
-            this.Controls.Add(this.Tb_MAJ_texte);
-            this.Controls.Add(this.Tb_MAJ);
-            this.Controls.Add(this.Tb_3);
-            this.Controls.Add(this.Tb_2);
-            this.Controls.Add(this.Tb_1);
+            this.ClientSize = new System.Drawing.Size(931, 336);
+            this.Controls.Add(this.Btn_fermer);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.Ll_licence);
+            this.Controls.Add(this.Pb_logo_GH);
             this.Controls.Add(this.Tb_text);
+            this.Controls.Add(this.TextBox1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(949, 489);
-            this.MinimumSize = new System.Drawing.Size(949, 489);
             this.Name = "Bienvenu";
             this.Text = "Bienvenu";
+            this.Load += new System.EventHandler(this.Bienvenu_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.Pb_logo_GH)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -172,11 +156,10 @@ namespace GH
         #endregion
 
         private System.Windows.Forms.TextBox Tb_text;
-        private System.Windows.Forms.TextBox Tb_1;
-        private System.Windows.Forms.TextBox Tb_2;
-        private System.Windows.Forms.TextBox Tb_3;
-        private System.Windows.Forms.TextBox Tb_MAJ;
-        private System.Windows.Forms.TextBox Tb_MAJ_texte;
-        private System.Windows.Forms.Button Btn_Fermer;
+        private System.Windows.Forms.LinkLabel Ll_licence;
+        private System.Windows.Forms.PictureBox Pb_logo_GH;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox TextBox1;
+        private System.Windows.Forms.Button Btn_fermer;
     }
 }

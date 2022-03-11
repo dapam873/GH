@@ -1,5 +1,9 @@
 ﻿
 /* 
+R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name +" code " + callerLineNumber + "</b><br>GEDCOM="+ ligne + "<br>niveau=" + niveau);
+, [CallerLineNumber] int callerLineNumber = 0
+
+  
 Cette class est basé sur la documentation de
 
 ----------------------------------------------------------------------------------------------------------------------------
@@ -56,128 +60,730 @@ The GEDCOM 5.5.5 Specification with Annotations
     | genealogical software, provided this notice is included. All other rights reserved.  |
     \--------------------------------------------------------------------------------------/
 
+Les réferences aux pages sont pour 5.5.1_LDS_2019-11-15 si non mentionner.
+
+Pour connaitre la méthode qui a appelé une metode
+
+
 */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection.Emit;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
-using TextBox = System.Windows.Forms.TextBox;
+using Routine;
 
 namespace GEDCOM
 {
     public static class GEDCOMClass
     {
-        static readonly TextBox Tb_Status = Application.OpenForms["GH"].Controls["Tb_Status"] as TextBox;
-        static readonly System.Windows.Forms.Label lb_animation = Application.OpenForms["GH"].Controls["lb_animation"] as System.Windows.Forms.Label;
+        private static int numero_ID = 0;
         public static int ligne = 0;
-        private static int conteur_citation = 0;
-        private static bool LogInfoGEDCOM = false;
-        private static bool LogErreur = false;
-        private static bool TagInfoGEDCOM = false;
-
-        public static bool debug = false;
+        private static int conteur_MULTIMEDIA_LINK = 0;
         private static readonly Random hazard = new Random();
         public static List<string> dataGEDCOM = new List<string>();
+ 
         public class ADDRESS_STRUCTURE
-        { // 5.5.1_LDS_2019-11-15 p.31
-          //ADDRESS_STRUCTURE:=
-            public string N0_ADDR;                  //  n ADDR <ADDRESS_LINE>               {1:1} p.41
-                                                    //      +1 CONT <ADDRESS_LINE>          {0:3} p.41
-            public string N1_ADR1;                  //      +1 ADR1 <ADDRESS_LINE1>         {0:1} p.41
-            public string N1_ADR2;                  //      +1 ADR2 <ADDRESS_LINE2>         {0:1} p.41
-            public string N1_ADR3;                  //      +1 ADR3 <ADDRESS_LINE3>         {0:1} p.41
-            public string N1_CITY;                  //      +1 CITY <ADDRESS_CITY>          {0:1} p.41
-            public string N1_STAE;                  //      +1 STAE <ADDRESS_STATE>         {0:1} p.42
-            public string N1_POST;                  //      +1 POST <ADDRESS_POSTAL_CODE>   {0:1} p.41
-            public string N1_CTRY;                  //      +1 CTRY <ADDRESS_COUNTRY>       {0:1} p.41
-            // déplacer à                           //  n PHON <PHONE_NUMBER>               {0:3} p.57
-            // EVENT_ATTRIBUTE_STRUCTURE            //  n EMAIL <ADDRESS_EMAIL>             {0:3} p.41
-            // GEDCOM_HEADER                        //  n FAX <ADDRESS_FAX>                 {0:3} p.41
-            // SUBMITTER_RECORD                     //  n WWW <ADDRESS_WEB_PAGE>            {0:3} p.42 
-            // REPOSITORY_RECORD
-            public List<string> N1_NOTE_liste_ID;   // GRAMPS
-        }
-        public class ASSOCIATION_STRUCTURE // 5.5.1_LDS_2019-11-15.pdf p.31
         {
+            // GEDCOM53.pdf             p.19
+            // GEDCOM54.pdf             p.27
+            // 5.5_LDS_1996-01-02.pdf   p.29
+            // 5.5.1_LDS_2019-11-15.pdf p.31
+            // 5.5.5_Annotations_TJ.pdf p.64
+            //                                                      ADDRESS_STRUCTURE:=
+            public string N0_ADDR;                              //  n ADDR <ADDRESS_LINE>               {1:1}
+                                                                //                                          V5.4    p.27
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+                                                                //                                          V5.5.5 p.97
+                                                                //      +1 CONT <ADDRESS_LINE>          {0:3}
+                                                                //                                          V5.3 
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+            public string N1_ADR1;                              //      +1 ADR1 <ADDRESS_LINE1>         {0:1}
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+                                                                //                                          v5.5.5  p.75
+            public string N1_ADR2;                              //      +1 ADR2 <ADDRESS_LINE2>         {0:1}
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+                                                                //                                          v5.5.5  p.75
+            public string N1_ADR3;                              //      +1 ADR3 <ADDRESS_LINE3>         {0:1}
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+                                                                //                                          v5.5.5  p.76
+            public string N1_CITY;                              //      +1 CITY <ADDRESS_CITY>          {0:1}
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+                                                                //                                          v5.5.5  p.76
+            public string N1_STAE;                              //      +1 STAE <ADDRESS_STATE>         {0:1}
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.42
+                                                                //                                          v5.5.5  p.76
+            public string N1_POST;                              //      +1 POST <ADDRESS_POSTAL_CODE>   {0:1}
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+                                                                //                                          v5.5.5  p.76
+            public string N1_CTRY;                              //      +1 CTRY <ADDRESS_COUNTRY>       {0:1}
+                                                                //                                          V5.4    p.34
+                                                                //                                          V5.5    p.37
+                                                                //                                          V5.5.1  p.41
+                                                                //                                          v5.5.5  p.76
+            public List<string> N1_PHON_liste;                  //      +1 PHON <PHONE_NUMBER>          {0:3}
+                                                                //                                          V5.3    p.34
+                                                                // déplacer à                   //  n PHON <PHONE_NUMBER>
+                                                                // EVENT_ATTRIBUTE_STRUCTURE    //  n EMAIL <ADDRESS_EMAIL>
+                                                                // GEDCOM_HEADER                //  n FAX <ADDRESS_FAX>
+                                                                // SUBMITTER_RECORD             //  n WWW <ADDRESS_WEB_PAGE>
+                                                                // REPOSITORY_RECORD
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     // GRAMPS
+        }
+        public class ASSOCIATION_STRUCTURE
+        {
+            // 5.3 5.4 pas de structure comme tel.
+            // 5.5_LDS_1996-01-02.pdf   p.29
+            // 5.5.1_LDS_2019-11-15.pdf p.31
+            // 5.5.5_Annotations_TJ.pdf p.65
             //  ASSOCIATION_STRUCTURE:=
-            public string N0_ASSO;                          //      n ASSO @<XREF:INDI>@                    {1:1} p.25
-            public string N1_RELA;                          //          +1 RELA <RELATION_IS_DESCRIPTOR>    {1:1} p.60
-            public List<string> N1_SOUR_citation_liste_ID;  //          +1 <<SOURCE_CITATION>>              {0:M} p.39
-            public List<string> N1_SOUR_source_liste_ID;    //          +1 généré par l'appication
-            public List<string> N1_NOTE_liste_ID;           //          +1 <<NOTE_STRUCTURE>>               {0:M} p.37
-        }
-        public class CHANGE_DATE // 5.5.1_LDS_2019-11-15.pdf p.31
-        {
-            //CHANGE_DATE:=
-            //  n CHAN                          {1:1}
-            public string N1_CHAN_DATE;                 //      +1 DATE <DATE_EXACT>        {1:1} p.44
-            public string N2_CHAN_DATE_TIME;            //          +2 TIME <TIME_VALUE>    {0:1} p.63
-            public List<string> N1_CHAN_NOTE_ID_liste;  //          +1 <<NOTE_STRUCTURE>>   {0:M} p.37
-        }
-        public class CHILD_TO_FAMILY_LINK // 5.5.1_LDS_2019-11-15 p.31
-        {
-            //  CHILD_TO_FAMILY_LINK:=
-            public string N0_FAMC;                  //      n FAMC @<XREF:FAM>@                 {1:1} p.24
-            public string N1_PEDI;                  //          +1 PEDI <PEDIGREE_LINKAGE_TYPE> {0:1} p.57
-            public string N1_STAT;                  //          +1 STAT <CHILD_LINKAGE_STATUS>  {0:1} p.44
-            public List<string> N1_NOTE_liste_ID;   //          +1 <<NOTE_STRUCTURE>>           {0:M} p.37
-        }
-        public class FAM_RECORD                                         // 5.5.1_LDS_2019-11-15 p.24
-        {
-                                                                        // FAM_RECORD:=
-            public string N0_ID;                                        //    n @<XREF:FAM>@ FAM                                  {1:1}
-            public string N1_RESN;                                      //    +1 RESN <RESTRICTION_NOTICE>                        {0:1) p.60
-            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //    +1 <<FAMILY_EVENT_STRUCTURE>>                       {0:M} p.32
-            public string N1_HUSB;                                      //    +1 HUSB @<XREF:INDI>@                               {0:1} p.25
-            public string N1_WIFE;                                      //    +1 WIFE @<XREF:INDI>@                               {0:1} p.25
-            public List<string> N1_CHIL_liste_ID;                       //    +1 CHIL @<XREF:INDI>@                               {0:M} p.25
-            public string N1_NCHI;                                      //    +1 NCHI <COUNT_OF_CHILDREN>                         {0:1} p.44
-            public List<string> N1_SUBM_liste_ID;                       //    +1 SUBM @<XREF:SUBM>@                               {0:M} p.28
-            public LDS_SPOUSE_SEALING N1_SLGS;                          //    +1 <<LDS_SPOUSE_SEALING>>                           {0:M} p.36
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //    +1 REFN <USER_REFERENCE_NUMBER>                     {0:M} p.63, 64
-                                                                        //      +2 TYPE <USER_REFERENCE_TYPE>                     {0:1} p.64
-            public string N1_RIN;                                       //    +1 RIN <AUTOMATED_RECORD_ID>                        {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                                 //    +1 <<CHANGE_DATE>>                                  {0:1} p.31
-            public List<string> N1_NOTE_liste_ID;                       //    +1 <<NOTE_STRUCTURE>>                               {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;                 //    +1 <<SOURCE_CITATION>>                              {0:M} p.39
-            public List<string> N1_SOUR_source_liste_ID;
-            public List<string> N1_OBJE_liste;                          //    +1 <<MULTIMEDIA_LINK>>                              {0:M} p.37, 26
+            public string N0_ASSO;                          //      n ASSO @<XREF:INDI>@                  {1:1}
+                                                            //      n ASSO @XREF:ANY@                     {0:M} V5.3
+                                                            //      n ASSO @<XREF:INDI>@                  {0:M} V5.4
+                                                            //                                                  V5.5    p.29
+                                                            //                                                  V5.5.1  p.25
+                                                            //                                                  V5.5.5  p.108
 
-            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste;  //    pour GRAMPS
+            public string N1_TYPE;                          //          +1 TYPE <RECORD_TYPE>
+                                                            //          +1 TYPE<ASSOCIATION_DESCRIPTOR>         {0:1} V5.3
+                                                            //                                                  V5.3    p.26
+                                                            //                                                  V5.5    p.51
+            public string N1_RELA;                          //          +1 RELA <RELATION_IS_DESCRIPTOR>    {1:1}
+                                                            //                                                  V5.4    p.45
+                                                            //                                                  V5.5    p.52
+                                                            //                                                  V5.5.1  p.60
+                                                            //                                                  V5.5.5  p.104
+
+            public List<string> N1_SOUR_citation_liste_ID;  //          +1 <<SOURCE_CITATION>>              {0:M}
+                                                            //                                                  V5.3    p.23
+                                                            //                                                  V5.4    p.31
+                                                            //                                                  V5.5    p.34
+                                                            //                                                  V5.5.1  p.39
+                                                            //                                                  V5.5.5  p.73
+
+            public List<string> N1_SOUR_source_liste_ID;    //          +1 généré par l'appication
+            public List<string> N1_NOTE_STRUCTURE_liste_ID; //          +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                            //                                                  V5.3    p.21
+                                                            //                                                  V5.4    p.30
+                                                            //                                                  V5.5    p.33
+                                                            //                                                  V5.5.1  p.37
+                                                            //                                                  v5.5.5  p.71
         }
-        public class INDIVIDUAL_RECORD   // 5.5.1_LDS_2019-11-15 p.25 
+
+        public class CHANGE_DATE
         {
-            //  INDIVIDUAL_RECORD:=
-            public string N0_ID;                                        //      n @XREF:INDI@ INDI                          {1:1}
-            public string N1_RESN;                                      //          +1 RESN <RESTRICTION_NOTICE>            {0:1} p.60
-            public List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste;         //          +1 <<PERSONAL_NAME_STRUCTURE>>          {0:M} p.38
-            public string N1_SEX;                                       //          +1 SEX <SEX_VALUE>                      {0:1} p.61
-            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_EVENT_Liste;      //          +1 <<INDIVIDUAL_EVENT_STRUCTURE>>       {0:M} p.34
-            public List<EVENT_ATTRIBUTE_STRUCTURE> N1_Attribute_liste;  //          +1 <<INDIVIDUAL_ATTRIBUTE_STRUCTURE>>   {0:M} p.33
-            public List<LDS_INDIVIDUAL_ORDINANCE> N1_LDS_liste;         //          +1 <<LDS_INDIVIDUAL_ORDINANCE>>         {0:M} p.35, 36
-            public CHILD_TO_FAMILY_LINK N1_FAMC;                        //          +1 <<CHILD_TO_FAMILY_LINK>>             {0:M} p.31
-            public List<SPOUSE_TO_FAMILY_LINK> N1_FAMS_liste_Conjoint;  //          +1 <<SPOUSE_TO_FAMILY_LINK>>            {0:M} p.40
-            public List<string> N1_SUBM_liste_ID;                       //          +1 SUBM @<XREF:SUBM>@                   {0:M} p.28
-            public List<ASSOCIATION_STRUCTURE> N1_ASSO_liste;           //          +1 <<ASSOCIATION_STRUCTURE>>            {0:M} p.31
-            public List<string> N1_ALIA_liste_ID;                       //          +1 ALIA @<XREF:INDI>@                   {0:M} p.25  An indicator to link different record descriptions 
-            public List<string> N1_ANCI_liste_ID;                       //          +1 ANCI @<XREF:SUBM>@                   {0:M} p.28  Indicates an interest in additional research for 
-            public List<string> N1_DESI_liste_ID;                       //          +1 DESI @<XREF:SUBM>@                   {0:M} p.28  
-            public string N1_RFN;                                       //          +1 RFN <PERMANENT_RECORD_FILE_NUMBER>   {0:1} p.57
-            public string N1_AFN;                                       //          +1 AFN <ANCESTRAL_FILE_NUMBER>          {0:1} p.42
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63, 64
-            // inclue dans la ligne précédente                          //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64
-            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31
-            public List<string> N1_NOTE_liste_ID;                                      //          +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39
+            // GEDCOM53.pdf             p.19
+            // GEDCOM54.pdf             p.27
+            // 5.5_LDS_1996-01-02.pdf   p.29
+            // 5.5.1_LDS_2019-11-15.pdf p.31
+            // 5.5.5_Annotations_TJ.pdf p.66
+            //                                                  CHANGE_DATE:=
+            //                                                  n CHAN                                      {1:1}
+            //                                                                                                  V5.5
+            //                                                                                                  V5.5.1
+            //                                                                                                  V5.5.5
+            public string N1_CHAN_DATE;                     //      +1 DATE <DATE_EXACT>                    {1:1}
+                                                            //                                                  V5.3
+                                                            //                                                  V5.4    p.35
+                                                            //                                                  V5.5    p.39
+                                                            //                                                  V5.5.1  p.44
+                                                            //                                                  V5.5.5  p.83
+            public string N2_CHAN_DATE_TIME;                //          +2 TIME <TIME_VALUE>                {0:1}
+                                                            //                                                  V5.3
+                                                            //                                                  V5.4    p.47
+                                                            //                                                  V5.5    p.55
+                                                            //                                                  V5.5.1  p.63
+                                                            //                                                  V5.5.5  p.107
+            public List<string> N1_CHAN_NOTE_STRUCTURE_ID_liste;//          +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                //                                                  V5.3    p.21
+                                                                //                                                  V5.4    p.30
+                                                                //                                                  V5.5    p.33
+                                                                //                                                  V5.5.1  p.37
+                                                                //                                                  V5.5.5  p.71
+        }
+        public class CHILD_TO_FAMILY_LINK
+        {
+            // GEDCOM54.pdf             p.27
+            // 5.5_LDS_1996-01-02.pdf   p.29
+            // 5.5.1_LDS_2019-11-15.pdf p.31
+            // 5.5.5_Annotations_TJ.pdf p.67
+            //  CHILD_TO_FAMILY_LINK:=
+            public string N0_FAMC;                          //      n FAMC @<XREF:FAM>@                     {1:1}
+                                                            //                                                  V5.4
+                                                            //                                                  V5.5
+                                                            //                                                  V5.5.1  p.24
+                                                            //                                                  V5.5.5  P.108
+            public bool N1_adop;                            // True = adopter false = pas adopter
+            public string N2_ADOP_TYPE;                     //              +2 <CHILD_FAMILY_EVENT_DESCRIPTOR>{0:1}
+                                                            //                                                  V5.3    p.19
+            public string N2_ADOP_AGE;                      //              +2 AGE <AGE_VALUE>              {0:1}
+                                                            //                                                  V5.3    p.26
+            public string N2_ADOP_DATE;                     //  n DATE <DATE_VALUE>                         {0:1}
+                                                            //                                                  V5.3    p.28
+            public PLACE_STRUCTURE N2_ADOP_PLAC;            //  n <<PLACE_STRUCTURE>>                       {0:1}
+                                                            //                                                  V5.3    p.21
+            public List<string> N2_ADOP_SOUR_citation_liste_ID;//n <<SOURCE_CITATION>>                      {0:M}
+                                                               //                                                  V5.3    p.23
+            public List<string> N2_ADOP_NOTE_STRUCTURE_liste_ID;//      +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                                //                                                  V5.3    p.21
+            public List<string> N2_ADOP_SOUR_source_liste_ID;
+            public bool N1_slgc;                            // true = Ordinance false = pas ordinace
+            public string N2_SLGC_TYPE;                     //          +1 TYPE <LDS_CHILD_SEALING_DESCRIPTOR>{0:1}
+                                                            //                                                  V5.3    p.31
+            public string N2_SLGC_DATE;                     //  n DATE <DATE_VALUE>                         {0:1}
+                                                            //                                                  V5.3    p.28
+            public string N2_SLGC_TEMP;                     //  n DATE <DATE_VALUE>                         {5:5}
+                                                            //                                                  V5.3    p.39
+            public List<EVEN_ATTRIBUTE_STRUCTURE> N2_FANC_CHILD_FAMILY_EVEN_V53; //+2 <<CHILD_FAMILY_EVEN>>  {0:M}
+                                                                                 //                                                  V5.3    p.19
+            public string N1_PEDI;                          //          +1 PEDI <PEDIGREE_LINKAGE_TYPE>     {0:1}
+                                                            //                                                  V5.5    p.50
+                                                            //                                                  V5.5.1  p.57
+                                                            //                                                  V5.5.5  p.99
+            public string N1_STAT;                          //          +1 STAT <CHILD_LINKAGE_STATUS>      {0:1}
+                                                            //                                                  V5.5.1  p.44
+            public List<string> N1_NOTE_STRUCTURE_liste_ID; //          +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                            //                                                  V5.3    p.21
+                                                            //                                                  V5.4    p.30
+                                                            //                                                  V5.5    p.33
+                                                            //                                                  V5.5.1  p.37
+                                                            //                                                  v5.5.5  p.71
+        }
+        public class EVEN_RECORD_53 // V5.3 SEULEMENT
+        {
+            // GEDCOM53.pdf             p.18
+
+            public string N0_ID;//n @XREF:EVEN@ EVEN
+            public CHANGE_DATE N1_CHAN;                             //      +1 <<CHANGE_DATE>> {0:M}
+            public string N1_EVEN;                                  //      +1 <EVENT_TAG> {1:1}
+            public string N2_EVEN_TYPE;                             //          +2 TYPE <EVENT_DESCRIPTOR> {0:1}
+            public string N2_EVEN_DATE;                             //          +2 DATE <DATE_VALUE> {0:1}
+            public string DATE_trier;                               // date au format YYYYMMDD
+            public string N2_EVEN_SITE;                             //
+            public PLACE_STRUCTURE N2_EVEN_PLAC;                    //          +2 <<PLACE_STRUCTURE>> {0:1}
+            public string N2_EVEN_PERI;                             //          +2 PERI <TIME_PERIOD> {0:M}
+            public string N2_EVEN_RELI;                             //          +2 RELI <RELIGIOUS_AFFILIATION> {0:1}
+            public List<string> MULTIMEDIA_LINK_liste_ID;
+            public List<TEXT_STRUCTURE> N2_EVEN_TEXT_liste;         //          +2 <<TEXT_STRUCTURE>> {0:1}
+            public List<string> N2_EVEN_SOUR_citation_liste_ID;     //          +2 <<SOURCE_CITATION>>                       {0:M}
+                                                                    //                                                  V5.3    p.23
+            public List<string> N2_EVEN_SOUR_source_liste_ID;
+            public List<string> N2_EVEN_NOTE_STRUCTURE_liste_ID;    //  n <<NOTE_STRUCTURE>>                        {0:M}
+                                                                    //                                                  V5.5.5  p.71
+            public string N2_EVEN_ROLE;                             //          +2 <ROLE_TAG> {0:M}
+            public string N3_EVEN_ROLE_TYPE;                        //              +3 TYPE <ROLE_DESCRIPTOR> {0:1}
+            public INDIVIDUAL_53 N3_EVEN_ROLE_INDIVIDUAL;           //              +3 <<INDIVIDUAL>> {0:1}
+            public List<ASSOCIATION_STRUCTURE> N3_EVEN_ROLE_ASSO_liste;//              +3 ASSO @XREF:INDI@ {0:M}
+            public string N3_EVEN_ROLE_RELATIONSHIP_tag;           //              +3 <RELATIONSHIP_ROLE_TAG> [NULL | @XREF:INDI@ ] {0:M}
+            public string N3_EVEN_ROLE_RELATIONSHIP_ID;             //              separer le tag et ID de la ligne précédente
+            public string N4_EVEN_ROLE_RELATIONSHIP_TYPE;           //                  +4 TYPE <ROLE_DESCRIPTOR> {0:1}
+            public INDIVIDUAL_53 N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL;//                  +4 <<INDIVIDUAL>> {0:1}
+            
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+
+        public class EVEN_ATTRIBUTE_STRUCTURE
+        {
+            // mixe
+            //      INDIVIDUAL_DETAIL
+            //                      5.5.1_LDS_2019-11-15 p.34
+            //                      5.5.5_Annotations_TJ p.69
+            //      INDIVIDUAL_EVENT_STRUCTURE
+            //                      GEDCOM53.pdf         p.20
+            //                      GEDCOM54.pdf         p.28
+            //                      5.5.1_LDS_2019-11-15 p.34
+            //                      5.5.5_Annotations_TJ p.69
+            //      INDIVIDUAL_ATTRIBUTE_STRUCTURE
+            //                      GEDCOM54.pdf         p.28
+            //      FAMILY_EVENT_DETAIL
+            //                      GEDCOM54.pdf         p.27
+            //                      5.5.1_LDS_2019-11-15 p.32
+            //                      5.5.5_Annotations_TJ p.67
+            //      EVENT_DETAIL    
+            //                      GEDCOM54.pdf         p.27
+            //                      5.5_LDS_1996-01-02.pdf   p.29
+            //                      5.5.1_LDS_2019-11-15.pdf p.32
+            //                      5.5.5_Annotations_TJ.pdf p.67
+            public string N1_EVEN;                          //  n                                           {1:1}
+                                                            //                                                  V5.3
+                                                            //                                                  V5.4
+                                                            //                                                  V5.5
+                                                            //                                                  V5.5.1
+                                                            //                                                  V5.5.5
+            public string N1_EVEN_texte;                    // récupaire le texte avec balise.
+
+            // EVEN_DETAIL:=
+            public List<string> N2_TYPE_liste;              //  n TYPE <EVENT_OR_FACT_CLASSIFICATION>       {0:1}
+                                                            //                                                  V5.3    p.30
+                                                            //                                                  V5.3    p.38
+                                                            //                                                  V5.5    p.43
+                                                            //                                                  V5.5.1  p.49
+                                                            //                                                  V5.5.5  p.91
+
+            public string N2_DATE;                          //  n DATE <DATE_VALUE>                         {0:1}
+                                                            //                                                  V5.3    p.28
+                                                            //                                                  V5.5    p.42 p.41
+                                                            //                                                  V5.5.1  p.47 p.46
+                                                            //                                                  V5.5.5  p.87
+            public string DATE_trier;                       // date au format YYYYMMDD
+            public string N2_TEMP;                          //      +1 TEMP <TEMPLE_VALUE>                  {0:1}
+                                                            //                                                  V5.3
+            public string N3_DATE_TIME;                     //  n TIME                                        Heridis
+            public PLACE_STRUCTURE N2_PLAC;                 //  n <<PLACE_STRUCTURE>>                       {0:1}
+                                                            //                                                  V5.3    p.21
+                                                            //                                                  V5.5    p.34
+                                                            //                                                  V5.5.1  p.38
+                                                            //                                                  V5.5.5  p.72
+            public string N2_SITE;                          //  n SITE <SITE_NAME>                          {0:1}
+                                                            //                                                  V5.3    p.37
+            public List<ADDRESS_STRUCTURE> N2_ADDR_liste;   //  n <<ADDRESS_STRUCTURE>>                     {0:1}
+                                                            //                                                  V5.4    p.27
+                                                            //                                                  V5.5    p.29
+                                                            //                                                  V5.5.1  p.31
+                                                            //                                                  V5.5.5  p.64
+            public List<string> N2_PHON_liste;              //  n PHON <PHONE_NUMBER>                       {0:3}
+                                                            //                                                  V5.4    p.43
+                                                            //                                                  V5.5    p.50
+                                                            //                                                  V5.5.1  p.57
+                                                            //                                                  V5.5.5  p.99
+            public List<string> N2_EMAIL_liste;             //  n EMAIL <ADDRESS_EMAIL>                     {0:3}
+                                                            //                                                  V5.5.1  p.41
+                                                            //                                                  V5.5.5  p.75
+            public List<string> N2_FAX_liste;               //  n FAX <ADDRESS_FAX>                         {0:3}
+                                                            //                                                  V5.5.1  p.41
+                                                            //                                                  V5.5.5  p.75
+            public List<string> N2_WWW_liste;               //  n WWW <ADDRESS_WEB_PAGE>                    {0:3}
+                                                            //                                                  V5.5.1  p.42
+                                                            //                                                  V5.5.5  p.76
+            public string N2_QUAY;                          //  n QUAY <QUALITY_OF_DATA>                    {0:1}
+                                                            //                                                  V5.3    p.19
+            public string N2_AGNC;                          //  n AGNC <RESPONSIBLE_AGENCY>                 {0:1}
+                                                            //                                          V5.4    p.45
+                                                            //                                                  V5.5    p.34
+                                                            //                                                  V5.5.1  p.60
+                                                            //                                                  V5.5.5  p.104
+            public string N2_RELI;                          //  n RELI <RELIGIOUS_AFFILIATION>              {0:1}
+                                                            //                                                  V5.3    p.36
+                                                            //                                                  V5.5.1  p.60
+                                                            //                                                  V5.5.5  p.104
+            public string N2_CAUS;                          //  n CAUS <CAUSE_OF_EVENT>                     {0:1} 
+                                                            //                          CAUSE_OF_DEATH:=        v5.3    p.27
+                                                            //                                                  V5.4    p.35
+                                                            //                                                  V5.5    p.38
+                                                            //                                                  V5.5.1  p.78
+                                                            //                                                  V5.5.5  p.72
+            public string N2_RESN;                          //  n RESN <RESTRICTION_NOTICE>                 {0:1}
+                                                            //                                                  V5.5.1  p.60
+            public List<TEXT_STRUCTURE> N2_TEXT_liste;      //  +2 <<TEXT_STRUCTURE>>                       {0:1}
+                                                            //                                                  p.5.3   p.24
+            public List<string> N2_NOTE_STRUCTURE_liste_ID;           //  n <<NOTE_STRUCTURE>>                        {0:M}
+                                                                      //                                                  V5.3    p.21
+                                                                      //                                                  V5.4    p.30
+                                                                      //                                                  V5.5    p.33
+                                                                      //                                                  V5.5.1  p.37
+                                                                      //                                                  V5.5.5  p.71
+            public List<string> N2_SOUR_citation_liste_ID;  //  n <<SOURCE_CITATION>>                       {0:M}
+                                                            //                                                  V5.3    p.23
+                                                            //                                                  V5.4    p.31
+                                                            //                                                  V5.5    p.34
+                                                            //                                                  V5.5.1  p.39
+                                                            //                                                  V5.5.5  p.73
+            public List<string> N2_SOUR_source_liste_ID;
+            public List<string> MULTIMEDIA_LINK_liste_ID;
+
+            // FAMILY_EVEN_DETAIL
+            //  n HUSB {0:1}
+            public string N3_HUSB_AGE;                      //      +1 AGE <AGE_AT_EVENT>                   {1:1}
+                                                            //                                                  V5.4    p.34
+                                                            //                                                  V5.5    p.37
+                                                            //                                                  V5.5.1  p.42
+                                                            //                                                  V5.5.5  p.77
+            public string N3_WIFE_AGE;                      //      +1 AGE <AGE_AT_EVENT>                   {1:1}
+                                                            //                                                  V5.4    p.34
+                                                            //                                                  V5.5    p.37
+                                                            //                                                  V5.5.1  p.42
+                                                            //                                                  v5.5.5  p.77
+                                                            // INDIVIDUAL_EVENT_DETAIL:=
+            public string N2_AGE;                           //  n AGE <AGE_AT_EVENT>
+                                                            //                                                  V5.3    p.26
+                                                            //                                                  V5.4    p.34
+                                                            //                                                  V5.5    p.37
+                                                            //                                                  V5.5.1  p.42
+                                                            //                                                  V5.5.5  p.77
+            public string N2_MSTAT;                         //  n1 MSTAT <MARITAL_STATUS>                   {0:1}
+                                                            //                                                  V5.3    p.32
+                                                            // INDIVIDUAL_EVENT_STRUCTURE:=
+            public string N2_FAMC;                          //      +1 FAMC @<XREF:FAM>@                    {0:1}
+                                                            //                                                  V5.4
+                                                            //                                                  V5.5    p.55
+                                                            //                                                  V5.5.1  p.24
+                                                            //                                                  V5.5.5  p.108
+
+            public string N2_FAMC_ADOP;                     //         +2 ADOP<ADOPTED_BY_WHICH_PARENT>     {0:1}
+                                                            //                                                  V5.4    p.34
+                                                            //                                                  V5.5    p.37
+                                                            //                                                  V5.5.1  p.42
+                                                            //                                                  V5.5.5  p.76
+
+
+            public CHANGE_DATE N2_CHAN;                     //          +1 <<CHANGE_DATE>>                  {0:M}
+                                                            //                                                  V5.3    p.19
+
+
+            //public string titre;
+            public string description;
+
+            public string N2__ANCES_ORDRE;                  //  n Ancestrologie
+            public string N2__ANCES_XINSEE;                 //  n Ancestrologie
+            public string N2__FNA;                          //  n Heridis Etat des recherches d'un événement
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class EVEN_STRUCTURE_53
+        {
+            // GEDCOM53.pdf             p.20
+            public string N0_EVEN;                                      //  n <EVENT_TAG> {1:1}	
+            public string N1_TYPE;                                      //      +1 TYPE<EVENT_DESCRIPTOR> {0:M}
+            public string N1_DATE;                                      //      +1 DATE<DATE_VALUE> {0:1}
+            public PLACE_STRUCTURE N1_PLAC;                             //      +1 <<PLACE_STRUCTURE>> {0:1}
+            public string N2_PLAC_CEME;                                 //          +2 << BURIAL_STRUCTURE >> { 0:1}
+                                                                        //                                      p.19
+            public string N3_PLAC_CEME_PLOT;                            //              +1 PLOT <BURIAL_PLOT_ID> {0:1}
+                                                                        //                                      p.19
+            public string N1_AGE;                                       //      +1 AGE<AGE_VALUE> { 0:1}
+            public string N1_MSTAT;                                     //      +1 MSTAT<MARITAL_STATUS> { 0:1}
+            public string N1_CAUS;                                      //      +1 CAUS <CAUSE_OF_DEATH> {0:1}
+            public string N1_RELI;                                      //      +1 RELI<RELIGIOUS_AFFILIATION> { 0:1}
+            public string N1_AGNC;                                      //      +1 AGNC<GOVERNMENT_AGENCY> { 0:1}
+            public List<TEXT_STRUCTURE> N1_TEXT_liste;                  //+1 << TEXT_STRUCTURE >> { 0:1}
+            public List<string> N1_SOUR_citation_liste_ID;              //    +1 <<SOURCE_CITATION>>            {0:M}
             public List<string> N1_SOUR_source_liste_ID;
-            public List<string> N1_OBJE_liste;                          //          +1 <<MULTIMEDIA_LINK>>                  {0:M} p.37, 26
-            // extra
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //    +1 <<NOTE_STRUCTURE>>             {0:M}
+            public CHANGE_DATE N1_CHAN;                                 //    +1 <<CHANGE_DATE>>                {0:1}
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class FAM_RECORD
+        {
+            // GEDCOM54.pdf             p.16
+            // GEDCOM54.pdf             p.22
+            // 5.5_LDS_1996-01-02.pdf   p29
+            // 5.5.1_LDS_2019-11-15.pdf p.24
+            // 5.5.5_Annotations_TJ.pdf p.58 FAM_GROUP_RECORD
+            //                                                          FAM_RECORD:=
+            //                                                          FAMILY_RECORD:= V5.3
+            public string N0_ID;                                        //    n @<XREF:FAM>@ FAM                {1:1}
+                                                                        //                                          V5.3
+                                                                        //                                          V5.4
+                                                                        //                                          V5.5
+                                                                        //                                          V5.5.1
+                                                                        //                                          v5.5.5
+            public string N1_RESN;                                      //    +1 RESN <RESTRICTION_NOTICE>      {0:1) 
+                                                                        //                                          V5.5.1  p.60
+            public List<EVEN_ATTRIBUTE_STRUCTURE> N1_EVEN_Liste;        //    +1 <<FAMILY_EVENT_STRUCTURE>>     {0:M}
+                                                                        //                                          V5.4    p.27
+                                                                        //                                          V5.5    p.30
+                                                                        //                                          V5.5.1  p.32
+                                                                        //                                          v5.5.5  p.67
+            public string N1_HUSB;                                      //    +1 HUSB @<XREF:INDI>@             {0:1}
+                                                                        //                                          V5.3
+                                                                        //                                          V5.4    p.48
+                                                                        //                                          V5.5    p.55
+                                                                        //                                          V5.5.1  p.25
+                                                                        //                                          v5.5.5  p.108
+            public string N1_WIFE;                                      //    +1 WIFE @<XREF:INDI>@             {0:1}
+                                                                        //                                          V5.3
+                                                                        //                                          V5.4    p.48
+                                                                        //                                          V5.5    p.55
+                                                                        //                                          V5.5.1  p.25
+                                                                        //                                          v5.5.5  p.108
+            public List<string> N1_CHIL_liste_ID;                       //    +1 CHIL @<XREF:INDI>@             {0:M}
+                                                                        //                                          V5.3
+                                                                        //                                          V5.4    p.48
+                                                                        //                                          V5.5    p.55
+                                                                        //                                          V5.5.1  p.25
+                                                                        //                                          v5.5.5  p.108
+            public string N1_NCHI;                                      //    +1 NCHI <COUNT_OF_CHILDREN>       {0:1}
+
+            //                                          V5.3    p.27
+            //                                          V5.4    p.35
+            //                                          V5.5    p.39
+            //                                          V5.5.1  p.44
+            //                                          v5.5.5  p.79
+            public List<string> N1_SUBM_liste_ID;                       //    +1 SUBM @<XREF:SUBM>@             {0:M}
+                                                                        //                                          V5.4
+                                                                        //                                          V5.5    p.55
+                                                                        //                                          V5.5.1  p.28
+                                                                        //                                          v5.5.5  p.79
+            public LDS_SPOUSE_SEALING N1_SLGS;                          //    +1 <<LDS_SPOUSE_SEALING>>         {0:M}
+                                                                        //                                          V5.3    p.21
+                                                                        //                                          V5.4    p.30
+                                                                        //                                          V5.5    p.33
+                                                                        //                                          V5.5.1  p.36
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //    +1 REFN <USER_REFERENCE_NUMBER>   {0:M}
+                                                                        //                                          V5.3
+                                                                        //                                          V5.4    p.47
+                                                                        //                                          V5.5    p.55
+                                                                        //                                          V5.5.1  p.63
+                                                                        //                                          v5.5.5  p.107
+                                                                        //      +2 TYPE <USER_REFERENCE_TYPE>   {0:1}
+                                                                        //                                          V5.5    p.55
+                                                                        //                                          V5.5.1  p.63
+                                                                        //                                          v5.5.5  p.107
+            public string N1_RIN;                                       //    +1 RIN <AUTOMATED_RECORD_ID>      {0:1}
+                                                                        //                                          V5.5    p.38
+                                                                        //                                          V5.5.1  p.63
+                                                                        //                                          v5.5.5  p.78
+            public CHANGE_DATE N1_CHAN;                                 //    +1 <<CHANGE_DATE>>                {0:1}
+                                                                        //                                          V5.3    p.19
+                                                                        //                                          V5.4    p.27
+                                                                        //                                          V5.5    p.29
+                                                                        //                                          V5.5.1  p.31
+                                                                        //                                          v5.5.5  p.66
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;                       //    +1 <<NOTE_STRUCTURE>>             {0:M}
+                                                                                  //                                          V5.3    p.21
+                                                                                  //                                          V5.4    p.30
+                                                                                  //                                          V5.5    p.33
+                                                                                  //                                          V5.5.1  p.37
+                                                                                  //                                          v5.5.5  p.71
+            public List<string> N1_SOUR_citation_liste_ID;              //    +1 <<SOURCE_CITATION>>            {0:M}
+                                                                        //                                          V5.3    p.23
+                                                                        //                                          V5.4    p.31
+                                                                        //                                          V5.5    p.34
+                                                                        //                                          V5.5.1  p.39
+                                                                        //                                          v5.5.5  p.73
+            public List<string> N1_SOUR_source_liste_ID;
+            public List<string> MULTIMEDIA_LINK_liste_ID;
+            public List<ASSOCIATION_STRUCTURE> N1_ASSO_liste;           //    +1 <<ASSOCIATION_STRUCTURE>>       {0:M}
+                                                                        //                                           V5.3    p.48
+            public List<EVEN_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste;  //    pour GRAMPS
+            public string N1_TYPU;                                      //    +1 Type d'union                                      Ancestrologie
+            public string N1__UST;                                      //    +1 Type d'union                                      Heridis 
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class INDIVIDUAL_53// 5.3 seulement
+        {
+            // GEDCOM53.pdf             p.20
+            public List<NAME_STRUCTURE_53> N0_NAME_liste;                       // n <<NAME_STRUCTURE>> {1:M}
+            public string N0_TITL;                                              // n TITL <INDI_TITLE> {0:M} p.31
+            public string N0_SEX;                                               // n SEX <SEX_VALUE> {0:1}  M = Male  F = Female
+            public List<EVEN_STRUCTURE_53> N0_EVEN_liste;                       // n <<EVENT_STRUCTURE>> {0:M}
+            public List<ADDRESS_STRUCTURE> N0_ADDR_liste;                       // n <<ADDRESS_STRUCTURE>> {0:M}
+            public string N0_RELI;                                              // n RELI <RELIGIOUS_AFFILIATION> {0:M} p,36
+            public string N0_NAMR;                                              // n NAMR <RELIGIOUS_NAME> {0:M}
+            public string N1_NAMR_RELI;                                         //      +1 RELI <RELIGIOUS_AFFILIATION> {0:1} p.36
+            public string N0_EDUC;                                              // n EDUC <SCHOLASTIC_ACHIEVEMENT> {0:M}
+            public string N0_OCCU;                                              // n OCCU <OCCUPATION> {0:M}
+            public string N0_SSN;                                               // n SSN <SOCIAL_SECURITY_NUMBER> {0:M}
+            public string N0_IDNO;                                              // n IDNO <NATIONAL_ID_NUMBER> {0:M}
+            public string N1_IDNO_TYPE;                                         //      +1 TYPE <TYPE_OF> {1:1}
+            public string N0_PROP;                                              // n PROP <POSSESSIONS> {0:M} p.35
+            public string N0_DSCR;                                              // n DSCR <PHYSICAL_DESCRIPTION> {0:M} p.35
+                                                                                // +1 CONT <PHYSICAL_DESCRIPTION> {0:M}
+            public string N0_SIGN;                                              // n SIGN <SIGNATURE_INFO> {0:M} p.37
+            public string N0_NMR;                                               // n NMR <COUNT_OF_MARRIAGES> {0:M}
+            public string N0_NCHI;                                              // n NCHI <COUNT_OF_CHILDREN> {0:M}
+            public string N0_NATI;                                              // n NATI <NATIONALITY> {0:M}
+            public string N0_CAST;                                              // n CAST <CASTE_NAME> {0:M}
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class INDIVIDUAL_RECORD
+        {
+            // GEDCOM53.pdf             p.17  plus INDIVIDUAL:= p.20
+            // GEDCOM54.pdf             p.22
+            // 5.5_LDS_1996-01-02.pdf   p25
+            // 5.5.1_LDS_2019-11-15.pdf p.25 
+            // 5.5.5_Annotations_TJ.pdf p.61
+            //  INDIVIDUAL_RECORD
+            public string N0_ID;                                        //      n @XREF:INDI@ INDI                          {1:1}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+                                                                        //                                                      V5.5.1
+                                                                        //                                                      V5.5.5
+            public string N1_RESN;                                      //          +1 RESN <RESTRICTION_NOTICE>            {0:1}
+                                                                        //                                                      V5.4    p.45
+                                                                        //                                                      V5.5    p.52
+                                                                        //                                                      V5.5.1  p.60
+            public List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste;         //          +1 <<PERSONAL_NAME_STRUCTURE>>          {0:M}
+                                                                        //                                                      V5.3    p.21
+                                                                        //                                                      V5.4    p.31
+                                                                        //                                                      V5.5    p.34
+                                                                        //                                                      V5.5.1  p.38
+                                                                        //                                                      V5.5.5  p.72
+                                                                        //          +1 <INDI_TITLE>                         {0:M}
+                                                                        //                                                      V5.3    p.31
+                                                                        //  est pris en charge par attribut 
+            public string N1_SEX;                                       //          +1 SEX <SEX_VALUE>                      {0:1}
+                                                                        //                                                      V5.3    p.37
+                                                                        //                                                      V5.4    p.45
+                                                                        //                                                      V5.5    p.53
+                                                                        //                                                      V5.5.1  p.61
+                                                                        //                                                      V5.5.5  p.105
+            public List<EVEN_ATTRIBUTE_STRUCTURE> N1_EVEN_Liste;        //          +1 <<INDIVIDUAL_EVENT_STRUCTURE>>       {0:M}
+
+            //                                                      V5.4    p.28
+            //                                                      V5.5    p.31
+            //                                                      V5.5.1  p.34
+            //                                                      V5.5.5  p.69
+            public List<EVEN_ATTRIBUTE_STRUCTURE> N1_Attribute_liste;  //          +1 <<INDIVIDUAL_ATTRIBUTE_STRUCTURE>>   {0:M}
+                                                                       //                                                      V5.4    p.28
+                                                                       //                                                      V5.5    p.30
+                                                                       //                                                      V5.5.1  p.33
+                                                                       //                                                      V5.5.5  p.67
+            public List<LDS_INDIVIDUAL_ORDINANCE> N1_LDS_liste;         //          +1 <<LDS_INDIVIDUAL_ORDINANCE>>         {0:M}
+                                                                        //                                                      V5.4    p.30
+                                                                        //                                                      V5.5    p.32
+                                                                        //                                                      V5.5.1  p.35
+            public string N1_SITE;                                      //  n SITE <SITE_NAME>                              {0:1}
+                                                                        //                                                      V5.3    p.37
+            public List<ADDRESS_STRUCTURE> N1_ADDR_liste;               //          +1 <<ADDRESS_STRUCTURE>>                {0:M}
+                                                                        //                                                      V5.3    p.19
+            public List<string> N1_PHON_liste;                          //  n PHON <PHONE_NUMBER> {0:3}
+            public List<string> N1_EMAIL_liste;                         //  n EMAIL <ADDRESS_EMAIL> {0:3}
+            public List<string> N1_FAX_liste;                           //  n FAX <ADDRESS_FAX> {0:3}
+            public List<string> N1_WWW_liste;                           //  n WWW <ADDRESS_WEB_PAGE> {0:3}
+
+            public string N1_RELI;                                      //          +1 RELI <RELIGIOUS_AFFILIATION>        {0:M}
+                                                                        //                                                      V5.3    p.36
+            public string N1_NAMR;                                      //          +1 NAMR <RELIGIOUS_NAME>                {0:M}
+                                                                        //                                                      V5.3    p.36
+            public string N2_NAMR_RELI;                                 //          +1 RELI <RELIGIOUS_AFFILIATION>         {0:1}
+                                                                        //                                                      V5.3    p.36
+                                                                        // EDUC                                                     //          +1 EDUC <SCHOLASTIC_ACHIEVEMENT>       {0:M}
+                                                                        //                                                      V5.3    p.37
+                                                                        // prit en charge par Attibut
+                                                                        // OCCC                                                     //          +1 OCCU <OCCUPATION>                    {0:M}
+                                                                        //                                                      V5.3    p.33
+                                                                        // prit en charge par Attibut
+                                                                        // SSN                                                                  +1 SSN <SOCIAL_SECURITY_NUMBER>         {0:M}
+                                                                        //                                                      V5.3    p.37
+                                                                        // prit en charge par Attibut
+                                                                        // IDNO                                                                 +1 IDNO <NATIONAL_ID_NUMBER>            {0:M}
+                                                                        //                                                      V5.3    p.33
+                                                                        // prit en charge par Attibut
+                                                                        // TYPE                                                                 +1 TYPE<TYPE_OF>                        {1:1}
+                                                                        //                                                      V5.3    p.40
+                                                                        // prit en charge par Attibut
+                                                                        // PROP                                                                 +1 PROP <POSSESSIONS>                   {0:M}
+                                                                        //                                                      V5.3    p.35
+                                                                        // DSCR                                                                 1 DSCR <PHYSICAL_DESCRIPTION>           {0:M}
+                                                                        //                                                      V5.3    p.35
+                                                                        // prit en charge par Attibut
+                                                                        // CONT                                                                 +1 CONT <PHYSICAL_DESCRIPTION>          {0:M}
+                                                                        // prit en charge par Attibut
+            public string N1_SIGN;                                      //          +1 SIGN <SIGNATURE_INFO>                {0:M} 
+                                                                        //                                                      V5.3    p.37
+                                                                        // NMR                                                      //          +1 NMR <COUNT_OF_MARRIAGES>             {0:M}
+                                                                        //                                                      V5.3    p.27
+                                                                        // prit en charge par Attibut
+                                                                        //MCHI                                                                  + NCHI <COUNT_OF_CHILDREN>              {0:M}
+                                                                        //                                                      V5.3    p.27
+                                                                        // prit en charge par Attibut
+                                                                        // NATI                                                                 +1 NATI <NATIONALITY>                   {0:M}
+                                                                        //                                                      V5.3    p.33
+                                                                        // prit en charge par Attibut
+                                                                        // CAST                                                                 +1 CAST <CASTE_NAME>                    {0:M}
+                                                                        //                                                      V5.3    p.27
+                                                                        // prit en charge par Attibut
+
+            public CHILD_TO_FAMILY_LINK N1_FAMC;                        //          +1 <<CHILD_TO_FAMILY_LINK>>             {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4    p.27
+                                                                        //                                                      V5.5    p.32
+                                                                        //                                                      V5.5.1  p.31
+                                                                        //                                                      V5.5.5  p.67
+
+            public List<SPOUSE_TO_FAMILY_LINK> N1_FAMS_liste_Conjoint;  //          +1 <<SPOUSE_TO_FAMILY_LINK>>            {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4    p.32
+                                                                        //                                                      V5.5    p.35
+                                                                        //                                                      V5.5.1  p.40
+                                                                        //                                                      V5.5.5  p.75
+            public List<string> N1_SUBM_liste_ID;                       //          +1 SUBM @<XREF:SUBM>@                   {0:M}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1  p.28
+            public List<ASSOCIATION_STRUCTURE> N1_ASSO_liste;           //          +1 <<ASSOCIATION_STRUCTURE>>            {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4    p.48
+                                                                        //                                                      V5.5    p.29
+                                                                        //                                                      V5.5.1  p.31
+                                                                        //                                                      V5.5.5  p.65
+            public List<string> N1_ALIA_liste_ID;                       //          +1 ALIA @<XREF:INDI>@                   {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4    p.48
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1  p.25
+            public List<string> N1_ANCI_liste_ID;                       //          +1 ANCI @<XREF:SUBM>@                   {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1  p.28
+            public List<string> N1_DESI_liste_ID;                       //          +1 DESI @<XREF:SUBM>@                   {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1  p.28
+            public string N1_RFN;                                       //          +1 RFN <PERMANENT_RECORD_FILE_NUMBER>   {0:1}
+                                                                        //                                                      V5.3    p.34
+                                                                        //                                                      V5.4    p.43
+                                                                        //                                                      V5.5    p.50
+                                                                        //                                                      V5.5.1  p.57
+            public string N1_AFN;                                       //          +1 AFN <ANCESTRAL_FILE_NUMBER>          {0:1}
+                                                                        //                                                      V5.3    p.26
+                                                                        //                                                      V5.4    p.34
+                                                                        //                                                      V5.5    p.38
+                                                                        //                                                      V5.5.1  p.42
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4    p.47
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1  p.63 p.64
+                                                                        //                                                      V5.5.5  p.107
+                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1}
+                                                                        //                      inclue dans la ligne précédente
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1  p.64
+                                                                        //                                                      V5.5.5  p.107
+
+            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                        //                                                      V5.5    p.38
+                                                                        //                                                      V5.5.1  p.43
+                                                                        //                                                      V5.5.5  p.78
+
+
+            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1}
+                                                                        //                                                      V5.3    p.19
+                                                                        //                                                      V5.4    p.27
+                                                                        //                                                      V5.5    p.29
+                                                                        //                                                      V5.5.1  p.31
+
+            //                                                      v5.5.5  p.66
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                                  //                                                      V5.3    p.21
+                                                                                  //                                                      V5.4    p.30
+                                                                                  //                                                      V5.5    p.33
+                                                                                  //                                                      V5.5.1  p.37
+                                                                                  //                                                      v5.5.5  p.71
+            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M}
+                                                                        //                                                      V5.3    p.23
+                                                                        //                                                      V5.4    p.31
+                                                                        //                                                      V5.5    p.34
+                                                                        //                                                      V5.5.1  p.39
+                                                                        //                                                      v5.5.5  p.73
+            public List<string> N1_SOUR_source_liste_ID;
+            public List<string> MULTIMEDIA_LINK_liste_ID;
             public string Adopter;
             public string nom_section_1;
             public string nom_section_2;
@@ -185,334 +791,1294 @@ namespace GEDCOM
             public string Titre;
             public string PhotoID;
 
-            public string N1__ANCES_CLE_FIXE;                           // 1 _ANCES_CLE_FIXE  dans Ancestrologie
-            public List<string> N1_WWW_liste;                           // 1 WWW dans GRAMPS
+            public string N1__ANCES_CLE_FIXE;                           // +1 _ANCES_CLE_FIXE dans Ancestrologie
+            public string N1_FILA;                                      // +1 FILA Filiation dans Ancestrologie
+            public string N1__FIL;                                      // Filiation de l'individu Heridis
+            public string N1__CLS;                                      // Individu sans postérité. Heridis
+            public List<Ligne_perdue> ligne_perdue_liste;
         }
-        public class EVENT_ATTRIBUTE_STRUCTURE
+        public struct HEADER
         {
-            public string N1_EVEN;                          //  n    {1:1}
-            public string N1_EVEN_texte;                    // récupaire le texte avec balise.
+            // HEADER           GEDCOM53.pdf                p.16
+            // HEADER           GEDCOM54.pdf                p.21
+            // HEADER           5.5_LDS_1996-01-02.pdf      p.23
+            // HEADER           5.5.1_LDS_1999-10-02.pdf    p.23
+            // GEDCOM_HEADER    5.5.5_Annotations_TJ        p.67
 
-                                                            // EVENT_DETAIL:=                           {0:1} p.32
-            public string N2_TYPE;                          //  n TYPE <EVENT_OR_FACT_CLASSIFICATION>   {0:1} p.49
-            public string N2_DATE;                          //  n DATE <DATE_VALUE>                     {0:1} p.47, 46
-            public PLACE_STRUCTURE N2_PLAC;                 //  n <<PLACE_STRUCTURE>>                   {0:1} p.38
-            public ADDRESS_STRUCTURE N2_ADDR;               //  n <<ADDRESS_STRUCTURE>>                 {0:1} p.31
-            public List<string> N2_PHON_liste;              //  n PHON <PHONE_NUMBER>                   {0:3} p.57
-            public List<string> N2_EMAIL_liste;             //  n EMAIL <ADDRESS_EMAIL>                 {0:3} p.41
-            public List<string> N2_FAX_liste;               //  n FAX <ADDRESS_FAX>                     {0:3} p.41
-            public List<string> N2_WWW_liste;               //  n WWW <ADDRESS_WEB_PAGE>                {0:3} p.42
-            public string N2_AGNC;                          //  n AGNC <RESPONSIBLE_AGENCY>             {0:1} p.60
-            public string N2_RELI;                          //  n RELI <RELIGIOUS_AFFILIATION>          {0:1} p.60
-            public string N2_CAUS;                          //  n CAUS <CAUSE_OF_EVENT>                 {0:1} p.43
-            public string N2_RESN;                          //  n RESN <RESTRICTION_NOTICE>             {0:1} p.60
-            public List<string> N2_NOTE_liste_ID;           //  n <<NOTE_STRUCTURE>>                    {0:M} p.37
-            public List<string> N2_SOUR_citation_liste_ID;  //  n <<SOURCE_CITATION>>                   {0:M} p.39
-            public List<string> N2_SOUR_source_liste_ID;
-            public List<string> N2_OBJE_liste_ID;           //  n <<MULTIMEDIA_LINK>>                   {0:M} p.37, 26
-            
-            // FAMILY_EVENT_DETAIL:=
-                                                            //  n HUSB {0:1}
-            public string N3_HUSB_AGE;                      //      +1 AGE <AGE_AT_EVENT> {1:1} p.42
-                                                            //  n WIFE {0:1}
-            public string N3_WIFE_AGE;                      //      +1 AGE <AGE_AT_EVENT> {1:1} p.42
-            // INDIVIDUAL_EVENT_DETAIL:=
-            public string N2_AGE;                           //  n AGE <AGE_AT_EVENT>
-            // INDIVIDUAL_EVENT_STRUCTURE:=
-            public string N2_FAMC;                          //      +1 FAMC @<XREF:FAM>@ {0:1} p.24
-            public string N2_FAMC_ADOP;                     //          +2 ADOP<ADOPTED_BY_WHICH_PARENT> {0:1}
+            //                                                      n HEAD                                              {1:1}
+            //                                                                                                              V5.3    p39
+            //                                                                                                              V5.4    p.34
+            //                                                                                                              V5.5    p.23
+            //                                                                                                              V5.5.1  p.23
+            //                                                                                                              V5.5.5  p.56
 
-            public string titre;
-            public string description;
-
-            public string N2__ANCES_ORDRE;                  //  n Ancestrologie
-            public string N2__ANCES_XINSEE;                 //  n Ancestrologie
-        }
-        public struct HEADER // 5.5.1_LDS_1999-10-02.pdf p.23
-        {
-                                                            //  HEADER:=
-                                                            //  n HEAD {1:1}
-            public string N1_SOUR;                          //      +1 SOUR <APPROVED_SYSTEM_ID>                        {1:1} p.42
-            public string N2_SOUR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1} p.64
-            public string N2_SOUR_NAME;                     //          +2 NAME <NAME_OF_PRODUCT>                       {0:1} p.54
-            public string N2_SOUR_CORP;                     //          +2 CORP <NAME_OF_BUSINESS>                      {0:1} p.54
-            public ADDRESS_STRUCTURE N3_SOUR_CORP_ADDR;     //              +3 <<ADDRESS_STRUCTURE>>                    {0:1} p.31
-            public List<string> N3_SOUR_CORP_PHON_liste;    //              +3 PHON <PHONE_NUMBER>                      {0:3} p.57
+            public string N1_SOUR;                          //      +1 SOUR <APPROVED_SYSTEM_ID>                        {1:1}
+                                                            //                                                              V5.3    p.39
+                                                            //                                                              V5.4    p.34
+                                                            //                                                              V5.5    p.38
+                                                            //                                                              V5.5.1  p.42
+                                                            //                                                              V5.5.5  p.57
+            public string N2_SOUR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1}
+                                                            //                                                              V5.3    p.40
+                                                            //                                                              V5.4    p.47
+                                                            //                                                              V5.5    p.55
+                                                            //                                                              V5.5.1  p.64
+                                                            //                                                              V5.5.5  p.106
+            public string N2_SOUR_NAME;                     //          +2 NAME <NAME_OF_PRODUCT>                       {0:1}
+                                                            //                                                              V5.3    p.35
+                                                            //                                                              V5.4    p.41
+                                                            //                                                              V5.5    p.48
+                                                            //                                                              V5.5.1  p.54
+                                                            //                                                              V5.5.5  p.96
+            public string N2_SOUR_CORP;                     //          +2 CORP <NAME_OF_BUSINESS>                      {0:1}
+                                                            //                                                              V5.3    p.27
+                                                            //                                                              V5.4    p.41
+                                                            //                                                              V5.5    p.48
+                                                            //                                                              V5.5.1  p.54
+                                                            //                                                              V5.5.5  p.96
+            public string N3_SOUR_CORP_SITE;                //              3 SITE <SITE_NAME>                          {0:1}
+                                                            //                                                              V5.3    p.37
+            public List<ADDRESS_STRUCTURE> N3_SOUR_CORP_ADDR_liste;//              +3 <<ADDRESS_STRUCTURE>>             {0:1}
+                                                                   //                                                              V5.3    p.19
+                                                                   //                                                              V5.4    p.27
+                                                                   //                                                              V5.5    p.29
+                                                                   //                                                              V5.5.1  p.31
+                                                                   //                                                              V5.5.5  p.64
+            public List<string> N3_SOUR_CORP_PHON_liste;    //              +3 PHON <PHONE_NUMBER>                      {0:3}
+                                                            //                                                              V5.3    p.34
+                                                            //                                                              V5.4    p.43
+                                                            //                                                              V5.5    p.50
+                                                            //                                                              V5.5.1  p.57
+                                                            //                                                              V5.5.5  p.75
             public List<string> N3_SOUR_CORP_EMAIL_liste;   //              +3 EMAIL <ADDRESS_EMAIL>                    {0:3} p.41
-            public List<string> N3_SOUR_CORP_FAX_liste;     //              +3 FAX <ADDRESS_FAX>                        {0:3} p.41
-            public List<string> N3_SOUR_CORP_WWW_liste;     //              +3 WWW <ADDRESS_WEB_PAGE>                   {0:3} p.42
-            public string N2_SOUR_DATA;                     //          +2 DATA <NAME_OF_SOURCE_DATA>                   {0:1} p.54
-            public string N3_SOUR_DATA_DATE;                //              +3 DATE <PUBLICATION_DATE>                  {0:1) p.59
-            public string N3_SOUR_DATA_CORP;                //              +3 COPR <COPYRIGHT_SOURCE_DATA>             {0:1) p.44
-                                                            //                  +4 [CONT|CONC]<COPYRIGHT_SOURCE_DATA>   {0:M} p.44
-            public string N1_DEST;                          //      +1 DEST <RECEIVING_SYSTEM_NAME>                     {0:1* p.59
-            public string N1_DATE;                          //      +1 DATE <TRANSMISSION_DATE>                         {0:1} p.63
-            public string N2_DATE_TIME;                     //          +2 TIME <TIME_VALUE>                            {0:1} p.63
-            public List<string> N1_SUBM_liste_ID;           //      +1 SUBM @<XREF:SUBM>@                               {1:1} p.28
-            public string N1_SUBN;                          //      +1 SUBN @<XREF:SUBN>@                               {0:1} p.28
-            public string N1_FILE;                          //      +1 FILE <FILE_NAME>                                 {0:1} p.50
-            public string N1_COPR;                          //      +1 COPR <COPYRIGHT_GEDCOM_FILE>                     {0:1} p.44
-                                                            //      +1 GEDC                                             {1:1}
-            public string N2_GEDC_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {1:1} p.64
-            public string N2_GEDC_FORM;                     //          +2 FORM <GEDCOM_FORM>                           {1:1} p.50
-            public string N1_CHAR;                          //      +1 CHAR <CHARACTER_SET>                             {1:1} p.44
-            public string N2_CHAR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1} p.64
-            public string N1_LANG;                          //      +1 LANG <LANGUAGE_OF_TEXT>                          {0:1} p.51
-            public string N1_PLAC;                          //      +1 PLAC                                             {0:1}
-            public string N2_PLAC_FORM;                     //          +2 FORM <PLACE_HIERARCHY>                       {1:1} p.58
-            public string N1_NOTE;                          //      +1 NOTE <GEDCOM_CONTENT_DESCRIPTION>                {0:1} p.50
+                                                            //                                                              V5.5.1  p.41
+                                                            //                                                              V5.5.5  p.75
+            public List<string> N3_SOUR_CORP_FAX_liste;     //              +3 FAX <ADDRESS_FAX>                        {0:3}
+                                                            //                                                              V5.5.1  p.41
+                                                            //                                                              V5.5.5  p.75
+            public List<string> N3_SOUR_CORP_WWW_liste;     //              +3 WWW <ADDRESS_WEB_PAGE>                   {0:3}
+                                                            //                                                              V5.5.1  p.42
+                                                            //                                                              V5.5.5  p.76
+            public string N2_SOUR_DATA;                     //          +2 DATA <NAME_OF_SOURCE_DATA>                   {0:1}
+                                                            //                                                              V5.3    p.32
+                                                            //                                                              V5.4    p.41
+                                                            //                                                              V5.5    p.48
+                                                            //                                                              V5.5.1  p.54
+                                                            //                                                              V5.5.5  p.
+            public string N3_SOUR_DATA_DATE;                //              +3 DATE <PUBLICATION_DATE>                  {0:1}
+                                                            //                                                              V5.3    p.35
+                                                            //                                                              V5.4    p.44
+                                                            //                                                              V5.5    p.51
+                                                            //                                                              V5.5.1  p.59
+                                                            //                                                              V5.5.5  p.103
+            public string N3_SOUR_DATA_CORP;                //              +3 COPR <COPYRIGHT_SOURCE_DATA>             {0:1}
+                                                            //                                                              V5.4    p.35
+                                                            //                                                              V5.5    p.39
+                                                            //                                                              V5.5.1  p.44
+                                                            //                                                              V5.5.5  p.79
+            public string N1_DEST;                          //      +1 DEST <RECEIVING_SYSTEM_NAME>                     {0:1}
+                                                            //                                                              V5.3    p.39
+                                                            //                                                              V5.4    p.44
+                                                            //                                                              V5.5    p.51
+                                                            //                                                              V5.5.1  p.59
+                                                            //                                                              V5.5.5  p.103
+            public string N1_DATE;                          //      +1 DATE <TRANSMISSION_DATE>                         {0:1}
+                                                            //                                                              V5.3    p.40
+                                                            //                                                              V5.4    p.44
+                                                            //                                                              V5.5    p.55
+                                                            //                                                              V5.5.1  p.63
+                                                            //                                                              V5.5.5  p.93
+            public string N2_DATE_TIME;                     //          +2 TIME <TIME_VALUE>                            {0:1}
+                                                            //                                                              V5.3    p.39
+                                                            //                                                              V5.4    p.47
+                                                            //                                                              V5.5    p.55
+                                                            //                                                              V5.5.1  p.63
+                                                            //                                                              V5.5.5  p.107
+            public List<string> N1_SUBM_liste_ID;           //      +1 SUBM @<XREF:SUBM>@                               {1:1}
+                                                            //                                                              V5.3    p.41
+                                                            //                                                              V5.4    p.24
+                                                            //                                                              V5.5    p.55
+                                                            //                                                              V5.5.1  p.28
+                                                            //                                                              V5.5.5  p.108
+            public string N1_SUBN;                          //      +1 SUBN @<XREF:SUBN>@                               {0:1}
+                                                            //                                                              V5.4    p.48
+                                                            //                                                              V5.5    p.55
+                                                            //                                                              V5.5.1  p.28
+            public string N1_FILE;                          //      +1 FILE <FILE_NAME>                                 {0:1}
+                                                            //                                                              V5.3    p.30
+                                                            //                                                              V5.4    p.39
+                                                            //                                                              V5.5    p.23
+                                                            //                                                              V5.5.1  p.50
+                                                            //                                                              V5.5.5  p.93
+                                                            //      +1 SCHEMA
+            public string N1_tag_shema;                     //          +2 <<USER_TAG_SCHEMA>>                          {1:M}
+                                                            //                                                              V5.3    p.30
 
-            public string N1_DATA;
-            public string N2_DATA_DATE;
+            public string N1_COPR;                          //      +1 COPR <COPYRIGHT_GEDCOM_FILE>                     {0:1}
+                                                            //                                                              V5.3    p.27
+                                                            //                                                              V5.4    p.35
+                                                            //                                                              V5.5    p.39
+                                                            //                                                              V5.5.1  p.55
+                                                            //                                                              V5.5.5  p.79
+                                                            //      +1 SHEMA
+                                                            //                                                              V5.3    p.58
+                                                            // A context pattern definition that specifies the meaning and the valid 
+                                                            // context(s) of a user defined tag. See the SCHEMA_STRUCTURE substructure
+                                                            // definition.
+                                                            //      +1 GEDC                                             {1:1}      
+            public string N2_GEDC_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {1:1}
+                                                            //                                                              V5.3    p.40
+                                                            //                                                              V5.4    p.47
+                                                            //                                                              V5.5    p.55
+                                                            //                                                              V5.5.1  p.64
+                                                            //                                                              V5.5.5  p.
+            public string N2_GEDC_FORM;                     //          +2 FORM <GEDCOM_FORM>                           {1:1}
+                                                            //                                                              V5.3    p.30
+                                                            //                                                              V5.4    p.39
+                                                            //                                                              V5.5    p.44
+                                                            //                                                              V5.5.1  p.50
+                                                            //                                                              V5.5.5  p.
+            public string N3_GEDC_FORM_VERS;                //              +3 VERS <GEDCOM_VERSION_NUMBER>             {1:1}
+                                                            //                                                              V5.5.5  p.49
+            public string N1_CHAR;                          //      +1 CHAR <CHARACTER_SET>                             {1:1}
+                                                            //                                                              V5.3    p.27
+                                                            //                                                              V5.4    p.35
+                                                            //                                                              V5.5    p.39
+                                                            //                                                              V5.5.1  p.44
+                                                            //                                                              V5.5.5  p.47
+            public string N2_CHAR_VERS;                     //          +2 VERS <VERSION_NUMBER>                        {0:1}
+                                                            //                                                              V5.3    p.40
+                                                            //                                                              V5.4    p.47
+                                                            //                                                              V5.5    p.55
+                                                            //                                                              V5.5.1  p.64
+            public string N1_LANG;                          //      +1 LANG <LANGUAGE_OF_TEXT>                          {0:1}
+                                                            //                                                              V5.3
+                                                            //                                                              V5.4    p.39
+                                                            //                                                              V5.5    p.45
+                                                            //                                                              V5.5.1  p.51
+                                                            //                                                              V5.5.5  p.94
+            public string N2_PLAC_FORM;                     //      +1 FORM <PLACE_HIERARCHY>                           {1:1}
+                                                            //                                                              V5.3
+                                                            //                                                              V5.4    p.44
+                                                            //                                                              V5.5    p.51
+                                                            //                                                              V5.5.1  p.58
+            public List<string> N1_NOTE_STRUCTURE_liste_ID; //      +1 NOTE <GEDCOM_CONTENT_DESCRIPTION>                {0:1}
+                                                            //                                                              V5.4    p.39
+                                                            //                                                              V5.5    p.44
+                                                            //                                                              V5.5.1  p.50
+                                                            //                                                              V5.5.5  p.93
+                                                            //                  +2 [CONT|CONC]<COPYRIGHT_SOURCE_DATA>   {0:M}
+                                                            //                                                              V5.5
+                                                            //                                                              V5.5.1
+                                                            //public string N1_DATA;
+                                                            //public string N2_DATA_DATE;
             public string Nom_fichier_disque;               // nom du fichier réel sur le disque
+            public string N1__GUID;                         // identificateur global unique Herisis
+            public List<Ligne_perdue> ligne_perdue_liste;
         }
-        public class LDS_INDIVIDUAL_ORDINANCE // 5.5.1_LDS_1999-10-02.pdf p.36
+        public class LDS_INDIVIDUAL_ORDINANCE
         {
-            //LDS_INDIVIDUAL_ORDINANCE:=
-            public string N0_Type;                          //  n [ BAPL | CONL | ENDL | SLGC] {1:1}
-            public string N1_DATE;                          //      +1 DATE <DATE_LDS_ORD> {0:1} p.46
-            public string N1_TEMP;                          //      +1 TEMP <TEMPLE_CODE> {0:1} p.63
-            public string N1_PLAC;                          //      +1 PLAC <PLACE_LIVING_ORDINANCE> {0:1} p.58
-            public string N1_STAT;                          //      +1 STAT <LDS_BAPTISM_DATE_STATUS> {0:1} p.51
-            public string N2_STAT_DATE;                     //          +2 DATE <CHANGE_DATE> {1:1} p.44
-            public List<string> N1_NOTE_liste_ID;           //      +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;  //      +1 <<SOURCE_CITATION>> {0:M} p.39
-            public List<string> N1_SOUR_source_liste_ID;
+            // GEDCOM53.pdf             p.21 LDS_INDI_ORDINANCE_EVENT:=
+            // GEDCOM54.pdf             p.30
+            // 5.5_LDS_1996-01-02.pdf   p.32
+            // 5.5.1_LDS_1999-10-02.pdf p.36
+            // LDS_INDIVIDUAL_ORDINANCE
+            public string N0_EVEN;                                      //  n [ BAPL | CONL | ENDL | SLGC]      {1:1}      V5.5.1
+                                                                        //  n [ BAPL | CONL | WAC | ENDL ]      {1:1}      V5.3
+            public string N1_TYPE;                                      //      +1 TYPE <LDS_INDI_ORD_DESCRIPTOR>{0:1}
+            public string N1_DATE;                                      //      +1 DATE <DATE_LDS_ORD>          {0:1}
+                                                                        //                                          V5.3    p.28
+                                                                        //                                          V5.4    p.36
+                                                                        //                                          V5.5    p.41
+                                                                        //                                          V5.5.1  p.46
+            public string DATE_trier;                                   // date au format YYYYMMDD
+            public string N1_TEMP;                                      //      +1 TEMP <TEMPLE_CODE>           {0:1}
+                                                                        //                                          V5.3    p.39
+                                                                        //                                          V5.4    p.47
+                                                                        //                                          V5.5    p.54
+                                                                        //                                          V5.5.1  p.63
+            public string N1_PLAC;                                      //      +1 PLAC <PLACE_LIVING_ORDINANCE>{0:1}
+                                                                        //                                          V5.4    p.44
+                                                                        //                                          V5.5    p.41
+                                                                        //                                          V5.5.1  p.58
+            public string N1_STAT;                                      //      +1 STAT <LDS_BAPTISM_DATE_STATUS>{0:1}
+                                                                        //                                          V5.4    p.39
+                                                                        //                                          V5.5    p.45
+                                                                        //                                          V5.5.1  p.37 p.26
 
-            public string N1_FAMC;                          //      +1 FAMC @<XREF:FAM>@ {1:1} p.24 pour balise SLGC
-        }
-        public class LDS_SPOUSE_SEALING// 5.5.1_LDS_1999-10-02.pdf p.36
-        {
-                                                            // LDS_SPOUSE_SEALING:=                   
-                                                            //      n SLGS {1:1}
-            public string N1_DATE;                          //         +1 DATE <DATE_LDS_ORD>                       {0:1} p.46
-            public string N1_TEMP;                          //         +1 TEMP <TEMPLE_CODE>                        {0:1} p.63
-            public string N1_PLAC;                          //         +1 PLAC <PLACE_LIVING_ORDINANCE>             {0:1} p.58
-            public string N1_STAT;                          //         +1 STAT <LDS_SPOUSE_SEALING_DATE_STATUS>     {0:1} p.52
-            public string N2_STAT_DATE;                     //             +2 DATE <CHANGE_DATE>                    {1:1} p.44
-            public List<string> N1_NOTE_liste_ID;           //         +1 <<NOTE_STRUCTURE>>                        {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;  //         +1 <<SOURCE_CITATION>>                       {0:M} p.39
+            public string N2_STAT_DATE;                                 //          +2 DATE <CHANGE_DATE>       {1:1}
+                                                                        //                                          V5.5.1  p.41
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //      +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                        //                                          V5.3    p.21
+                                                                        //                                          V5.4    p.30
+                                                                        //                                          V5.5    p.33
+                                                                        //                                          V5.5.1  p.51
+            public List<string> N1_SOUR_citation_liste_ID;              //      +1 <<SOURCE_CITATION>>          {0:M}
+                                                                        //                                          V5.3    p.23
+                                                                        //                                          V5.4    p.31
+                                                                        //                                          V5.5    p.34
+                                                                        //                                          V5.5.1  p.39
             public List<string> N1_SOUR_source_liste_ID;
-        }
-        public class MULTIMEDIA_RECORD // 5.5.1_LDS_1999-10-02.pdf p.26
-        {
-            //  MULTIMEDIA_RECORD:=
-            public string N0_ID;                                        //      n @XREF:OBJE@ OBJE                          {1:1}
-            public string N1_FILE;                                      //          +1 FILE <MULTIMEDIA_FILE_REFN>          {1:M} p.54
-            public string N2_FILE_FORM;                                 //              +2 FORM <MULTIMEDIA_FORMAT>         {1:1} p.54
-            public string N3_FILE_FORM_TYPE;                            //                  +3 TYPE <SOURCE_MEDIA_TYPE>     {0:1} p.62
-            public string N2_FILE_TITL;                                 //              +2 TITL <DESCRIPTIVE_TITLE>         {0:1} p.48
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63, 64
-                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64
-            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39
-            public List<string> N1_SOUR_source_liste_ID;
-            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31
+            public string N1_FAMC;                                      //      +1 FAMC @<XREF:FAM>@            {1:1}
+                                                                        //                                          V5.4
+                                                                        //                                          V5.5    p.55
+                                                                        //                                          V5.5.1  p.24
 
-            public string N1_FORM;                                      //          +1 +1 FORM <MULTIMEDIA_FORMAT> v5.5
-            public string N1_TITL;                                      //          +1 FORM <MULTIMEDIA_FORMAT> v5.5
-            public string N1_BLOB;                                      //          +1 BINARY_OBJECT        v5.5 seulement
-            public string N1_OBJE;                                      //          +1 @<XREF:OBJE>@ chain to continued object  v5.5 seulement 
+            public List<Ligne_perdue> ligne_perdue_liste;
         }
-        public class NOTE_RECORD // 5.5.1_LDS_1999-10-02.pdf p.27
+        public class LDS_SPOUSE_SEALING
         {
-            // NOTE_RECORD:=
-            public string N0_ID;                                        //      n @<XREF:NOTE>@ NOTE <SUBMITTER_TEXT>       {1:1} p.63
-            // le texte est placé dans N0_NOTE_Texte                    //          +1 [CONC|CONT] <SUBMITTER_TEXT>         {0:M}
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M} p.63, 64
-            // inclue avec le précédent                                 //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} p.64
-            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} p.39
+            // GEDCOM54.pdf             p.21 LDS_FAM_ORDINANCE_EVENT:=
+            // GEDCOM54.pdf             p.30
+            // 5.5.1_LDS_1999-10-02.pdf p.36
+            // 5.5_LDS_1996-01-02.pdf   p.33
+            // LDS_SPOUSE_SEALING:=
+            //      n SLGS {1:1}
+            public string N1_TYPE;                                      //         +1 <LDS_FAM_ORD_DESCRIPTOR>                  {0:1}
+                                                                        //                                                          V5.3    p.31
+                                                                        //                                                          V5.3    p.28
+            public string N1_DATE;                                      //         +1 DATE <DATE_LDS_ORD>                       {0:1}
+                                                                        //                                                          V5.3    p.28
+                                                                        //                                                          V5.4    p.36
+                                                                        //                                                          V5.5    p.41
+                                                                        //                                                          V5.5.1  p.46
+            public string N1_TEMP;                                      //         +1 TEMP <TEMPLE_CODE>                        {0:1}
+                                                                        //                                                          V5.3    p.39
+                                                                        //                                                          V5.4    p.47
+                                                                        //                                                          V5.5    p.54
+                                                                        //                                                          V5.5.1  p.63
+            public string N1_PLAC;                                      //         +1 PLAC <PLACE_LIVING_ORDINANCE>             {0:1}
+                                                                        //                                                          V5.4    p.44
+                                                                        //                                                          V5.5    p.41
+                                                                        //                                                          V5.5.1  p.58
+            public string N1_STAT;                                      //         +1 STAT <LDS_SPOUSE_SEALING_DATE_STATUS>     {0:1}
+                                                                        //                                                          V5.4
+                                                                        //                                                          V5.5    p.46
+                                                                        //                                                          V5.5.1  p.52
+            public string N2_STAT_DATE;                                 //             +2 DATE <CHANGE_DATE>                    {1:1}
+                                                                        //                                                          V5.5.1  p.44
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //         +1 <<NOTE_STRUCTURE>>                        {0:M}
+                                                                        //                                                          V5.3    p.21
+                                                                        //                                                          V5.4    p.30
+                                                                        //                                                          V5.5    p.33
+                                                                        //                                                          V5.5.1  p.37
+            public List<string> N1_SOUR_citation_liste_ID;              //         +1 <<SOURCE_CITATION>>                       {0:M}
+                                                                        //                                                          V5.3    p.23
+                                                                        //                                                          V5.4    p.31
+                                                                        //                                                          V5.5    p.34
+                                                                        //                                                          V5.5.1  p.39
             public List<string> N1_SOUR_source_liste_ID;
-            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1} p.31
+        }
+        public class Ligne_perdue
+        {
+            public int ligne;
+            public string texte;
+        }
+        public class MULTIMEDIA_LINK // V5.4 et plus
+        {
+            // GEDCOM54.pdf             p.30
+            // 5.5_LDS_1996-01-02.pdf   p.33
+            // 5.5.1_LDS_1999-10-02.pdf p.37
+            // 5.5.5_Annotations_TJ.pdf p.71
+            public string ID_RECORD;                                 //      n @XREF:OBJE@ OBJE                          {1:1}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+                                                                        //                                                      V5.5.1
+                                                                        //                                                      V5.5.5
+                                                                        // ou 
+                                                                        //      n OBJE                                      {1:1}
+            public string ID_LINK;                                   // générer par GH
+            public bool ID_seul;                                        // vrai si contient seulement ID_record
+            public string FORM;                                      //      +1 FORM<MULTIMEDIA_FORMAT>                  {1:1}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+                                                                        //                                                      V5.5.1
+                                                                        //              [bmp | gif | jpeg | ole | pcx | tiff | wav]
+            public string TITL;                                      //          +1 TITL<DESCRIPTIVE_TITLE>              {0:1}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+                                                                        //                                                      V5.5.1
+            public string FILE;                                      //          +1 FILE<MULTIMEDIA_FILE_REFERENCE>      {1:1}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+            //public string FORM;                                 //              +2 FORM<MULTIMEDIA_FORMAT>          {1:1}
+                                                                        //                                                      V5.5.1
+                                                                        //                  [bmp | gif | jpg | ole | pcx | tif | wav]
+            public string MEDI;                            //                      +3 MEDI<SOURCE_MEDIA_TYPE>  {0:1}
+                                                                        //                              [audio | book | card |
+                                                                        //                              electronic | fiche | film |
+                                                                        //                              magazine |manuscript | map |
+                                                                        //                              newspaper | photo | tombstone |
+                                                                        //                              video]
+                                                                        //                                                      V5.5.1
+            public List<string> NOTE_STRUCTURE_liste_ID;             //          +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+            public List<string> SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M}
+                                                                     //                                                      V5.5.1  p.39
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class MULTIMEDIA_RECORD
+        {
+            // GEDCOM54.pdf             p.23
+            // 5.5_LDS_1996-01-02.pdf   p33
+            // 5.5.1_LDS_1999-10-02.pdf p.26
+            // 5.5.5_Annotations_TJ.pdf p.62
+            //                                                              MULTIMEDIA_LINK:= V5.3 V5.4
+            //                                                              MULTIMEDIA_LINK:= V5.3 V5.5
+            //                                                              MULTIMEDIA_RECORD:= V5.5.1 V 5.5.5
+            public string ID_RECORD;                                        //      n @XREF:OBJE@ OBJE                          {1:1}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1
+                                                                        //                                                      V5.5.5
+            public string FORM;                                      //          +1 FORM <MULTIMEDIA_FORMAT>             {1:1}
+                                                                        //                                                      V5.4    p.41
+                                                                        //                                                      V5.5    p.48
+            public string TITL;                                      //          +1 TITL <DESCRIPTIVE_TITLE>             {0:1}
+                                                                        //                                                      V5.4 p.41
+                                                                        //                                                      V5.5 p.43
+            public string FILE;                                      //          +1 FILE <MULTIMEDIA_FILE_REFN>          {1:M}
+                                                                        //                                                      V5.4 p.41
+                                                                        //                                                      V5.5    p.47
+                                                                        //                                                      V5.5.1  p.54
+                                                                        //                                                      V5.5.5  p.95
+            //public string FORM;                                 //              +2 FORM <MULTIMEDIA_FORMAT>         {1:1}
+                                                                        //                                                      V5.5.1  p.54
+                                                                        //                                                      V5.5.5  p.95
+            public string FORM_TYPE;                            //                  +3 TYPE <SOURCE_MEDIA_TYPE>     {0:1}
+                                                                        //                                                      V5.5.1  p.62
+                                                                        //                                                      V5.5.5  p.106
+            //public string TITL;                                 //              +2 TITL <DESCRIPTIVE_TITLE>         {0:1}
+                                                                        //                                                      V5.5.1  p.48
+                                                                        //                                                      V5.5.5  p.89
+            public string BLOB;                                      //          +1 BINARY_OBJECT                        {1:1}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+                                                                        //              +2 CONT <ENCODED_MULTIMEDIA_LINE>   {1:M} 
+                                                                        // public string N1_EOBJ;                                      //          +1 EOBJ  END_OBJECT}                    {1:1}
+                                                                        //                                                      V5.4    p.62
+                                                                        // public string N1_OBJE;                                      //          +1 @<XREF:OBJE>@ chain to continued object  V5.5 
 
+            public List<USER_REFERENCE_NUMBER> REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M}
+                                                                        //                                                      V5.5.1  p.63
+                                                                        //                                                      V5.5.5  p.107
+                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1}
+                                                                        //                                                      V5.5    p.55
+                                                                        //                                                      V5.5.1  p.64
+                                                                        //                                                      v5.5.5  p.106
+            public string RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                        //                                                      V5.5.1  p.43
+                                                                        //                                                      V5.5.5  p.78
+            public List<string> NOTE_STRUCTURE_liste_ID;             //          +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                        //                                                      V5.3    p.21
+                                                                        //                                                      V5.4    p.30
+                                                                        //                                                      V5.5    p.33
+                                                                        //                                                      V5.5.1  p.37
+                                                                        //                                                      V5.5.5  p.71
+            public List<string> SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M}
+                                                                        //                                                      V5.3    p.23
+                                                                        //                                                      V5.4    p.31
+                                                                        //                                                      V5.5.1  p.39
+                                                                        //                                                      V5.5.5  p.73
+            public List<string> SOUR_source_liste_ID;
+            public CHANGE_DATE CHAN;                                 //          +1 <<CHANGE_DATE>>                      {0:1}
+                                                                        //                                                      V5.3    p.19
+                                                                        //                                                      V5.4    p.27
+                                                                        //                                                      V5.5.1  p.31
+                                                                        //                                                      V5.5.5  p.66
+
+            public string Herisis_DATE;                                 //          +1                                          Herisis
+
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class NAME_STRUCTURE_53 // V5.3 seulement
+        {
+            // GEDCOM53.pdf             p.21
+            public string N0_NAME;                                      //      n NAME <NAME_PERSONAL>      {1:1}
+                                                                        //                                      V5.3
+            public string N1_TYPE;                                      // +1 TYPE <NAME_TYPE_DESCRIPTOR>
+                                                                        //                                      V5.3
+            public List<string> N1_SOUR_citation_liste_ID;              // +1 <<SOUR_STRUCTURE>> {0:1}
+                                                                        //                                      V5.3
+            public List<string> N1_SOUR_source_liste_ID;
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             // +1 <<NOTE_STRUCTURE>> {0:1}
+                                                                        //                                      V5.3
+        }
+        public class NOTE_STRUCTURE
+        {
+            // GEDCOM53.pdf             p.21
+            // GEDCOM54.pdf             p.31
+            // 5.5_LDS_1996-01-02.pdf   p.33
+            // 5.5.1_LDS_1999-10-02.pdf p.37
+            // 5.5.5_Annotations_TJ     p.71
+            //                                                              NOTE_STRUCTURE:=
+            public string N0_ID_STRUCTURE;                           // généré par GH
+            public string N0_ID_RECORD;                              // n [ @XREF:NOTE@ | NULL ] NOTE [ <SUBMITTER_TEXT>{1:1}
+                                                                     //                                                      V5.3
+                                                                     //                                                      V5.4
+                                                                     //                                                      V5.5
+                                                                     //                                                      V5.5.1
+                                                                     //                                                      V5.5.5
+                                                                     //          +1 [ CONC | CONT ] <SUBMITTERS_TEXT> {0:M}  V5.3
+                                                                     //                                                      V5.4
+                                                                     //                                                      V5.5
+                                                                     //          +1 [ CONC | CONT ] <SUBMITTERS_TEXT> {0:M}  V5.5.1
+            public string N0_texte;                                     // texte venant du ID
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //      n <<NOTE_STRUCTURE>>        {0:M}
+                                                                        //                                                      V5.3    p.21
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+                                                                        //                                                      V5.5
+                                                                        //                                                      V5.5.1
+
+            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} 
+                                                                        //                                                  V5.5        p.34
+            public List<string> N1_SOUR_source_liste_ID;
+        }
+        public class NOTE_RECORD
+        {
+            // GEDCOM53.pdf             p.18
+            // GEDCOM54.pdf             p.23
+            // 5.5_LDS_1996-01-02.pdf   p26
+            // 5.5.1_LDS_1999-10-02.pdf p.27
+            // 5.5.5_Annotations_TJ     p.71
+            //                                                              NOTE_RECORD:=
+            public string N0_ID;                                        //      n @<XREF:NOTE>@ NOTE <SUBMITTER_TEXT>       {1:1} 
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5   p.54
+                                                                        //                                                      V5.5.1 p.63
+                                                                        //                                                      V5.5.5 p.108
+            public string N0_texte;                                     // texte du niveau 0
+                                                                        //          +1 [CONC|CONT] <SUBMITTER_TEXT>         {0:M}
+                                                                        //                                                      V5.3
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5
+                                                                        //                                                      V5.5.1 p.63
+
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER>         {0:M}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5   p.55
+                                                                        //                                                      V5.5.1 p.63 p.64
+                                                                        //                                                      V5.5.5 p.107
+                                                                        // inclue avec le précédent
+                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>       {0:1} 
+                                                                        //                                                      V5.5   p.54
+                                                                        //                                                      V5.5.1 p.64
+                                                                        //                                                      V5.5.5 p.107
+                                                                        //                                                      V5.5    p.55 
+            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                        //                                                      V5.4
+                                                                        //                                                      V5.5    p.38 
+                                                                        //                                                      V5.5.1  p.43 
+                                                                        //                                                      V5.5.5  p.78
+            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                  {0:M} 
+                                                                        //                                                      V5.5    p.34
+                                                                        //                                                      V5.5.1  p.39
+                                                                        //                                                      V5.5.5  p.73
+            public List<string> N1_SOUR_source_liste_ID;
+            public List<CHANGE_DATE> N1_CHAN_liste;                     //          +1 <<CHANGE_DATE>>                      {0:1}
+                                                                        //                                                      V5.3    p.19
+                                                                        //                                                      V5.4    p.27
+                                                                        //                                                      V5.5    p.29
+                                                                        //                                                      V5.5.1  p.31
+                                                                        //                                                      V5.5.5  p.66
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //      n <<NOTE_STRUCTURE>>        {0:M}
+                                                                        //                                                      V5.3    p.21
             public int numero;
-            public string N0_NOTE_Texte;
+            public List<Ligne_perdue> ligne_perdue_liste;
         }
-        public class PERSONAL_NAME_STRUCTURE   // 5.5.1_LDS_2019-11-15 p.38 
+        public class PERSONAL_NAME_PIECES
         {
-            //  PERSONAL_NAME_STRUCTURE:=
-            public string N0_NAME;                                      //      n NAME <NAME_PERSONAL>                          {1:1} p.54
-            public string N1_TYPE;                                      //          +1 TYPE <NAME_TYPE>                         {0:1} p.56
-                                                                        //  PERSONAL_NAME_PIECES:=                                    p.37
-            public string N1_NPFX;                                      //          +1 NPFX <NAME_PIECE_PREFIX>                 {0:1} p.55
-            public string N1_GIVN;                                      //          +1 GIVN <NAME_PIECE_GIVEN>                  {0:1} p.55
-            public string N1_NICK;                                      //          +1 NICK <NAME_PIECE_NICKNAME>               {0:1} p.55
-            public string N1_SPFX;                                      //          +1 SPFX <NAME_PIECE_SURNAME_PREFIX          {0:1} p.56
-            public string N1_SURN;                                      //          +1 SURN <NAME_PIECE_SURNAME>                {0:1} p.55
-            public string N1_NSFX;                                      //          +1 NSFX <NAME_PIECE_SUFFIX>                 {0:1} p.55
-            public List<string> N1_NOTE_liste_ID;                       //          +1 <<NOTE_STRUCTURE>>                       {0:M} p.37
-            public List<string> N1_SOUR_citation_liste_ID;              //          +1 <<SOURCE_CITATION>>                      {0:M} p.39
-            public List<string> N1_SOUR_source_liste_ID;
-            public string N1_FONE;                                      //          +1 FONE <NAME_PHONETIC_VARIATION>           {0:M} p.55
-            public string N2_FONE_TYPE;                                 //              +2 TYPE <PHONETIC_TYPE>                 {1:1} p.57
-                                                                        //  PERSONAL_NAME_PIECES:=                                    p.37
-            public string N2_FONE_NPFX;                                 //              +2 NPFX <NAME_PIECE_PREFIX>             {0:1} p.55
-            public string N2_FONE_GIVN;                                 //              +2 GIVN <NAME_PIECE_GIVEN>              {0:1} p.55
-            public string N2_FONE_NICK;                                 //              +2 NICK <NAME_PIECE_NICKNAME>           {0:1} p.55
-            public string N2_FONE_SPFX;                                 //              +2 SPFX <NAME_PIECE_SURNAME_PREFIX      {0:1} p.56
-            public string N2_FONE_SURN;                                 //              +2 SURN <NAME_PIECE_SURNAME>            {0:1} p.55
-            public string N2_FONE_NSFX;                                 //              +2 NSFX <NAME_PIECE_SUFFIX>             {0:1} p.55
-            public List<string> N2_FONE_NOTE_ID_liste;                  //              +2 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N2_FONE_SOUR_citation_liste_ID;         //              +2 <<SOURCE_CITATION>>                  {0:M} p.39
-            public List<string> N2_FONE_SOUR_source_liste_ID;
-            public string N1_ROMN;                                      //          +1 ROMN <NAME_ROMANIZED_VARIATION>          {0:M} p.56
-            public string N2_ROMN_TYPE;                                 //              +2 TYPE <ROMANIZED_TYPE>                {1:1} p.61
-                                                                        //  PERSONAL_NAME_PIECES:=                                    p.37
-            public string N2_ROMN_NPFX;                                 //              +2 NPFX <NAME_PIECE_PREFIX>             {0:1} p.55
-            public string N2_ROMN_GIVN;                                 //              +2 GIVN <NAME_PIECE_GIVEN>              {0:1} p.55
-            public string N2_ROMN_NICK;                                 //              +2 NICK <NAME_PIECE_NICKNAME>           {0:1} p.55
-            public string N2_ROMN_SPFX;                                 //              +2 SPFX <NAME_PIECE_SURNAME_PREFIX      {0:1} p.56
-            public string N2_ROMN_SURN;                                 //              +2 SURN <NAME_PIECE_SURNAME>            {0:1} p.55
-            public string N2_ROMN_NSFX;                                 //              +2 NSFX <NAME_PIECE_SUFFIX>             {0:1} p.55
-            public List<string> N2_ROMN_NOTE_ID_liste;                  //              +2 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public List<string> N2_ROMN_SOUR_citation_liste_ID;         //              +2 <<SOURCE_CITATION>>                  {0:M} p.39
-            public List<string> N2_ROMN_SOUR_source_liste_ID;
+            // GEDCOM54.pdf             p.31
+            // 5.5_LDS_1996-01-02.pdf   p.37
+            // 5.5.1_LDS_2019-11-15.pdf p.37
+            // 5.5.5_Annotations_TJ.pdf p.71
+            public string Nn_NPFX;                                      //      n NPFX <NAME_PIECE_PREFIX>  {0:1}
+                                                                        //                                      V5.4   p.42
+                                                                        //                                      V5.5   p.48
+                                                                        //                                      V5.5.1 p.55
+                                                                        //                                      V5.5.5 p.97
+            public string Nn_GIVN;                                      //      n GIVN <NAME_PIECE_GIVEN>   {0:1}
+                                                                        //                                      V5.4   p.42
+                                                                        //                                      V5.5   p.49
+                                                                        //                                      V5.5.1 p.55
+                                                                        //                                      V5.5.5 p.97
+            public string Nn_NICK;                                      //      n NICK <NAME_PIECE_NICKNAME> {0:1}
+                                                                        //                                      V5.5   p.49
+                                                                        //                                      V5.5.1 p.55
+                                                                        //                                      V5.5.5 p.97
+            public string Nn_SPFX;                                      //      n SPFX <NAME_PIECE_SURNAME_PREFIX {0:1}
+                                                                        //                                      V5.5   p.49
+                                                                        //                                      V5.5.1 p.56
+                                                                        //                                      V5.5.5 p.98
+            public string Nn_SURN;                                      //      n SURN <NAME_PIECE_SURNAME> {0:1}
+                                                                        //                                      V5.4   p.42
+                                                                        //                                      V5.5   p.49
+                                                                        //                                      V5.5.1 p.55
+                                                                        //                                      V5.5.5 p.98
+            public string Nn_NSFX;                                      //      n NSFX <NAME_PIECE_SUFFIX>  {0:1}
+                                                                        //                                      V5.4   p.42
+                                                                        //                                      V5.5   p.49
+                                                                        //                                      V5.5.1 p.55
+                                                                        //                                      V5.5.5 p.98
+            public List<string> Nn_NOTE_STRUCTURE_liste_ID;             //      n <<NOTE_STRUCTURE>>        {0:M}
+                                                                        //                                      V5.3    p.21
+                                                                        //                                      V5.4    p.30
+                                                                        //                                      V5.5   p.33
+                                                                        //                                      V5.5.1 p.37
+                                                                        //                                      V5.5.5 p.71
+            public List<string> Nn_SOUR_citation_liste_ID;              //      n <<SOURCE_CITATION>>       {0:M}
+                                                                        //                                      V5.3    p.23
+                                                                        //                                      V5.4    p.31
+                                                                        //                                      V5.5   p.44
+                                                                        //                                      V5.5.1 p.39
+                                                                        //                                      V5.5.5 p.73
+            public List<string> Nn_SOUR_source_liste_ID;
+        }
+        public class PERSONAL_NAME_STRUCTURE
+        {
+            // GEDCOM54.pdf             p.31
+            // 5.5_LDS_1996-01-02.pdf   p.34
+            // 5.5.1_LDS_2019-11-15.pdf p.38
+            // 5.5.5_Annotations_TJ.pdf p.72
+            //                                                              PERSONAL_NAME_STRUCTURE:=
+            public string N0_NAME;                                      //      n NAME <NAME_PERSONAL>      {1:1}
+                                                                        //                                      V5.3    p.34
+                                                                        //                                      V5.4
+                                                                        //                                      V5.5   p.48
+                                                                        //                                      V5.5.1 p.54
+                                                                        //                                      V5.5.5 p.96
 
+            public string N1_TYPE;                                      //          +1 TYPE <NAME_TYPE>     {0:1}
+                                                                        //                                      V5.3
+                                                                        //                                      V5.5.1 p.56
+                                                                        //                                      V5.5.5 p.98
+            public PERSONAL_NAME_PIECES N1_PERSONAL_NAME_PIECES;        //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  // V5.5.1 p.37
+                                                                        //                                  // V5.5.5 p.71
+
+            public string N1_FONE;                                      //          +1 FONE <NAME_PHONETIC_VARIATION>{0:M} 
+                                                                        //                                  V5.5.1 p.55
+                                                                        //                                  V5.5.5 p.97
+            public string N2_FONE_TYPE;                                 //              +2 TYPE <PHONETIC_TYPE>{1:1} 
+                                                                        //                                  V5.5.1 p.57
+                                                                        //                                  V5.5.5 p.72
+                                                                        //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  V5.5.1 p.37
+                                                                        //                                  V5.5.5 p.71
+            public PERSONAL_NAME_PIECES N1_FONE_name_pieces;            //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  V5.5.1 p.37
+                                                                        //                                  V5.5.5 p.71
+            public string N1_ROMN;                                      //          +1 ROMN <NAME_ROMANIZED_VARIATION>{0:M} 
+                                                                        //                                  V5.5.1 p.56
+                                                                        //                                  V5.5.5 p.98
+            public string N2_ROMN_TYPE;                                 //              +2 TYPE <ROMANIZED_TYPE>{1:1} 
+                                                                        //                                  V5.5.1 p.61
+                                                                        //                                  V5.5.5 p.98
+            public PERSONAL_NAME_PIECES N1_ROMN_name_pieces;            //  PERSONAL_NAME_PIECES:=
+                                                                        //                                  V5.5.1 p.37
+                                                                        //                                  V5.5.5 p.105
+                                                                        // extra
+            public List<string> N1_ALIA_liste;                          //              +1 ALIA  alia dans BROSKEEP
         }
-        public class PLACE_STRUCTURE    // 5.5.1_LDS_2019-11-15 p.38
+        public class PLACE_STRUCTURE
         {
+            // GEDCOM53.pdf             p.21
+            // GEDCOM54.pdf             p.31
+            // 5.5_LDS_1996-01-02.pdf   p.37
+            // 5.5.1_LDS_2019-11-15.pdf p.38
+            // 5.5.5_Annotations_TJ.pdf p.72
             // PLACE_STRUCTURE:=
-            public string N0_PLAC;                              //  n PLAC <PLACE_NAME>                         {1:1} p.58
-            public string N1_FORM;                              //      +1 FORM <PLACE_HIERARCHY>               {0:1} p.58
-            public string N1_FONE;                              //      +1 FONE <PLACE_PHONETIC_VARIATION>      {0:M} p.59
-            public string N2_FONE_TYPE;                         //          +2 TYPE <PHONETIC_TYPE>             {1:1} p.57
-            public string N1_ROMN;                              //      +1 ROMN <PLACE_ROMANIZED_VARIATION>     {0:M} p.59
-            public string N2_ROMN_TYPE;                         //          +2 TYPE <ROMANIZED_TYPE>            {1:1} p.61
-                                                                //      +1 MAP                                  {0:1}
-            public string N2_MAP_LATI;                          //          +2 LATI <PLACE_LATITUDE>            {1:1} p.58
-            public string N2_MAP_LONG;                          //          +2 LONG <PLACE_LONGITUDE>           {1:1} p.58
-            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            
-            public List<string> N1_SOUR_citation_liste_ID;      // pour GEDitCOM
+            public string N0_PLAC;                              //  n PLAC <PLACE_NAME>                     {1:1}
+                                                                //                                PLACE_VALUE:= V5.3    p.35
+                                                                //                                              V5.4    p.44
+                                                                //                                              V5.5    p.51
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
+            public string N1_CEME;                              //      +1 CEME <CEMETERY_NAME>             {0:1}
+                                                                //                                              V5.3    p.27
+            public string N2_CEME_PLOT;                         //      +2 PLOT<BURIAL_PLOT_ID>             {0:1}
+                                                                //                                              V5.3    p.
+            public string N1_FORM;                              //      +1 FORM <PLACE_HIERARCHY>           {0:1}
+                                                                //                                              V5.3
+                                                                //                                              V5.4    p.44
+                                                                //                                              V5.5.1  p.51
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
+            public string N1_SITE;                              //      +1 SITE <SITE_NAME>                 {0:1}
+                                                                //                                              V5.3    p.37
+            public List<ADDRESS_STRUCTURE> N1_ADDR_liste;       //      +1 <<ADDRESS_STRUCTURE>>            {0:1}
+                                                                //                                              V5.3    p.19
+            public List<string> N1_PHON_liste;                          //      n PHON <PHONE_NUMBER>           {0:3}
+                                                                        //                                          V5.4    p.43
+                                                                        //                                          V5.5    p.50
+                                                                        //                                          V5.5.1  p.57
+                                                                        //                                          V5.5.5  p.99
+            public List<string> N1_EMAIL_liste;                         //      n EMAIL <ADDRESS_EMAIL>             {0:3}
+                                                                        //                                          V5.5.1 p.41
+                                                                        //                                          V5.5.5 p.75
+            public List<string> N1_FAX_liste;                           //      n FAX <ADDRESS_FAX>             {0:3}
+                                                                        //                                          V5.5.1 p.41
+                                                                        //                                          V5.5.5 p.75
+            public List<string> N1_WWW_liste;                           //      n WWW <ADDRESS_WEB_PAGE>        {0:3}
+                                                                        //                                          V5.5.1 p.42
+                                                                        //                                          V5.5.5 p.76
+            public string N1_FONE;                              //      +1 FONE <PLACE_PHONETIC_VARIATION>  {0:M}
+                                                                //                                              V5.5.1  p.59
+                                                                //                                              V5.5.51 p.101
+            public string N2_FONE_TYPE;                         //          +2 TYPE <PHONETIC_TYPE>         {1:1} p.57
+                                                                //                                              V5.5.1  p.57
+                                                                //                                              V5.5.51 p.100
+
+            public string N1_ROMN;                              //      +1 ROMN <PLACE_ROMANIZED_VARIATION> {0:M} p.59
+                                                                //                                              V5.5.1  p.59
+                                                                //                                              V5.5.51 p.101
+            public string N2_ROMN_TYPE;                         //          +2 TYPE <ROMANIZED_TYPE>        {1:1} p.61
+                                                                //                                              V5.5.1  p.61
+                                                                //                                              V5.5.5  p.105
+                                                                //      +1 MAP                              {0:1}
+            public string N2_MAP_LATI;                          //          +2 LATI <PLACE_LATITUDE>        {1:1}
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
+            public string N2_MAP_LONG;                          //          +2 LONG <PLACE_LONGITUDE>       {1:1}
+                                                                //                                              V5.5.1  p.58
+                                                                //                                              V5.5.5  p.100
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     //      +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                                //                                              V5.3    p.21
+                                                                //                                              V5.4    p.30
+                                                                //                                              V5.5    p.33
+                                                                //                                              V5.5.1  p.37
+                                                                //                                              V5.5.5  p.71
+            public List<string> N1_SOUR_citation_liste_ID;      //                                          {0:M}
+                                                                //                                              V5.4    p.31
+                                                                //                                              V5.5    p.34
+                                                                // pour GEDitCOM
             public List<string> N1_SOUR_source_liste_ID;        // pour GEDitCOM
         }
-        public class REPOSITORY_RECORD // 5.5.1_LDS_2019-11-15 p.27
+        public class REPOSITORY_RECORD
         {
-            // REPOSITORY_RECORD:=
-            public string N0_ID;                                //  n @<XREF:REPO>@ REPO {1:1}
-            public string N1_NAME;                              //      +1 NAME <NAME_OF_REPOSITORY> {1:1} p.54
-            public ADDRESS_STRUCTURE N1_ADDR;                   //      +1 <<ADDRESS_STRUCTURE>> {0:1} p.31
-            public List<string> N1_PHON_liste;                  //      n PHON <PHONE_NUMBER>                   {0:3} p.57
-            public List<string> N1_EMAIL_liste;                 //      n EMAIL <ADDRESS_EMAIL>                 {0:3} p.41
-            public List<string> N1_FAX_liste;                   //      n FAX <ADDRESS_FAX>                     {0:3} p.41
-            public List<string> N1_WWW_liste;                   //      n WWW <ADDRESS_WEB_PAGE>                {0:3} p.42
-            public List<string> N1_NOTE_liste_ID;               //      +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;   //      +1 REFN <USER_REFERENCE_NUMBER> {0:M} p.63, 64
-                                                                //      +2 TYPE <USER_REFERENCE_TYPE> {0:1} p.64
-            public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID> {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>> {0:1} p.31
-        }
-        public class SOURCE_CITATION // 5.5.1_LDS_2019-11-15 p.39
-        {
-            //  SOURCE_CITATION:=
-            //      [           /* pointer to source record (preferred)*/
-            public string N0_ID_source;                                     //      n SOUR @<XREF:SOUR>@ {1:1} p.27
-            public string N1_PAGE;                                          //          +1 PAGE<WHERE_WITHIN_SOURCE> {0:1} p.64
-            public string N1_EVEN;                                          //          +1 EVEN<EVENT_TYPE_CITED_FROM> {0:1} p.49
-            public string N2_EVEN_ROLE;                                     //              +2 ROLE<ROLE_IN_EVENT> {0:1} p.61
-            public string N1_DATA;                                          //          +1 DATA {0:1}
-            public string N2_DATA_DATE;                                     //              +2 DATE<ENTRY_RECORDING_DATE> {0:1} p.48
-            public string N2_DATA_TEXT;                                     //              +2 TEXT<TEXT_FROM_SOURCE> {0:M} p.63
-                                                                            //                  +3 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
-            public List<string> N1_OBJE_ID_liste;                           //          +1 <<MULTIMEDIA_LINK>> {0:M} p.37, 26
-            public List<string> N1_NOTE_liste_ID;                           //          +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public string N1_QUAY;                                          //          +1 QUAY<CERTAINTY_ASSESSMENT> {0:1} p.43
-                                                                            //      |           /* Systems not using source records */
-            public string N0_Titre;                                         //      n SOUR <SOURCE_DESCRIPTION> {1:1} p.61
-                                                                            //          +1 [CONC|CONT] <SOURCE_DESCRIPTION> {0:M}
-            public string N1_TEXT;                                          //          +1 TEXT<TEXT_FROM_SOURCE> {0:M} p.63
-                                                                            //              +2 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
-                                                                            // Voir plus haut                                               //          +1 <<MULTIMEDIA_LINK>> {0:M} p.37, 26
-                                                                            // Voir plus haut                                               //          +1 <<NOTE_STRUCTURE>> {0:M} p.37
-                                                                            // Voir plus haut                                               //          +1 QUAY<CERTAINTY_ASSESSMENT> {0:1} p.43
-                                                                            //      ]
-            public string N0_ID_citation;                                   // pour identifier tous les citations avec et sans ID de source
-        }
-        public class SOURCE_RECORD // 5.5.1_LDS_2019-11-15 p.27
-        {
-            //  SOURCE_RECORD:=
-            public int N0_numero;                                   //      n numero assigné par application
-            public string N0_ID;                                    //      n @<XREF:SOUR>@ SOUR {1:1}
-                                                                    //          +1 DATA {0:1}
-            public string N2_DATA_EVEN;                             //              +2 EVEN <EVENTS_RECORDED>                   {0:M} p.50
-            public string N3_DATA_DATE;                             //                  +3 DATE <DATE_PERIOD>                   {0:1} p.46
-            public string N3_DATA_PLAC;                             //                  +3 PLAC <SOURCE_JURISDICTION_PLACE>     {0:1} p.62
-            public string N2_DATA_AGNC;                             //              +2 AGNC <RESPONSIBLE_AGENCY>                {0:1} p.60
-            public List<string> N2_DATA_NOTE_liste_ID;              //              +2 <<NOTE_STRUCTURE>>                       {0:M} p.37
-            public string N1_AUTH;                                  //          +1 AUTH <SOURCE_ORIGINATOR>                     {0:1} p.62
-                                                                    //              +2 [CONC|CONT] <SOURCE_ORIGINATOR>          {0:M} p.62
-            public string N1_TITL;                                  //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE>              {0:1} p.62
-                                                                    //              +2 [CONC|CONT] <SOURCE_DESCRIPTIVE_TITLE>   {0:M} p.62
-            public string N1_ABBR;                                  //          +1 ABBR <SOURCE_FILED_BY_ENTRY>                 {0:1} p.62
-            public string N1_PUBL;                                  //          +1 PUBL <SOURCE_PUBLICATION_FACTS>              {0:1} p.62
-                                                                    //              +2 [CONC|CONT] <SOURCE_PUBLICATION_FACTS>   {0:M} p.62
-            public string N1_TEXT;                                  //          +1 TEXT <TEXT_FROM_SOURCE>                      {0:1} p.63
-                                                                    //              +2 [CONC|CONT] <TEXT_FROM_SOURCE>           {0:M} p.63
-            public SOURCE_REPOSITORY_CITATION N1_REPO_info;         //          +1 <<SOURCE_REPOSITORY_CITATION>>               {0:M} p.40
-            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;       //          +1 REFN <USER_REFERENCE_NUMBER>                 {0:M} p.63, 64
-                                                                    //              +2 TYPE <USER_REFERENCE_TYPE>               {0:1} p.64
-            public string N1_RIN;                                   //          +1 RIN <AUTOMATED_RECORD_ID>                    {0:1} p.43
-            public CHANGE_DATE N1_CHAN;                             //          +1 <<CHANGE_DATE>>                              {0:1} p.31
-            public List<string> N1_NOTE_liste_ID;                   //          +1 <<NOTE_STRUCTURE>>                           {0:M} p.37
-            public List<string> N1_OBJE_liste_ID;                   //          +1 <<MULTIMEDIA_LINK>>                          {0:M} p.37, 26
+            // GEDCOM53.pdf             p.21 REPOSITORY_STRUCTURE:=
+            // GEDCOM54.pdf             p.24
+            // 5.5_LDS_1996-01-02.pdf   p26
+            // 5.5.1_LDS_2019-11-15.pdf p.27
+            // 5.5.5_Annotations_TJ.pdf p.63
+            //                                                              REPOSITORY_RECORD:=
+            public string N0_ID;                                        //  n @<XREF:REPO>@ REPO {1:1}
+                                                                        //                                          V5.3
+                                                                        //                                          V5.4
+                                                                        //                                          V5.5
+                                                                        //                                          V5.5.1
+                                                                        //                                          V5.5.5
 
-            public string N1_EVEN;                                  //          1 ancestrologie  valeur I, F
+            public string N1_NAME;                                      //      +1 NAME <NAME_OF_REPOSITORY>    {1:1}
+                                                                        //                                          V5.3
+                                                                        //                                          V5.5    p.41
+                                                                        //                                          V5.5    p.48
+                                                                        //                                          V5.5.1  p.54
+                                                                        //                                          V5.5.5  p.96
+            public string N1_CNTC;                                      //      +1 CNTC <NAME_OF_CONTACT_PERSON> {0:1}
+                                                                        //                                          V5.3
+            public string N1_SITE;                                      //  n SITE <SITE_NAME>                  {0:1}
+                                                                        //                                          V5.3    p.37
+            public List<ADDRESS_STRUCTURE> N1_ADDR_liste;               //      +1 <<ADDRESS_STRUCTURE>>        {0:1}
+                                                                        //                                          V5.3    p.19
+                                                                        //                                          V5.4    p.27
+                                                                        //                                          V5.5    p.29
+                                                                        //                                          V5.5.1  p.31
+                                                                        //                                          V5.5.5  p.64
+            public List<string> N1_PHON_liste;                          //      n PHON <PHONE_NUMBER>           {0:3}
+                                                                        //                                          V5.4    p.43
+                                                                        //                                          V5.5    p.50
+                                                                        //                                          V5.5.1  p.57
+                                                                        //                                          V5.5.5  p.99
+            public List<string> N1_EMAIL_liste;                         //      n EMAIL <ADDRESS_EMAIL>             {0:3}
+                                                                        //                                          V5.5.1 p.41
+                                                                        //                                          V5.5.5 p.75
+            public List<string> N1_FAX_liste;                           //      n FAX <ADDRESS_FAX>             {0:3}
+                                                                        //                                          V5.5.1 p.41
+                                                                        //                                          V5.5.5 p.75
+            public List<string> N1_WWW_liste;                           //      n WWW <ADDRESS_WEB_PAGE>        {0:3}
+                                                                        //                                          V5.5.1 p.42
+                                                                        //                                          V5.5.5 p.76
+            public string N1_MEDI;                                      //      +1 MEDI<MEDIA_TYPE>             {0:1}
+                                                                        //                                          V5.3    p.18
+                                                                        //[ audio | book | card | electronic | fiche | film | magazine | manuscript | map | newspaper |
+                                                                        //photo | tombstone | video ]
+            public string N1_CALN;                                      //      +1 CALN <SOURCE_CALL_NUMBER>    {0:1}
+                                                                        //                                          V5.3    p.37
+            public string N2_CALN_ITEM;                                 //          +2 ITEM <FILM_ITEM_IDENTIFICATION> {0:1}
+                                                                        //                                          V5.3    p.30
+            public string N2_CALN_SHEE;                                 //          +2 SHEE <SHEET_NUMBER>      {0:1}
+                                                                        //                                          V5.3
+            public string N2_CALN_PAGE;                                 //          +2 PAGE <PAGE_NUMBER>       {0:1}
+                                                                        //                                          V5.3
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //      +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                        //                                          V5.3    p.21
+                                                                        //                                          V5.4    p.30
+                                                                        //                                          V5.5   p.33
+                                                                        //                                          V5.5.1 p.37
+                                                                        //                                          V5.5.5 p.71
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //      +1 REFN <USER_REFERENCE_NUMBER> {0:M}
+                                                                        //                                          V5.5   p.55
+                                                                        //                                          V5.5.1 p.63
+                                                                        //                                          V5.5.5 p.107
+                                                                        //      +2 TYPE <USER_REFERENCE_TYPE>   {0:1}
+                                                                        //                                          V5.5   p.55
+                                                                        //                                          V5.5.1 p.64
+                                                                        //                                          V5.5.5 p.107
+            public string N1_RIN;                                       //      +1 RIN <AUTOMATED_RECORD_ID>    {0:1}
+                                                                        //                                          V5.5   p.38
+                                                                        //                                          V5.5.1 p.43
+                                                                        //                                          V5.5.5 p.78
+            public List<CHANGE_DATE> N1_CHAN_liste;                     //      +1 <<CHANGE_DATE>>              {0:1}
+                                                                        //                                          V5.3    p.19
+                                                                        //                                          V5.4    p.27
+                                                                        //                                          V5.5   p.29
+                                                                        //                                          V5.5.1 p.54
+                                                                        //                                          V5.5.5 p.66
+            public List<Ligne_perdue> ligne_perdue_liste;
         }
-        public class SOURCE_REPOSITORY_CITATION  // 5.5.1_LDS_2019-11-15 p.40
+        public class CENS_record
         {
-            // SOURCE_REPOSITORY_CITATION:=
-            public string N0_ID;                                    //  n REPO [ @XREF:REPO@ | <NULL>] {1:1} p.27
-            public List<string> N1_NOTE_liste_ID;                   //      +1 <<NOTE_STRUCTURE>> {0:M} p.37
-            public string N1_CALN;                                  //      +1 CALN <SOURCE_CALL_NUMBER> {0:M} p.61
-            public string N2_CALN_MEDI;                             //          +2 MEDI <SOURCE_MEDIA_TYPE> {0:1} p.62 
-                                                                    //          [ audio | book | card | electronic | 
-                                                                    //              fiche | film | magazine |
-                                                                    //              manuscript | map | newspaper | 
-                                                                    //              photo | tombstone | video ]
+            // utiliser dans SOUR V5.3
+            public string N1_DATE;                                      //  <CENSUS_DATE> {0:1}u
+            public string N1_LINE;                                      //  <LINE_NUMBER> {0:1}u
+            public string N1_DWEL;                                      //  <DWELLING_NUMBER> {0:1}u
+            public string N1_FAMN;                                      //  <FAMILY_NUMBER>  { 0:1}u
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //  << NOTE_STRUCTURE >>{0:1}
         }
-        public class SPOUSE_TO_FAMILY_LINK // 5.5.1_LDS_2019-11-15 p.40
+        public class IMMI_record
         {
-            //  SPOUSE_TO_FAMILY_LINK:=
-            public string N0_ID;                                    //      n FAMS @<XREF:FAM>@     {1:1} p.24
-            public List<string> N1_NOTE_liste_ID;                   //      +1 <<NOTE_STRUCTURE>>   {0:M} p.37
+            public string N1_NAME;                                      //  <NAME_OF_VESSEL> {0:1}
+            public string N3_PORT_ARVL_DATE;                            //  <ARRIVAL_DATE> {0:1}
+            public string N3_PORT_ARVL_PLAC;                            //  <ARRIVAL_PLACE> {0:1}
+            public string N3_PORT_DPRT_DATE;                            //  <DEPARTURE_DATE> {0:1}
+            public string N3_PORT_DPRT_PLAC;                            //  <DEPARTURE_PLACE> {0:1}
+            public List<TEXT_STRUCTURE> N1_TEXT_liste;                  //  <<TEXT_STRUCTURE>> {0:1}
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //  <<NOTE_STRUCTURE>> {0:1}
         }
-        public class SUBMISSION_RECORD // 5.5.1_LDS_2019-11-15 p.28
+        public class ORIG_record
         {
-            //  SUBMISSION_RECORD:=
-            public string N0_ID;                    //  n @XREF:SUBN@ SUBN                          {1:1}
-            public List<string> N1_SUBM_liste_ID;   //      +1 SUBM @XREF:SUBM@                     {0:1} p.28
-            public string N1_FAMF;                  //      +1 FAMF <NAME_OF_FAMILY_FILE>           {0:1} p.54
-            public string N1_TEMP;                  //      +1 TEMP <TEMPLE_CODE>                   {0:1} p.63
-            public string N1_ANCE;                  //      +1 ANCE <GENERATIONS_OF_ANCESTORS>      {0:1} p.50
-            public string N1_DESC;                  //      +1 DESC <GENERATIONS_OF_DESCENDANTS>    {0:1} p.50
-            public string N1_ORDI;                  //      +1 ORDI <ORDINANCE_PROCESS_FLAG>        {0:1} p.57
-            public string N1_RIN;                   //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_NOTE_liste_ID;   //      +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public CHANGE_DATE N1_CHAN;             //      +1 <<CHANGE_DATE>>                      {0:1} p.31
+            // utiliser dans SOUR V5.3
+            public string N1_NAME;                                      //  NAME<ORIGINATOR_NAME> {0:1} up
+            public string N1_TYPE;                                      //  TYPE <ORIGINATOR_TYPE> {1:1}up
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //  << NOTE_STRUCTURE >>{0:1}
         }
-        public class SUBMITTER_RECORD // 5.5.1_LDS_2019-11-15 p.28
+        public class PUBL_record
         {
-            //  SUBMITTER_RECORD:=
-            public string N0_ID;                    //      n @<XREF:SUBM>@ SUBM                    {1:1}
-            public string N1_NAME;                  //      +1 NAME <SUBMITTER_NAME>                {1:1} p.63
-            public ADDRESS_STRUCTURE N1_ADDR;       //      +1 <<ADDRESS_STRUCTURE>>                {0:1}* p.31
-            public List<string> N1_PHON_liste;      //      n PHON <PHONE_NUMBER>                   {0:3} p.57
-            public List<string> N1_EMAIL_liste;     //      n EMAIL <ADDRESS_EMAIL>                 {0:3} p.41
-            public List<string> N1_FAX_liste;       //      n FAX <ADDRESS_FAX>                     {0:3} p.41
-            public List<string> N1_WWW_liste;       //      n WWW <ADDRESS_WEB_PAGE>                {0:3} p.42
-            public List<string> N1_OBJE_ID_liste;   //      +1 <<MULTIMEDIA_LINK>>                  {0:M} p.37, 26
-            public string N1_LANG;                  //      +1 LANG <LANGUAGE_PREFERENCE>           {0:3} p.51
-            public string N1_RFN;                   //      +1 RFN <SUBMITTER_REGISTERED_RFN>       {0:1} p.63
-            public string N1_RIN;                   //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1} p.43
-            public List<string> N1_NOTE_liste_ID;   //      +1 <<NOTE_STRUCTURE>>                   {0:M} p.37
-            public CHANGE_DATE N1_CHAN;             //      +1 <<CHANGE_DATE>>                      {0:1} p.31
+            public string N1_PUBL;                                      // texte 
+            public string N1_TYPE;                                      // <PUBLICATION_TYPE> {1:1}up
+            public string N1_NAME;                                      //<NAME_OF_PUBLICATION> {0:1}p
+            public string N1_PUBR;                                      //<PUBLISHER_NAME> {0:1}p
+            public string N1_SITE;
+            public List<ADDRESS_STRUCTURE> N1_ADDR_liste;
+            public string N1_DATE;                                      //<PUBLICATION_DATE> {0:1}up
+            public string N1_EDTN;                                      //<PUBLICATION_EDITION> {0:1}p
+            public string N1_SERS;                                      //<SERIES_VOLUME_DESCRIPTION> {0:1}p
+            public string N1_ISSU;                                      //<PERIODICAL_ISSUE_NUMBER> {0:1}p
+            public string N1_LCCN;                                      //<LIBRARY_CONGRESS_CALL_NUMBER> {0:1}
+            public List<string> N1_PHON_liste;
+            public List<string> N1_FAX_liste;
+            public List<string> N1_EMAIL_liste;
+            public List<string> N1_WWW_liste;
         }
-        public class USER_REFERENCE_NUMBER  // 5.5.1_LDS_2019-11-15 p.63
+        public class SOURCE_CITATION
         {
+            // GEDCOM53.pdf             p.23    SOURCE_STRUCTURE:=
+            // GEDCOM54.pdf             p.31
+            // 5.5_LDS_1996-01-02.pdf   p.34
+            // 5.5.1_LDS_2019-11-15.pdf p.39
+            // 5.5.5_Annotations_TJ.pdf p.73
+            //                                                      SOURCE_CITATION:=
+            // Le ID est placé dans N1_SOUR_liste_ID            //      n SOUR @<XREF:SOUR>@                {1:1}
+            //      n SOUR <SOURCE_DESCRIPTION>         {1:1}
+            //                                              V5.3
+            //                                              V5.5   p.46
+            //                                              V5.5   p.55
+            //                                              V5.5.1 p.27
+            //                                              V5.5.5 p.108
+            public string N0_ID_SOUR;                           // ID de la source
+            public bool source_ID_seulement;                    // indique que SOURCE_CITATION contient seulement ID de la source
+            public string N0_texte;                             // texte du niveau 0
+
+            public string N1_CLAS;                              //          +1 SOURCE_CLASSIFICATION_CODE   {1:1}up
+                                                                //                                              V5.3
+            public string N1_PAGE;                              //          +1 PAGE<WHERE_WITHIN_SOURCE>    {0:1}
+
+            //                                              V5.3   p.34
+            //                                              V5.4   p.48
+            //                                              V5.5   p.55
+            //                                              V5.5.1 p.64
+            //                                              V5.5.5 p.107
+            public string N1_DATE;                              //          +1 DATE <ENTRY_RECORDED_DATE>   {0:1}u
+                                                                //                                              V5.3   p.34
+            public string N1_EVEN;                              //          +1 EVEN<EVENT_TYPE_CITED_FROM>  {0:1}
+                                                                //                                              V5.3   p.29
+                                                                //                                              V5.4   p.38
+                                                                //                                              V5.5   p.43
+                                                                //                                              V5.5.1 p.49
+                                                                //                                              V5.5.5 p.92
+            public string N2_EVEN_ROLE;                         //              +2 ROLE<ROLE_IN_EVENT>      {0:1}
+                                                                //                                              V5.4   p.38
+                                                                //                                              V5.5   p.53
+                                                                //                                              V5.5.1 p.61
+                                                                //                                              V5.5.5 p.104
+            public string N1_PERI;                              //          +1 PERI <TIME_PERIOD_COVERED>       {0:M}up
+                                                                //          +1 DATA                         {0:1}
+                                                                //                                              V5.3   p.39
+            public List<string> N1_TITL_liste;                  //          +1 TITL <DESCRIPTIVE_TITLE>    {0:1}up
+                                                                //                                              V5.3   p.29
+            public List<string> N1_SOUR_liste_ID;               //          +1 SOUR [@XREF:SOUR@|@XREF:EVEN]    {0:M}up
+                                                                //                                              V5.3
+            public List<string> N1_SOUR_liste_EVEN;             //          +1 SOUR [@XREF:SOUR@|@XREF:EVEN]    {0:M}up
+                                                                //                                              V5.3
+            public string N2_DATA_DATE;                         //              +2 DATE<ENTRY_RECORDING_DATE> {0:1}
+                                                                //                                              V5.3
+                                                                //                                              V5.4   p.37
+                                                                //                                              V5.5   p.43
+                                                                //                                              V5.5.1 p.48
+                                                                //                                              V5.5.5 p.91
+            public List<TEXT_STRUCTURE> N2_DATA_TEXT_liste;     //              +2 TEXT<TEXT_FROM_SOURCE>   {0:M}
+                                                                //                                              V5.4   p.47
+                                                                //                                              V5.5   p.54
+                                                                //                                              V5.5.1 p.63
+                                                                //                                              V5.5.5 p.106
+                                                                //                  +3 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
+                                                                //                                              V5.5
+                                                                //                                              V5.5.1
+            public List<CENS_record> N1_CENS_liste;             //      +1 CENS                                 V5.3
+            public List<ORIG_record> N1_ORIG_liste;             //      +1 ORIG                                 V5.3
+            public PUBL_record N1_PUBL_record;                  //      +1 PUB                                  V5.3
+            public List<SOURCE_REPOSITORY_CITATION> N1_REPO_liste; //      +1 <<REPOSITORY_STRUCTURE>>         {0:1}up
+                                                                   //                                              V5.3    p.18
+            public IMMI_record N1_IMMI_record;                  //      +1 IMMI                                 V5.3
+            public List<string> MULTIMEDIA_LINK_liste_ID;
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     //          +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                //                                              V5.3    p.21
+                                                                //                                              V5.4    p.30
+                                                                //                                              V5.5   p.33
+                                                                //                                              V5.5.1 p.37
+                                                                //                                              V5.5.5 p.71
+            public string N1_STAT;                              //          +1 STAT <SEARCH_STATUS>         {0:1}
+                                                                //                                              V5.3    p.37
+            public string N2_STAT_DATE;                         //              +2 DATE <SEARCH_STATUS_DATE>{0:1}
+                                                                //                                              V5.3
+            public List<string> N1_REFS_liste_ID;               //          +1 REFS @XREF:SOUR@/*REFERENCED SOURCE*/{0:1}
+                                                                //                                              V5.3
+            public List<string> N1_REFS_liste_EVEN;             //          +1 SOUR [@XREF:SOUR@|@XREF:EVEN]    {0:M}up
+                                                                //                                              V5.3
+            public string N1_FIDE;                              //          +1 FIDE <SOURCE_FIDELITY_CODE>  {0:1}
+                                                                //                                              V5.3    p.38
+            public string N1_QUAY;                              //          +1 QUAY<CERTAINTY_ASSESSMENT>   {0:1}
+                                                                //                                              V5.3    p.19
+                                                                //                                              V5.4    p.35
+                                                                //                                              V5.5    p.38
+                                                                //                                              V5.5.1  p.43
+                                                                //                                              V5.5.5  p.78
+            public string N0_Titre;                             //      n SOUR <SOURCE_DESCRIPTION>         {1:1}
+                                                                //                                              V5.5   p.53
+                                                                //                                              V5.5.1 p.61
+                                                                //          +1 [CONC|CONT] <SOURCE_DESCRIPTION>{0:M}
+            public List<TEXT_STRUCTURE> N1_TEXT_liste;          //          +1 TEXT<TEXT_FROM_SOURCE>       {0:M}
+                                                                //                                              V5.5   p.54
+                                                                //                                              V5.5.1 p.63
+                                                                //              +2 [CONC|CONT] <TEXT_FROM_SOURCE> {0:M}
+                                                                //                                              V5.5
+                                                                //                                              V5.5.1
+
+            //                                              V5.3    p.18
+            public string N0_ID_citation;                       // pour identifier tous les citations avec et sans ID de source
+
+            //                                                              +1 _QUAL                        // Herisis
+            public string N2__QUAL__SOUR;                       //              +2 _SOUR Qualité de la source  // Herisis
+            public string N2__QUAL__INFO;                       //              +2 _INFO Qualité de l'information // Heridis
+            public string N2__QUAL__EVID;                       //              +2 _EVID Qualité de la preuve  // Heridis
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class SOURCE_RECORD
+        {
+            // GEDCOM54.pdf             p.24
+            // 5.5_LDS_1996-01-02.pdf   p26
+            // 5.5.1_LDS_2019-11-15.pdf p.27
+            // 5.5.5_Annotations_TJ.pdf p.63
+            //                                                              SOURCE_RECORD:=
+            public int N0_numero;                                       //      n numero assigné par application
+            public string N0_ID;                                        //      n @<XREF:SOUR>@ SOUR                {1:1}
+                                                                        //                                              V5.4
+                                                                        //                                              V5.5
+                                                                        //                                              V5.5.1
+                                                                        //                                              V5.5.5
+                                                                        //          +1 DATA                         {0:1}
+                                                                        //                                              V5.4
+                                                                        //                                              V5.5
+                                                                        //                                              V5.5.1
+                                                                        //                                              V5.5.5
+            public string N0_texte;                                     //      texte du niveau 0
+            public string N1_CLAS;                                      //          +1 CLAS <SOURCE_CLASSIFICATION_CODE {1:1}
+                                                                        //                                              V5.3  
+                                                                        //          [ BOOK | CENSUS | CHURCH | COURT | HISTORY |
+                                                                        //            INTERVIEW | JOURNAL | LAND | LETTER | 
+                                                                        //            MILITARY | NEWSPAPER | PERIODICAL |
+                                                                        //            PERSONAL | RECITED | TRADITION | VITAL |
+                                                                        //            OTHER!<SOURCE_CLASS_DESCRIPTOR> ]
+            public string N1_PERI;                                      //          +1 PERI <TIME_PERIOD_COVERED>
+                                                                        //                                              V5.3
+            public List<string> N1_SOUR_EVEN_liste_ID;                  //          +1 SOUR [@XREF:SOUR@|@XREF:EVEN]
+                                                                        //                                              V5.3
+            public string N1_PAGE;                                      //          +1 PAGE<WHERE_WITHIN_SOURCE>
+            public List<CENS_record> N1_CENS_liste;                     //          +1 CENS                             V5.3
+            public List<ORIG_record> N1_ORIG_liste;                     //          +1 ORIG                             V5.3
+            public PUBL_record N1_PUBL_record;                          //          +1 PUB                              V5.3
+            public IMMI_record N1_IMMI_record;                          //          +1 IMMI                             V5.3
+            public string N2_DATA_EVEN;                                 //              +2 EVEN <EVENTS_RECORDED>   {0:M}
+                                                                        //                                          V5.4   p.38
+                                                                        //                                          V5.5   p.44
+                                                                        //                                          V5.5.1 p.50
+                                                                        //                                          V5.5.5 p.92
+            public string N3_DATA_EVEN_DATE;                            //                  +3 DATE <DATE_PERIOD>   {0:1}
+                                                                        //                                          V5.4   p.38
+                                                                        //                                          V5.5   p.41
+                                                                        //                                          V5.5.1 p.46
+                                                                        //                                          V5.5.5 p.85
+            public string N3_DATA_EVEN_PLAC;                            //                  +3 PLAC <SOURCE_JURISDICTION_PLACE>{0:1}
+                                                                        //                                         5.4   p.46
+                                                                        //                                         5.5   p.54
+                                                                        //                                         V5.5.5 p.106
+            public string N2_DATA_AGNC;                                 //              +2 AGNC <RESPONSIBLE_AGENCY>{0:1}
+                                                                        //                                         V5.4   p.45
+                                                                        //                                         V5.5   p.54
+                                                                        //                                         V5.5.1 p.60
+                                                                        //                                         V5.5.5 p.104
+            public List<string> N2_DATA_NOTE_STRUCTURE_liste_ID;        //              +2 <<NOTE_STRUCTURE>>       {0:M}
+                                                                        //                                         V5.3    p.21
+                                                                        //                                         V5.4    p.30
+                                                                        //                                         V5.5    p.33
+                                                                        //                                         V5.5.1  p.37
+                                                                        //                                         V5.5.5  p.71
+            public string N1_AUTH;                                      //          +1 AUTH <SOURCE_ORIGINATOR>     {0:1}
+                                                                        //                                         V5.4   p.46
+                                                                        //                                         V5.5   p.54
+                                                                        //                                         V5.5.1 p.62
+                                                                        //                                         V5.5.5 p.106
+                                                                        //              +2 [CONC|CONT] <SOURCE_ORIGINATOR>{0:M}
+                                                                        //                                         V5.5    p.54
+                                                                        //                                         V5.5.1 p.62
+            public string N1_CPLR;                                      //                                         V5.3 p.53
+            public string N1_EDTR;                                      //                                         V5.3 p.53
+
+            public List<string> N1_TITL_liste;                          //          +1 TITL [<DESCRIPTIVE_TITLE> | @XREF:SOUR@]     {0:1} up    V5.3    p.29
+                                                                        //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE> {0:1}
+                                                                        //                                         V5.4    p.46
+                                                                        //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE> {0:1}
+                                                                        //                                         V5.5    p.53
+                                                                        //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE>              {0:1}       V5.5.1  p.62
+                                                                        //          +1 TITL <SOURCE_DESCRIPTIVE_TITLE>                          V5.5.5  p.105
+                                                                        //              +2 [CONT|CONC] <SOURCE_DESCRIPTIVE_TITLE>   {0:M}       V5.5    p.53
+                                                                        //              +1 TITL <SOURCE_DESCRIPTIVE_TITLE>          {0:1}       5.5.1   p.62
+
+            public string N1_ABBR;                                      //          +1 ABBR <SOURCE_FILED_BY_ENTRY> {0:1}
+                                                                        //                                              V5.4    p.46
+                                                                        //                                              V5.5    p.53
+                                                                        //                                              V5.5.1  p.62
+                                                                        //                                              V5.5.5  p.106
+            public string N1_PUBL;                                      //          +1 PUBL <SOURCE_PUBLICATION_FACTS>{0:1}
+                                                                        //                                              V5.4    p.46
+                                                                        //                                              V5.5    p.54
+                                                                        //                                              V5.5.1  p.62
+                                                                        //                                              V5.5.5  p.106
+                                                                        //              +2 [CONC|CONT] <SOURCE_PUBLICATION_FACTS>{0:M}
+                                                                        //                                              V5.5   p.54
+                                                                        //                                              V5.5.1 p.62
+            public List<TEXT_STRUCTURE> N1_TEXT_liste;                        //          +1 TEXT <TEXT_FROM_SOURCE>      {0:1}
+                                                                              //                                              V5.4    p.47
+                                                                              //                                              V5.5    p.54
+                                                                              //                                              V5.5.1  p.63
+                                                                              //                                              V5.5.5  p.106
+                                                                              //              +2 [CONC|CONT] <TEXT_FROM_SOURCE>{0:M}
+                                                                              //                                              V5.5   p.54
+                                                                              //                                              V5.5.1 p.63
+            public List<SOURCE_REPOSITORY_CITATION> N1_REPO_liste;      //          +1 <<SOURCE_REPOSITORY_CITATION>>{0:M}
+                                                                        //                                              V5.4    p.32
+                                                                        //                                              V5.5    p.35
+                                                                        //                                              V5.5.1  p.40
+                                                                        //                                              V5.5.5  p.74
+            public List<USER_REFERENCE_NUMBER> N1_REFN_liste;           //          +1 REFN <USER_REFERENCE_NUMBER> {0:M}
+                                                                        //                                              V5.5   p.55
+                                                                        //                                              V5.5.1 p.63 p.64
+                                                                        //                                              V5.5.5 p.107
+                                                                        //              +2 TYPE <USER_REFERENCE_TYPE>{0:1}
+                                                                        //                                              V5.5   p.55
+                                                                        //                                              V5.5.1 p.64
+                                                                        //                                              V5.5.5 p.107
+            public string N1_RIN;                                       //          +1 RIN <AUTOMATED_RECORD_ID>    {0:1} p.43
+                                                                        //                                              V5.5   p.38
+                                                                        //                                              V5.5.1 p.43
+                                                                        //                                              V5.5.5 p.78
+            public CHANGE_DATE N1_CHAN;                                 //          +1 <<CHANGE_DATE>>              {0:1}
+                                                                        //                                          V5.3    p.19
+                                                                        //                                              V5.4   p.27
+                                                                        //                                              V5.5   p.29
+                                                                        //                                              V5.5.1 p.31
+                                                                        //                                              V5.5.5 p.66
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;             //          +1 <<NOTE_STRUCTURE>>           {0:M}
+                                                                        //                                              V5.3    p.21
+                                                                        //                                              V5.4    p.30
+                                                                        //                                              V5.5   p.33
+                                                                        //                                              V5.5.1 p.37
+                                                                        //                                              V5.5.5 p.71
+            public string N1_STAT;                                      //          +1 STAT <SEARCH_STATUS>         {0:1}
+                                                                        //                                              V5.3    p.37
+            public string N2_STAT_DATE;                                 //              +2 DATE <SEARCH_STATUS_DATE>{0:1}
+                                                                        //                                              V5.3    p.37
+            public List<string> N1_REFS_liste_ID;                       //          +1 REFS @XREF:SOUR@/*REFERENCED SOURCE*/{0:1}
+            public List<string> N1_REFS_liste_EVEN;                     //          +1 SOUR [@XREF:SOUR@|@XREF:EVEN]    {0:M}up
+                                                                        //                                              V5.3
+            public string N1_FIDE;                                      //          +1 FIDE <SOURCE_FIDELITY_CODE>  {0:1}
+                                                                        //                                              V5.3    p.38
+            public string N1_QUAY;                                      //          +1 QUAY <QUALITY_OF_DATA>       {0:1}
+                                                                        //                                              V5.3    p.36
+            //public List<string> N1_OBJE_LINK_liste_ID;                  //          +1 <<MULTIMEDIA_LINK>>          {0:M}
+                                                                        //                                              V5.3    p.21
+                                                                        //                                              V5.4    p.30
+                                                                        //                                              V5.5   p.33 p.26
+                                                                        //                                              V5.5.1 p.37 p.26
+                                                                        //                                              v5.5.5 p.71
+            /* media pour 5.3 */
+            public List<string> MULTIMEDIA_LINK_liste_ID;
+            public string N1_EVEN;                                      //          +1 valeur I, F                      ancestrologie
+
+            public string N1_TYPE;                                      //          +1                                  Heridis
+            public string N1_DATE;                                      //          +1                                  Heridis
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class SOURCE_REPOSITORY_CITATION
+        {
+            // GEDCOM53.pdf             p.21    REPOSITORY_STRUCTURE:=
+            // GEDCOM54.pdf             p.32
+            // 5.5_LDS_1996-01-02.pdf   p34
+            // 5.5.1_LDS_2019-11-15.pdf p.40
+            // 5.5.5_Annotations_TJ.pdf p.74
+            //                                                  SOURCE_REPOSITORY_CITATION:=
+            public string N0_ID;                                //  n REPO [ @XREF:REPO@ | <NULL>]          {1:1}
+                                                                //                                              V5.3
+                                                                //                                              V5.4
+                                                                //                                              V5.5   p.55
+                                                                //                                              V5.5.1 p.27
+                                                                //                                              V5.5.5 p.108
+            public string N1_NAME;                              //      +1 NAME <NAME_OF_REPOSITORY>        {0:1}
+                                                                //                                              V5.3
+            public string N1_CNTC;                              //      +1 CNTC<NAME_OF_CONTACT_PERSON>     {0:1}
+                                                                //                                              V5.3
+            public string N1_SITE;                              //
+                                                                //                                              V5.3
+            public List<ADDRESS_STRUCTURE> N1_ADDR_liste;       //
+                                                                //      +1 <<ADDRESS_STRUCTURE>>            {0:1}
+                                                                //                                              V5.3
+            public List<string> N1_PHON_liste;                  //
+                                                                //                                              V5.3
+            public List<string> N1_EMAIL_liste;                 //
+                                                                //                                              V5.3
+            public List<string> N1_FAX_liste;                   //
+                                                                //                                              V5.3
+            public List<string> N1_WWW_liste;                   //
+                                                                //                                              V5.3
+            public string N1_MEDI;                              //      +1 MEDI <MEDIA_TYPE>                {0:1} 
+                                                                //          [ AUDIO | BOOK | CARD | ELECTRONIC | FICHE |
+                                                                //              FILM | 	MAGAZINE | MANUSCRIPT | MAP | 
+                                                                //              NEWSPAPER | PHOTO | TOMBSTONE | VIDEO ]
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     //      +1 <<NOTE_STRUCTURE>>               {0:M}
+                                                                //                                              V5.3    p.21
+                                                                //                                              V5.4    p.30
+                                                                //                                              V5.5    p.33
+                                                                //                                              V5.5.1  p.37
+            public string N1_CALN;                              //      +1 CALN <SOURCE_CALL_NUMBER>        {0:M}
+                                                                //                                              V5.3
+                                                                //                                              V5.4    p.43
+                                                                //                                              V5.5    p.53
+                                                                //                                              V5.5.1  p.61
+                                                                //                                              V5.5.5  p.105
+            public string N2_CALN_ITEM;                         //          +2 ITEM <FILM_ITEM_IDENTIFICATION>{0:1}
+                                                                //                                              V5.3
+            public string N2_CALN_SHEE;                         //          +2 SHEE <SHEET_NUMBER>          {0:1}
+                                                                //                                              V5.3
+            public string N2_CALN_PAGE;                         //          +2 PAGE <PAGE_NUMBER>           {0:1}
+                                                                //                                              V5.3
+            public string N2_CALN_MEDI;                         //          +2 MEDI <SOURCE_MEDIA_TYPE>     {0:1}
+                                                                //                                              V5.4    p.46
+                                                                //                                              V5.5    p.54
+                                                                //                                              V5.5.1  p.62
+                                                                //                                              V5.5.5  p.106
+                                                                //          [ audio | book | card | electronic | 
+                                                                //              fiche | film | magazine |
+                                                                //              manuscript | map | newspaper | 
+                                                                //              photo | tombstone | video ]
+            public string N1_REFN;                              //      +1 REFN <MANUAL_FILING_IDENTIFICATION> {0:1}
+                                                                //                                              V5.3
+        }
+        public class SPOUSE_TO_FAMILY_LINK
+        {
+            // GEDCOM54.pdf             p.32
+            // 5.5_LDS_1996-01-02.pdf   p35
+            // 5.5.1_LDS_2019-11-15.pdf p.40
+            // 5.5.5_Annotations_TJ.pdf p.75
+            //                                                      SPOUSE_TO_FAMILY_LINK:=
+            public string N0_ID;                                //      n FAMS @<XREF:FAM>@                 {1:1}
+                                                                //                                              V5.4
+                                                                //                                              V5.5   p.55
+                                                                //                                              V5.5.1 p.24
+                                                                //                                              V5.5.5 p.75
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     //      +1 <<NOTE_STRUCTURE>>               {0:M} 
+                                                                //                                              V5.3    p.21
+                                                                //                                              V5.4    p.30
+                                                                //                                              V5.5   p.33
+                                                                //                                              V5.5.1 p.37
+                                                                //                                              V5.5.5 p.71
+        }
+        public class SUBMISSION_RECORD
+        {
+            // GEDCOM54.pdf             p.24
+            // 5.5_LDS_1996-01-02.pdf   p27
+            // 5.5.1_LDS_2019-11-15.pdf p.28
+            // 5.5.5_Annotations_TJ.pdf pas utiliser
+            //                                                      SUBMISSION_RECORD:=
+            public string N0_ID;                                //  n @XREF:SUBN@ SUBN                          {1:1}
+                                                                //                                                  V5.4
+                                                                //                                                  V5.5
+                                                                //                                                  V5.5.1
+            public List<string> N1_SUBM_liste_ID;               //      +1 SUBM @XREF:SUBM@                     {0:1}
+                                                                //                                                  V5.4
+                                                                //                                                  V5.5    p.55
+                                                                //                                                  V5.5.1  p.28
+            public string N1_FAMF;                              //      +1 FAMF <NAME_OF_FAMILY_FILE>           {0:1}
+                                                                //                                                  V5.4    p.41
+                                                                //                                                  V5.5    p.48
+                                                                //                                                  V5.5.1  p.54
+            public string N1_TEMP;                              //      +1 TEMP <TEMPLE_CODE>                   {0:1}
+                                                                //                                                  V5.4    p.47
+                                                                //                                                  V5.5    p.54
+                                                                //                                                  V5.5.1  p.63
+            public string N1_ANCE;                              //      +1 ANCE <GENERATIONS_OF_ANCESTORS>      {0:1} 
+                                                                //                                                  V5.4    p.39
+                                                                //                                                  V5.5    p.44
+                                                                //                                                  V5.5.1
+            public string N1_DESC;                              //      +1 DESC <GENERATIONS_OF_DESCENDANTS>    {0:1}
+                                                                //                                                  V5.4    p.39
+                                                                //                                                  V5.5    p.44
+                                                                //                                                  V5.5.1  p.50
+            public string N1_ORDI;                              //      +1 ORDI <ORDINANCE_PROCESS_FLAG>        {0:1}
+                                                                //                                                  V5.4    p.43
+                                                                //                                                  V5.5    p.50
+                                                                //                                                  V5.5.1  p.57
+            public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                //                                                  V5.5    p.38
+                                                                //                                                  V5.5.1  p.43
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     //      +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                //                                                  V5.3    p.21
+                                                                //                                                  V5.4    p.30
+                                                                //                                                  V5.5.1  p.37
+                                                                //                                                  v5.5.5  p.71
+                                                                //                                                  V5.5.1  p.37
+            public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>>                      {0:1}
+                                                                //                                                  V5.3    p.19
+                                                                //                                                  V5.4    p.27
+                                                                //                                                  V5.5.1  p.31
+                                                                //                                                  V5.5.5  p.66
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class SUBMITTER_RECORD
+        {
+            // GEDCOM54.pdf             p.24
+            // 5.5_LDS_1996-01-02.pdf   p27
+            // 5.5.1_LDS_2019-11-15.pdf p.28
+            // 5.5.5_Annotations_TJ.pdf p.63
+            //                                                       SUBMITTER_RECORD:=
+            public string N0_ID;                                //      n @<XREF:SUBM>@ SUBM                    {1:1}
+                                                                //                                                  V5.4
+                                                                //                                                  V5.5
+                                                                //                                                  V5.5.1
+                                                                //                                                  V5.5.5
+            public List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste; //          +1 <<PERSONAL_NAME_STRUCTURE>>          {0:M}
+                                                                //                                                  V5.4    p.31
+                                                                //                                                  V5.5    p.54
+                                                                //                                                  V5.5.1  p.63
+                                                                //                                                  V5.5.5  p.106
+            public string N1_SITE;                              //      +1 SITE <SITE_NAME>                     {0:1}
+                                                                //                                                  V5.3    p.37
+            public List<ADDRESS_STRUCTURE> N1_ADDR_liste;       //      +1 <<ADDRESS_STRUCTURE>>                {0:1}
+                                                                //                                                  V5.4    p.27
+                                                                //                                                  V5.5    p.29
+                                                                //                                                  V5.5.1  p.31
+                                                                //                                                  V5.5.5  p.64
+            public List<string> N1_PHON_liste;                  //      n PHON <PHONE_NUMBER>                   {0:3}
+                                                                //                                                  V5.4    p.43
+                                                                //                                                  V5.5    p.50
+                                                                //                                                  V5.5.1  p.57
+                                                                //                                                  V5.5.5  p.99
+            public List<string> N1_EMAIL_liste;                 //      n EMAIL <ADDRESS_EMAIL>                 {0:3}
+                                                                //                                                  V5.5.1 p.41
+                                                                //                                                  V5.5.5  p.75
+            public List<string> N1_FAX_liste;                   //      n FAX <ADDRESS_FAX>                     {0:3}
+                                                                //                                                  V5.5.1 p.41
+                                                                //                                                  V5.5.5  p.75
+            public List<string> N1_WWW_liste;                   //      n WWW <ADDRESS_WEB_PAGE>                {0:3}
+                                                                //                                                  V5.5.1 p.42
+                                                                //                                                  V5.5.5  p.76
+
+            public List<string> MULTIMEDIA_LINK_liste_ID;
+            public string N1_LANG;                              //      +1 LANG <LANGUAGE_PREFERENCE>           {0:3}
+                                                                //                                                  V5.4    p.39
+                                                                //                                                  V5.5    p.45
+                                                                //                                                  V5.5.1 p.51
+            public string N1_RFN;                               //      +1 RFN <SUBMITTER_REGISTERED_RFN>       {0:1}
+                                                                //                                                  V5.4    p.47
+                                                                //                                                  V5.5    p.54
+                                                                //                                                  V5.5.1  p.63
+            public string N1_RIN;                               //      +1 RIN <AUTOMATED_RECORD_ID>            {0:1}
+                                                                //                                                  V5.5    p.38
+                                                                //                                                  V5.5.1  p.43
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     //      +1 <<NOTE_STRUCTURE>>                   {0:M}
+                                                                //                                                  V5.3    p.21
+                                                                //                                                  V5.4    p.30
+                                                                //                                                  V5.5    p.33
+                                                                //                                                  V5.5.1  p.37
+                                                                //                                                  V5.5.5  p.71
+                                                                //                                                  V5.5.1  p.37
+            public CHANGE_DATE N1_CHAN;                         //      +1 <<CHANGE_DATE>>                      {0:1}
+                                                                //                                                  V5.3    p.19
+                                                                //                                                  V5.4    p.27
+                                                                //                                                  V5.5    p.29
+                                                                //                                                  V5.5.1  p.31
+                                                                //                                                  V5.5.5  p.66
+            public List<Ligne_perdue> ligne_perdue_liste;
+        }
+        public class TEXT_STRUCTURE
+        {
+            // version 5.+ utilise balise TEXT CONT CONC
+            // version 5.3 utilise balise TEXT CONT CONC NOTE
+            // GEDCOM53.pdf             p.24                    TEXT_STRUCTURE:=
+            public string N0_TEXT;                              //  n TEXT <SOURCE_TEXT>                            {1:1}
+                                                                //                                                  V5.3    p.39
+                                                                //      +1 [ CONT | CONC ] <SOURCE_TEXT>            {1:M}
+            public List<string> N1_NOTE_STRUCTURE_liste_ID;     //      +1 <<NOTE_STRUCTURE>>                       {0:M}
+                                                                //                                                  V5.3    p.21
+        }
+        public class USER_REFERENCE_NUMBER
+        {
+            // GEDCOM54.pdf             p.47
+            // 5.5_LDS_1996-01-02.pdf   
+            // 5.5.1_LDS_2019-11-15.pdf p.63
+            // 5.5.5_Annotations_TJ.pdf p.107
             public string N0_REFN;
+            //                                          V5.4. p.47
+            //                                          V5.5. p.55
+            //                                          V5.5.1 p.63
+            //                                          V5.5.5 p.107
             public string N1_TYPE;
+            //                                          V5.5.1 p.55
+            //                                          V5.5.1 p.64
+            //                                          V5.5.5 p.107
         }
         public class ItemSourceIDTexte
         {
@@ -537,55 +2103,79 @@ namespace GEDCOM
             }
         }
         // RECORD GEDCOM
-        public static HEADER Info_HEADER = new HEADER(); // 551-p23
+        public static HEADER info_HEADER = new HEADER(); // 551-p23
         private static List<FAM_RECORD> liste_FAM_RECORD = new List<FAM_RECORD>();  // 551-p24
         private static List<INDIVIDUAL_RECORD> liste_INDIVIDUAL_RECORD = new List<INDIVIDUAL_RECORD>(); // 551-p25
+        public static List<EVEN_RECORD_53> liste_EVEN_RECORD_53 = new List<EVEN_RECORD_53>();
+        private static readonly List<MULTIMEDIA_LINK> liste_MULTIMEDIA_LINK = new List<MULTIMEDIA_LINK>();
         private static List<MULTIMEDIA_RECORD> liste_MULTIMEDIA_RECORD = new List<MULTIMEDIA_RECORD>(); // 551-p26
-        private static List<NOTE_RECORD> listeInfoNote = new List<NOTE_RECORD>(); // 551-p27
+        public static List<NOTE_STRUCTURE> liste_NOTE_STRUCTURE = new List<NOTE_STRUCTURE>();
+        public static List<NOTE_RECORD> liste_NOTE_RECORD = new List<NOTE_RECORD>();
         private static List<SOURCE_RECORD> liste_SOURCE_RECORD = new List<SOURCE_RECORD>(); // 551-p27
         private static List<SUBMITTER_RECORD> liste_SUBMITTER_RECORD = new List<SUBMITTER_RECORD>(); // 551-p28
         public static readonly List<SOURCE_CITATION> liste_SOURCE_CITATION = new List<SOURCE_CITATION>();
+        public static readonly List<SOURCE_CITATION> liste_SOURCE_CITATION_REFS = new List<SOURCE_CITATION>();
         private static readonly SUBMISSION_RECORD info_SUBMISSION_RECORD = new SUBMISSION_RECORD();
         private static List<REPOSITORY_RECORD> liste_REPOSITORY_RECORD = new List<REPOSITORY_RECORD>(); // 551-p27
-        public static void Animation(bool actif)
-        {
-            if (!actif)
-            {
-                lb_animation.Visible = false;
-            }
-            else
-            {
-                lb_animation.Visible = true;
-                Random rnd = new Random();
-                string ligne = "";
-                for (int f = 0; f < 7; f++)
-                {
-                    if (rnd.Next(0, 2) == 0) ligne += "▀"; else ligne += "▄";
-                }
-                lb_animation.Text = ligne.Substring(0, 5);
-            }
-            Application.DoEvents();
-        }
+
         public static NOTE_RECORD Avoir_Info_Note(string N0_ID)
         {
-            foreach (NOTE_RECORD info in listeInfoNote)
+            foreach (NOTE_RECORD info in liste_NOTE_RECORD)
             {
                 if (N0_ID == info.N0_ID)
                     return info;
             }
             return null;
         }
-        public static REPOSITORY_RECORD Avoir_Info_Repo(string ID)
+        public static NOTE_STRUCTURE Avoir_Info_NOTE_STRUCTURE(string N0_ID)
         {
+            foreach (NOTE_STRUCTURE info in liste_NOTE_STRUCTURE)
+            {
+                if (N0_ID == info.N0_ID_STRUCTURE)
+                    return info;
+            }
+            return null;
+        }
+
+        public static int Avoir_index_repo(string N0_ID)
+        {
+            int index = 0;
             foreach (REPOSITORY_RECORD info in liste_REPOSITORY_RECORD)
             {
-                if (ID == info.N0_ID)
+                if (N0_ID == info.N0_ID)
+                {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
+        }
+        public static MULTIMEDIA_LINK Avoir_info_MULTIMEDIA_LINK(string ID)
+        {
+            foreach (MULTIMEDIA_LINK info in liste_MULTIMEDIA_LINK)
+            {
+                if (ID == info.ID_LINK)
                 {
                     return info;
                 }
             }
             return null;
         }
+        public static MULTIMEDIA_RECORD Avoir_info_MULTIMEDIA_RECORD(
+            string ID
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            foreach (MULTIMEDIA_RECORD info in liste_MULTIMEDIA_RECORD)
+            {
+                if (ID == info.ID_RECORD)
+                {
+                    return info;
+                }
+            }
+            return null;
+        }
+
         public static SOURCE_CITATION Avoir_info_citation(string ID)
         {
             foreach (SOURCE_CITATION info in liste_SOURCE_CITATION)
@@ -597,130 +2187,340 @@ namespace GEDCOM
             }
             return null;
         }
-        public static SOURCE_RECORD Avoir_info_SOURCE(string source)
+
+        private static void Regler_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
         {
-            foreach (SOURCE_RECORD info in liste_SOURCE_RECORD)
+            GH.GH.erreur = "GE" + sourceLineNumber;
+        }
+ 
+        public static (
+            INDIVIDUAL_53, int,
+            bool, List<Ligne_perdue>) 
+            Extraire_INDIVIDUAL_53(
+                INDIVIDUAL_53 info_INDIVIDUAL_53,
+                int ligne,
+                int niveau,
+                List<Ligne_perdue> ligne_perdue_liste
+                //,[CallerLineNumber] int callerLineNumber = 0
+                )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name +" code " + callerLineNumber + "</b><br> GEDCOM ligne="+ ligne + "<br>niveau=" + niveau);
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            bool trouver = false;
+            string balise_0 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            if (IsNullOrEmpty(info_INDIVIDUAL_53.N0_EVEN_liste))
+
             {
-                if (source == info.N0_ID)
-                    return info;
+                info_INDIVIDUAL_53.N0_EVEN_liste = new List<EVEN_STRUCTURE_53>();
             }
-            return null;
+            string niveau_0_s = niveau.ToString();
+            if (balise_0 == niveau.ToString() + " NAME")
+            {
+                trouver = true;
+                NAME_STRUCTURE_53 info_nom;
+                (info_nom, ligne, ligne_perdue_liste) = Extraire_NAME_STRUCTURE_53(ligne, niveau, ligne_perdue_liste);
+                if (IsNullOrEmpty(info_INDIVIDUAL_53.N0_NAME_liste))
+                {
+                    List<NAME_STRUCTURE_53> temp2 = new List<NAME_STRUCTURE_53>
+                    {
+                        info_nom
+                    };
+                    info_INDIVIDUAL_53.N0_NAME_liste = temp2;
+                }
+                else
+                    info_INDIVIDUAL_53.N0_NAME_liste.Add(info_nom);
+            }
+            else if (balise_0 == niveau.ToString() + " TITL")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_TITL, ligne, ligne_perdue_liste) = Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " SEX")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_SEX, ligne, ligne_perdue_liste) = Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                info_INDIVIDUAL_53.N0_SEX = info_INDIVIDUAL_53.N0_SEX.ToUpper();
+            }
+            else if (
+                balise_0 == niveau.ToString() + " ADOP" ||
+                balise_0 == niveau.ToString() + " ANUL" ||
+                balise_0 == niveau.ToString() + " BAPM" ||
+                balise_0 == niveau.ToString() + " BARM" ||
+                balise_0 == niveau.ToString() + " BASM" ||
+                balise_0 == niveau.ToString() + " BIRT" ||
+                balise_0 == niveau.ToString() + " BLES" ||
+                balise_0 == niveau.ToString() + " BURI" ||
+                balise_0 == niveau.ToString() + " CENS" ||
+                balise_0 == niveau.ToString() + " CHR" ||
+                balise_0 == niveau.ToString() + " CHRA" ||
+                balise_0 == niveau.ToString() + " CONF" ||
+                balise_0 == niveau.ToString() + " DEAT" ||
+                balise_0 == niveau.ToString() + " DIV" ||
+                balise_0 == niveau.ToString() + " DIVF" ||
+                balise_0 == niveau.ToString() + " EMIG" ||
+                balise_0 == niveau.ToString() + " ENGA" ||
+                balise_0 == niveau.ToString() + " EVEN" ||
+                balise_0 == niveau.ToString() + " GRAD" ||
+                balise_0 == niveau.ToString() + " IMMI" ||
+                balise_0 == niveau.ToString() + " MARB" ||
+                balise_0 == niveau.ToString() + " MARC" ||
+                balise_0 == niveau.ToString() + " MARL" ||
+                balise_0 == niveau.ToString() + " MARR" ||
+                balise_0 == niveau.ToString() + " MARS" ||
+                balise_0 == niveau.ToString() + " NATU" ||
+                balise_0 == niveau.ToString() + " ORDN" ||
+                balise_0 == niveau.ToString() + " RETI"
+                )
+            {
+                trouver = true;
+                EVEN_STRUCTURE_53 temp;
+                (temp, ligne) = Extraire_EVEN_STRUCTURE_53(ligne, niveau);
+                info_INDIVIDUAL_53.N0_EVEN_liste.Add(temp);
+            }
+            else if (balise_0 == niveau.ToString() + " ADDR")
+            {
+                trouver = true;
+                ADDRESS_STRUCTURE N1_ADDR;
+                (N1_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                if (IsNullOrEmpty(info_INDIVIDUAL_53.N0_ADDR_liste))
+                {
+                    List<ADDRESS_STRUCTURE> temp3 = new List<ADDRESS_STRUCTURE>
+                        {
+                            N1_ADDR
+                        };
+                    info_INDIVIDUAL_53.N0_ADDR_liste = temp3;
+                }
+                else
+                    info_INDIVIDUAL_53.N0_ADDR_liste.Add(N1_ADDR);
+            }
+            else if (balise_0 == niveau.ToString() + " RELI")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_RELI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " NAMR")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_NAMR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                while (Extraire_niveau(ligne) > niveau)
+                {
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    if (balise_1 == (niveau + 1).ToString() + " RELI")
+                    {
+                        (info_INDIVIDUAL_53.N1_NAMR_RELI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else
+                    {
+                        ligne = Ligne_perdu_plus(
+                            ligne,
+                            MethodBase.GetCurrentMethod().Name,
+                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                            balise_ligne
+                            );
+                    }
+                }
+            }
+            else if (balise_0 == niveau.ToString() + " EDUC")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_EDUC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " OCCU")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_OCCU, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " SSN")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_SSN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " IDNO")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_IDNO, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                while (Extraire_niveau(ligne) > niveau)
+                {
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                    {
+                        (info_INDIVIDUAL_53.N1_IDNO_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else
+                    {
+                        ligne = Ligne_perdu_plus(
+                            ligne,
+                            MethodBase.GetCurrentMethod().Name,
+                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                            balise_ligne
+                            );
+                    }
+                }
+            }
+            else if (balise_0 == niveau.ToString() + " PROP")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_PROP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " DSCR")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_DSCR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " SIGN")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_SIGN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " NMR")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_NMR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " NCHI")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_NCHI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " NATI")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_NATI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+            else if (balise_0 == niveau.ToString() + " CAST")
+            {
+                trouver = true;
+                (info_INDIVIDUAL_53.N0_CAST, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            }
+
+            info_INDIVIDUAL_53.ligne_perdue_liste = ligne_perdue_liste;
+            //R..Z("Retour de Extraire_INDIVIDUAL_53 " + "<br>ligne=" + ligne + " trouver=" + trouver.ToString());
+            return (info_INDIVIDUAL_53, ligne, trouver, ligne_perdue_liste);
         }
-        private static string Avoir_type_media(string TYPE)
+
+        private static (LDS_INDIVIDUAL_ORDINANCE, int) Extraire_LDS_INDIVIDUAL_ORDINANCE_even(
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            if (TYPE.ToLower() == "audio") TYPE = "Audio";
-            if (TYPE.ToLower() == "book") TYPE = "Livre";
-            if (TYPE.ToLower() == "card") TYPE = "Fiche";
-            if (TYPE.ToLower() == "electronic") TYPE = "Numérique";
-            if (TYPE.ToLower() == "fiche") TYPE = "Fiche";
-            if (TYPE.ToLower() == "film") TYPE = "Film";
-            if (TYPE.ToLower() == "magazine") TYPE = "Magazine";
-            if (TYPE.ToLower() == "manuscript") TYPE = "Manuscrit";
-            if (TYPE.ToLower() == "map") TYPE = "Carte géographique";
-            if (TYPE.ToLower() == "photo") TYPE = "Photographie";
-            if (TYPE.ToLower() == "newspaper") TYPE = "Journal";
-            if (TYPE.ToLower() == "tombstone") TYPE = "Pierre tombale";
-            if (TYPE.ToLower() == "video") TYPE = "Vidéo";
-            return TYPE;
-        }
-        private static (LDS_INDIVIDUAL_ORDINANCE, int) Extraire_LDS_INDIVIDUAL_ORDINANCE(int ligne)
-        {
+            int niveau = Extraire_niveau(ligne);
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br>GEDCOM=" + ligne + "<br>niveau=" + niveau);
+
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
             LDS_INDIVIDUAL_ORDINANCE info = new LDS_INDIVIDUAL_ORDINANCE
             {
-                N0_Type = null,
+                N0_EVEN = null,
+                N1_TYPE = null,
                 N1_DATE = null,
+                DATE_trier = "99999999",
                 N1_TEMP = null,
                 N1_PLAC = null,
                 N1_FAMC = null,
                 N1_STAT = null,
                 N2_STAT_DATE = null,
-                N1_NOTE_liste_ID = new List<string>(),
+                N1_NOTE_STRUCTURE_liste_ID = new List<string>(),
                 N1_SOUR_citation_liste_ID = new List<string>(),
-                N1_SOUR_source_liste_ID = new List<string>()
+                N1_SOUR_source_liste_ID = new List<string>(),
             };
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
-            string niveau_S = niveau_I.ToString();
-            info.N0_Type = Extraire_balise(dataGEDCOM[ligne]);
-            if (info.N0_Type.ToUpper() == niveau_S + " BAPL") info.N0_Type = "Baptême célébré à l'âge de huit ans ou plus par l'Église SDJ";
-            if (info.N0_Type.ToUpper() == niveau_S + " CONL") info.N0_Type = "Devient membre de l'Église SDJ.";
-            if (info.N0_Type.ToUpper() == niveau_S + " ENDL") info.N0_Type = "Dotation a été accomplie par la prêtrise autorité dans un temple SDJ.";
-            if (info.N0_Type.ToUpper() == niveau_S + " SLGC") info.N0_Type = "Scellement d'un enfant à ses parents lors d'une cérémonie au temple SDJ.";
+            info.N0_EVEN = Avoir_balise(dataGEDCOM[ligne]);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
             ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
+            while (Extraire_niveau(ligne) > niveau)
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " DATE")                      // +1 DATE
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " TYPE")
                 {
-                    info.N1_DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
+                    (info.N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " TEMP")                  // +1 TEMP
+                else if (balise_1 == (niveau + 1).ToString() + " DATE")
                 {
-                    info.N1_TEMP = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
+                    (info.N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info.DATE_trier = Convertir_date_trier(info.N1_DATE);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " FAMC")                  // +1 FAMC
+                else if (balise_1 == (niveau + 1).ToString() + " TEMP")
+                {
+                    (info.N1_TEMP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " FAMC")
                 {
                     info.N1_FAMC = Extraire_ID(dataGEDCOM[ligne]);
                     ligne++;
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " PLAC")                  // +1 PLAC
+                else if (balise_1 == (niveau + 1).ToString() + " PLAC")
                 {
-                    info.N1_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
+                    (info.N1_PLAC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " STAT")                  // +1 STAT
+                else if (balise_1 == (niveau + 1).ToString() + " STAT")
                 {
-                    info.N1_STAT = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                    if (info.N1_STAT.ToUpper() == "CHILD") info.N1_STAT = "Décédé avant l'âge de huit ans, le baptême n'est pas requis.";//BAPL CONL ENDL
-                    if (info.N1_STAT.ToUpper() == "COMPLETED") info.N1_STAT = "Terminer mais la date n'est pas connue.";//BAPL CONL ENDL
-                    if (info.N1_STAT.ToUpper() == "EXCLUDED") info.N1_STAT = "Le patron a exclu que cette ordonnance soit effacée dans cette soumission.";//BAPL CONL ENDL SLGC
-                    if (info.N1_STAT.ToUpper() == "PRE-1970") info.N1_STAT = "L'ordonnance est probablement terminée, une autre ordonnance pour cette personne a été convertie à partir des registres du temple des travaux achevés avant 1970, donc cette ordonnance est supposé complet jusqu'à la conversion de tous les enregistrements."; //BAPL CONL ENDL SLGC
-                    if (info.N1_STAT.ToUpper() == "STILLBORN") info.N1_STAT = "Mort-né, baptême non requis.";//BAPL CONL ENDL SLGC
-                    if (info.N1_STAT.ToUpper() == "SUBMITTED") info.N1_STAT = "Une ordonnance avait déjà été soumise."; // ENDL SLGC
-                    if (info.N1_STAT.ToUpper() == "UNCLEARED") info.N1_STAT = "Data for clearing ordinance request was insufficient.";//BAPL CONL ENDLSLGC
-                    if (info.N1_STAT.ToUpper() == "INFANT") info.N1_STAT = "Décédé avant moins d'un an, baptême ou dotation non requis."; // ENDL
-                    if (info.N1_STAT.ToUpper() == "BIC") info.N1_STAT = "Né dans l'alliance recevant la bénédiction de l'enfant au scellement des parents.";// SLGC
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
+                    (info.N1_STAT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1)
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " DATE")  // +2 STAT_DATE
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " DATE")
                         {
-                            info.N2_STAT_DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 4));
-                            ligne++;
+                            (info.N2_STAT_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                         }
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
                 {
                     string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    info.N1_NOTE_liste_ID.Add(IDNote);
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    info.N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " SOUR")     // +1 SOUR
+                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
                 {
                     string citation;
                     string source;
                     (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) info.N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) info.N1_SOUR_source_liste_ID.Add(source);
+                    if (IsNotNullOrEmpty(citation))
+                        info.N1_SOUR_citation_liste_ID.Add(citation);
+                    if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                        info.N1_SOUR_source_liste_ID.Add(source);
                 }
                 else
                 {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
                 }
             }
+            info.ligne_perdue_liste = ligne_perdue_liste;
             return (info, ligne);
         }
-        private static (LDS_SPOUSE_SEALING, int) Extraire_LDS_SPOUSE_SEALING(int ligne)
+
+        private static (LDS_SPOUSE_SEALING, int, List<Ligne_perdue>) Extraire_LDS_SPOUSE_SEALING(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=");
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
             LDS_SPOUSE_SEALING info = new LDS_SPOUSE_SEALING
             {
                 N1_DATE = null,
@@ -728,393 +2528,427 @@ namespace GEDCOM
                 N1_PLAC = null,
                 N1_STAT = null,
                 N2_STAT_DATE = null,
-                N1_NOTE_liste_ID = new List<string>(),
+                N1_NOTE_STRUCTURE_liste_ID = new List<string>(),
                 N1_SOUR_citation_liste_ID = new List<string>(),
                 N1_SOUR_source_liste_ID = new List<string>()
             };
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
+            int niveau = Extraire_niveau(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
             ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
+            while (Extraire_niveau(ligne) > niveau)
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " DATE")          // +1 DATE
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " TYPE")
                 {
-                    info.N1_DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
+                    (info.N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " TEMP")     // +1 TEMP
+                else if (balise_1 == (niveau + 1).ToString() + " DATE")
                 {
-                    info.N1_TEMP = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
+                    (info.N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " PLAC")     // +1 PLAC
+                else if (balise_1 == (niveau + 1).ToString() + " TEMP")
                 {
-                    info.N1_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
+                    (info.N1_TEMP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " STAT")     // +1 STAT
+                else if (balise_1 == (niveau + 1).ToString() + " PLAC")
                 {
-                    info.N1_STAT = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                    if (info.N1_STAT == "CANCELED") info.N1_STAT = "Annuler et cosidérer invalide";
-                    if (info.N1_STAT == "COMPLETED") info.N1_STAT = "Terminé mais la date n'est pas connue.";
-                    if (info.N1_STAT == "EXCLUDED") info.N1_STAT = "Le patron a exclu que cette ordonnance soit effacée dans cette soumission.";
-                    if (info.N1_STAT == "DNS") info.N1_STAT = "Cette ordonnance n'est pas autorisée.";
-                    if (info.N1_STAT == "DNS/CAN") info.N1_STAT = "Cette ordonnance n'est pas autorisée, le scellement précédent a été annulé.";
-                    if (info.N1_STAT == "PRE-1970") info.N1_STAT = "L'ordonnance est probablement terminée, une autre ordonnance pour cette personne a été convertie à partir des registres du temple des travaux achevés avant 1970, donc cette ordonnance est supposé complet jusqu'à la conversion de tous les enregistrements.";
-                    if (info.N1_STAT == "SUBMITTED") info.N1_STAT = "Une ordonnance avait déjà été soumise.";
-                    if (info.N1_STAT == "UNCLEARED") info.N1_STAT = "Data for clearing ordinance request was insufficient.";
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
+                    (info.N1_PLAC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " STAT")
+                {
+                    (info.N1_STAT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1)
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " DATE")  // +2 STAT_DATE
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " DATE")
                         {
-                            info.N2_STAT_DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne], 4));
-                            ligne++;
+                            (info.N2_STAT_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                         }
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
                 {
                     string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    info.N1_NOTE_liste_ID.Add(IDNote);
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    info.N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " SOUR")     // +1 SOUR
+                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
                 {
                     string citation;
                     string source;
                     (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) info.N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) info.N1_SOUR_source_liste_ID.Add(source);
+                    if (IsNotNullOrEmpty(citation))
+                    {
+                        info.N1_SOUR_citation_liste_ID.Add(citation);
+                    }
+                    if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                    {
+                        info.N1_SOUR_source_liste_ID.Add(source);
+                    }
                 }
                 else
                 {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
                 }
             }
-            return (info, ligne);
+            return (info, ligne, ligne_perdue_liste);
         }
-        private static (string, int) Extraire_MULTIMEDIA_RECORD(int ligne)
+
+        private static (
+            string, // ID
+            int // ligne
+            ) Extraire_MULTIMEDIA_LINK(
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            string N0_ID;
-            string N2_FILE = null;
-            string N2_FORM = null;
-            string N3_FORM_TYPE = null;
-            string N2_TITL = null;
-            List<USER_REFERENCE_NUMBER> N1_REFN_liste = null;// new List<USER_REFERENCE_NUMBER>();
-            string N1_RIN = null;
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            List<string> N1_SOUR_citation_liste_ID = new List<string>();
-            CHANGE_DATE N1_CHAN = new CHANGE_DATE();
-            bool ajouter = false;
-            N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            if (N0_ID == null) N0_ID = "O-" + DateTime.Now.ToString("HHmmssffffff" + hazard.Next(999).ToString());
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne );
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            MULTIMEDIA_LINK info_LINK = new MULTIMEDIA_LINK
+            {
+                ID_RECORD = Extraire_ID(dataGEDCOM[ligne])
+            };
+            info_LINK.ID_RECORD = Extraire_ID(dataGEDCOM[ligne]);
+            info_LINK.NOTE_STRUCTURE_liste_ID = new List<string>();
+            info_LINK.ID_LINK = "IA" + String.Format("{0:-00-00-00-00}", ++numero_ID);
             // niveau 1
+            int niveau = Extraire_niveau(ligne);
+            ligne++;
+            info_LINK.ID_seul = true;
+            while (Extraire_niveau(ligne) > niveau)
             {
-                //string niveau_S = dataGEDCOM[ligne][0].ToString();
-                //int niveau_I = int.Parse(niveau_S);
-                int niveau_I = Extraire_niveau(ligne);
-                ligne++;
-                while (Extraire_niveau(ligne) > niveau_I) // > +0
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " FILE")
                 {
-                    ajouter = true;
-                    if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " FILE")      // +1 FILLE
+                    (info_LINK.FILE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info_LINK.ID_seul = false;
+                    while (Extraire_niveau(ligne) > niveau + 1)
                     {
-                        if (dataGEDCOM[ligne].Length > 7)
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " FORM")
                         {
-                            N2_FILE = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                        }
-                        ligne++;
-                        while (Extraire_niveau(ligne) > niveau_I + 1) // > +1
-                        {
-                            if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " FORM")// +2 FORM
+                            (info_LINK.FORM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            while (Extraire_niveau(ligne) > niveau + 2)
                             {
-                                if (dataGEDCOM[ligne].Length > 7)
+                                string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                balise_ligne[3] = ligne;
+                                if (balise_3 == (niveau + 3).ToString() + " MEDI")
                                 {
-                                    N2_FORM = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
+                                    (info_LINK.MEDI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                                 }
-                                ligne++;
-                                while (Extraire_niveau(ligne) > niveau_I + 2)
+                                else
                                 {
-                                    if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " FORM")// +3 TYPE
-                                    {
-                                        if (dataGEDCOM[ligne].Length > 7)
-                                        {
-                                            N3_FORM_TYPE = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                                        }
-                                        ligne++;
-                                    }
-                                    else
-                                    {
-                                        EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                        ligne++;
-                                    }
+                                    ligne = Ligne_perdu_plus(
+                                        ligne,
+                                        MethodBase.GetCurrentMethod().Name,
+                                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                        balise_ligne
+                                        );
                                 }
                             }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " TITL")// +2 TITL
-                            {
-                                if (dataGEDCOM[ligne].Length > 7)
-                                {
-                                    N2_TITL = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                                    ligne++;
-                                }
-                            }
-                            else
-                            {
-                                EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                ligne++;
-                            }
                         }
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " FORM") // +1 FORM
-                    {
-                        if (dataGEDCOM[ligne].Length > 7)
+                        else
                         {
-                            N2_FORM = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " TITL") // +1 TITL
-                    {
-                        if (dataGEDCOM[ligne].Length > 7)
-                        {
-                            N2_TITL = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                            ligne++;
-                        }
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
-                    {
-                        USER_REFERENCE_NUMBER N1_REFN;
-                        (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
-                        N1_REFN_liste.Add(N1_REFN);
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE") // +1 NOTE
-                    {
-                        string IDNote;
-                        (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                        N1_NOTE_liste_ID.Add(IDNote);
-                    }
-                    else
-                    {
-                        EcrireBalise(ligne, dataGEDCOM[ligne]);
-                        ligne++;
                     }
                 }
-            }
-            if (ajouter)
-            {
-                liste_MULTIMEDIA_RECORD.Add(new MULTIMEDIA_RECORD()
+                else if (balise_1 == (niveau + 1).ToString() + " FORM")
                 {
-                    N0_ID = N0_ID,
-                    N1_FILE = N2_FILE,
-                    N2_FILE_FORM = N2_FORM,
-                    N2_FILE_TITL = N2_TITL,
-                    N3_FILE_FORM_TYPE = N3_FORM_TYPE,
-                    N1_REFN_liste = N1_REFN_liste,
-                    N1_RIN = N1_RIN,
-                    N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                    N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                    N1_CHAN = N1_CHAN
-                });
+                    info_LINK.ID_seul = false;
+                    (info_LINK.FORM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " TITL")
+                {
+                    info_LINK.ID_seul = false;
+                    (info_LINK.TITL, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                {
+                    info_LINK.ID_seul = false;
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    info_LINK.NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
             }
-            return (N0_ID, ligne);
+            info_LINK.ligne_perdue_liste = ligne_perdue_liste;
+            liste_MULTIMEDIA_LINK.Add(info_LINK);
+            //R..Z("retour L=" + info_LINK.ID_LINK + " R=" + info_LINK.ID_RECORD);
+            return (info_LINK.ID_LINK, ligne);
         }
-        private static void Extraire_MULTIMEDIA_RECORD_N0(int ligne)
+
+        private static int Extraire_OBJE_record(
+            int ligne  // MULTIMEDIA_RECORD
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
             string N0_ID;
             string N1_FORM = null; // v5.5
-            string N1_TITL = null; // v5.5
+            string N1_TITL; // v5.5
             string N1_FILE = null;
-            string N2_FILE_FORM = null;
+            string N2_FILE_FORM;
             string N3_FILE_FORM_TYPE = null;
             string N2_FILE_TITL = null;
             List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
             string N1_RIN = null;
-            List<string> N1_NOTE_liste_ID = new List<string>();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
             string N1_BLOB = null; // v5.5
-            string N1_OBJE = null; // v5.5
+            string N1__DATE = null;// Herisis 
 
             List<string> N1_SOUR_citation_liste_ID = new List<string>();
             List<string> N1_SOUR_source_liste_ID = new List<string>();
-            CHANGE_DATE N1_CHAN = new CHANGE_DATE();
+            int[] balise_ligne = new int[10];
+            CHANGE_DATE N1_CHAN = null;
             N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            Tb_Status.Text = "Décodage du data. Lecture des médias  ID " + N0_ID;
-            Animation(true);
+            balise_ligne[0] = ligne;
             ligne++;
-            while (Extraire_niveau(ligne) > 0)
+            try
             {
-                Application.DoEvents();
-                if (Extraire_balise(dataGEDCOM[ligne]) == "1 FORM")                                     // 1 FORM v5.5
+                while (Extraire_niveau(ligne) > 0)
                 {
-                    N1_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                if (Extraire_balise(dataGEDCOM[ligne]) == "1 TITL")                                     // 1 FORM v5.5
-                {
-                    N1_TITL = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILE")                                // 1 FILLE
-                {
-                    N1_FILE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                             // 2 FORM
-                        {
-                            N2_FILE_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                            while (Extraire_niveau(ligne) > 2)
+                        case "1 FORM":                                                                    // FORM v5.
+                            (N1_FORM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 TITL":                                                                    // TITL v5.5
+                            (N1_TITL, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break; ;
+                        case "1 FILE":
+                            (N1_FILE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            while (Extraire_niveau(ligne) > 1)
                             {
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "3 TYPE")                     // 3 FORM TYPE
+                                string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                balise_ligne[2] = ligne;
+                                switch (balise_2)
                                 {
-                                    N3_FILE_FORM_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    N3_FILE_FORM_TYPE = Avoir_type_media(N3_FILE_FORM_TYPE);
-                                    ligne++;
-                                }
-                                else
-                                {
-                                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                    ligne++;
+                                    case "2 FORM":
+                                        (N2_FILE_FORM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        while (Extraire_niveau(ligne) > 2)
+                                        {
+                                            string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                            balise_ligne[3] = ligne;
+                                            switch (balise_3)
+                                            {
+                                                case "3 TYPE":
+                                                    (N3_FILE_FORM_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                                    break;
+                                                default:
+                                                    ligne = Ligne_perdu_plus(
+                                                        ligne,
+                                                        MethodBase.GetCurrentMethod().Name,
+                                                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                                        balise_ligne
+                                                        );
+                                                    break;
+                                            }
+                                        }
+                                        break;
+                                    case "2 TITL":
+                                        (N2_FILE_TITL, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        break;
+                                    default:
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                        break;
                                 }
                             }
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "2 TITL")                                         // 2 TITL
-                        {
-                            N2_FILE_TITL = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            break;
+                        case "1 REFN":                                                                    // REFN
+                            USER_REFERENCE_NUMBER N1_REFN;
+                            (N1_REFN, ligne, ligne_perdue_liste) = Extraire_USER_REFERENCE_NUMBER(ligne, ligne_perdue_liste);
+                            N1_REFN_liste.Add(N1_REFN);
+                            break;
+                        case "1 RIN":                                                                     // RIN
+                            (N1_RIN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 NOTE":                                                                    // NOTE
+                            string IDNote;
+                            (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                            break;
+                        case "1 BLOB":                                                                    // BLOB V5.4 V5.5
+                            N1_BLOB = "blob";
+                            N1_FILE = "blob.blob";
+                            N1_FORM = "blob";
+                            N2_FILE_FORM = "blob";
                             ligne++;
-                            while (Extraire_niveau(ligne) > 2)
+                            while (Extraire_niveau(ligne) > 1)
                             {
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "3 CONC")                                         // 2 CONC
+                                string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                switch (balise_2)
                                 {
-                                    N2_FILE_TITL += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 CONT")                                    // 2 CONT
-                                {
-                                    N2_FILE_TITL += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                }
-                                else
-                                {
-                                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                    ligne++;
+                                    case "2 CONT":                                                            // CONT
+                                        ligne++;
+                                        break;
+                                    default:
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                        break;
                                 }
                             }
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
+                            break;
+                        case "1 EOBJ":                                                                    // EOBJ V5.4
                             ligne++;
-                        }
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                                                     // 1 REFN
-                {
-                    USER_REFERENCE_NUMBER N1_REFN;
-                    (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
-                    N1_REFN_liste.Add(N1_REFN);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                                                      // 1 RIN
-                {
-                    N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                                     // 1 NOTE
-                {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 BLOB")                                // 1 BLOB v5.5
-                {
-                    N1_BLOB = "blob";
-                    N1_FILE = "blob.svg";
-                    N2_FILE_FORM = "svg";
-
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                             // 2 CONT
-                        {
+                            break;
+                        case "1 OBJE":                                                                    // OBJE v5.5
                             ligne++;
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
+                            while (Extraire_niveau(ligne) > 1)
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                                
+                            break;
+                            
+                        case "1 SOUR":                                                                     // SOUR
+                            string citation;
+                            string source;
+                            (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                            if (IsNotNullOrEmpty(citation)) N1_SOUR_citation_liste_ID.Add(citation);
+                            if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                                N1_SOUR_source_liste_ID.Add(source);
+                            break;
+                        case "1 CHAN":                                                                    // CHAN
+                            (N1_CHAN, ligne, _) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 DATE":                                                                    // _DATE Heridis
+                            (N1__DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
                     }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                                // 1 OBJE v5.5
-                {
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        EcrireBalise(ligne, dataGEDCOM[ligne]);
-                        ligne++;
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                                // 1 SOUR
-                {
-                    string citation;
-                    string source;
-                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) N1_SOUR_source_liste_ID.Add(source);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                // 1 CHAN changer date
-                {
-                    (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                    
                 }
             }
-            liste_MULTIMEDIA_RECORD.Add(new MULTIMEDIA_RECORD()
+            catch (Exception msg)
             {
-                N0_ID = N0_ID,
-                N1_FORM = N1_FORM, //v5.5
-                N1_TITL = N1_TITL, // v5.5
-                N1_FILE = N1_FILE,
-                N2_FILE_FORM = N2_FILE_FORM,
-                N3_FILE_FORM_TYPE = N3_FILE_FORM_TYPE,
-                N2_FILE_TITL = N2_FILE_TITL,
-                N1_REFN_liste = N1_REFN_liste,
-                N1_RIN = N1_RIN,
-                N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                N1_BLOB = N1_BLOB, // v5.5
-                N1_OBJE = N1_OBJE, // v5.5
-                N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                N1_CHAN = N1_CHAN
-            });
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+            }
+            if (!GH.GH.annuler)
+            {
+                liste_MULTIMEDIA_RECORD.Add(new MULTIMEDIA_RECORD()
+                {
+                    ID_RECORD = N0_ID,
+                    FORM = N1_FORM,
+                    FILE = N1_FILE,
+                    FORM_TYPE = N3_FILE_FORM_TYPE,
+                    TITL = N2_FILE_TITL,
+                    REFN_liste = N1_REFN_liste,
+                    RIN = N1_RIN,
+                    NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                    BLOB = N1_BLOB,
+                    //N1_OBJE = N1_OBJE,
+                    SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
+                    SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
+                    CHAN = N1_CHAN,
+                    Herisis_DATE = N1__DATE, // Herisis
+                    ligne_perdue_liste = ligne_perdue_liste
+    });
+            }
+            return ligne;
         }
-        private static (string, int) Extraire_SOURCE_RECORD(int ligne)
+
+        private static int Extraire_SOURCE_RECORD(
+            int ligne
+            , [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            bool ajouter = false;
             string N0_ID;
+            string N0_texte;
+            (_, N0_ID, _, N0_texte, ligne) = Extraire_info_niveau_0(ligne);
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + "<br>code " + callerLineNumber + "</b>" + "<br>ligne=" + ligne + "<br>N0_ID=" + N0_ID + "<br> N0_texte=" + N0_texte);
+            Regler_code_erreur();
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            
+            string N1_CLAS = null;
+            string N1_PERI = null;
+            List<string> N1_SOUR_EVEN_liste_ID = new List<string>();
+            string N1_PAGE = null;
+            List<CENS_record> N1_CENS_liste = new List<CENS_record>(); //V5.3
+            List<ORIG_record> N1_ORIG_liste = new List<ORIG_record>(); //V5.3
+            PUBL_record N1_PUBL_record = null; //V5.3
+            IMMI_record N1_IMMI_record = null; //V5.3
+            string N1_STAT = null; //V5.3
+            string N2_STAT_DATE = null; //V5.3
+            List<string> N1_REFS_liste_EVEN = new List<string>();
+            List<string> N1_REFS_liste_ID = new List<string>(); //V5.3
+            string N1_FIDE = null;  //V5.3
             string N2_DATA_EVEN = null;
             string N3_DATA_EVEN_DATE = null;
             string N3_DATA_EVEN_PLAC = null;
             string N2_DATA_AGNC = null;
-            List<string> N2_DATA_NOTE_liste_ID = new List<string>();
+            List<string> N2_DATA_NOTE_STRUCTURE_liste_ID = new List<string>();
             string N1_AUTH = null;
-            string N1_TITL = null;
+            string N1_CPLR = null;
+            string N1_EDTR = null;
+            List<string> N1_TITL_liste = new List<string>();
             string N1_ABBR = null;
-            string N1_PUBL = null;
-            string N1_TEXT = null;
-            SOURCE_REPOSITORY_CITATION N1_REPO_info = null;
+
+            List<TEXT_STRUCTURE> N1_TEXT_liste = new List<TEXT_STRUCTURE>();
+            string N1_QUAY = null; // V5.3
+            string N1_TYPE = null; // Heridis
+            string N1_DATE = null; // Herisis
+            List<SOURCE_REPOSITORY_CITATION> N1_REPO_liste = new List<SOURCE_REPOSITORY_CITATION>();
             List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
             string N1_RIN = null;
             CHANGE_DATE N1_CHAN = new CHANGE_DATE
@@ -1122,835 +2956,2772 @@ namespace GEDCOM
                 N1_CHAN_DATE = null,
                 N2_CHAN_DATE_TIME = null
             };
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            List<string> N1_OBJE_liste_ID = new List<string>();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<string> MULTIMEDIA_LINK_liste_ID = new List<string>();
             string N1_EVEN = null; // acestrologie valeur I, F
-            N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            Tb_Status.Text = "Décodage du data. Lecture des Sources  ID " + N0_ID;
-            Animation(true);
-            string niveau = Extraire_niveau(ligne).ToString();
-            ligne++;
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
             // niveau 0
-            if (niveau == "0")
+            if (Extraire_niveau(ligne) > 0)
             {
                 while (Extraire_niveau(ligne) > 0)
                 {
-                    Application.DoEvents();
-                    ajouter = true;
-                    string baliseN1 = Extraire_balise(dataGEDCOM[ligne]);
-                    if (baliseN1 == "1 DATA")                                                           // 1 DATA
+                    try
                     {
-                        ligne++;
-                        while (Extraire_niveau(ligne) > 1)
+                        string balise_1 =  Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[1] = ligne;
+                        switch (balise_1)
                         {
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 EVEN")                         // 1 DATA_EVEN  BIRT, DEAT, MARR.
-                            {
-                                Extraire_balise(dataGEDCOM[ligne]);
-                                N2_DATA_EVEN = Extraire_EVENT_liste(Extraire_ligne(dataGEDCOM[ligne], 4));
+                            case "1 CLAS":                                                                // CLAS
+                                (N1_CLAS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 PERI":                                                                // PERI V5.3
+                                (N1_PERI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 SOUR":                                                                // SOUR V5.3
+                                N1_SOUR_EVEN_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                                 ligne++;
-                                while (Extraire_niveau(ligne) > 2)
+                                break;
+                            case "1 PAGE":                                                                // PAGE
+                                (N1_PAGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 CENS":                                                                // CENS v5.3
+                                CENS_record info_CENS = null;
+                                (info_CENS, ligne, ligne_perdue_liste) = Extraire_CENS_record(ligne, ligne_perdue_liste);
+                                N1_CENS_liste.Add(info_CENS);
+                                break;
+                            case "1 ORIG":                                                                // ORIG v5.3
+                                ORIG_record info_ORIG = null;
+                                (info_ORIG, ligne, ligne_perdue_liste) = Extraire_ORIG_record(ligne, ligne_perdue_liste);
+                                N1_ORIG_liste.Add(info_ORIG);
+                                break;
+                            case "1 PUBL":                                                                // PUBL v5.3
+                                (N1_PUBL_record, ligne, ligne_perdue_liste) = Extraire_PUBL_record(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 IMMI":                                                                // IMMI V5.3
+                            case "1 EMIG":
+                                // La documentation de DRAFT Release 5.3 du 4 November 1993 à la page 24, il manque
+                                // la balise pour la section immigration. Probable que la balise soit IMMI ou EMIG
+                                // recherche sur le web à rien donner, à investiquer.
+                                (N1_IMMI_record, ligne, ligne_perdue_liste) = Extraire_IMMI_record(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 STAT":                                                                // STAT
+                                (N1_STAT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                while (Extraire_niveau(ligne) > 1)
                                 {
-                                    if (Extraire_balise(dataGEDCOM[ligne]) == "3 DATE")                 // 3 DATE
+                                    string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                    balise_ligne[2] = ligne;
+                                    switch (balise_2)
                                     {
-                                        N3_DATA_EVEN_DATE = ConvertirDateGEDCOM(Extraire_ligne(dataGEDCOM[ligne],4));
-                                        ligne++;
-                                    } 
-                                    else if (Extraire_balise(dataGEDCOM[ligne]) == "3 PLAC")            // 3 PLAC
-                                    {
-                                        N3_DATA_EVEN_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                        ligne++;
+                                        case "2 DATE":                                                    // DATE
+                                            (N2_STAT_DATE, ligne, ligne_perdue_liste) =
+                                                Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                            break;
+                                        default:
+                                            ligne = Ligne_perdu_plus(
+                                                ligne,
+                                                MethodBase.GetCurrentMethod().Name,
+                                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                                balise_ligne
+                                                );
+                                            break;
                                     }
-                                    else
-                                    {
-                                        EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                        ligne++;
-                                    }
                                 }
-                            }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 AGNC")                    // 2 AGNC
-                            {
-                                N2_DATA_AGNC = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                ligne++;
-                            }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 NOTE")                    // 2 NOTE
-                            {
-                                string IDNote;
-                                (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                                N2_DATA_NOTE_liste_ID.Add(IDNote);
-                            }
-                            else
-                            {
-                                EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                ligne++;
-                            }
-                        }
-                    }
-                    else if (baliseN1 == "1 TITL")                                                      // 1 TITL
-                    {
-                        N1_TITL =  Extraire_ligne(dataGEDCOM[ligne], 4);
-                        ligne++;
-                        while (Extraire_niveau(ligne) > 1)
-                        {
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                         // 2 CONC
-                            {
-                                N1_TITL += Extraire_ligne(dataGEDCOM[ligne], 4);
-                                ligne++;
-                            }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                    // 2 CONT
-                            {
-                                N1_TITL += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
-                                ligne++;
-                            }
-                            else
-                            {
-                                EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                ligne++;
-                            }
-                        }
-                    }
-                    else if (baliseN1 == "1 AUTH")                                                      // 1 AUTH
-                    {
-                        N1_AUTH = Extraire_ligne(dataGEDCOM[ligne], 4);
-                        ligne++;
-                        while (Extraire_niveau(ligne) > 1)
-                        {
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                         // 2 CONT
-                            {
-                                N1_AUTH += "<br/>" + Extraire_ligne( dataGEDCOM[ligne], 4);
-                                ligne++;
-                            }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                    // 2 CONC
-                            {
-                                N1_AUTH += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                                ligne++;
-                            }
-                            else
-                            {
-                                EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                ligne++;
-                            }
-                        }
-                        
-                    }
-                    else if (baliseN1 == "1 PUBL")                                                      // 1 PUBL
-                    {
-                        N1_PUBL = Extraire_ligne(dataGEDCOM[ligne], 4);
-                        ligne++;
-                        while (Extraire_niveau(ligne) > 1)
-                        {
-                            if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                         // 2 CONC
-                            {
-                                N1_PUBL += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                                ligne++;
-                            }
-                            else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                    // 2 CONT
-                            {
-                                if (dataGEDCOM[ligne].Length > 7)
+                                break;
+                            case "1 REFS":                                                                // REFS
+                                string ID = Extraire_ID(dataGEDCOM[ligne]);
+                                if (IsNotNullOrEmpty(ID))
                                 {
-                                    N1_PUBL += "<br />" + dataGEDCOM[ligne].Substring(7);
-                                }
-                                else N1_PUBL += "<br />\n";
-                                ligne++;
-                            }
-                            else
-                            {
-                                EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                ligne++;
-                            }
-                        }
-                    }
-                    else if (baliseN1 == "1 TEXT" && dataGEDCOM[ligne].Length > 7)                      // 1 TEXT
-                    {
-                        (N1_TEXT, ligne) = Extraire_TEXT(ligne);
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                            // 1 REFN
-                    {
-                        USER_REFERENCE_NUMBER N1_REFN;
-                        (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
-                        N1_REFN_liste.Add(N1_REFN);
-                    }
-                    else if (baliseN1 == "1 ABBR")                                                      // 1 ABBR
-                    {
-                        N1_ABBR = Extraire_ligne(dataGEDCOM[ligne], 4);
-                        ligne++;
-                    }
-                    else if (baliseN1 == "1 OBJE")                                                      // 1 OBJE
-                    {
-                        string temp;
-                        (temp, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
-                        N1_OBJE_liste_ID.Add(temp);
-                    }
-                    else if (baliseN1 == "1 REPO")                                                      // 1 REPO
-                    {
-                        (N1_REPO_info, ligne) = Extraire_SOURCE_REPOSITORY_CITATION(ligne);
-                    }
-                    else if (baliseN1 == "1 NOTE")                                                      // 1 NOTE
-                    {
-                        string IDNote;
-                        (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                        N1_NOTE_liste_ID.Add(IDNote);
-                    }
-                    else if (baliseN1 == "1 CHAN")                                                      // 1 CHAN changer date
-                    {
-                        (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
-                    {
-                        N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                        ligne++;
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                             // 1 RIN
-                    {
-                        N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                        ligne++;
-                    }
-                    else if (Extraire_balise(dataGEDCOM[ligne]) == "1 EVEN")                            // 1 EVEN dans ancestrologie
-                    {
-                        N1_EVEN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                        ligne++;
-                    }
-                    else
-                    {
-                        EcrireBalise(ligne,dataGEDCOM[ligne]);
-                        ligne++;
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Souce niveau inconnu", "Problème ? Souce niveau", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            if (ajouter)
-            {
-                liste_SOURCE_RECORD.Add(new SOURCE_RECORD()
-                {
-                    N0_ID = N0_ID,
-                    N2_DATA_EVEN = N2_DATA_EVEN,
-                    N3_DATA_DATE = N3_DATA_EVEN_DATE,
-                    N3_DATA_PLAC = N3_DATA_EVEN_PLAC,
-                    N2_DATA_AGNC = N2_DATA_AGNC,
-                    N2_DATA_NOTE_liste_ID = N2_DATA_NOTE_liste_ID,
-                    N1_AUTH = N1_AUTH,
-                    N1_TITL = N1_TITL,
-                    N1_ABBR = N1_ABBR,
-                    N1_PUBL = N1_PUBL,
-                    N1_TEXT = N1_TEXT,
-                    N1_REPO_info = N1_REPO_info,
-                    N1_REFN_liste = N1_REFN_liste,
-                    N1_RIN = N1_RIN,
-                    N1_CHAN = N1_CHAN,
-                    N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                    N1_OBJE_liste_ID = N1_OBJE_liste_ID,
-                    N1_EVEN = N1_EVEN
-                });
-            }
-            return (N0_ID, ligne);
-        }
-        private static (PLACE_STRUCTURE, int) Extraire_PLACE_STRUCTURE(int ligne)
-        {
-            PLACE_STRUCTURE info = new PLACE_STRUCTURE();
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
-            info.N0_PLAC = null;
-            info.N1_FORM = null;
-            info.N1_FONE = null;
-            info.N2_FONE_TYPE = null;
-            info.N1_ROMN = null;
-            info.N2_ROMN_TYPE = null;
-            info.N2_MAP_LATI = null;
-            info.N2_MAP_LONG = null;
-            info.N1_NOTE_liste_ID = new List<string>();
-            info.N1_SOUR_citation_liste_ID = new List<string>(); // pour GEDitCOM
-            info.N1_SOUR_source_liste_ID = new List<string>(); // pour GEDitCOM
-            if (dataGEDCOM[ligne].Length > 7)
-            {
-                info.N0_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);                                    // PLAC
-            }
-            ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
-            {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " FORM")          // +1 FORM
-                {
-                    info.N1_FORM += Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " FONE")     // +1 FONE
-                {
-                    info.N1_FONE += Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " TYPE")  // +2 FONE_TYPE+
-                        {
-                            info.N2_FONE_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " ROMN")     // +1 ROMN
-                {
-                    info.N1_ROMN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " TYPE")  // +2 RONN_TYPE
-                        {
-                            info.N2_ROMN_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " MAP")      // +1 MAP
-                {
-                    ligne++;
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " LATI")  // +2 MAP_LATI
-                        {
-                            info.N2_MAP_LATI = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            info.N2_MAP_LATI = info.N2_MAP_LATI.Replace("N", "");
-                            info.N2_MAP_LATI = info.N2_MAP_LATI.Replace("S", "-");
-                            ligne++;
-                        }
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " LONG")  // +2 MAP_LONG
-                        {
-                            info.N2_MAP_LONG = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            info.N2_MAP_LONG = info.N2_MAP_LONG.Replace("E", "");
-                            info.N2_MAP_LONG = info.N2_MAP_LONG.Replace("W", "-");
-                            ligne++;
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // 1 NOTE
-                {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    info.N1_NOTE_liste_ID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " SOUR")     // 1 SOUR pour GEDitCOM
-                {
-                    string citation;
-                    string source;
-                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) info.N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) info.N1_SOUR_source_liste_ID.Add(source);
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            return (info, ligne);
-        }
-        private static (string, int) Extraire_REPOSITORY_RECORD(int ligne)
-        {
-            REPOSITORY_RECORD info = new REPOSITORY_RECORD
-            {
-                N0_ID = null,
-                N1_NAME = null,
-                N1_ADDR = null,
-                N1_PHON_liste = null,
-                N1_EMAIL_liste = null,
-                N1_FAX_liste = null,
-                N1_WWW_liste = null,
-                N1_NOTE_liste_ID = null,
-                N1_REFN_liste = null,
-                N1_RIN = null,
-                N1_CHAN = null
-            };
-            List<string> N1_PHON_liste = new List<string>();
-            List<string> N1_EMAIL_liste = new List<string>();
-            List<string> N1_FAX_liste = new List<string>();
-            List<string> N1_WWW_liste = new List<string>();
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
-            info.N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            Tb_Status.Text = "Décodage du data. Lecture des dépôts  ID " + info.N0_ID;
-            Animation(true);
-            ligne++;
-            while (Extraire_niveau(ligne) > 0)
-            {
-                Application.DoEvents();
-                if (Extraire_balise(dataGEDCOM[ligne]) == "1 NAME")                                     // 1 NAME
-                {
-                    info.N1_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                             // 2 CONT
-                        {
-                            info.N1_NAME += "<br/>" + Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                        // 1 CONC
-                        {
-                            info.N1_NAME += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ADDR")                                // 1 ADDR
-                {
-                    (info.N1_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 PHON")                                // 1 PHON
-                {
-                    N1_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 EMAIL")                               // 1 EMAIL
-                {
-                    N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 5));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _EMAIL")                              // 1 _EMAIL
-                {
-                    N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 6));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAX")                                 // 1 FAX
-                {
-                    N1_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WWW")                                 // 1 wwW
-                {
-                    N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _URL")                                // 1 URL
-                {
-                    N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                // 1 NOTE
-                {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                                // 1 REFN
-                {
-                    USER_REFERENCE_NUMBER N1_REFN;
-                    (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
-                    N1_REFN_liste.Add(N1_REFN);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                                 // 1 RIN
-                {
-                    info.N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                // 1 CHAN
-                {
-                    (info.N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            info.N1_PHON_liste = N1_PHON_liste;
-            info.N1_EMAIL_liste = N1_EMAIL_liste;
-            info.N1_FAX_liste = N1_FAX_liste;
-            info.N1_WWW_liste = N1_WWW_liste;
-            info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
-            info.N1_REFN_liste = N1_REFN_liste;
-            liste_REPOSITORY_RECORD.Add(info);
-            return (info.N0_ID, ligne);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ligne"></param>
-        /// <returns> 
-        ///     numero citation, 
-        ///     source ID, 
-        ///     ligne 
-        /// </returns>
-        private static (string, string, int) Extraire_SOURCE_CITATION(int ligne)
-        {
-            string N0_ID_citation;
-            string N0_ID_source;
-            string N0_Titre = null;
-            string N1_TEXT = null;
-            string N1_PAGE = null;
-            string N1_EVEN = null;
-            string N2_EVEN_ROLE = null;
-            string N1_DATA = null;
-            string N2_DATA_DATE = null;
-            string N2_DATA_TEXT = null;
-            List<string> listeObjetIDN3 = new List<string>();
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            string N1_QUAY = null;
-
-
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            GEDCOMClass.ZXCV(dataGEDCOM[ligne]);
-            int niveau_I = Extraire_niveau(ligne);
-            var itemSourceOld = new SOURCE_CITATION();
-            N0_ID_source = Extraire_ID(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
-            if (N0_ID_source == null) N0_Titre = Extraire_texte_ligne1(dataGEDCOM[ligne]);
-            ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
-            {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONT")          // +1 CONT
-                {
-                    N0_Titre += "<br/>" + dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONC")     // +1 CONC
-                {
-                    N0_Titre += " " + dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " TEXT")     // +1 TEXT
-                {
-                    (N1_TEXT, ligne) = Extraire_TEXT(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " PAGE")     // +1 PAGE
-                {
-                    N1_PAGE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " OBJE")     // +1 OBJE
-                {
-                    string temp;
-                    (temp, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
-                    listeObjetIDN3.Add(temp);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " DATA")     // +1 DATA
-                {
-                    ligne++;
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " DATE")  // +2 DATE
-                        {
-                            N2_DATA_DATE = ConvertirDateGEDCOM(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
-                            ligne++;
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() +
-                                " TEXT")                                                                // +2 TEXT
-                        {
-                            N2_DATA_TEXT = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                            ligne++;
-                            while (Extraire_niveau(ligne) > niveau_I + 2)
-                            {
-                                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 3).ToString() + 
-                                    " CONT" && dataGEDCOM[ligne].Length > 7)                            // +3 CONT
-                                {
-                                    N2_DATA_TEXT += "<br />" + dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 3).ToString() +
-                                    " CONC" && dataGEDCOM[ligne].Length > 7)                            // +3 CONT
-                                {
-                                    N2_DATA_TEXT += dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
+                                    N1_REFS_liste_ID.Add(ID);
                                     ligne++;
                                 }
                                 else
                                 {
-                                    ligne++;
-                                    EcrireBalise(ligne, dataGEDCOM[ligne]);
+                                    string refs;
+                                    (refs, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                    N1_REFS_liste_EVEN.Add(refs);
+                                }
+                                break;
+                            case "1 FIDE":                                                                // FIDE
+                                (N1_FIDE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 DATA":                                                                // DATA
+                                ligne++;
+                                while (Extraire_niveau(ligne) > 1)
+                                {
+                                    string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                    balise_ligne[2] = ligne;
+                                    switch (balise_2)
+                                    {
+                                        case "2 EVEN":                                                    // DATA_EVEN  BIRT, DEAT, MARR.
+                                            Avoir_balise_p1(dataGEDCOM[ligne]);
+                                            string even;
+                                            (even, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                            N2_DATA_EVEN = Extraire_EVEN_liste(even);
+                                            while (Extraire_niveau(ligne) > 2)
+                                            {
+                                                string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                                balise_ligne[3] = ligne;
+                                                switch (balise_3)
+                                                {
+                                                    case "3 DATE":                                           // DATE
+                                                        (N3_DATA_EVEN_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                                        break;
+                                                    case "3 PLAC":                                            // PLAC
+                                                        (N3_DATA_EVEN_PLAC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                                        break;
+                                                    default:
+                                                        ligne = Ligne_perdu_plus(
+                                                            ligne,
+                                                            MethodBase.GetCurrentMethod().Name,
+                                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                                            balise_ligne
+                                                            );
+                                                        break;
+                                                }
+                                            }
+                                            break;
+                                        case "2 AGNC":                                                    // AGNC
+                                            (N2_DATA_AGNC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                            break;
+                                        case "2 NOTE":                                                    // NOTE
+                                            string temp2;
+                                            (temp2, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                                            N2_DATA_NOTE_STRUCTURE_liste_ID.Add(temp2);
+                                            break;
+                                        default:
+                                            ligne = Ligne_perdu_plus(
+                                                ligne,
+                                                MethodBase.GetCurrentMethod().Name,
+                                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                                balise_ligne
+                                                );
+                                            break;
+                                    }
+                                }
+                                break;
+                            case "1 DATE":                                                                // DATE Herisis
+                                (N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 TITL":                                                               // TITL
+                                string temp3 = null;
+                                (temp3, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                N1_TITL_liste.Add(temp3);
+                                break;
+                            case "1 AUTH":                                                                // 1 AUTH
+                                (N1_AUTH, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 TEXT":                                                               // TEXT
+                                TEXT_STRUCTURE temp;
+                                (temp, ligne, ligne_perdue_liste) = Extraire_TEXT_STRUCTURE(ligne, ligne_perdue_liste);
+                                N1_TEXT_liste.Add(temp);
+                                break;
+                            case "1 REFN":                                                                // REFN
+                                USER_REFERENCE_NUMBER N1_REFN;
+                                (N1_REFN, ligne, ligne_perdue_liste) = Extraire_USER_REFERENCE_NUMBER(ligne, ligne_perdue_liste);
+                                N1_REFN_liste.Add(N1_REFN);
+                                break;
+                            case "1 ABBR":                                                                // ABBR
+                                (N1_ABBR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 OBJE":                                                                // OBJE
+                                string ID_OBJE;
+                                (ID_OBJE, ligne) = Extraire_MULTIMEDIA_LINK(ligne);
+                                MULTIMEDIA_LINK_liste_ID.Add(ID_OBJE);
+                                break;
+                            case "1 AUDIO":                                                               // AUDIO V5.3
+                                string audio;
+                                (audio, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                MULTIMEDIA_LINK_liste_ID.Add(audio);
+                                break;
+                            case "1 PHOTO":                                                               // PHOTO V5.3
+                                string photo;
+                                (photo, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                MULTIMEDIA_LINK_liste_ID.Add(photo);
+                                break;
+                            case "1 VIDEO":                                                               // VIDEO V5.3
+                                string video;
+                                (video, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                MULTIMEDIA_LINK_liste_ID.Add(video);
+                                break;
+                            case "1 REPO":                                                                // REPO
+                                SOURCE_REPOSITORY_CITATION info_REPO;
+                                (info_REPO, ligne) = Extraire_SOURCE_REPOSITORY_CITATION(ligne, ligne_perdue_liste);
+                                N1_REPO_liste.Add(info_REPO);
+                                break;
+                            case "1 NOTE":                                                                // NOTE
+                                string IDNote;
+                                (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                                N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                                break;
+                            case "1 CHAN":                                                                // CHAN
+                                (N1_CHAN, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 RIN":                                                                 // RIN
+                                (N1_RIN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 EVEN":                                                                // 1 EVEN dans ancestrologie
+                                (N1_EVEN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 QUAY":                                                                // 1 QUAY Heridis
+                                (N1_QUAY, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 CPLR":
+                                (N1_CPLR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 EDTR":
+                                (N1_EDTR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                break;
+                            case "1 TYPE":                                                                // 1 TYPE Heridis
+                                (N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                switch (N1_TYPE.ToUpper())
+                                {
+                                    case "ADMINISTRATIVE DOCUMENT": N1_TYPE = "Document administratif"; break;
+                                    case "DEED": N1_TYPE = "Acte"; break;
+                                    case "OTHER": N1_TYPE = "Autre"; break;
+                                }
+                                break;
+                            default:
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                                break;
+                        }
+                    }
+                    catch (Exception msg)
+                    {
+                        GC.Collect();
+                        string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                        Voir_message(message, msg.Message, GH.GH.erreur);
+                        if (GH.GH.annuler)
+                        {
+                            return ligne;
+                        }
+                    }
+                }
+            }
+            liste_SOURCE_RECORD.Add(new SOURCE_RECORD()
+            {
+
+                N0_ID = N0_ID,
+                N0_texte = N0_texte,
+                N1_CLAS = N1_CLAS,
+                N1_PERI = N1_PERI,
+
+                N1_SOUR_EVEN_liste_ID = N1_SOUR_EVEN_liste_ID,
+                N2_DATA_EVEN = N2_DATA_EVEN,
+                N1_PAGE = N1_PAGE,
+                N1_CENS_liste = N1_CENS_liste,
+                N1_ORIG_liste = N1_ORIG_liste,
+                N1_PUBL_record = N1_PUBL_record,
+                N1_IMMI_record = N1_IMMI_record,
+                N1_STAT = N1_STAT,
+                N2_STAT_DATE = N2_STAT_DATE,
+                N1_REFS_liste_EVEN = N1_REFS_liste_EVEN,
+                N1_REFS_liste_ID = N1_REFS_liste_ID,
+                N1_FIDE = N1_FIDE,
+                N3_DATA_EVEN_DATE = N3_DATA_EVEN_DATE,
+                N3_DATA_EVEN_PLAC = N3_DATA_EVEN_PLAC,
+                N2_DATA_AGNC = N2_DATA_AGNC,
+                N2_DATA_NOTE_STRUCTURE_liste_ID = N2_DATA_NOTE_STRUCTURE_liste_ID,
+                N1_AUTH = N1_AUTH,
+                N1_CPLR = N1_CPLR,
+                N1_EDTR = N1_EDTR,
+                N1_TITL_liste = N1_TITL_liste,
+                N1_ABBR = N1_ABBR,
+                N1_TEXT_liste = N1_TEXT_liste,
+                N1_REPO_liste = N1_REPO_liste,
+                N1_REFN_liste = N1_REFN_liste,
+                N1_RIN = N1_RIN,
+                N1_CHAN = N1_CHAN,
+                N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                MULTIMEDIA_LINK_liste_ID = MULTIMEDIA_LINK_liste_ID,
+                N1_EVEN = N1_EVEN,
+                N1_QUAY = N1_QUAY,
+                N1_TYPE = N1_TYPE,
+                N1_DATE = N1_DATE,
+                ligne_perdue_liste = ligne_perdue_liste
+            });
+            //R..Z("Retour de Extraire_SOURCE_RECORD " + ligne);
+            return ligne;
+        }
+
+        public static (PERSONAL_NAME_STRUCTURE, int, List<Ligne_perdue>) Extraire_PERSONAL_NAME_STRUCTURE(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne );
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int niveau = Extraire_niveau(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            GEDCOMClass.PERSONAL_NAME_PIECES N1_nom_name_pieces = new PERSONAL_NAME_PIECES();
+            GEDCOMClass.PERSONAL_NAME_PIECES N1_FONE_name_pieces = new PERSONAL_NAME_PIECES();
+            GEDCOMClass.PERSONAL_NAME_PIECES N1_ROMN_name_pieces = new PERSONAL_NAME_PIECES();
+            GEDCOMClass.PERSONAL_NAME_STRUCTURE info_nom = new PERSONAL_NAME_STRUCTURE();
+            List<string> Nn_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<string> Nn_SOUR_citation_liste_ID = new List<string>();
+            List<string> Nn_SOUR_source_liste_ID = new List<string>();
+            List<string> Nn_FONE_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<string> Nn_FONE_SOUR_citation_liste_ID = new List<string>();
+            List<string> Nn_FONE_SOUR_source_liste_ID = new List<string>();
+            List<string> Nn_ROMN_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<string> Nn_ROMN_SOUR_citation_liste_ID = new List<string>();
+            List<string> Nn_ROMN_SOUR_source_liste_ID = new List<string>();
+            List<string> alia_liste = new List<string>();
+            (info_nom.N0_NAME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            info_nom.N0_NAME = Extraire_NAME(info_nom.N0_NAME);
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                {
+                    (info_nom.N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    if (info_nom.N1_TYPE.ToLower() == "aka")
+                        info_nom.N1_TYPE = "Alias";
+                    if (info_nom.N1_TYPE.ToLower() == "birth")
+                        info_nom.N1_TYPE = "A la naissance";
+                    if (info_nom.N1_TYPE.ToLower() == "immigrant")
+                        info_nom.N1_TYPE = "À immigrant";
+                    if (info_nom.N1_TYPE.ToLower() == "maiden")
+                        info_nom.N1_TYPE = "Avant le premier mariage";
+                    if (info_nom.N1_TYPE.ToLower() == "married")
+                        info_nom.N1_TYPE = "Au mariage";
+                    if (info_nom.N1_TYPE.ToLower() == "user_defined")
+                        info_nom.N1_TYPE = "Par l'utilisateur";
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NPFX")
+                {
+                    (N1_nom_name_pieces.Nn_NPFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " GIVN")
+                {
+                    (N1_nom_name_pieces.Nn_GIVN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NICK")
+                {
+                    (N1_nom_name_pieces.Nn_NICK, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SPFX")
+                {
+                    (N1_nom_name_pieces.Nn_SPFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SURN")
+                {
+                    (N1_nom_name_pieces.Nn_SURN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NSFX")
+                {
+                    (N1_nom_name_pieces.Nn_NSFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                {
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    Nn_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                {
+                    string ID_citation;
+                    string ID_source;
+                    (
+                        ID_citation, // ID_citation
+                        ID_source, // ID_source
+                        ligne // ligne
+                    ) = Extraire_SOURCE_CITATION(ligne);
+                    if (IsNotNullOrEmpty(ID_citation))
+                        Nn_SOUR_citation_liste_ID.Add(ID_citation);
+                    if (IsNotNullOrEmpty(ID_source) && IsNullOrEmpty(ID_citation))
+                    {
+                        Nn_SOUR_source_liste_ID.Add(ID_source);
+                    }
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " FONE")
+                {
+                    (info_nom.N1_FONE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info_nom.N1_FONE = Extraire_NAME(info_nom.N1_FONE);
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TYPE")
+                        {
+                            (info_nom.N2_FONE_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NPFX")
+                        {
+                            (N1_FONE_name_pieces.Nn_NPFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " GIVN")
+                        {
+                            (N1_FONE_name_pieces.Nn_GIVN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NICK")
+                        {
+                            (N1_FONE_name_pieces.Nn_NICK, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " SPFX")
+                        {
+                            (N1_FONE_name_pieces.Nn_SPFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " SURN")
+                        {
+                            (N1_FONE_name_pieces.Nn_SURN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NSFX")
+                        {
+                            (N1_FONE_name_pieces.Nn_NSFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NOTE")
+                        {
+                            string temp;
+                            (temp, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            Nn_FONE_NOTE_STRUCTURE_liste_ID.Add(temp);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                        {
+                            string citation;
+                            string source;
+                            (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                            if (IsNotNullOrEmpty(citation))
+                                Nn_FONE_SOUR_citation_liste_ID.Add(citation);
+                            if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                                Nn_FONE_SOUR_source_liste_ID.Add(source);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " ROMN")
+                {
+                    (info_nom.N1_ROMN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info_nom.N1_ROMN = Extraire_NAME(info_nom.N1_ROMN);
+                    while (Extraire_niveau(ligne) > 2)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TYPE")
+                        {
+                            (info_nom.N2_ROMN_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NPFX")
+                        {
+                            (N1_ROMN_name_pieces.Nn_NPFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " GIVN")
+                        {
+                            (N1_ROMN_name_pieces.Nn_GIVN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NICK")
+                        {
+                            (N1_ROMN_name_pieces.Nn_NICK, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " SPFX")
+                        {
+                            (N1_ROMN_name_pieces.Nn_SPFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " SURN")
+                        {
+                            (N1_ROMN_name_pieces.Nn_SURN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NSFX")
+                        {
+                            (N1_ROMN_name_pieces.Nn_NSFX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NOTE")
+                        {
+                            string temp2;
+                            (temp2, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            Nn_ROMN_NOTE_STRUCTURE_liste_ID.Add(temp2);
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                        {
+                            string citation;
+                            string source;
+                            (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                            if (IsNotNullOrEmpty(citation))
+                                Nn_ROMN_SOUR_citation_liste_ID.Add(citation);
+                            if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                                Nn_ROMN_SOUR_source_liste_ID.Add(source);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
+                    info_nom.N1_PERSONAL_NAME_PIECES = N1_nom_name_pieces;
+                    info_nom.N1_FONE_name_pieces = N1_FONE_name_pieces;
+                    info_nom.N1_ROMN_name_pieces = N1_ROMN_name_pieces;
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " ALIA")
+                {
+                    string alia;
+                    (alia, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    alia = Extraire_NAME(alia);
+                    alia_liste.Add(alia);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            N1_nom_name_pieces.Nn_NOTE_STRUCTURE_liste_ID = Nn_NOTE_STRUCTURE_liste_ID;
+            N1_nom_name_pieces.Nn_SOUR_citation_liste_ID = Nn_SOUR_citation_liste_ID;
+            N1_nom_name_pieces.Nn_SOUR_source_liste_ID = Nn_SOUR_source_liste_ID;
+            N1_FONE_name_pieces.Nn_NOTE_STRUCTURE_liste_ID = Nn_FONE_NOTE_STRUCTURE_liste_ID;
+            N1_FONE_name_pieces.Nn_SOUR_citation_liste_ID = Nn_FONE_SOUR_citation_liste_ID;
+            N1_FONE_name_pieces.Nn_SOUR_source_liste_ID = Nn_FONE_SOUR_source_liste_ID;
+            N1_ROMN_name_pieces.Nn_NOTE_STRUCTURE_liste_ID = Nn_ROMN_NOTE_STRUCTURE_liste_ID;
+            N1_ROMN_name_pieces.Nn_SOUR_citation_liste_ID = Nn_ROMN_SOUR_citation_liste_ID;
+            N1_ROMN_name_pieces.Nn_SOUR_source_liste_ID = Nn_ROMN_SOUR_source_liste_ID;
+            PERSONAL_NAME_STRUCTURE info_PERSONAL_NAME_STRUCTURE = new PERSONAL_NAME_STRUCTURE
+            {
+                N0_NAME = info_nom.N0_NAME,
+                N1_TYPE = info_nom.N1_TYPE,
+                N1_PERSONAL_NAME_PIECES = N1_nom_name_pieces,
+                N1_FONE = info_nom.N1_FONE,
+                N2_FONE_TYPE = info_nom.N2_FONE_TYPE,
+                N1_FONE_name_pieces = N1_FONE_name_pieces,
+                N1_ROMN = info_nom.N1_ROMN,
+                N2_ROMN_TYPE = info_nom.N2_ROMN_TYPE,
+                N1_ROMN_name_pieces = N1_ROMN_name_pieces,
+                N1_ALIA_liste = alia_liste
+            };
+            return (info_PERSONAL_NAME_STRUCTURE, ligne, ligne_perdue_liste);
+        }
+
+        private static (PLACE_STRUCTURE, int, List<Ligne_perdue>) Extraire_PLACE_STRUCTURE(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int niveau = Extraire_niveau(ligne);
+            //GEDCOMClass.ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "&nbsp;&nbsp;niveau=" + niveau);
+            PLACE_STRUCTURE info = new PLACE_STRUCTURE
+            {
+                N0_PLAC = null,
+                N1_CEME = null,
+                N2_CEME_PLOT = null,
+                N1_FORM = null,
+                N1_SITE = null,
+                N1_FONE = null,
+                N2_FONE_TYPE = null,
+                N1_ROMN = null,
+                N2_ROMN_TYPE = null,
+                N2_MAP_LATI = null,
+                N2_MAP_LONG = null,
+                N1_NOTE_STRUCTURE_liste_ID = new List<string>(),
+                N1_SOUR_citation_liste_ID = new List<string>(), // pour GEDitCOM
+                N1_SOUR_source_liste_ID = new List<string>() // pour GEDitCOM
+            };
+            (info.N0_PLAC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            List<ADDRESS_STRUCTURE> N1_ADDR_liste = new List<ADDRESS_STRUCTURE>();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<string> N1_PHON_liste = new List<string>();
+            List<string> N1_EMAIL_liste = new List<string>();
+            List<string> N1_FAX_liste = new List<string>();
+            List<string> N1_WWW_liste = new List<string>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            string temp;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[0] = ligne;
+                if (balise_1 == (niveau + 1) + " CEME")
+                {
+                    (info.N1_CEME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " PLOT")
+                        {
+                            (info.N2_CEME_PLOT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
+                }
+                else if (balise_1 == (niveau + 1) + " FORM")
+                {
+                    (info.N1_FORM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1) + " SITE")
+                {
+                    (info.N1_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1) + " ADDR")
+                {
+                    ADDRESS_STRUCTURE N1_ADDR;
+                    (N1_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_ADDR_liste.Add(N1_ADDR);
+                }
+                else if (balise_1 == (niveau + 1) + " PHON")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_PHON_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " EMAIL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_EMAIL_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " _EMAIL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_EMAIL_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " FAX")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_FAX_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " WWW")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_WWW_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " _WWW")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_WWW_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " _URL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_WWW_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " FONE")
+                {
+                    (info.N1_FONE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TYPE")
+                        {
+                            (info.N2_FONE_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
+                }
+                else if (balise_1 == (niveau + 1) + " ROMN")
+                {
+                    (info.N1_ROMN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TYPE")
+                        {
+                            (info.N2_ROMN_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
+                }
+                else if (balise_1 == (niveau + 1) + " MAP")
+                {
+                    ligne++;
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " LATI")
+                        {
+                            (info.N2_MAP_LATI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            info.N2_MAP_LATI = info.N2_MAP_LATI.Replace("N", "");
+                            info.N2_MAP_LATI = info.N2_MAP_LATI.Replace("S", "-");
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " LONG")
+                        {
+                            (info.N2_MAP_LONG, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            info.N2_MAP_LONG = info.N2_MAP_LONG.Replace("E", "");
+                            info.N2_MAP_LONG = info.N2_MAP_LONG.Replace("W", "-");
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
+                }
+                else if (balise_1 == (niveau + 1) + " NOTE")
+                {
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else if (balise_1 == (niveau + 1) + " SOUR")
+                {
+                    string citation;
+                    string source;
+                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                    if (IsNotNullOrEmpty(citation))
+                        info.N1_SOUR_citation_liste_ID.Add(citation);
+                    if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                        info.N1_SOUR_source_liste_ID.Add(source);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info.N1_ADDR_liste = N1_ADDR_liste;
+            info.N1_EMAIL_liste = N1_EMAIL_liste;
+            info.N1_FAX_liste = N1_FAX_liste;
+            info.N1_PHON_liste = N1_PHON_liste;
+            info.N1_WWW_liste = N1_WWW_liste;
+            info.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info, ligne, ligne_perdue_liste);
+        }
+
+        private static int Extraire_REPOSITORY_RECORD(int ligne)
+        {
+            Regler_code_erreur();
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            string N0_ID;
+            string N1_NAME = null;
+            string N1_CNTC = null;
+            string N1_SITE = null;
+            List<ADDRESS_STRUCTURE> N1_ADDR_liste = new List<ADDRESS_STRUCTURE>();
+            List<string> N1_PHON_liste = new List<string>();
+            List<string> N1_EMAIL_liste = new List<string>();
+            List<string> N1_FAX_liste = new List<string>();
+            List<string> N1_WWW_liste = new List<string>();
+            string N1_MEDI = null;
+            string N1_CALN = null;
+            string N2_CALN_ITEM = null;
+            string N2_CALN_SHEE = null;
+            string N2_CALN_PAGE = null;
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
+            string N1_RIN = null;
+            List<CHANGE_DATE> N1_CHAN_liste = new List<CHANGE_DATE>();
+            int index_repo = -1;
+            int niveau;
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            (niveau, N0_ID, _, _, ligne) = Extraire_info_niveau_0(ligne);
+            // si ID est null générer un ID;
+            if (IsNullOrEmpty(N0_ID))
+            {
+                N0_ID = "R-" + DateTime.Now.ToString("HHmmssffffff") + hazard.Next(999).ToString();
+            }
+            else
+            {// avoir index de la note existante
+                index_repo = Avoir_index_repo(N0_ID);
+            }
+            try
+            {
+                while ((Extraire_niveau(ligne) > niveau))
+                {
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
+                    {
+                        case "1 NAME":                                                                    // NAME
+                            (N1_NAME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 CNTC":                                                                    // CNTC V5.3
+                            (N1_CNTC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 SITE":                                                                    // SITE V5.3
+                            (N1_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 ADDR":                                                                    // ADDR
+                            ADDRESS_STRUCTURE N1_ADDR;
+                            (N1_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_ADDR_liste.Add(N1_ADDR);
+                            break;
+                        case "1 PHON":                                                                     // PHON
+                            string phon;
+                            (phon, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_PHON_liste.Add(phon);
+                            break;
+                        case "1 EMAIL":                                                                   // EMAIL
+                            string email;
+                            (email, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_EMAIL_liste.Add(email);
+                            break;
+                        case "1 _EMAIL":                                                                  // _EMAIL
+                            string email2;
+                            (email2, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_EMAIL_liste.Add(email2);
+                            break;
+                        case "1 FAX":                                                                     // FAX
+                            string fax;
+                            (fax, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_FAX_liste.Add(fax);
+                            break;
+                        case "1 WWW":                                                                     // www
+                            string www;
+                            (www, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_WWW_liste.Add(www);
+                            break;
+                        case "1 _WWW":                                                                    // _www
+                            string www2;
+                            (www2, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_WWW_liste.Add(www2);
+                            break;
+                        case "1 _URL":                                                                    // URL
+                            string url;
+                            (url, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_WWW_liste.Add(url);
+                            ligne++;
+                            break;
+                        case "1 MEDI":                                                                    // MEDI V5.3
+                            (N1_MEDI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 CALN":                                                                    // CALN V5.3
+                            (N1_CALN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            while (Extraire_niveau(ligne) > niveau + 1)
+                            {
+                                string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                balise_ligne[0] = ligne;
+                                switch (balise_2)
+                                {
+                                    case "2 ITEM":                                                        // CALN ITEM V5.3
+                                        (N2_CALN_ITEM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        break;
+                                    case "2 SHEE":                                                        // CALN SHEE V5.3
+                                        (N2_CALN_SHEE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        break;
+                                    case "2 PAGE":                                                        // CALN PAGE V5.3
+                                        (N2_CALN_PAGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        break;
+                                    default:
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                        break;
+                                }
+                            }
+                            break;
+                        case "1 NOTE":                                                                        // NOTE
+                            string IDNote;
+                            (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                            break;
+                        case "1 REFN":                                                                        // REFN
+                            USER_REFERENCE_NUMBER N1_REFN;
+                            (N1_REFN, ligne, ligne_perdue_liste) = Extraire_USER_REFERENCE_NUMBER(ligne, ligne_perdue_liste);
+                            N1_REFN_liste.Add(N1_REFN);
+                            break;
+                        case "1 RIN":                                                                         // RIN
+                            (N1_RIN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 CHAN":                                                                        // CHAN
+                            CHANGE_DATE info_date;
+                            (info_date, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                            N1_CHAN_liste.Add(info_date);
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
+                    }
+                }
+            }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+            }
+            if (!GH.GH.annuler)
+            {
+                if (index_repo == -1) //nouvelle, on ajoute
+                {
+                    REPOSITORY_RECORD info_repo = new REPOSITORY_RECORD
+                    {
+                        ligne_perdue_liste = ligne_perdue_liste,
+                        N0_ID = N0_ID,
+                        N1_ADDR_liste = N1_ADDR_liste,
+                        N1_NAME = N1_NAME,
+                        N1_CALN = N1_CALN,
+                        N2_CALN_ITEM = N2_CALN_ITEM,
+                        N2_CALN_PAGE = N2_CALN_PAGE,
+                        N2_CALN_SHEE = N2_CALN_SHEE,
+                        N1_CHAN_liste = N1_CHAN_liste,
+                        N1_CNTC = N1_CNTC,
+                        N1_EMAIL_liste = N1_EMAIL_liste,
+                        N1_FAX_liste = N1_FAX_liste,
+                        N1_MEDI = N1_MEDI,
+                        N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                        N1_PHON_liste = N1_PHON_liste,
+                        N1_REFN_liste = N1_REFN_liste,
+                        N1_RIN = N1_RIN,
+                        N1_SITE = N1_SITE,
+                        N1_WWW_liste = N1_WWW_liste
+
+                    };
+                    liste_REPOSITORY_RECORD.Add(info_repo);
+                }
+                else // repo existe, on modifie.
+                {
+                    // ADDR
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_ADDR_liste))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_ADDR_liste = N1_ADDR_liste;
+                    }
+                    else
+                    {
+                        foreach (ADDRESS_STRUCTURE info_adresse in N1_ADDR_liste)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_ADDR_liste.Add(info_adresse);
+                        }
+                    }
+                    // name
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_NAME))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_NAME = N1_NAME;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_NAME += System.Environment.NewLine + N1_NAME;
+                    }
+                    // CALN
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_CALN))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_CALN = N1_CALN;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_CALN += System.Environment.NewLine + N1_CALN;
+                    }
+                    // CALN ITEM
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N2_CALN_ITEM))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N2_CALN_ITEM = N2_CALN_ITEM;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N2_CALN_ITEM += System.Environment.NewLine + N2_CALN_ITEM;
+                    }
+                    // CALN SHEE
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N2_CALN_SHEE))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N2_CALN_SHEE = N2_CALN_SHEE;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N2_CALN_SHEE += System.Environment.NewLine + N2_CALN_SHEE;
+                    }
+                    // CALN PAGE
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N2_CALN_PAGE))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N2_CALN_PAGE = N2_CALN_PAGE;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N2_CALN_PAGE += System.Environment.NewLine + N2_CALN_PAGE;
+                    }
+                    // CHAN
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_CHAN_liste))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_CHAN_liste = N1_CHAN_liste;
+                    }
+                    else
+                    {
+                        foreach (CHANGE_DATE info_date in N1_CHAN_liste)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_CHAN_liste.Add(info_date);
+                        }
+                    }
+                    // CNTC
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_CNTC))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_CNTC = N1_CNTC;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_CNTC += System.Environment.NewLine + N1_CNTC;
+                    }
+                    // EMAIL
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_EMAIL_liste))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_EMAIL_liste = N1_EMAIL_liste;
+                    }
+                    else
+                    {
+                        foreach (string info_email in N1_EMAIL_liste)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_EMAIL_liste.Add(info_email);
+                        }
+                    }
+                    // FAX
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_FAX_liste))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_FAX_liste = N1_FAX_liste;
+                    }
+                    else
+                    {
+                        foreach (string info_FAX in N1_FAX_liste)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_FAX_liste.Add(info_FAX);
+                        }
+                    }
+                    // PHON
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_PHON_liste))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_PHON_liste = N1_PHON_liste;
+                    }
+                    else
+                    {
+                        foreach (string info_PHON in N1_PHON_liste)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_PHON_liste.Add(info_PHON);
+                        }
+                    }
+                    // WWW
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_WWW_liste))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_WWW_liste = N1_WWW_liste;
+                    }
+                    else
+                    {
+                        foreach (string info_WWW in N1_WWW_liste)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_WWW_liste.Add(info_WWW);
+                        }
+                    }
+                    // MEDI
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_MEDI))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_MEDI = N1_MEDI;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_MEDI += System.Environment.NewLine + N1_MEDI;
+                    }
+                    // NOTE
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_NOTE_STRUCTURE_liste_ID))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+                    }
+                    else
+                    {
+                        foreach (string info_NOTE in N1_NOTE_STRUCTURE_liste_ID)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_NOTE_STRUCTURE_liste_ID.Add(info_NOTE);
+                        }
+                    }
+                    // REFN
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_REFN_liste))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_REFN_liste = N1_REFN_liste;
+                    }
+                    else
+                    {
+                        foreach (USER_REFERENCE_NUMBER info_REFN in N1_REFN_liste)
+                        {
+                            liste_REPOSITORY_RECORD[index_repo].N1_REFN_liste.Add(info_REFN);
+                        }
+                    }
+                    // RIN
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_RIN))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_RIN = N1_RIN;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_RIN += System.Environment.NewLine + N1_RIN;
+                    }
+                    // SITE
+                    if (IsNullOrEmpty(liste_REPOSITORY_RECORD[index_repo].N1_SITE))
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_SITE = N1_SITE;
+                    }
+                    else
+                    {
+                        liste_REPOSITORY_RECORD[index_repo].N1_SITE += System.Environment.NewLine + N1_SITE;
+                    }
+                }
+            }
+            return ligne;
+        }
+
+        private static (CENS_record, int, List<Ligne_perdue>) Extraire_CENS_record(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
+        {
+            // utiliser avec SOUR de V5.3
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            CENS_record info_CENS = new CENS_record();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            int niveau = Extraire_niveau(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            ligne++;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[0] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " DATE")
+                {
+                    (info_CENS.N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " LINE")
+                {
+                    (info_CENS.N1_LINE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " DWEL")
+                {
+                    (info_CENS.N1_DWEL, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " FAMN")
+                {
+                    (info_CENS.N1_FAMN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                {
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info_CENS.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info_CENS, ligne, ligne_perdue_liste);
+        }
+        public static (
+            int,
+            string,
+            string,
+            string,
+            int
+        ) Extraire_info_niveau_0( // modifier
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+            /*
+                format de la première ligne
+            1               |niveau|balise|ID|              3
+            2               |niveau|ID    |balise| texte|   4 et plus
+                ou
+            3               |niveau|balise|ID    | texte|   4 et plus
+                ou
+            4               |niveau|balise|texte |          3 et plus 
+            cas position    |   0      1     2       3      nombre
+            
+             retourne (texte, ID, position_ID, ligne)
+             */
+            if (ligne < 1) return (-1, null, null, null, ligne);
+            string balise_0 = Avoir_balise(dataGEDCOM[ligne]);
+            string balise_1;
+            string ID = null;
+            int section_balise = 1;
+            int section_ID = 0;
+            string texte_ligne = dataGEDCOM[ligne];
+            string texte_retour = null;// le texte à retouner
+            texte_ligne = texte_ligne.TrimStart();
+            texte_ligne = texte_ligne.TrimEnd();
+            // retire les espace d'extra
+            string texte2 = texte_ligne[0].ToString();
+            for (int f = 1; f < texte_ligne.Count(); f++)
+            {
+                if (texte_ligne[f] == ' ' && texte_ligne[f - 1] == ' ')
+                {
+                    texte2 += "#A#A#A#";
+                }
+                else texte2 += texte_ligne[f].ToString();
+            }
+
+            texte2 = String.Join(" ", texte2.Split(new string[] { " " }, // retire les espaces d'extra
+                StringSplitOptions.RemoveEmptyEntries));
+            // séparer la ligne en section
+            char[] espace = { ' ' };
+            string[] section = texte2.Split(espace);
+            // niveau de la ligne
+            int niveau = Int32.Parse(section[0]);
+            // nombre de section dans la ligne
+            int nombre_section = section.Length;
+            // trouve ID
+            char at = '@';
+            if (nombre_section > 2)
+            {
+                if (section[1][0] == at && section[1][section[1].Length - 1] == at)
+                // section 1 est un ID
+                {
+                    ID = Retirer_marque(section[1]);
+                    section_ID = 1;
+                    section_balise = 2;
+                    balise_0 = Retirer_marque(section[2]);
+                }
+                if (section[2][0] == at && section[2][section[2].Length - 1] == at)
+                {
+                    //GEDCOMClass.ZXXCV("ID section 2");
+
+                    ID = Retirer_marque(section[2]);
+                    section_ID = 2;
+                    section_balise = 1;
+                    balise_0 = Retirer_marque(section[1]);
+                }
+            }
+            // retirer @ du ID
+            if (section_ID == 0) balise_0 = section[1];
+            if (IsNotNullOrEmpty(ID)) ID = ID.Trim(at);
+
+            // récupérer le texte de la première ligne
+
+            if (nombre_section == 3 && section_balise > 0 && section_ID > 0)
+            {// cas 1 pas de texte
+            }
+            else if (nombre_section > 3 && section_balise > 0 && section_ID > 0)
+            {// cas 2 et 3 avec balise ID texte
+                texte_retour = Retirer_marque(texte2.Substring(section[0].Length + section[1].Length + section[2].Length + 3));
+            }
+            else if (nombre_section > 2 && section_balise == 1 && section_ID == 0)
+            {// cas 4 avec balise texte
+                texte_retour = Retirer_marque(texte2.Substring(section[0].Length + section[1].Length + 2));
+            }
+            ligne++;
+
+            // extraire les lignes suivantes avec balise CONT CONC
+            balise_1 = Avoir_balise_p1(dataGEDCOM[ligne]);
+            while (balise_1 == (niveau + 1).ToString() + " CONT" || balise_1 == (niveau + 1).ToString() + " CONC")
+            {
+                balise_1 = Avoir_balise_p1(dataGEDCOM[ligne]);
+                if (balise_1 == (niveau + 1).ToString() + " CONT")                                    // +1 CONT
+                {
+                    texte_retour += System.Environment.NewLine + Extraire_textuel(ligne);
+                    ligne++;
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " CONC")                               // +1 CONC
+                {
+                    texte_retour += " " + Extraire_textuel(ligne);
+                    ligne++;
+                }
+            }
+            return (niveau, ID, balise_0, texte_retour, ligne);
+        }
+
+        private static (IMMI_record, int, List<Ligne_perdue>) Extraire_IMMI_record(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
+        {
+            // utiliser avec SOUR de V5.3
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            IMMI_record info_IMMI = new IMMI_record();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<TEXT_STRUCTURE> N1_TEXT_liste = new List<TEXT_STRUCTURE>();
+            int niveau = Extraire_niveau(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            ligne++;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[0] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " NAME")
+                {
+                    (info_IMMI.N1_NAME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " PORT")
+                {
+                    ligne++;
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " ARVL")
+                        {
+                            ligne++;
+                            while (Extraire_niveau(ligne) > niveau + 2)
+                            {
+                                string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                balise_ligne[3] = ligne;
+                                if (balise_3 == (niveau + 3).ToString() + " DATE")
+                                {
+                                    (info_IMMI.N3_PORT_ARVL_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                }
+                                else if (balise_3 == (niveau + 3).ToString() + " PLAC")
+                                {
+                                    (info_IMMI.N3_PORT_ARVL_PLAC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                }
+                                else
+                                {
+                                    ligne = Ligne_perdu_plus(
+                                        ligne,
+                                        MethodBase.GetCurrentMethod().Name,
+                                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                        balise_ligne
+                                        );
+                                }
+                            }
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " DPRT")
+                        {
+                            {
+                                ligne++;
+                                while (Extraire_niveau(ligne) > niveau + 2)
+                                {
+                                    string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                    balise_ligne[3] = ligne;
+                                    if (balise_3 == (niveau + 3).ToString() + " DATE")
+                                    {
+                                        (info_IMMI.N3_PORT_DPRT_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                    }
+                                    else if (balise_3 == (niveau + 3).ToString() + " PLAC")
+                                    {
+                                        (info_IMMI.N3_PORT_DPRT_PLAC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                    }
+                                    else
+                                    {
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                    }
                                 }
                             }
                         }
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE
+                else if (balise_1 == (niveau + 1).ToString() + " TEXT")
+                {
+                    TEXT_STRUCTURE temp;
+                    (temp, ligne, ligne_perdue_liste) = Extraire_TEXT_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_TEXT_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
                 {
                     string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " EVEN")     // +1 EVEN
+                else
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        N1_EVEN = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                    }
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info_IMMI.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            info_IMMI.N1_TEXT_liste = N1_TEXT_liste;
+            return (info_IMMI, ligne, ligne_perdue_liste);
+        }
+
+        private static (ORIG_record, int, List<Ligne_perdue>) Extraire_ORIG_record(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z(" LP De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+            // utiliser avec SOUR de V5.3
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            ORIG_record info_ORIG = new ORIG_record();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            int niveau = Extraire_niveau(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            ligne++;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " NAME")
+                {
+                    (info_ORIG.N1_NAME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                {
+                    (info_ORIG.N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                {
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info_ORIG.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info_ORIG, ligne, ligne_perdue_liste);
+        }
+
+        private static (PUBL_record, int, List<Ligne_perdue>) Extraire_PUBL_record(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
+        {
+            // utiliser avec SOUR de V5.3
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            PUBL_record info_PUBL = new PUBL_record();
+            List<ADDRESS_STRUCTURE> N1_ADDR_liste = new List<ADDRESS_STRUCTURE>();
+            List<string> N1_PHON_liste = new List<string>();
+            List<string> N1_FAX_liste = new List<string>();
+            List<string> N1_EMAIL_liste = new List<string>();
+            List<string> N1_WWW_liste = new List<string>();
+            int niveau;
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            string temp;
+            (niveau, _, _, info_PUBL.N1_PUBL, ligne) = Extraire_info_niveau_0(ligne);
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " NAME")
+                {
+                    (info_PUBL.N1_NAME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                {
+                    (info_PUBL.N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " PUBR")
+                {
+                    (info_PUBL.N1_PUBR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SITE")
+                {
+                    (info_PUBL.N1_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " ADDR")
+                {
+                    ADDRESS_STRUCTURE N1_ADDR;
+                    (N1_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_ADDR_liste.Add(N1_ADDR);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " PHON")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_PHON_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " FAX")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_FAX_liste.Add(temp);
+                    break;
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " EMAIL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_EMAIL_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " _EMAIL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_EMAIL_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " WWW" || balise_1 == (niveau + 1).ToString() + " _WWW" || balise_1 == (niveau + 1).ToString() + " _URL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N1_WWW_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " DATE")
+                {
+                    (info_PUBL.N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " EDTN")
+                {
+                    (info_PUBL.N1_EDTN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SERS")
+                {
+                    (info_PUBL.N1_SERS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " ISSU")
+                {
+                    (info_PUBL.N1_ISSU, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " LCCN")
+                {
+                    (info_PUBL.N1_LCCN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info_PUBL.N1_ADDR_liste = N1_ADDR_liste;
+            info_PUBL.N1_PHON_liste = N1_PHON_liste;
+            info_PUBL.N1_PHON_liste = N1_PHON_liste;
+            info_PUBL.N1_PHON_liste = N1_PHON_liste;
+            info_PUBL.N1_PHON_liste = N1_PHON_liste;
+            return (info_PUBL, ligne, ligne_perdue_liste);
+        }
+
+        private static (string, string, int) Extraire_SOURCE_CITATION(
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "&nbsp;&nbsp;ligne=" + ligne);
+            Regler_code_erreur();
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            SOURCE_CITATION info = new SOURCE_CITATION();
+            Regler_code_erreur();
+            List<TEXT_STRUCTURE> N2_DATA_TEXT_liste = new List<TEXT_STRUCTURE>();
+            List<string> N1_SOUR_liste_ID = new List<string>();
+            List<string> N1_TITL_liste = new List<string>();
+            List<SOURCE_REPOSITORY_CITATION> N1_REPO_liste = new List<SOURCE_REPOSITORY_CITATION>();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<string> MULTIMEDIA_LINK_liste_ID = new List<string>();
+            List<string> N1_SOUR_liste_EVEN = new List<string>();
+            List<CENS_record> N1_CENS_liste = new List<CENS_record>();
+            List<ORIG_record> N1_ORIG_liste = new List<ORIG_record>();
+            List<TEXT_STRUCTURE> N1_TEXT_liste = new List<TEXT_STRUCTURE>();
+            List<string> N1_REFS_liste_ID = new List<string>();
+            List<string> N1_REFS_liste_EVEN = new List<string>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            int niveau;
+            bool source_ID_seulement = true;
+            try
+            {
+                niveau = Extraire_niveau(ligne);
+                info.N0_ID_SOUR = Extraire_ID(dataGEDCOM[ligne]);
+                if (info.N0_ID_SOUR == null)
+                {
+                    (info.N0_texte, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else
                     ligne++;
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
+                Regler_code_erreur();
+                if (IsNotNullOrEmpty(info.N0_texte)) source_ID_seulement = false;
+                while (Extraire_niveau(ligne) > niveau)
+                {
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    if (balise_1 == (niveau + 1).ToString() + " TEXT")
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " ROLE")  // +2 ROLE
+                        source_ID_seulement = false;
+                        TEXT_STRUCTURE temp;
+                        (temp, ligne, ligne_perdue_liste) = Extraire_TEXT_STRUCTURE(ligne, ligne_perdue_liste);
+                        N1_TEXT_liste.Add(temp);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " CLAS")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_CLAS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " PERI")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_PERI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " TITL")
+                    {
+                        source_ID_seulement = false;
+                        string temp2;
+                        (temp2, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        N1_TITL_liste.Add(temp2);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                    {
+                        source_ID_seulement = false;
+                        string temp_texte;
+                        string ID;
+                        (_, ID, _, temp_texte, ligne) = Extraire_info_niveau_0(ligne);
+                        if (IsNotNullOrEmpty(ID))
                         {
-                            N2_EVEN_ROLE = ConvertirDateGEDCOM(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
+                            N1_SOUR_liste_ID.Add(ID);
+                        }
+                        else
+                        {
+                            N1_SOUR_liste_EVEN.Add(temp_texte);
+                        }
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " PAGE")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_PAGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " DATE")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " CENS")
+                    {
+                        source_ID_seulement = false;
+                        CENS_record info_CEMS;
+                        (info_CEMS, ligne, ligne_perdue_liste) = Extraire_CENS_record(ligne, ligne_perdue_liste);
+                        N1_CENS_liste.Add(info_CEMS);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " ORIG")
+                    {
+                        source_ID_seulement = false;
+                        ORIG_record info_ORIG;
+                        (info_ORIG, ligne, ligne_perdue_liste) = Extraire_ORIG_record(ligne, ligne_perdue_liste);
+                        N1_ORIG_liste.Add(info_ORIG);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " PUBL")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_PUBL_record, ligne, ligne_perdue_liste) = Extraire_PUBL_record(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " REPO")
+                    {
+                        source_ID_seulement = false;
+                        SOURCE_REPOSITORY_CITATION info_REPO;
+                        (info_REPO, ligne) = Extraire_SOURCE_REPOSITORY_CITATION(ligne, ligne_perdue_liste);
+                        N1_REPO_liste.Add(info_REPO);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " IMMI")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_IMMI_record, ligne, ligne_perdue_liste) = Extraire_IMMI_record(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " OBJE")
+                    {
+                        source_ID_seulement = false;
+                        string temp3;
+                        (temp3, ligne) = Extraire_MULTIMEDIA_LINK(ligne);
+                        MULTIMEDIA_LINK_liste_ID.Add(temp3);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " AUDIO")
+                    {
+                        source_ID_seulement = false;
+                        string audio;
+                        (audio, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        MULTIMEDIA_LINK_liste_ID.Add(audio);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " PHOTO")
+                    {
+                        source_ID_seulement = false;
+                        string photo;
+                        (photo, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        MULTIMEDIA_LINK_liste_ID.Add(photo);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " VIDEO")
+                    {
+                        source_ID_seulement = false;
+                        string video;
+                        (video, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        MULTIMEDIA_LINK_liste_ID.Add(video);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " DATA")
+                    {
+                        source_ID_seulement = false;
+                        ligne++;
+                        while (Extraire_niveau(ligne) > niveau + 1)
+                        {
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == (niveau + 2).ToString() + " DATE")
+                            {
+                                (info.N2_DATA_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else if (balise_2 == (niveau + 2).ToString() + " TEXT")
+                            {
+                                TEXT_STRUCTURE temp4;
+                                (temp4, ligne, ligne_perdue_liste) = Extraire_TEXT_STRUCTURE(ligne, ligne_perdue_liste);
+                                N2_DATA_TEXT_liste.Add(temp4);
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                    {
+                        source_ID_seulement = false;
+                        string IDNote;
+                        (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                        N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " EVEN")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_EVEN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        while (Extraire_niveau(ligne) > niveau + 1)
+                        {
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == (niveau + 2).ToString() + " ROLE")
+                            {
+                                (info.N2_EVEN_ROLE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " STAT")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_STAT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        while (Extraire_niveau(ligne) > niveau + 1)
+                        {
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == (niveau + 2).ToString() + " DATE")
+                            {
+                                (info.N2_STAT_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " REFS")
+                    {
+                        source_ID_seulement = false;
+                        string ID1 = Extraire_ID(dataGEDCOM[ligne]);
+                        if (IsNotNullOrEmpty(ID1))
+                        {
+                            N1_REFS_liste_ID.Add(ID1);
                             ligne++;
                         }
                         else
                         {
-
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            string refs;
+                            (refs, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_REFS_liste_EVEN.Add(refs);
                         }
                     }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " QUAY")     // +1 QUAY
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == (niveau + 1).ToString() + " FIDE")
                     {
-                        N1_QUAY = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
+                        source_ID_seulement = false;
+                        (info.N1_FIDE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
+                    else if (balise_1 == (niveau + 1).ToString() + " QUAY")
+                    {
+                        source_ID_seulement = false;
+                        (info.N1_QUAY, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " _QUAL") // _QUAL Heridis
+                    {
+                        source_ID_seulement = false;
+                        ligne++;
+                        while (Extraire_niveau(ligne) > niveau + 1)
+                        {
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                            {
+                                (info.N2__QUAL__SOUR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else if (balise_2 == (niveau + 2).ToString() + " INFO")
+                            {
+                                (info.N2__QUAL__INFO, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else if (balise_2 == (niveau + 2).ToString() + " _EVID")
+                            {
+                                (info.N2__QUAL__EVID, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else
+                    {
+                        source_ID_seulement = false;
+                        ligne = Ligne_perdu_plus(
+                            ligne,
+                            MethodBase.GetCurrentMethod().Name,
+                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                            balise_ligne
+                            );
+                    }
                 }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
             }
-            // verifie si la ciation à de l'information ou seulement le ID de la source
-            if (
-                N0_Titre == null &&
-                N1_TEXT == null &&
-                N1_PAGE == null &&
-                N1_EVEN == null &&
-                N2_EVEN_ROLE == null &&
-                N1_DATA == null &&
-                N2_DATA_DATE == null &&
-                N2_DATA_TEXT == null &&
-                N1_QUAY == null &&
-                N1_NOTE_liste_ID == null &&
-                listeObjetIDN3 == null
-                )
+            catch (Exception msg)
             {
-                return (null, N0_ID_source, ligne);
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
             }
-            else
+            // numero de la citation
+            if (source_ID_seulement)
             {
-                // numero de la citation
-                conteur_citation++;
-                N0_ID_citation = "C" + conteur_citation.ToString();
-                itemSourceOld.N0_ID_citation = N0_ID_citation;
-                itemSourceOld.N0_ID_source = N0_ID_source;
-                itemSourceOld.N0_Titre = N0_Titre;
-                itemSourceOld.N1_TEXT = N1_TEXT;
-                itemSourceOld.N1_PAGE = N1_PAGE;
-                itemSourceOld.N1_EVEN = N1_EVEN;
-                itemSourceOld.N2_EVEN_ROLE = N2_EVEN_ROLE;
-                itemSourceOld.N1_DATA = N1_DATA;
-                itemSourceOld.N2_DATA_DATE = N2_DATA_DATE;
-                itemSourceOld.N2_DATA_TEXT = N2_DATA_TEXT;
-                itemSourceOld.N1_QUAY = N1_QUAY;
-                itemSourceOld.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
-                itemSourceOld.N1_OBJE_ID_liste = listeObjetIDN3;
-                liste_SOURCE_CITATION.Add(itemSourceOld);
-                return (N0_ID_citation, N0_ID_source, ligne);
+                return (null, info.N0_ID_SOUR, ligne);
             }
+            info.ligne_perdue_liste = ligne_perdue_liste;
+            info.N0_ID_citation = "IC" + String.Format("{0:-00-00-00-00}", ++numero_ID);
+            info.source_ID_seulement = source_ID_seulement;
+            info.MULTIMEDIA_LINK_liste_ID = MULTIMEDIA_LINK_liste_ID;
+            info.N2_DATA_TEXT_liste = N2_DATA_TEXT_liste;
+            info.N1_SOUR_liste_ID = N1_SOUR_liste_ID;
+            info.N1_REFS_liste_ID = N1_REFS_liste_ID;
+            info.N1_TITL_liste = N1_TITL_liste;
+            info.N1_REPO_liste = N1_REPO_liste;
+            info.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            info.N1_TEXT_liste = N1_TEXT_liste;
+            info.N1_SOUR_liste_EVEN = N1_SOUR_liste_EVEN;
+            info.N1_REFS_liste_EVEN = N1_REFS_liste_EVEN;
+            info.N1_ORIG_liste = N1_ORIG_liste;
+            info.N1_CENS_liste = N1_CENS_liste;
+            liste_SOURCE_CITATION.Add(info);
+            //R..Z("extraire citation ID source = " + info.N0_ID_citation + " ID souce=" + info.N0_ID_SOUR + " source seulement="+ info.source_ID_seulement.ToString());
+            return (info.N0_ID_citation, info.N0_ID_SOUR, ligne);
         }
-        public static bool Extraire_GEDCOM()
+
+        public static bool Extraire_GEDCOM(
+            )
         {
-            Tb_Status.Text = "Décodage du data.";
-            Application.DoEvents();
+            //R.Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name);
+            Regler_code_erreur();
+            Stopwatch chrono;
+            chrono = Stopwatch.StartNew();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int niveau;
             liste_SUBMITTER_RECORD = new List<SUBMITTER_RECORD>();
-            listeInfoNote = new List<NOTE_RECORD>();
+            liste_NOTE_RECORD = new List<NOTE_RECORD>();
             liste_INDIVIDUAL_RECORD = new List<INDIVIDUAL_RECORD>();
             liste_FAM_RECORD = new List<FAM_RECORD>();
             liste_SOURCE_RECORD = new List<SOURCE_RECORD>();
             liste_MULTIMEDIA_RECORD = new List<MULTIMEDIA_RECORD>();
             liste_REPOSITORY_RECORD = new List<REPOSITORY_RECORD>();
             liste_REPOSITORY_RECORD = new List<REPOSITORY_RECORD>();
-            long dataGEDCOMCount = dataGEDCOM.Count;
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            int[] balise_ligne = new int[10];
+            if (GH.GH.annuler) return (false);
             try
             {
-                SiBaliseZero("0 @SUBMISSION@ SUBN");                                                    // 0 SUBM
-                ligne = 0;
-                Tb_Status.Text = "Décodage du data. Lecture des chercheurs";
-                Application.DoEvents();
-                do
+                ligne = 1;
+                while (dataGEDCOM[ligne].ToUpper() != "0 TRLR".Trim())
                 {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "SUBM")
+                    R.Z("ligne=" + ligne +" > " + dataGEDCOM[ligne]);
+                    string balise_0;
+                    if (ligne % 1000 == 0) Application.DoEvents();
+                    niveau = Extraire_niveau(ligne);
+                    if (niveau == 0)
                     {
-                        ligne = Extraire_SUBMITTER_RECORD(ligne);
+                        if (GH.GH.annuler) return false;
+                        string temp = dataGEDCOM[ligne];
+                        string texte = String.Join(" ", temp.ToUpper().Split(new string[] { " " }, // retire les espaces d'extra
+                            StringSplitOptions.RemoveEmptyEntries));
+                        // séparer la ligne en section
+                        char[] espace = { ' ' };
+                        string[] section = texte.Split(espace);
+                        // niveau de la ligne
+                        int nombre_section = section.Length;
+                        if (section.Length == 2) balise_0 = section[1];
+                        else balise_0 = section[2];
+                        R.Z("ligne=" + ligne + " > " + dataGEDCOM[ligne]);
+                        balise_ligne[0] = ligne;
+                        R.Z("balise_0="+balise_0);
+                        switch (balise_0)
+                        {
+                            case "HEAD":                                                                // HEAD
+                                ligne = Extraire_HEADER(ligne);
+                                //R..Z("HEAD");
+                                R.Z("ligne=" + ligne + " > " + dataGEDCOM[ligne]);
+                                break;
+                            case "EVEN":                                                                // EVEN
+                                ligne = Extraire_EVEN_RECORD_53(ligne); 
+                                break;
+                            case "FAM":                                                                 // FAM
+                                ligne = Extraire_FAM_RECORD(ligne);
+                                break;
+                            case "INDI":                                                                // INDI
+                                ligne = Extraire_INDIVIDUAL_RECORD(ligne); // ok balise
+                                break;
+                            case "NOTE":                                                                // NOTE
+                                ligne = Extraire_NOTE_RECORD(ligne); // ok balise
+                                break;
+                            case "OBJE":                                                                // OBJE
+                                ligne = Extraire_OBJE_record(ligne); // ok balise
+                                break;
+                            case "REPO":                                                                // REPO
+                                ligne = Extraire_REPOSITORY_RECORD(ligne); // ok balise
+                                //R..Z("REPO");
+                                break;
+                            case "SOUR":                                                                // SOUR
+                                ligne = Extraire_SOURCE_RECORD(ligne); // Ok balise
+                                //R..Z("SOUR");
+                                break;
+                            case "SUBN":                                                                //SUBN
+                                ligne = Extraire_SUBMISSION_RECORD(ligne); // ok balise
+                                break;
+                            case "SUBM":                                                                // SUBM
+                                R.Z("case 0 SUBM");
+                                ligne = Extraire_SUBMITTER_RECORD(ligne); // ok balise
+                                break;
+                            case "TRLR":                                                                // TRLT
+                                return true;
+                            default:
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                                break;
+                        }
+                        R.Z("ligne=" + " > " + dataGEDCOM[ligne]);
                     }
-                    else
-                    {
-                        ligne++;
-                    }
-                } while (ligne < dataGEDCOMCount - 1);
-                if (GH.GH.annuler) return (false);
-                // 0 HEAD
-                Tb_Status.Text = "Décodage du data. Lecture de l'entête";
-                Application.DoEvents();
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "HEAD")                                          // 0 HEAD
-                    {
-                        Extraire_HEADER(ligne);
-                        break;
-                    }
-                    else
-                    {
-                        ligne++;
-                    }
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                //                                                                                          0 NOTE
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "NOTE")
-                    {
-                        (_, ligne) = Extraire_NOTE_RECORD(ligne);
-                    }
-                    else
-                    {
-                        ligne++;
-                    }
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                //                                                                                          0 SUBN
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "SUBN") Extraire_SUBMISSION_RECORD(ligne);
-                    ligne++;
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                //                                                                                          0 INDI
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "INDI") Extraire_INDIVIDUAL_RECORD(ligne);
-                    ligne++;
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                //                                                                                          0 FAM
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "FAM") Extraire_FAM_RECORD(ligne);
-                    ligne++;
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                //                                                                                          0 SOUR
-                ligne = 0;
-                Application.DoEvents();
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "SOUR") (_, _) = Extraire_SOURCE_RECORD(ligne);
-                    ligne++;
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                // 0 obje
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "OBJE") Extraire_MULTIMEDIA_RECORD_N0(ligne);
-                    ligne++;
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                //                                                                                          0 REPO
-                ligne = 0;
-                do
-                {
-                    if (SiBaliseZero(dataGEDCOM[ligne]) == "REPO") Extraire_REPOSITORY_RECORD(ligne);
-                    ligne++;
-                    
-                } while (ligne < dataGEDCOM.Count - 1);
-                if (GH.GH.annuler) return (false);
-                Animation(false);
-            }
-            catch (Exception msg)
-            {
-                //SystemSounds.Beep.Play();
-                MessageBox.Show("Problème en lisant la ligne " + ligne.ToString() + " du fichier GEDCOM.\r\n\r\n" + 
-                    msg.Message, "Erreur GEG1856 problème ?",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Warning);
-                return false;
-            }
-            dataGEDCOM = new List<string>();
-            ZXCV("Analyse du data complèter"); // ne pas effacer cette lignes
-            return true;
-        }
-        private static void EcrireBalise
-            (
-            int numeroLigne,
-            string infoLigne,
-            [CallerLineNumber] int ligneCode = 0,
-            [CallerMemberName] string fonction = null
-            )
-
-        {
-            if (!GH.Properties.Settings.Default.balise || GH.Properties.Settings.Default.DossierHTML == "") return;
-            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GH"].Controls["Btn_balise"] as System.Windows.Forms.Button;
-            numeroLigne++;
-            string fichier = GH.Properties.Settings.Default.DossierHTML + "\\balise.txt";
-            try
-            {
-                using (StreamWriter ligne = File.AppendText(fichier))
-                {
-                    if (!TagInfoGEDCOM && Info_HEADER.N2_SOUR_NAME != "")
-                    {
-
-                        Btn_balise.Visible = true;
-                        ligne.WriteLine(DateTime.Now);
-                        ligne.WriteLine("***********************************************************************");
-                        ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
-                        ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
-                        ligne.WriteLine("Copyright: " + Info_HEADER.N1_COPR);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_GEDC_VERS);
-                        ligne.WriteLine("Code charactère: " + Info_HEADER.N1_CHAR);
-                        ligne.WriteLine("Langue: " + Info_HEADER.N1_LANG);
-                        ligne.WriteLine("Fichier sur le disque: " + Info_HEADER.Nom_fichier_disque);
-                        ligne.WriteLine("***********************************************************************");
-                        TagInfoGEDCOM = true;
-                    }
-                    ligne.WriteLine(ligneCode + " " + fonction + " ligne " + numeroLigne + " > " + infoLigne);
                 }
             }
             catch (Exception msg)
             {
-                MessageBox.Show("Ne peut écrire le fichier balise.txt.\r\n\r\n" + msg.Message, "Erreur GEB1903 problème ?",
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+                if (GH.GH.annuler) return false;
+            }
+            chrono.Stop();
+            TimeSpan durer = TimeSpan.FromMilliseconds(chrono.ElapsedMilliseconds);
+            GEDCOMClass.Ecrire_execution_temps("Direct -- ", durer);
+            return false;
+        }
+
+        public static void Ecrire_execution_temps(string nom, TimeSpan durer)
+        {
+            Regler_code_erreur();
+            string texte = "";
+            if (durer.Days > 0) texte += durer.Days + "j ";
+            if (durer.Hours > 0) texte += durer.Hours + "h ";
+            if (durer.Minutes > 0) texte += durer.Minutes + "m ";
+            if (durer.Seconds > 0) texte += durer.Seconds + "s ";
+            if (durer.Milliseconds > 0) texte += durer.Milliseconds + "ms ";
+            string fichier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\timer.html";
+            try
+            {
+                using (StreamWriter ligne = File.AppendText(fichier))
+                {
+                    string s = String.Format(
+                        "<table>" +
+                        "<tr>" +
+                        "<td class=\"col0\">" +
+                        "{0}" +
+                        "</td>" +
+                        "<td class=\"col1\">" +
+                        "{1}" +
+                        "</td>" +
+                        "<td class=\"col2\">" +
+                        "{2}" +
+                        "</td>" +
+                        "</tr>" +
+                        "</table>",
+                        DateTime.Now, nom, texte);
+                    ligne.WriteLine(s);
+                }
+            }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                MessageBox.Show(msg.Message, GH.GH.erreur + " Timer problème ?",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
             }
+            return;
         }
-        public static string Extraire_balise(string ligne)
+        private static string Convertir_string_2d(string s)
         {
-            ligne = ligne.ToUpper();
-            if (ligne.Length > 2)
+            if (IsNullOrEmpty(s)) return "00";
+
+            if (!s.All(char.IsDigit)) return "00";
+            return s.PadLeft(2, '0');
+        }
+
+        private static string Convertir_date_trier(string date)
+        {
+            Regler_code_erreur();
+            string Qd = "99999999"; // question date string
+            if (date == null) return Qd;
+            if (date == "") return Qd;
+            int an1 = 99999999;
+            int an2 = 99999999;
+            date = date.ToUpper();
+            date = Retirer_espace_inutile(date);
+            char[] s = { ' ' };
+            string[] d = date.Split(s);
+            int l = d.Length; // nombre item dans la date ex. CAL 31 DEC 1997 l=4
+            /*
+                ABT  ABT. = About, meaning the date is not exact.
+                CAL = Calculated mathematically, for example, from an event date and age.
+                EST = Estimated based on an algorithm using some other event date.
+
+                FROM = Indicates the beginning of a happening or state.
+                TO = Indicates the ending of a happening or state
+
+                AFT AFT.= Event happened after the given date.
+                BEF BEF. = Event happened before the given date.
+                BET = Event happened sometime between date 1 AND date 2
+
+                The date modifiers ABT, BEF & AFT are three-letter abbreviations. Several old
+                versions of Family Tree Maker use the illegal four-letter abbreviations ABT., BEF. & AFT.
+
+                INT Intepreted  Interprèter
+                CA  Circa       Environ        Utiliser par  Gedcom Publisher
+                SAY Say         Dit            Utiliser par  Gedcom Publisher
+                OR  or          ou             Utiliser par  Gedcom Publisher
+                */
+            if (l == 1)
             {
-                string[] s = ligne.Split(' ');
-                GEDCOMClass.ZXCV("tag " +  s[0] + " " + s[1]);
-                return s[0] + " " + s[1];
+                if (date.All(char.IsDigit)) an1 = int.Parse(date + "0101");
             }
+            else if (l == 2)
+            {
+                // 0        1       2       3       4       5       6       7  
+                // ABT      1852
+                if (d[0] == "ABT" || d[0] == "ABT.")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // AFT      1852
+                else if (d[0] == "AFT" || d[0] == "AFT.")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // BEF      1852
+                else if (d[0] == "BEF" || d[0] == "BEF.")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // EST      1852
+                else if (d[0] == "EST" || d[0] == "EST.")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // INT      1852
+                else if (d[0] == "INT")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // CA      1852
+                else if (d[0] == "CA")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // SAY      1852
+                else if (d[0] == "SAY")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // CAL      1852
+                else if (d[0] == "CAL" || d[0] == "CAL.")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // TO       1852
+                else if (d[0] == "TO")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM 1852
+                else if (d[0] == "FROM")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                }
+                // DEC      1852
+                // 0        1       2       3       4       5       6       7
+                else
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + Convertir_mois_chiffre(d[0]) + "01");
+                }
+            }
+            else if (l == 3)
+            {
+                // 0        1       2       3       4       5       6       7  
+                // ABT      DEC     1852
+                if (d[0] == "ABT" || d[0] == "ABT.")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // AFT      DEC     1852
+                else if (d[0] == "AFT" || d[0] == "AFT.")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // BEF      DEC     1852
+                else if (d[1] == "BEF" || d[1] == "BEF.")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // CAL      DEC     1852
+                else if (d[0] == "CAL" || d[0] == "CAL")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // EST      DEC     1852
+                else if (d[0] == "EST" || d[0] == "EST.")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // INT      DEC     1852
+                else if (d[0] == "INT")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // CA      DEC     1852
+                else if (d[0] == "CA")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // SAY      DEC     1852
+                else if (d[0] == "SAY")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // TO       DEC     1852
+                else if (d[0] == "TO")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // 1853     OR      1853
+                else if (d[1] == "OR")
+                {
+                    if (d[0].All(char.IsDigit)) an1 = int.Parse(d[0] + "0101");
+                    if (d[2].All(char.IsDigit)) an2 = int.Parse(d[2] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // 24       DEC     1852
+                else
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + Convertir_string_2d(d[0]));
+                }
+
+            }
+            else if (l == 4)
+            {
+                // 0        1       2       3       4       5       6       7  
+                // ABT      24      DEC     1852
+                if (d[0] == "ABT" || d[0] == "ABT.")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // BEF      24       DEC    1852
+                else if (d[0] == "BEF" || d[0] == "BEF.")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // AFT      24      DEC     1852
+                else if (d[0] == "AFT" || d[0] == "AFT")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // BET     1852    AND     1853
+                else if ((d[0] == "BET" || d[0] == "BET.") && d[2] == "AND")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                    if (d[3].All(char.IsDigit)) an2 = int.Parse(d[3] + "0101");
+
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     1852    TO      1853
+                else if (d[0] == "FROM" && d[2] == "TO")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                    if (d[3].All(char.IsDigit)) an2 = int.Parse(d[3] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     01      JAN     1852
+                else if (d[0] == "FROM")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // CAL      24      DEC     1852
+                else if (d[0] == "CAL" || d[0] == "CAL.")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // EST      24      DEC     1852
+                else if (d[0] == "EST" || d[0] == "EST.")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // INT      24      DEC     1852
+                else if (d[0] == "INT")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // CA      24      DEC     1852
+                else if (d[0] == "CA")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // SAY      24      DEC     1852
+                else if (d[0] == "SAY")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // TO       24      DEC     1852
+                else if (d[0] == "TO")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // 1853     OR      JAN     1853
+                else if (d[1] == "OR")
+                {
+                    if (d[0].All(char.IsDigit)) an1 = int.Parse(d[0] + "0101");
+                    if (d[3].All(char.IsDigit)) an2 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // JAN      1853    OR      1854
+                else if (d[2] == "OR")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + Convertir_mois_chiffre(d[0]));
+                    if (d[3].All(char.IsDigit)) an2 = int.Parse(d[3] + "0101");
+                }
+                else GEDCOMClass.DEBUG("Problème pour convertir la date " + date); // ### DEBUG ###
+            }
+            else if (l == 5)
+            {
+                // 0        1       2       3       4       5       6       7  
+                // BET     1852    AND     DEC     1853
+                if ((d[0] == "BET" || d[0] == "BET.") && d[2] == "AND")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                    if (d[4].All(char.IsDigit)) an2 = int.Parse(d[4] + Convertir_mois_chiffre(d[3]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // BET     DEC     1852    AND     1853 
+                else if ((d[0] == "BET" || d[0] == "BET.") && d[3] == "AND")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                    if (d[4].All(char.IsDigit)) an2 = int.Parse(d[4] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     1852    TO      DEC     1853
+                else if (d[0] == "FROM" && d[2] == "TO")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                    if (d[4].All(char.IsDigit)) an2 = int.Parse(d[4] + Convertir_mois_chiffre(d[3]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     DEC     1852    TO      1853
+                else if (d[0] == "FROM" && d[3] == "TO")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                    if (d[4].All(char.IsDigit)) an2 = int.Parse(d[4] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // 1853     OR      1       JAN     1953 
+                else if (d[1] == "OR")
+                {
+                    if (d[0].All(char.IsDigit)) an1 = int.Parse(d[0] + "0101");
+                    if (d[4].All(char.IsDigit)) an2 = int.Parse(d[4] + Convertir_mois_chiffre(d[3]) + Convertir_string_2d(d[2]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // JAN      1853    OR      JAN     1854
+                else if (d[2] == "OR")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                    if (d[4].All(char.IsDigit)) an2 = int.Parse(d[4] + Convertir_mois_chiffre(d[3]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // 1        JAN     1853    OR      1854    
+                else if (d[3] == "OR")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + Convertir_string_2d(d[0]));
+                    if (d[4].All(char.IsDigit)) an2 = int.Parse(d[4] + "0101");
+                }
+                else GEDCOMClass.DEBUG("Problème pour convertir la date " + date); // ### DEBUG ###
+            }
+            else if (l == 6)
+            {
+                // 0        1       2       3       4       5       6       7  
+                // BET     1852    AND     24      DEC     1853
+                if ((d[0] == "BET" || d[0] == "BET.") && d[2] == "AND")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + "0101");
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + Convertir_mois_chiffre(d[4]) + Convertir_string_2d(d[3]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // BET     DEC     1852    AND     DEC     1853
+                else if ((d[0] == "BET" || d[0] == "BET.") && d[3] == "AND")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + Convertir_mois_chiffre(d[4]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // BET      24     DEC     1852    AND     1853
+                else if ((d[0] == "BET" || d[0] == "BET.") && d[4] == "AND")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     24      DEC     1852    TO      1853
+                else if (d[0] == "FROM" && d[4] == "TO")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // FROM     DEC     1852    TO      DEC     1853
+                else if (d[0] == "FROM" && d[3] == "TO")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + Convertir_mois_chiffre(d[4]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // FROM     24      DEC     1852    TO      1853    
+                else if (d[0] == "FROM" && d[4] == "TO")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[1] + d[2] + Convertir_mois_chiffre(d[1]));
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + "0101");
+                }
+                // 0        1       2       3       4       5       6       7  
+                // JAN      1853   OR       1       JAN     1853
+                else if (d[0] == "FROM" && d[4] == "TO")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + d[0] + "0101");
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + Convertir_mois_chiffre(d[4]) + Convertir_string_2d(d[3]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // JAN      1853    OR      1       JAN     1854
+                else if (d[2] == "OR")
+                {
+                    if (d[1].All(char.IsDigit)) an1 = int.Parse(d[1] + Convertir_mois_chiffre(d[0]) + "01");
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + Convertir_mois_chiffre(d[4]) + Convertir_string_2d(d[3]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // 1        JAN     1853    OR      JAN     1854
+                else if (d[3] == "OR")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + Convertir_string_2d(d[0]));
+                    if (d[5].All(char.IsDigit)) an2 = int.Parse(d[5] + Convertir_mois_chiffre(d[4]) + "01");
+                }
+                else GEDCOMClass.DEBUG("Problème pour convertir la date " + date); // ### DEBUG ###
+            }
+            else if (l == 7)
+            {
+                // 0        1       2       3       4       5       6       7   
+                // BET      DEC     1852    AND     24      DEC     1853
+                if ((d[0] == "BET" || d[0] == "BET.") && d[3] == "AND")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                    if (d[6].All(char.IsDigit)) an2 = int.Parse(d[6] + Convertir_mois_chiffre(d[5]) + Convertir_string_2d(d[4]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // BET      24     DEC     1852    AND      DEC     1853
+                else if ((d[0] == "BET" || d[0] == "BET.") && d[4] == "AND")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                    if (d[6].All(char.IsDigit)) an2 = int.Parse(d[6] + Convertir_mois_chiffre(d[5]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7   
+                // FROM     DEC     1852    TO      24      DEC     1853
+                else if (d[0] == "FROM" && d[3] == "TO")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                    if (d[6].All(char.IsDigit)) an2 = int.Parse(d[6] + Convertir_mois_chiffre(d[5]) + Convertir_string_2d(d[4]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     24      DEC     1852    TO      DEC     1853    
+                else if (d[0] == "FROM" && d[4] == "TO")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                    if (d[6].All(char.IsDigit)) an2 = int.Parse(d[6] + Convertir_mois_chiffre(d[5]) + "01");
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     DEC     1852    TO      24      DEC     1853    
+                else if (d[0] == "FROM" && d[4] == "TO")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + "01");
+                    if (d[6].All(char.IsDigit)) an2 = int.Parse(d[6] + Convertir_mois_chiffre(d[5]) + Convertir_string_2d(d[4]));
+                }
+                // 0        1       2       3       4       5       6       7   
+                // 31       DEC     1852    TO      24      DEC     1853    
+                else if (d[3] == "TO")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + Convertir_string_2d(d[0]));
+                    if (d[6].All(char.IsDigit)) an2 = int.Parse(d[6] + Convertir_mois_chiffre(d[5]) + Convertir_string_2d(d[4]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // 1        JAN     1853    OR      1       JAN     1854
+                else if (d[3] == "OR")
+                {
+                    if (d[2].All(char.IsDigit)) an1 = int.Parse(d[2] + Convertir_mois_chiffre(d[1]) + Convertir_string_2d(d[0]));
+                    if (d[6].All(char.IsDigit)) an2 = int.Parse(d[6] + Convertir_mois_chiffre(d[5]) + Convertir_string_2d(d[4]));
+                }
+                else GEDCOMClass.DEBUG("Problème pour convertir la date " + date); // ### DEBUG ###
+            }
+            else if (l == 8)
+            {
+                // 0        1       2       3       4       5       6       7   
+                // BET      24     DEC     1852    AND     24      DEC     1853
+                if ((d[0] == "BET" || d[0] == "BET.") && d[4] == "AND")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                    if (d[7].All(char.IsDigit)) an2 = int.Parse(d[7] + Convertir_mois_chiffre(d[6]) + Convertir_string_2d(d[5]));
+                }
+                // 0        1       2       3       4       5       6       7
+                // FROM     24      DEC     1852    TO      24      DEC     1853    
+                else if (d[0] == "FROM" && d[4] == "TO")
+                {
+                    if (d[3].All(char.IsDigit)) an1 = int.Parse(d[3] + Convertir_mois_chiffre(d[2]) + Convertir_string_2d(d[1]));
+                    if (d[7].All(char.IsDigit)) an2 = int.Parse(d[7] + Convertir_mois_chiffre(d[6]) + Convertir_string_2d(d[5]));
+                }
+                else GEDCOMClass.DEBUG("Problème pour convertir la date " + date); // ### DEBUG ###
+            }
+            else GEDCOMClass.DEBUG("Problème pour convertir la date " + date); // ### DEBUG ###
+            if (an1 > an2) return an2.ToString();
+            else return an1.ToString();
+        }
+        private static string Convertir_mois_chiffre(string s)
+        {
+            s = s.ToUpper();
+            switch (s)
+            {
+                case "JAN": case "JANUARY": return "01";
+                case "FEB": case "FEBRUARY": return "02";
+                case "MAR": case "MARS": return "03";
+                case "APR": case "APRIL": return "04";
+                case "MAY": return "05";
+                case "JUN": case "JUNE": return "06";
+                case "JUL": case "JULY": return "07";
+                case "AUG": case "AUGUST": return "08";
+                case "SEP": case "SEPTEMBER": return "09";
+                case "OCT": case "OCTOBER": return "10";
+                case "NOV": case "NOVEMBER": return "11";
+                case "DEC": case "DECEMBER": return "12";
+            }
+            return "99";
+        }
+
+        private static void Ecrire_balise
+            (
+            string function,
+            int ligne_code,
+            List<Ligne_perdue> liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>");
+            Regler_code_erreur();
+            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GH"].Controls["Btn_balise"] as
+                System.Windows.Forms.Button;
+            try
+            {
+                if (liste == null) return;
+
+                {
+                    if (!File.Exists(GH.GH.fichier_balise))
+                    {
+                        using (StreamWriter ligne = File.AppendText(GH.GH.fichier_balise))
+                        {
+                            ligne.WriteLine(
+                                "<!DOCTYPE html>\n" +
+                                "    <html lang=\"fr\" style=\"background-color:#FFF;\">\n" +
+                                "        <head>\n" +
+                                "           <title>Balise</title>" +
+                                "           <style>\n" +
+                                "               h1{color:#00F}\n" +
+                                "               .col0{width:150px;vertical-align:top;}\n " +
+                                "               .col1{width:90px;vertical-align:top;}\n " +
+                                "               .col2{width:50px;vertical-align:top;}\n " +
+                                "               .col3{width:330px;vertical-align:top;}\n " +
+                                "               .col4{vertical-align:top;}\n " +
+                                "           .navbar {\n" +
+                                "               overflow: hidden;\n" +
+                                "               position: fixed;\n" +
+                                "               top: 0;\n" +
+                                "               background-color: #FFF;\n" +
+                                "               width: 100%;\n" +
+                                "           }\n" +
+                                "           </style>\n" +
+                                "        </head>");
+                            
+                            //ligne.WriteLine(DateTime.Now);
+                            ligne.WriteLine("<div class=\"navbar\">");
+                            ligne.WriteLine("<h1>Balise</h1>");
+                            ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
+                            ligne.WriteLine("\t<tr><td style=\"width:200px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                            ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_SOUR_VERS + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Date</td><td>" + info_HEADER.N1_DATE + " " + info_HEADER.N2_DATE_TIME + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Copyright</td><td>" + info_HEADER.N1_COPR + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_GEDC_VERS + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + info_HEADER.N1_CHAR + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Langue</td><td>" + info_HEADER.N1_LANG + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
+                            System.Version version;
+                            /*try
+                            {
+                                version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                            }
+                            catch
+                            {
+                            */
+                            GC.Collect();
+                            version = Assembly.GetExecutingAssembly().GetName().Version;
+                            //}
+                            ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                            ligne.WriteLine("</table>");
+                            ligne.WriteLine(
+                                "<table>" +
+                                "<tr>" +
+                                "<td class=\"col0\">" +
+                                "Date heure" +
+                                "</td>" +
+                                "<td class=\"col2\">" +
+                                "Ligne" +
+                                "</td>" +
+                                "<td class=\"col3\">" +
+                                "Routine" +
+                                "</td>" +
+                                "<td>" +
+                                "Balise" +
+                                "</td>" +
+                                "</table>" +
+                                "<hr>");
+                            ligne.WriteLine("</div>");
+                            ligne.WriteLine("<div style=\"margin-top: 325px;\">\n");
+                            ligne.WriteLine("</div>\n");
+                        }
+                    }
+                    Btn_balise.Visible = true;
+                    using (StreamWriter ligne = File.AppendText(GH.GH.fichier_balise))
+                    {
+                        // battir le texte des balise
+                        string texte = "";
+                        for (int f = 0; f < liste.Count; f++)
+                        {
+                            texte += System.Environment.NewLine + String.Concat(Enumerable.Repeat("&emsp;", f));
+                            texte += liste[f].ligne + " ►" + liste[f].texte + "<br />";
+                        }
+                        string s = String.Format(
+                            "<table>" +
+                            "<tr>" +
+                            "<td class=\"col0\">" +
+                            "{0}" +
+                            "</td>" +
+                            "<td class=\"col2\">" +
+                            "{1}" +
+                            "</td>" +
+                            "<td class=\"col3\">" +
+                            "{2}" +
+                            "</td>" +
+                            "<td>" +
+                            "{3}" +
+                            "</td>" +
+                            "</tr>" +
+                            "</table>" +
+                            "<hr>", DateTime.Now, ligne_code, function, texte);
+                        ligne.WriteLine(s);
+                    }
+                }
+            }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                DialogResult reponse;
+                reponse = MessageBox.Show("Ne peut écrire le fichier " + GH.GH.fichier_balise + "\r\n\r\n" +
+                    msg.Message +
+                    "\r\n\r\n",
+                    "Erreur " + GH.GH.erreur + " problème ?",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                if (reponse == System.Windows.Forms.DialogResult.Cancel)
+                    GH.GH.annuler = true;
+            }
+            return;
+        }
+
+        public static string Avoir_balise(string ligne)
+        {
+            // retourne la balise
+            // mette en majuscule
+            ligne = ligne.ToUpper();
+            // retire les espace d'extra
+            ligne = String.Join(" ", ligne.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
+            // divise en section 
+            string[] s = ligne.Split(' ');
+            // si niveau 0
+            if (s[0] == "0")
+            {
+                if (s.Length > 2) return s[2];
+            }
+            // niveau > 0
+            if (s.Length > 1) return s[1];
+            return null;
+        }
+        public static string Avoir_niveau_balise(string ligne)
+        {
+            // retourne la balise
+            // mette en majuscule
+            ligne = ligne.ToUpper();
+            // retire les espace d'extra
+            ligne = String.Join(" ", ligne.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
+            // divise en section 
+            string[] s = ligne.Split(' ');
+            // si niveau 0
+            if (s[0] == "0")
+            {
+                if (s.Length > 2) return s[2];
+            }
+            // niveau > 0
+            if (s.Length > 1)  return s[0] + " " + s[1];
+            return null;
+        }
+        public static string Avoir_balise_p1(string ligne)
+        {
+            // le niveau doit être plus grand que 0
+            // retourne la balise avec son niveau qui doit être en position 1
+            // mette en majuscule
+            ligne = ligne.ToUpper();
+            // retire les espace d'extra
+            ligne = String.Join(" ", ligne.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
+            // divise en section 
+            string[] s = ligne.Split(' ');
+            // si plus qu'une section
+            if (s.Length > 1)
+                return s[0] + " " + s[1];
             return "";
         }
-        private static string Extraire_ID(string s)
+        public static string Extraire_ID(string s)
         {
             int p1 = s.IndexOf("@") + 2;
             if (p1 > 9) return ""; // si ID n'est pas au début retour ""
@@ -1972,31 +5743,45 @@ namespace GEDCOM
             }
             return null;
         }
+
+        private static string Extraire_texte(int numero_ligne)
+        {
+            string texte = dataGEDCOM[numero_ligne];
+            texte = texte.TrimStart();
+            texte = texte.TrimEnd();
+            // retire les espace d'extra
+            // string ligne_0 = Remplacer_double_espace(dataGEDCOM[ligne]);
+            string texte2 = texte[0].ToString();
+            for (int f = 1; f < texte.Count(); f++)
+            {
+                if (texte[f] == ' ' && texte[f - 1] == ' ')
+                {
+                    texte2 += "#A#A#A#";
+                }
+                else texte2 += texte[f].ToString();
+            }
+            char[] espace = { ' ' };
+            string[] section = texte2.Split(espace);
+            int nombre_section = section.Length;
+            if (nombre_section < 3) return null;
+            texte2 = texte.Substring(section[0].Length + section[1].Length + 2);
+            texte2 = Retirer_espace_inutile(texte2);
+            return texte2;
+        }
+
         private static string Extraire_ligne(string ligne, int nombre_charactere_balise)
         {
-            string l = null;
             int nombre = nombre_charactere_balise + 3;
             if (ligne.Length > nombre)
             {
-                l = ligne.Substring(nombre, ligne.Length - nombre);
+                return ligne.Substring(nombre, ligne.Length - nombre);
             }
-            return l;
+            return null;
         }
         private static string Extraire_NAME(string s)
         {
-            if (s == null) return null;
+            if (IsNullOrEmpty(s)) return null;
             if (s == "") return null;
-            /*
-             NAME_PERSONAL:= {Size=1:120}
-                [
-                <NAME_TEXT> |
-                /<NAME_TEXT>/ |
-                <NAME_TEXT> /<NAME_TEXT>/ |
-                /<NAME_TEXT>/ <NAME_TEXT> |
-                <NAME_TEXT> /<NAME_TEXT>/ <NAME_TEXT>
-                ]
-             */
-
             int p1 = s.IndexOf("/");
             int p2 = s.IndexOf("/", p1 + 1);
             string un;
@@ -2020,6 +5805,7 @@ namespace GEDCOM
             {
                 un = s.Substring(p1 + 1, p2 - p1 - 1).Trim();
                 deux = s.Substring(p2 + 1).Trim();
+                deux = deux.TrimEnd('/');
                 return deux + " " + un;
             }
             // deux barre oblique 
@@ -2032,390 +5818,531 @@ namespace GEDCOM
             }
             return s;
         }
-        private static void Extraire_HEADER(int ligne)
+
+        private static (NAME_STRUCTURE_53, int, List<Ligne_perdue>) Extraire_NAME_STRUCTURE_53(
+            int ligne,
+            int niveau,
+            List<Ligne_perdue> ligne_perdue_liste
+            //,[CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            Info_HEADER.N1_SOUR = null;
-            Info_HEADER.N2_SOUR_VERS = null;
-            Info_HEADER.N2_SOUR_NAME = null;
-            Info_HEADER.N2_SOUR_CORP = null;
-            Info_HEADER.N3_SOUR_CORP_ADDR = null;
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "&nbsp;&nbsp;niveau=" + niveau);
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            string n0_name;
+            (n0_name, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            NAME_STRUCTURE_53 info_NAME_STRUCTURE_53 = new NAME_STRUCTURE_53
+            {
+                N1_SOUR_citation_liste_ID = new List<string>(),
+                N1_NOTE_STRUCTURE_liste_ID = new List<string>(),
+                N0_NAME = n0_name
+            };
+            info_NAME_STRUCTURE_53.N0_NAME = Extraire_NAME(info_NAME_STRUCTURE_53.N0_NAME);
+            ligne++;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                {
+                    (info_NAME_STRUCTURE_53.N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                {
+                    string citation;
+                    string source;
+                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                    if (IsNotNullOrEmpty(citation))
+                        info_NAME_STRUCTURE_53.N1_SOUR_citation_liste_ID.Add(citation);
+                    if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                        info_NAME_STRUCTURE_53.N1_SOUR_source_liste_ID.Add(source);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                {
+                    string note_ID;
+                    (note_ID, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    info_NAME_STRUCTURE_53.N1_NOTE_STRUCTURE_liste_ID.Add(note_ID);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            return (info_NAME_STRUCTURE_53, ligne, ligne_perdue_liste);
+        }
+
+        private static int Extraire_HEADER(int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+
+            Regler_code_erreur();
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            string temp;
+            info_HEADER.N1_SOUR = null;
+            info_HEADER.N2_SOUR_VERS = null;
+            info_HEADER.N2_SOUR_NAME = null;
+            info_HEADER.N2_SOUR_CORP = null;
+            info_HEADER.N3_SOUR_CORP_SITE = null;
+            List<ADDRESS_STRUCTURE> N3_SOUR_CORP_ADDR_liste = new List<ADDRESS_STRUCTURE>();
             List<string> N3_SOUR_CORP_PHON_liste = new List<string>();
             List<string> N3_SOUR_CORP_EMAIL_liste = new List<string>();
             List<string> N3_SOUR_CORP_FAX_liste = new List<string>();
             List<string> N3_SOUR_CORP_WWW_liste = new List<string>();
-            Info_HEADER.N2_SOUR_DATA = null;
-            Info_HEADER.N3_SOUR_DATA_DATE = null;
-            Info_HEADER.N3_SOUR_DATA_CORP = null;
-            Info_HEADER.N1_DEST = null;
-            Info_HEADER.N1_DATE = null;
-            Info_HEADER.N2_DATE_TIME = null;
-            Info_HEADER.N1_SUBM_liste_ID = null;
-            Info_HEADER.N1_SUBN = null;
-            Info_HEADER.N1_FILE = null;
-            Info_HEADER.N1_COPR = null;
-            Info_HEADER.N2_GEDC_VERS = null;
-            Info_HEADER.N2_GEDC_FORM = null;
-            Info_HEADER.N1_CHAR = null;
-            Info_HEADER.N2_CHAR_VERS = null;
-            Info_HEADER.N1_LANG = null;
-            Info_HEADER.N1_PLAC = null;
-            Info_HEADER.N2_PLAC_FORM = null;
-            Info_HEADER.N1_NOTE = null;
+            info_HEADER.N2_SOUR_DATA = null;
+            info_HEADER.N3_SOUR_DATA_DATE = null;
+            info_HEADER.N3_SOUR_DATA_CORP = null;
+            info_HEADER.N1_DEST = null;
+            info_HEADER.N1_DATE = null;
+            info_HEADER.N2_DATE_TIME = null;
+            info_HEADER.N1_SUBM_liste_ID = null;
+            info_HEADER.N1_SUBN = null;
+            info_HEADER.N1_FILE = null;
+            info_HEADER.N1_COPR = null;
+            info_HEADER.N2_GEDC_VERS = null;
+            info_HEADER.N2_GEDC_FORM = null;
+            info_HEADER.N3_GEDC_FORM_VERS = null;
+            info_HEADER.N1_CHAR = null;
+            info_HEADER.N2_CHAR_VERS = null;
+            info_HEADER.N1_LANG = null;
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            info_HEADER.N1__GUID = null;
             List<string> N1_SUBM_liste_ID = new List<string>();
             ligne++;
-            while (Extraire_niveau(ligne) > 0)
+            try
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == "1 DEST")                                     // 1 DEST
+                while (Extraire_niveau(ligne) > 0)
                 {
-                    Info_HEADER.N1_DEST = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                                // 1 SOUR
-                {
-                    
-                    Info_HEADER.N1_SOUR = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    if (balise_1 == "1 DEST")
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 VERS")                             // 2 VERS
+                        (info_HEADER.N1_DEST, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == "1 SOUR")
+                    {
+                        string balise_1_texte;
+                        (balise_1_texte, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        info_HEADER.N1_SOUR = balise_1_texte;
+                        while (Extraire_niveau(ligne) > 1)
                         {
-                            Info_HEADER.N2_SOUR_VERS = Extraire_ligne(dataGEDCOM[ligne],4);
-                            ligne++;
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "2 NAME")                        // 2 NAME
-                        {
-                            Info_HEADER.N2_SOUR_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CORP")                        // 2 CORP
-                        {
-                            Info_HEADER.N2_SOUR_CORP = Extraire_ligne(dataGEDCOM[ligne],4);
-                            ligne++;
-                            while (Extraire_niveau(ligne) > 2)
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == "2 VERS")
                             {
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "3 ADDR")                     // 3 ADDR
-                                {
-                                    (Info_HEADER.N3_SOUR_CORP_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 PHON")                // 2 PHON
-                                {
-                                    N3_SOUR_CORP_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 FAX")                 // 3 FAX
-                                {
-                                    N3_SOUR_CORP_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 EMAIL")               // 3 EMAIL
-                                {
-                                    N3_SOUR_CORP_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne],5));
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 _EMAIL")              // 3 _EMAIL
-                                {
-                                    N3_SOUR_CORP_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 6));
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 WWW")                 // 3 WWW
-                                {
-                                    N3_SOUR_CORP_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne],3));
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 _WWW")                // 3 _WWW
-                                {
-                                    N3_SOUR_CORP_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                                    ligne++;
-                                }
-                                else
-                                {
-                                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                    ligne++;
-                                }
+                                
+                                (info_HEADER.N2_SOUR_VERS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                             }
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "2 DATA")                        // 2 DATA
-                        {
-                            Info_HEADER.N2_SOUR_DATA = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                            while (Extraire_niveau(ligne) > 2)
+                            else if (balise_2 == "2 NAME")
                             {
-                                if (Extraire_balise(dataGEDCOM[ligne]) == "3 DATE")                     // 3 DATA DATE
+                                (info_HEADER.N2_SOUR_NAME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else if (balise_2 == "2 CORP")
+                            {
+                                (info_HEADER.N2_SOUR_CORP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                while (Extraire_niveau(ligne) > 2)
                                 {
-                                    Info_HEADER.N3_SOUR_DATA_DATE = ConvertirDateGEDCOM(dataGEDCOM[ligne].Substring(7));
-                                    ligne++;
-                                }
-                                else if (Extraire_balise(dataGEDCOM[ligne]) == "3 COPR")                // 3 DATA COPR
-                                {
-                                    Info_HEADER.N3_SOUR_DATA_CORP = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    while (Extraire_niveau(ligne) > 3)
+                                    string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                    balise_ligne[3] = ligne;
+                                    if (balise_3 == "3 SITE")
                                     {
-                                        if (Extraire_balise(dataGEDCOM[ligne]) == "4 CONT")             // 4 CONT
-                                        {
-                                            if (dataGEDCOM[ligne].Length > 7)
-                                            {
-                                                Info_HEADER.N3_SOUR_DATA_CORP += "<br />" + Extraire_ligne(dataGEDCOM[ligne], 4);
-                                            }
-                                            else Info_HEADER.N3_SOUR_DATA_CORP += "<br />\n";
-                                            ligne++;
-                                        }
-                                        else if (Extraire_balise(dataGEDCOM[ligne]) == "4 CONC")        // 4 CONC
-                                        {
-                                            Info_HEADER.N3_SOUR_DATA_CORP += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                                            ligne++;
-                                        }
-                                        else
-                                        {
-                                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                            ligne++;
-                                        }
+                                        (info_HEADER.N3_SOUR_CORP_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                                     }
-
-                                }
-                                else
-                                {
-                                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                                    ligne++;
+                                    else if (balise_3 == "3 ADDR")
+                                    {
+                                        ADDRESS_STRUCTURE N3_SOUR_CORP_ADDR;
+                                        (N3_SOUR_CORP_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                                        N3_SOUR_CORP_ADDR_liste.Add(N3_SOUR_CORP_ADDR);
+                                    }
+                                    else if (balise_3 == "3 PHON")
+                                    {
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        N3_SOUR_CORP_PHON_liste.Add(temp);
+                                    }
+                                    else if (balise_3 == "3 FAX")
+                                    {
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        N3_SOUR_CORP_FAX_liste.Add(temp);
+                                    }
+                                    else if (balise_3 == "3 EMAIL")
+                                    {
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        N3_SOUR_CORP_EMAIL_liste.Add(temp);
+                                    }
+                                    else if (balise_3 == "3 _EMAIL")
+                                    {
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        N3_SOUR_CORP_EMAIL_liste.Add(temp);
+                                    }
+                                    else if (balise_3 == "3 WWW")
+                                    {
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        N3_SOUR_CORP_WWW_liste.Add(temp);
+                                    }
+                                    else if (balise_3 == "3 _WWW")
+                                    {
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        N3_SOUR_CORP_WWW_liste.Add(temp);
+                                    }
+                                    else
+                                    {
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 DATE")                                // 1 DATE
-                {
-                    Info_HEADER.N1_DATE = ConvertirDateGEDCOM(dataGEDCOM[ligne].Substring(7));
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 TIME")                             // 2 TIME
-                        {
-                            if (dataGEDCOM[ligne].Length > 7)
+                            else if (balise_2 == "2 DATA")
                             {
-                                Info_HEADER.N2_DATE_TIME = dataGEDCOM[ligne].Substring(7);
+                                (info_HEADER.N2_SOUR_DATA, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                while (Extraire_niveau(ligne) > 2)
+                                {
+                                    string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                    balise_ligne[3] = ligne;
+                                    if (balise_3 == "3 DATE")
+                                    {
+                                        (info_HEADER.N3_SOUR_DATA_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                    }
+                                    else if (balise_3 == "3 CORP")
+                                    {
+                                        (info_HEADER.N3_SOUR_DATA_CORP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                    }
+                                    else
+                                    {
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                    }
+                                }
                             }
-                            ligne++;
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
                         }
-                        else
+                    }
+                    else if (balise_1 == "1 DATE")
+                    {
+                        (info_HEADER.N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        while (Extraire_niveau(ligne) > 1)
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == "2 TIME")
+                            {
+                                (info_HEADER.N2_DATE_TIME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else if (balise_1 == "1 SUBM")
+                    {
+                        N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
+                        ligne++;
+                    }
+                    else if (balise_1 == "1 FILE")
+                    {
+                        (info_HEADER.N1_FILE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == "1 SUBN")
+                    {
+                        (info_HEADER.N1_SUBN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == "1 _HME")
+                    {
+                        ligne++;
+                    }
+                    else if (balise_1 == "1 GEDC")
+                    {
+                        ligne++;
+                        while (Extraire_niveau(ligne) > 1)
+                        {
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == "2 VERS")
+                            {
+                                (info_HEADER.N2_GEDC_VERS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else if (balise_2 == "2 FORM")
+                            {
+                                (info_HEADER.N2_GEDC_FORM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                while (Extraire_niveau(ligne) > 2)
+                                {
+                                    string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                    balise_ligne[3] = ligne;
+                                    if (balise_3 == "3 VERS")
+                                    {
+                                        (info_HEADER.N3_GEDC_FORM_VERS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                    }
+                                    else
+                                    {
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else if (balise_1 == "1 CHAR")
+                    {
+                        (info_HEADER.N1_CHAR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        while (Extraire_niveau(ligne) > 1)
+                        {
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == "2 VERS")
+                            {
+                                (info_HEADER.N2_CHAR_VERS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else if (balise_1 == "1 PLAC")
+                    {
+                        ligne++;
+                        while (Extraire_niveau(ligne) > 1)
+                        {
+                            string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                            balise_ligne[2] = ligne;
+                            if (balise_2 == "2 FORM")
+                            {
+                                (info_HEADER.N2_PLAC_FORM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                        }
+                    }
+                    else if (balise_1 == "1 LANG")
+                    {
+                        (info_HEADER.N1_LANG, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == "1 COPR")
+                    {
+                        (info_HEADER.N1_COPR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == "1 SCHEMA")
+                    {
+                        ligne++;
+                        while (Extraire_niveau(ligne) > 1)
+                        {
+                            // Un mécanisme pour créer des balises définies par l'utilisateur. Celles-ci 
+                            // sont définies dans une définition SCHEMA dans HEADER.
+                            // Elle sont ignorer par GH.
                             ligne++;
                         }
                     }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                                // 1 SUBM
-                {
-                    N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILE")                                // 1 FILE
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == "1 NOTE")
                     {
-                        Info_HEADER.N1_FILE = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                        ligne++;
+                        string note_ID;
+                        (note_ID, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                        N1_NOTE_STRUCTURE_liste_ID.Add(note_ID);
+                    }
+                    else if (balise_1 ==  "1 _GUID")
+                    {
+                        (info_HEADER.N1__GUID, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
                     else
                     {
-                        EcrireBalise(ligne, dataGEDCOM[ligne]);
-                        ligne++;
+                        ligne = Ligne_perdu_plus(
+                            ligne,
+                            MethodBase.GetCurrentMethod().Name,
+                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                            balise_ligne
+                            );
                     }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBN")                                // 1 SUBN
-                {
-                    Info_HEADER.N1_SUBN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _HME")                                // 1 _HME
-                {
-
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 GEDC")                                // 1 GEDC
-                {
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 VERS")                             // 2 VERS
-                        {
-                            Info_HEADER.N2_GEDC_VERS = Extraire_ligne(dataGEDCOM[ligne], 4);
-                        }
-                        else if(Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                         // 2 FORM
-                        {
-                            Info_HEADER.N2_GEDC_FORM = Extraire_ligne(dataGEDCOM[ligne], 4);
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                        ligne++;
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAR")                                // 1 CHAR
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        Info_HEADER.N1_CHAR = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                    }
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 VERS")                             // 2 VERS
-                        {
-                            if (dataGEDCOM[ligne].Length > 7)
-                            {
-                                Info_HEADER.N2_CHAR_VERS = dataGEDCOM[ligne].Substring(7,
-                                    dataGEDCOM[ligne].Length - 7);
-                            }
-                            ligne++;
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 PLAC")                                // 1 PLAC
-                {
-                    Info_HEADER.N1_PLAC = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "2 FORM")                             // 2 PLAC FORM
-                        {
-                            Info_HEADER.N2_PLAC_FORM = dataGEDCOM[ligne].Substring(7,
-                                dataGEDCOM[ligne].Length - 7);
-                            ligne++;
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                        
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 LANG")                                // 1 LANG
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        Info_HEADER.N1_LANG = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                        if (Info_HEADER.N1_LANG.ToLower() == "english") Info_HEADER.N1_LANG = "Anglais";
-                        if (Info_HEADER.N1_LANG.ToLower() == "french") Info_HEADER.N1_LANG = "Français";
-                    }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 COPR")                                // 1 COPR
-                {
-                    Info_HEADER.N1_COPR = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                // 1 NOTE
-                {
-                    Info_HEADER.N1_NOTE = Extraire_texte_ligne1(dataGEDCOM[ligne]);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        if (Extraire_balise(dataGEDCOM[ligne]) ==  "1 CONT")                            // +1 CONT
-                        {
-                            Info_HEADER.N1_NOTE += "<br />" + Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CONC")                        // +1 CONC
-                        {
-                            Info_HEADER.N1_NOTE += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
-                    }
-/*
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    Info_HEADER.N1_NOTE_liste_ID.Add(IDNote);
-*/
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            Info_HEADER.N3_SOUR_CORP_PHON_liste = N3_SOUR_CORP_PHON_liste;
-            Info_HEADER.N3_SOUR_CORP_FAX_liste = N3_SOUR_CORP_FAX_liste;
-            Info_HEADER.N3_SOUR_CORP_EMAIL_liste = N3_SOUR_CORP_EMAIL_liste;
-            Info_HEADER.N3_SOUR_CORP_WWW_liste = N3_SOUR_CORP_WWW_liste;
-            Info_HEADER.N1_SUBM_liste_ID = N1_SUBM_liste_ID;
-        }
-        public static void Erreur_log(
-            string message = "",
-            [CallerFilePath] string code = "",
-            [CallerLineNumber] int ligneCode = 0,
-            [CallerMemberName] string fonction = null)
-        {
-            if (!GH.Properties.Settings.Default.deboguer || GH.Properties.Settings.Default.DossierHTML == "") return;
-            System.Windows.Forms.Button Btn_erreur = Application.OpenForms["GH"].Controls["Btn_erreur"] as System.Windows.Forms.Button;
-            code = Path.GetFileName(code);
-            code = code[0].ToString().ToUpper();
-            string fichier = GH.Properties.Settings.Default.DossierHTML + "\\erreur.txt";
-            try
-            {
-                using (StreamWriter ligne = File.AppendText(fichier))
-                {
-                    if (!LogErreur)
-                    {
-                        Btn_erreur.Visible = true;
-                        ligne.WriteLine("**********************************************************************");
-                        ligne.WriteLine("");
-                        ligne.WriteLine("Liste des erreurs dans le code GH");
-                        ligne.WriteLine("");
-                        ligne.WriteLine("SVP contactez le développeur en copiant l'adresse suivante dans votre. ");
-                        ligne.WriteLine("navigateur https://pambrun.net/communication/form.php?PAGE=GH.exe");
-                        ligne.WriteLine("L'information aidera a corrigé le problème.");
-                        ligne.WriteLine("**********************************************************************");
-                        ligne.WriteLine("Version de GH " + Application.ProductVersion + "B");
-                        ligne.WriteLine("Installer dans le dossier " + Application.ExecutablePath);
-                        ligne.WriteLine("**********************************************************************");
-                        ligne.WriteLine("Information sur le fichier GEDCOM");
-                        ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
-                        ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
-                        ligne.WriteLine("Copyright: " + Info_HEADER.N1_COPR);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_GEDC_VERS);
-                        ligne.WriteLine("Code charactère: " + Info_HEADER.N1_CHAR);
-                        ligne.WriteLine("Langue: " + Info_HEADER.N1_LANG);
-                        ligne.WriteLine("Fichier sur le disque: " + Info_HEADER.Nom_fichier_disque);
-                        ligne.WriteLine("**********************************************************************");
-                        LogErreur = true;
-                    }
-                    ligne.WriteLine(code + " " + ligneCode + ">" + fonction + "-> " + "►" + message + "◄");
                 }
             }
             catch (Exception msg)
             {
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+            }
+            if (!GH.GH.annuler)
+            {
+                info_HEADER.N3_SOUR_CORP_ADDR_liste = N3_SOUR_CORP_ADDR_liste;
+                info_HEADER.N3_SOUR_CORP_PHON_liste = N3_SOUR_CORP_PHON_liste;
+                info_HEADER.N3_SOUR_CORP_FAX_liste = N3_SOUR_CORP_FAX_liste;
+                info_HEADER.N3_SOUR_CORP_EMAIL_liste = N3_SOUR_CORP_EMAIL_liste;
+                info_HEADER.N3_SOUR_CORP_WWW_liste = N3_SOUR_CORP_WWW_liste;
+                info_HEADER.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+                info_HEADER.N1_SUBM_liste_ID = N1_SUBM_liste_ID;
+                info_HEADER.ligne_perdue_liste = ligne_perdue_liste;
+            }
+            R.Z("Extraire_HEADER retourne ligne=" + ligne);
+            return ligne;
+        }
+        public static void Erreur_log(
+            string message = "")
+        {
+            Regler_code_erreur();
+            System.Windows.Forms.Button Btn_erreur = Application.OpenForms["GH"].Controls["Btn_erreur"] as System.Windows.Forms.Button;
+            try
+            {
+                if (!File.Exists(GH.GH.fichier_erreur))
                 {
-                    MessageBox.Show("Debub Actif dans GEDCOM.\r\n\r\n" + code + " " + ligneCode + " " +
-                        fonction + "-> " + message + "\r\n\r\n" + msg.Message, "GER2344 problème ?",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Warning);
+                    using (StreamWriter ligne = File.AppendText(GH.GH.fichier_erreur))
+                    {
+                        ligne.WriteLine(
+                            "<!DOCTYPE html>\n" +
+                            "    <html lang=\"fr\" style=\"background-color:#FFF;\">\n" +
+                            "        <head>\n" +
+                            "           <title>Erreur</title>" +
+                            "           <style>\n" +
+                            "               h1{color:#00F}\n" +
+                            "               .col0{width:150px;vertical-align:top;}\n " +
+                            "               .col1{width:90px;vertical-align:top;}\n " +
+                            "               .col2{width:50px;vertical-align:top;}\n " +
+                            "               .col3{width:330px;vertical-align:top;}\n " +
+                            "               .col4{vertical-align:top;}\n " +
+                            "               .navbar {\n" +
+                            "                   overflow: hidden;\n" +
+                            "                   position: fixed;\n" +
+                            "                   top: 0;\n" +
+                            "                   background-color: #FFF;\n" +
+                            "                   width: 100%;\n" +
+                            "               }\n" +
+                            "           </style>\n" +
+                            "        </head>");
+                        Btn_erreur.Visible = true;
+                        ligne.WriteLine("<div class=\"navbar\">");
+                        ligne.WriteLine("<h1>Erreur</h1>");
+                        ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
+                        ligne.WriteLine("\t<tr><td style=\"width:200px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_SOUR_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Date</td><td>" + info_HEADER.N1_DATE + " " + info_HEADER.N2_DATE_TIME + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Copyright</td><td>" + info_HEADER.N1_COPR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_GEDC_VERS + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + info_HEADER.N1_CHAR + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Langue</td><td>" + info_HEADER.N1_LANG + "<td></tr>");
+                        ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
+                        System.Version version;
+                        try
+                        {
+                            version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        }
+                        catch
+                        {
+                            GC.Collect();
+                            version = Assembly.GetExecutingAssembly().GetName().Version;
+                        }
+                        ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                        ligne.WriteLine("</table>");
+                        ligne.WriteLine(
+                            "<table>" +
+                            "<tr>" +
+                            "<td class=\"col0\">" +
+                            "Date heure" +
+                            "</td>" +
+                            "<td>" +
+                            "Message" +
+                            "</td>" +
+                            "</table>" +
+                            "<hr>");
+                        ligne.WriteLine("</div>");
+                        ligne.WriteLine("<div style=\"margin-top: 325px;\">\n");
+                        ligne.WriteLine("</div>\n");
+
+                    }
+                }
+                using (StreamWriter ligne = File.AppendText(GH.GH.fichier_erreur))
+                {
+
+                    string s = String.Format(
+                        "<table>" +
+                        "<tr>" +
+                        "<td class=\"col0\">" +
+                        "{0}" +
+                        "</td>" +
+                        "<td>" +
+                        "{1}" +
+                        "</td>" +
+                        "</tr>" +
+                        "</table>" +
+                        "<hr>",
+                        DateTime.Now, message);
+                    ligne.WriteLine(s);
                 }
             }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                MessageBox.Show("Ne peut pas écrire l'information sur le disque." + msg.Message, "Problème",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
         }
-            private static (ADDRESS_STRUCTURE, int) Extraire_ADDRESS_STRUCTURE(int ligne)
+
+        private static (ADDRESS_STRUCTURE, int, List<Ligne_perdue>) Extraire_ADDRESS_STRUCTURE(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+
+            Regler_code_erreur();
             ADDRESS_STRUCTURE info = new ADDRESS_STRUCTURE
             {
                 N0_ADDR = null,
@@ -2425,237 +6352,394 @@ namespace GEDCOM
                 N1_CITY = null,
                 N1_STAE = null,
                 N1_POST = null,
-                N1_CTRY = null,
-                N1_NOTE_liste_ID = null
+                N1_CTRY = null
             };
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            int niveau_I = Extraire_niveau(ligne);
-            info.N0_ADDR = Extraire_ligne(dataGEDCOM[ligne], 4);
-            ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            List<string> N1_PHON_liste = new List<string>(); // V5.3
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            int niveau = Extraire_niveau(ligne);
+            string balise_0 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string temp;
+            if (balise_0 == niveau.ToString() + " ADDR")
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONT")          // +1 CONT;
+                (info.N0_ADDR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                while (Extraire_niveau(ligne) > niveau)
                 {
-                    info.N0_ADDR += "<br />" + Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " ADR1")     // +1 ADR1
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    if (balise_1 == (niveau + 1).ToString() + " ADR1")
                     {
-                        info.N1_ADR1 = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        (info.N1_ADR1, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " ADR2")     // +1 ADR2
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == (niveau + 1).ToString() + " ADR1")
                     {
-                        info.N1_ADR2 = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        (info.N1_ADR1, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " ADR3")     // +1 ADR3
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == (niveau + 1).ToString() + " ADR2")
                     {
-                        info.N1_ADR3 = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        (info.N1_ADR2, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CITY")     // +1 CITY
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == (niveau + 1).ToString() + " ADR3")
                     {
-                        info.N1_CITY = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        (info.N1_ADR3, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " STAE")     // +1 STAE
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == (niveau + 1).ToString() + " CITY")
                     {
-                        info.N1_STAE = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        (info.N1_CITY, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CTRY")     // +1 CTRY
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == (niveau + 1).ToString() + " STAE")
                     {
-                        info.N1_CTRY = Extraire_ligne(dataGEDCOM[ligne], 4);
+                        (info.N1_STAE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " POST")     // +1 POST
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    else if (balise_1 == (niveau + 1).ToString() + " CTRY")
                     {
-                        info.N1_POST = Extraire_ligne(dataGEDCOM[ligne], 4); ;
+                        (info.N1_CTRY, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE pour GRAMPS
-                {
-                    string NoteID;
-                    (NoteID, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(NoteID);
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    else if (balise_1 == (niveau + 1).ToString() + " POST")
+                    {
+                        (info.N1_POST, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " PHON")
+                    {
+                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        N1_PHON_liste.Add(temp);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                    {
+                        string NoteID;
+                        (NoteID, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                        N1_NOTE_STRUCTURE_liste_ID.Add(NoteID);
+                    }
+                    else
+                    {
+                        ligne = Ligne_perdu_plus(
+                            ligne,
+                            MethodBase.GetCurrentMethod().Name,
+                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                            balise_ligne
+                            );
+                    }
                 }
             }
-            info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
-            return (info, ligne);
+            else
+            {
+                ligne = Ligne_perdu_plus(
+                    ligne,
+                    MethodBase.GetCurrentMethod().Name,
+                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                    balise_ligne
+                    );
+            }
+            info.N1_PHON_liste = N1_PHON_liste;
+            info.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info, ligne, ligne_perdue_liste);
         }
-        private static (ASSOCIATION_STRUCTURE, int) Extraire_ASSOCIATION_STRUCTURE(int ligne)
+
+        private static string Extraire_MULTIMEDIA_LINK(
+            string fichier
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+
+            MULTIMEDIA_LINK info_MULTIMEDIA_LINK = new MULTIMEDIA_LINK();
+            conteur_MULTIMEDIA_LINK++;
+            info_MULTIMEDIA_LINK.ID_LINK = "A-" + conteur_MULTIMEDIA_LINK.ToString();
+            info_MULTIMEDIA_LINK.FILE = fichier;
+            if (!GH.GH.annuler)
+            {
+                liste_MULTIMEDIA_LINK.Add(info_MULTIMEDIA_LINK);
+            }
+            return info_MULTIMEDIA_LINK.ID_LINK;
+        }
+
+
+        private static (ASSOCIATION_STRUCTURE, int, List<Ligne_perdue>) Extraire_ASSOCIATION_STRUCTURE(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
             ASSOCIATION_STRUCTURE info = new ASSOCIATION_STRUCTURE();
             string N0_ASSO;
-            string N1_RELA = "";
+            string N1_TYPE = null;
+            string N1_RELA = null;
             List<string> N1_SOUR_citation_liste_ID = new List<string>();
             List<string> N1_SOUR_source_liste_ID = new List<string>();
-            List<string> N1_NOTE_liste_ID = new List<string>();
-
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            int niveau_I = Extraire_niveau(ligne);
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            int niveau = Extraire_niveau(ligne);
             N0_ASSO = Extraire_ID(dataGEDCOM[ligne]);                                                   // +0 ASSO
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
             ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
+            while (Extraire_niveau(ligne) > niveau)
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " RELA")          // +1 RELA
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " RELA")
                 {
-                    N1_RELA = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
+                    (N1_RELA, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " SOUR")     // +1 SOUR
+                else if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                {
+                    (N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    switch (N1_TYPE.ToUpper())
+                    {
+                        case "FAM":
+                            N1_TYPE = "Famille";
+                            break;
+                        case "INDI":
+                            N1_TYPE = "Individu";
+                            break;
+                    }
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
                 {
                     string citation;
                     string source;
                     (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) N1_SOUR_source_liste_ID.Add(source);
+                    if (IsNotNullOrEmpty(citation))
+                        N1_SOUR_citation_liste_ID.Add(citation);
+                    if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                        N1_SOUR_source_liste_ID.Add(source);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
                 {
                     string NoteID;
-                    (NoteID, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(NoteID);
+                    (NoteID, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(NoteID);
                 }
+
                 else
                 {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
                 }
             }
             info.N0_ASSO = N0_ASSO;
+            info.N1_TYPE = N1_TYPE;
             info.N1_RELA = N1_RELA;
             info.N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID;
             info.N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID;
-            info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
-            return (info, ligne);
+            info.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info, ligne, ligne_perdue_liste);
         }
-        private static (CHANGE_DATE, int) Extraire_CHANGE_DATE(int ligne)
+
+        private static (CHANGE_DATE, int, List<Ligne_perdue>)
+            Extraire_CHANGE_DATE(int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>");
+
+            Regler_code_erreur();
             CHANGE_DATE info = new CHANGE_DATE();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
             string N1_CHAN_DATE = null;
             string N2_CHAN_DATE_TIME = null;
-            //string niveau_S = Extraire_niveau(ligne).ToString();
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            int niveau_I = Extraire_niveau(ligne);
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            int niveau = Extraire_niveau(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
             ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
+            while (Extraire_niveau(ligne) > niveau)
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " DATE")          // +1 DATE
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                if (balise_1 == (niveau + 1).ToString() + " DATE")
                 {
-                    N1_CHAN_DATE = ConvertirDateGEDCOM(dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7));
-                    ligne++;
-                    while (Extraire_niveau(ligne) > niveau_I + 1) // > +1
+                    (N1_CHAN_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1) // > +1
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " TIME")  // +2 TIME
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TIME")
                         {
-                            N2_CHAN_DATE_TIME = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                            ligne++;
+                            (N2_CHAN_DATE_TIME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                         }
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
                 {
                     string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
                 else
                 {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
                 }
             }
             info.N1_CHAN_DATE = N1_CHAN_DATE;
             info.N2_CHAN_DATE_TIME = N2_CHAN_DATE_TIME;
-            info.N1_CHAN_NOTE_ID_liste = N1_NOTE_liste_ID;
-            return (info, ligne);
+            info.N1_CHAN_NOTE_STRUCTURE_ID_liste = N1_NOTE_STRUCTURE_liste_ID;
+            return (info, ligne, ligne_perdue_liste);
         }
-        private static (CHILD_TO_FAMILY_LINK, int) Extraire_CHILD_TO_FAMILY_LINK(int ligne)
+
+        private static (CHILD_TO_FAMILY_LINK, int, List<Ligne_perdue>) Extraire_CHILD_TO_FAMILY_LINK(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
         {
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            int niveau_I = Extraire_niveau(ligne);
-            List<string> N1_NOTE_liste_ID = new List<string>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            int niveau = Extraire_niveau(ligne);
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
             CHILD_TO_FAMILY_LINK info = new CHILD_TO_FAMILY_LINK
             {
-                N0_FAMC = Extraire_ID(dataGEDCOM[ligne])
+                N0_FAMC = Extraire_ID(dataGEDCOM[ligne]),
+                N1_adop = false,
+                N1_slgc = false
             };
+            List<string> N2_ADOP_SOUR_citation_liste_ID = new List<string>();
+            List<string> N2_ADOP_SOUR_source_liste_ID = new List<string>();
+            List<string> N2_ADOP_NOTE_liste_ID = new List<string>();
             ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
+            while (Extraire_niveau(ligne) > niveau)
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " PEDI")          // +1 PEDI
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + "ADOP")
                 {
-                    info.N1_PEDI = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    if (info.N1_PEDI.ToLower() == "adopted") info.N1_PEDI = "Indique les parents adoptifs.";
-                    if (info.N1_PEDI.ToLower() == "birth") info.N1_PEDI = "Indique les parents biologiques";
-                    if (info.N1_PEDI.ToLower() == "foster") info.N1_PEDI = "Indique que l'enfant faisait partie d'une famille d'accueil ou d'une famille tutrice.";
-                    if (info.N1_PEDI.ToLower() == "sealing") info.N1_PEDI = "indique que l'enfant a été scellé à des parents autres que les parents biologiques.";
+                    info.N1_adop = true;
                     ligne++;
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TYPE")
+                            (info.N2_ADOP_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " AGE")
+                            (info.N2_ADOP_AGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " DATE")
+                            (info.N2_ADOP_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " PLAC")
+                            (info.N2_ADOP_PLAC, ligne, ligne_perdue_liste) = Extraire_PLACE_STRUCTURE(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                        {
+                            string citation;
+                            string source;
+                            (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                            if (IsNotNullOrEmpty(citation))
+                            {
+                                N2_ADOP_SOUR_citation_liste_ID.Add(citation);
+                            }
+                            if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                            {
+                                N2_ADOP_SOUR_source_liste_ID.Add(source);
+                            }
+                        }
+                        else if (balise_2 == (niveau + 2).ToString() + " NOTE")
+                        {
+                            string ID_Note;
+                            (ID_Note, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            N2_ADOP_NOTE_liste_ID.Add(ID_Note);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " STAT")     // +1 STAT
+                else if (balise_1 == (niveau + 1).ToString() + " SLGC")
                 {
-                    info.N1_STAT = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    if (info.N1_STAT.ToLower() == "challenged") info.N1_STAT = "Lier cet enfant à cette famille est suspect, mais le lien n’a été ni prouvé ni réfuté.";
-                    if (info.N1_STAT.ToLower() == "disproven") info.N1_STAT = "Certains prétendent que cet enfant appartient à cette famille, mais le lien a été réfutée.";
-                    if (info.N1_STAT.ToLower() == "proven") info.N1_STAT = "Certains prétendent que cet enfant n'appartient pas à cette famille, mais le lien a été prouvé.";
                     ligne++;
+                    info.N1_slgc = true;
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TYPE")
+                            (info.N2_SLGC_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " DATE")
+                            (info.N2_SLGC_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " TEMP")
+                            (info.N2_SLGC_TEMP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else
+                        {
+                            // pour la page HTML
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")     // +1 NOTE
+                else if (balise_1 == (niveau + 1).ToString() + " PEDI")
+                    (info.N1_PEDI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " STAT")
+                    (info.N1_STAT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
                 {
                     string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
                 else
                 {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
                 }
             }
-            info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
-            return (info, ligne);
+            info.N2_ADOP_SOUR_citation_liste_ID = N2_ADOP_SOUR_citation_liste_ID;
+            info.N2_ADOP_SOUR_source_liste_ID = N2_ADOP_SOUR_source_liste_ID;
+            info.N2_ADOP_NOTE_STRUCTURE_liste_ID = N2_ADOP_NOTE_liste_ID;
+            info.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info, ligne, ligne_perdue_liste);
         }
-        private static (EVENT_ATTRIBUTE_STRUCTURE, int) Extraire_EVENT_ATTRIBUTE_STRUCTURE(int ligne)
+
+        private static (EVEN_ATTRIBUTE_STRUCTURE, int) Extraire_EVEN_ATTRIBUTE_STRUCTURE(
+            int ligne,
+            int niveau
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            EVENT_ATTRIBUTE_STRUCTURE info = new EVENT_ATTRIBUTE_STRUCTURE
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name +" code " + callerLineNumber + "</b> GEDCOM="+ ligne);
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            EVEN_ATTRIBUTE_STRUCTURE info = new EVEN_ATTRIBUTE_STRUCTURE
             {
-                N2_TYPE = null,
                 N2_DATE = "", // important pour classer par date;
+                N3_DATE_TIME = null, // Herisis
+                N2_TEMP = null,
                 N2_PLAC = null,
-                N2_ADDR = null,
+                N2_SITE = null,
+                N2_QUAY = null,
                 N2_AGNC = null,
                 N2_RELI = null,
                 N2_CAUS = null,
@@ -2665,253 +6749,780 @@ namespace GEDCOM
                 N3_HUSB_AGE = null,
                 N3_WIFE_AGE = null,
                 N2_AGE = null,
+                N2_MSTAT = null,
                 N2_FAMC = null,
                 N2_FAMC_ADOP = null,
-                titre = null,
+                //titre = null,
                 description = null,
-                N2__ANCES_ORDRE = null,
-                N2__ANCES_XINSEE = null
+                N2__ANCES_ORDRE = null, // Ancestrologie
+                N2__ANCES_XINSEE = null,  // Ancestrologie
+                N2__FNA = null // Heredis
             };
+            List<ADDRESS_STRUCTURE> N2_ADDR_liste = new List<ADDRESS_STRUCTURE>();
             List<string> N2_PHON_liste = new List<string>();
             List<string> N2_EMAIL_liste = new List<string>();
             List<string> N2_FAX_liste = new List<string>();
             List<string> N2_WWW_liste = new List<string>();
-            List<string> N2_NOTE_liste_ID = new List<string>();
+            List<string> N2_NOTE_STRUCTURE_liste_ID = new List<string>();
             List<string> N2_SOUR_citation_liste_ID = new List<string>();
             List<string> N2_SOUR_source_liste_ID = new List<string>();
-            List<string> N2_OBJE_liste_ID = new List<string>();
-
-            string[] s = dataGEDCOM[ligne].Split(' ');
-            info.N1_EVEN = s[1];
-            info.N1_EVEN = info.N1_EVEN.ToUpper();
-            info.titre = Convertir_EVENT_titre(info.N1_EVEN, Extraire_ligne(dataGEDCOM[ligne], 4));
-            if (info.N1_EVEN == "ADOP")
+            List<string> MULTIMEDIA_LINK_liste_ID = new List<string>();
+            List<string> N2_TYPE_liste = new List<string>();
+            List<TEXT_STRUCTURE> N2_TEXT_liste = new List<TEXT_STRUCTURE>();
+            //CHANGE_DATE N2_CHAN = new CHANGE_DATE();
+            CHANGE_DATE N2_CHAN = null;
+            (_, _, info.N1_EVEN, info.N1_EVEN_texte, ligne) = Extraire_info_niveau_0(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            info.DATE_trier = "99999999";
+            string temp;
+            while (Extraire_niveau(ligne) > niveau)
             {
-                info.N1_EVEN_texte = null;
-            }
-            if (dataGEDCOM[ligne].Length > 6)
-            {
-                if (dataGEDCOM[ligne].Length > 2 + info.N1_EVEN.Length)
-                    info.N1_EVEN_texte = dataGEDCOM[ligne].Substring(3 + info.N1_EVEN.Length);
-            }
-            string extraEVEN = "";
-            
-            ligne++;
-            while (Extraire_niveau(ligne) > 1)
-            {
-                if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONC")                                     // 2 CONC
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " TYPE")
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
-                        extraEVEN += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
+                    string type;
+                    (type, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N2_TYPE_liste.Add(type);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CONT")                                // 2 CONT
+                else if (balise_1 == (niveau + 1).ToString() + " DATE")
                 {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    (info.N2_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info.DATE_trier = Convertir_date_trier(info.N2_DATE);
+                    while (Extraire_niveau(ligne) > niveau + 1)
                     {
-                        extraEVEN += "<br />" + dataGEDCOM[ligne].Substring(7);
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " TIME") // 3 TIME Heresis
+                        {
+                            (info.N3_DATE_TIME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
                     }
-                    else extraEVEN += "<br />\n";
-                    ligne++;
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 TYPE")                                // 2 TYPE 
+                else if (balise_1 == (niveau + 1).ToString() + " TEPM")
+                    (info.N2_TEMP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " PLAC")
                 {
-                    info.N2_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
+                    if (info_HEADER.N2_GEDC_VERS == "5.3")
+                    {
+                        (info.N2_PLAC, ligne, ligne_perdue_liste) = Extraire_PLACE_STRUCTURE(ligne, ligne_perdue_liste);
+                    }
+                    else
+                    {
+                        (info.N2_PLAC, ligne, ligne_perdue_liste) = Extraire_PLACE_STRUCTURE(ligne, ligne_perdue_liste);
+                    }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 DATE")                                // 2 DATE
+                else if (balise_1 == (niveau + 1).ToString() + " SITE")
+                    (info.N2_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " ADDR")
                 {
-                    string d = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    string dd = ConvertirDateGEDCOM(d);
-                    info.N2_DATE = dd;
-                    ligne++;
+                    ADDRESS_STRUCTURE N2_ADDR;
+                    (N2_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                    N2_ADDR_liste.Add(N2_ADDR);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 PLAC")                                // 2 PLAC
+                else if (balise_1 == (niveau + 1).ToString() + " PHON")
                 {
-                    (info.N2_PLAC, ligne) = Extraire_PLACE_STRUCTURE(ligne);
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N2_PHON_liste.Add(temp);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 ADDR")                                // 2 ADDR
+                else if (balise_1 == (niveau + 1).ToString() + " FAX")
                 {
-                    (info.N2_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N2_FAX_liste.Add(temp);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 PHON")                                // 2 PHON
+                else if (balise_1 == (niveau + 1).ToString() + " EMAIL" || balise_1 == (niveau + 1).ToString() + " _EMAIL")
                 {
-
-                    N2_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N2_EMAIL_liste.Add(temp);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 FAX")                                 // 2 FAX
+                else if (balise_1 == (niveau + 1).ToString() + " WWW" || balise_1 == (niveau + 1).ToString() + " _WWW" || balise_1 == (niveau + 1).ToString() + "_URL")
                 {
-                    N2_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
-                    ligne++;
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    N2_WWW_liste.Add(temp);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 EMAIL")                               // 2 EMAIL
-                {
-                    N2_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 5));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 WWW")                                 // 2 WWW
-                {
-                    N2_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 AGNC")                                // 2 AGNC 
-                {
-                    info.N2_AGNC = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 RELI")                                // 2 RELI 
-                {
-                    info.N2_RELI = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 CAUS")                                // 2 CAUS 
-                {
-                    info.N2_CAUS = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 RESN")                                // 2 RESN 
-                {
-                    info.N2_RESN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    if (info.N2_RESN.ToLower() == "confidential") info.N2_RESN = "confidentiel";
-                    if (info.N2_RESN.ToLower() == "locked") info.N2_RESN = "verrouillé";
-                    if (info.N2_RESN.ToLower() == "privacy") info.N2_RESN = "privé";
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 NOTE")                                // 2 NOTE
+                else if (balise_1 == (niveau + 1).ToString() + " QUAY")
+                    (info.N2_QUAY, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " AGNC")
+                    (info.N2_AGNC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " RELI")
+                    (info.N2_RELI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " CAUS")
+                    (info.N2_CAUS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " RESN")
+                    (info.N2_RESN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " NOTE")
                 {
                     string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N2_NOTE_liste_ID.Add(IDNote);
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N2_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 OBJE")                                // 2 OBJE
+                else if (balise_1 == (niveau + 1).ToString() + " OBJE")
                 {
-                    string ID_OBJE;
-                    (ID_OBJE, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
-                    N2_OBJE_liste_ID.Add(ID_OBJE);
+                    (temp, ligne) = Extraire_MULTIMEDIA_LINK(ligne);
+                    MULTIMEDIA_LINK_liste_ID.Add(temp);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 SOUR")                                // 2 SOUR
+                else if (
+                    balise_1 == (niveau + 1).ToString() + " AUDIO" ||
+                    balise_1 == (niveau + 1).ToString() + " PHOTO" ||
+                    balise_1 == (niveau + 1).ToString() + " VIDEO"
+                        )
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    MULTIMEDIA_LINK_liste_ID.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " TEXT")
+                {
+                    TEXT_STRUCTURE temp2;
+                    (temp2, ligne, ligne_perdue_liste) = Extraire_TEXT_STRUCTURE(ligne, ligne_perdue_liste);
+                    N2_TEXT_liste.Add(temp2);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
                 {
                     string citation;
                     string source;
                     (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) N2_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) N2_SOUR_source_liste_ID.Add(source);
+                    if (IsNotNullOrEmpty(citation))
+                        N2_SOUR_citation_liste_ID.Add(citation);
+                    if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                        N2_SOUR_source_liste_ID.Add(source);
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 AGE")                                 // 2 AGE
-                {
-                    info.N2_AGE = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    info.N2_AGE = Convert_Age_GEDCOM(info.N2_AGE);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 FAMC")                                // 2 FAMC
+                else if (balise_1 == (niveau + 1).ToString() + " AGE")
+                    (info.N2_AGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " MSTAT")
+                    (info.N2_MSTAT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " FAMC")
                 {
                     info.N2_FAMC = Extraire_ID(dataGEDCOM[ligne]);
                     ligne++;
-                    while (Extraire_niveau(ligne) > 2)
+                    while (Extraire_niveau(ligne) > niveau + 1)
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "3 ADOP")                             // 3 ADOP
-                        {
-                            info.N2_FAMC_ADOP = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " ADOP")
+                            (info.N2_FAMC_ADOP, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 HUSB")                                // 2 HUSB
+                else if (balise_1 == (niveau + 1).ToString() + " HUSB")
                 {
                     ligne++;
-                    while (Extraire_niveau(ligne) > 2)
+                    while (Extraire_niveau(ligne) > niveau + 1)
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "3 AGE")                              // 3  HUSB AGE
-                        {
-                            info.N3_HUSB_AGE = Extraire_ligne(dataGEDCOM[ligne], 3);
-                            info.N3_HUSB_AGE = Convert_Age_GEDCOM(info.N3_HUSB_AGE);
-                            ligne++;
-                        }
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " AGE")
+                            (info.N3_HUSB_AGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 WIFE")                                // 2 WIFE
+                else if (balise_1 == (niveau + 1).ToString() + " WIFE")
                 {
                     ligne++;
-                    while (Extraire_niveau(ligne) > 2)
+                    while (Extraire_niveau(ligne) > niveau + 1)
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == "3 AGE")                              // 3  WIFE AGE
-                        {
-                            info.N3_WIFE_AGE = Extraire_ligne(dataGEDCOM[ligne], 3);
-                            info.N3_WIFE_AGE = Convert_Age_GEDCOM(info.N3_WIFE_AGE);
-                            ligne++;
-                        }
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " AGE")
+                            (info.N3_WIFE_AGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 _ANCES_ORDRE")                        // 2 ANCES_ORDRE
+                else if (balise_1 == (niveau + 1).ToString() + " _ANCES_ORDRE")
+                    (info.N2__ANCES_ORDRE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " CHAN")
+                    (N2_CHAN, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " _ANCES_XINSEE")
+                    (info.N2__ANCES_XINSEE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1).ToString() + " _FNA")
                 {
-                    info.N2__ANCES_ORDRE = Extraire_ligne(dataGEDCOM[ligne], 12);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "2 _ANCES_XINSEE")                       // 2 ANCES_XINSEE
-                {
-                    info.N2__ANCES_XINSEE = Extraire_ligne(dataGEDCOM[ligne], 13);
-                    ligne++;
+                    (info.N2__FNA, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        balise_ligne[2] = ligne;
+                        ligne = Ligne_perdu_plus(
+                            ligne,
+                            MethodBase.GetCurrentMethod().Name,
+                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                            balise_ligne
+                            );
+                        break;
+                    }
                 }
                 else
                 {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
                 }
             }
-            if (extraEVEN != "") info.titre += extraEVEN;
+            info.N2_TYPE_liste = N2_TYPE_liste;
+            info.ligne_perdue_liste = ligne_perdue_liste;
             info.N2_PHON_liste = N2_PHON_liste;
             info.N2_FAX_liste = N2_FAX_liste;
             info.N2_EMAIL_liste = N2_EMAIL_liste;
             info.N2_WWW_liste = N2_WWW_liste;
-            info.N2_NOTE_liste_ID = N2_NOTE_liste_ID;
-            info.N2_OBJE_liste_ID = N2_OBJE_liste_ID;
+            info.N2_ADDR_liste = N2_ADDR_liste;
+            info.N2_NOTE_STRUCTURE_liste_ID = N2_NOTE_STRUCTURE_liste_ID;
+            info.MULTIMEDIA_LINK_liste_ID = MULTIMEDIA_LINK_liste_ID;
             info.N2_SOUR_citation_liste_ID = N2_SOUR_citation_liste_ID;
             info.N2_SOUR_source_liste_ID = N2_SOUR_source_liste_ID;
+            info.N2_TEXT_liste = N2_TEXT_liste;
+            info.N2_CHAN = N2_CHAN;
             return (info, ligne);
         }
-        private static string Extraire_EVENT_liste( string liste)
+        private static string Extraire_EVEN_liste(string liste)
         {
-            if (liste == null) return null;
-            char[] charactere = new char[] { ',' };
-            string[] item_split = liste.Split(charactere);
-            int nombre_item = item_split.Length;
-            for (int f = 0; f < nombre_item; f++)
-            {
-                item_split[f] = Convertir_EVENT_titre(item_split[f].Trim());
+            if (IsNullOrEmpty(liste)) return null;
+            // séparer par ','
+            if (liste.Contains(","))
+                {
+                char[] charactere = new char[] { ',' };
+                string[] item_split = liste.Split(charactere);
+                int nombre_item = item_split.Length;
+                string grouper = null;
+                for (int f = 0; f < nombre_item; f++)
+                {
+                    item_split[f] = item_split[f].Trim();
+                    grouper += item_split[f] + ", ";
+                }
+                grouper = grouper.TrimEnd(' ', ',');
+                return grouper;
             }
-            string grouper = null;
-            for (int f = 0; f < nombre_item; f++)
+            // séparer par espace
+            if (liste.Contains(" "))
             {
-                grouper += item_split[f] + ", ";
+                char[] charactere = new char[] { ' ' };
+                string[] item_split = liste.Split(charactere);
+                int nombre_item = item_split.Length;
+                string grouper = null;
+                for (int f = 0; f < nombre_item; f++)
+                {
+                    if (item_split[f] != null || item_split[f] != "")
+                    grouper += item_split[f] + ", ";
+                }
+                grouper = grouper.TrimEnd(' ', ',');
+                return grouper;
             }
-            grouper = grouper.TrimEnd(' ', ',');
-            return grouper;
+            return liste;
         }
-        private static (string, int) Extraire_FAM_RECORD(int ligne)
+
+        private static int Extraire_EVEN_RECORD_53(
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            if (GH.GH.annuler) return (null, 0);
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br>GEDCOM ligne=" + ligne + "<br>niveau=" + Extraire_niveau(ligne) + " " + dataGEDCOM[ligne]);
+
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            bool trouver1;
+            if (GH.GH.annuler) return (ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            string N0_ID = null;
+            CHANGE_DATE N1_CHAN = null;
+            string N1_EVEN = null;
+            string N2_EVEN_TYPE = null;
+            string N2_EVEN_DATE = null;
+            string DATE_trier = "99999999";
+            string N2_EVEN_SITE = null;
+            PLACE_STRUCTURE N2_EVEN_PLAC = null;
+            string N2_EVEN_PERI = null;
+            string N2_EVEN_RELI = null;
+            List<string> MULTIMEDIA_LINK_liste_ID = new List<string>();
+            List<TEXT_STRUCTURE> N2_EVEN_TEXT_liste = new List<TEXT_STRUCTURE>();
+            List<string> N2_EVEN_SOUR_citation_liste_ID = new List<string>();
+            List<string> N2_EVEN_SOUR_source_liste_ID = new List<string>();
+            List<string> N2_EVEN_NOTE_STRUCTURE_liste_ID = new List<string>();
+            string N2_EVEN_ROLE = null;
+            string N3_EVEN_ROLE_TYPE = null;
+            INDIVIDUAL_53 N3_EVEN_ROLE_INDIVIDUAL = new INDIVIDUAL_53
+            {
+                N0_NAME_liste = null
+            };
+            List<ASSOCIATION_STRUCTURE> N3_EVEN_ROLE_ASSO_liste = new List<ASSOCIATION_STRUCTURE>();
+            string N3_EVEN_ROLE_RELATIONSHIP_tag = null;
+            string N3_EVEN_ROLE_RELATIONSHIP_ID = null;
+            string N4_EVEN_ROLE_RELATIONSHIP_TYPE = null;
+            INDIVIDUAL_53 N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL = new INDIVIDUAL_53();
+            string temp;
+            try
+            {
+                N0_ID = Extraire_ID(dataGEDCOM[ligne]);
+                ligne++;
+                while (Extraire_niveau(ligne) > 0)
+                {
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
+                    {
+                        case "1 CHAN":                                                                    // 1 CHAN
+                            (N1_CHAN, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                            break;
+                        //IND_EVNT_TAG
+                        case "1 ADOP":
+                        case "1 BIRT":
+                        case "1 BAPM":
+                        case "1 BARM":
+                        case "1 BASM":
+                        case "1 BLES":
+                        case "1 BURI":
+                        case "1 CENS":
+                        case "1 CHR":
+                        case "1 CHRA":
+                        case "1 CONF":
+                        case "1 DEAT":
+                        case "1 EVEN":
+                        case "1 EMIG":
+                        case "1 GRAD":
+                        case "1 IMMI":
+                        case "1 MARR":
+                        case "1 NATU":
+                        case "1 ORDN":
+                        case "1 RETI":
+
+                        // FAM_EVNT_TAG
+                        // case "CENS": inclue dans individu
+                        // case "MARR": inclue dans individu
+                        case "1 MARB":
+                        case "1 MARC":
+                        case "1 MARL":
+                        case "1 MARS":
+                        case "1 ENGA":
+                        // case "EVEN": b = true; break;
+
+                        // DIV_EVNT_TAG
+                        case "1 ANUL":
+                        case "1 DIV":
+                        case "1 DIVF":
+                            N1_EVEN = dataGEDCOM[ligne].ToUpper().Substring(2);
+                            ligne++;
+                            while (Extraire_niveau(ligne) > 1)
+                            {
+                                string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                balise_ligne[2] = ligne;
+                                switch (balise_2)
+                                {
+                                    case "2 TYPE":                                                        // TYPE
+                                        (N2_EVEN_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        break;
+                                    case "2 DATE":                                                        // DATE
+                                        (N2_EVEN_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        DATE_trier = Convertir_date_trier(N2_EVEN_DATE);
+                                        break;
+                                    case "2 PLAC":                                                        // PLAC
+                                        (N2_EVEN_PLAC, ligne, ligne_perdue_liste) = Extraire_PLACE_STRUCTURE(ligne, ligne_perdue_liste);
+                                        break;
+                                    case "2 PERI":                                                        // PERI
+                                        (N2_EVEN_PERI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        break;
+                                    case "2 RELI":                                                        // RELI
+                                        (N2_EVEN_RELI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        break;
+                                    case "2 AUDIO":                                                       // AUDIO individu V5.3
+                                        //(temp, ligne) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        //N2_EVEN_AUDIO_liste.Add(temp);
+
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        MULTIMEDIA_LINK_liste_ID.Add(temp);
+                                        break;
+                                    case "2 PHOTO":                                                       // PHOTO individu  V5.3
+                                        //(temp, ligne) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        //N2_EVEN_PHOTO_liste.Add(temp);
+
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        MULTIMEDIA_LINK_liste_ID.Add(temp);
+                                        break;
+                                    case "2 VIDEO":                                                       // VIDEO individu V5.3
+                                        //(temp, ligne) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        //N2_EVEN_VIDEO_liste.Add(temp);
+
+                                        (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                        MULTIMEDIA_LINK_liste_ID.Add(temp);
+                                        break;
+                                    case "2 TEXT":                                                        // TEXT
+                                        TEXT_STRUCTURE temp2;
+                                        (temp2, ligne, ligne_perdue_liste) = Extraire_TEXT_STRUCTURE(ligne, ligne_perdue_liste);
+                                        N2_EVEN_TEXT_liste.Add(temp2);
+                                        break;
+                                    case "2 SOUR":                                                        // SOUR
+                                        string citation;
+                                        string source;
+                                        (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                                        if (IsNotNullOrEmpty(citation)) N2_EVEN_SOUR_citation_liste_ID.Add(citation);
+                                        if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation)) N2_EVEN_SOUR_source_liste_ID.Add(source);
+                                        break;
+                                    case "2 NOTE":                                                        // NOTE
+                                        string IDNote;
+                                        (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                                        N2_EVEN_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                                        break;
+                                    case "2 BROT":
+                                    case "2 BUYR":
+                                    case "2 CHIL":
+                                    case "2 FATH":
+                                    case "2 GODP":
+                                    case "2 HDOG":
+                                    case "2 HDOH":
+                                    case "2 HEIR":
+                                    case "2 HFAT":
+                                    case "2 HMOT":
+                                    case "2 HUSB":
+                                    case "2 INDI":
+                                    case "2 INFT":
+                                    case "2 LEGA":
+                                    case "2 MEMBER":
+                                    case "2 MOTH":
+                                    case "2 OFFI":
+                                    case "2 PARE":
+                                    case "2 PHUS":
+                                    case "2 PWIF":
+                                    case "2 RECO":
+                                    case "2 REL":
+                                    case "2 ROLE":
+                                    case "2 SELR":
+                                    case "2 TXPY":
+                                    case "2 WFAT":
+                                    case "2 WIFE":
+                                    case "2 WITN":
+                                    case "2 WMOT":
+                                        N2_EVEN_ROLE = dataGEDCOM[ligne].Substring(2);
+                                        ligne++;
+                                        while (Extraire_niveau(ligne) > 2)
+                                        {
+                                            string balise_3 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+
+                                            balise_ligne[3] = ligne;
+                                            int niveau = 3;
+                                            (N3_EVEN_ROLE_INDIVIDUAL, ligne, trouver1,
+                                                ligne_perdue_liste) =                       // individual
+                                                Extraire_INDIVIDUAL_53(N3_EVEN_ROLE_INDIVIDUAL, ligne,
+                                                niveau,
+                                                ligne_perdue_liste);
+                                            if (trouver1)
+                                            {
+                                                balise_3 = "";
+                                            }
+                                            switch (balise_3)
+                                            {
+                                                case "":
+                                                    break;
+                                                case "3 TYPE":                                                    // EVEN ROLE TYPE
+                                                    (N3_EVEN_ROLE_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                                    break;
+                                                case "3 ASSO":                                                    // EVEN ROLE ASSO
+                                                    ASSOCIATION_STRUCTURE temp3 = null;
+                                                    (temp3, ligne, ligne_perdue_liste) = Extraire_ASSOCIATION_STRUCTURE(ligne, ligne_perdue_liste);
+                                                    N3_EVEN_ROLE_ASSO_liste.Add(temp3);
+                                                    break;
+                                                case "3 BROT":                                                    // RELATIONSHIP
+                                                case "3 CHIL":
+                                                case "3 FATH":
+                                                case "3 HEIR":
+                                                case "3 HUSB":
+                                                case "3 MOTH":
+                                                case "3 PARE":
+                                                case "3 PHUS":
+                                                case "3 PWIF":
+                                                case "3 SIBL":
+                                                case "3 SIST":
+                                                case "3 WIFE":
+                                                    (niveau, N3_EVEN_ROLE_RELATIONSHIP_ID, N3_EVEN_ROLE_RELATIONSHIP_tag, _, ligne) =
+                                                        Extraire_info_niveau_0(ligne);
+                                                    while (Extraire_niveau(ligne) > 3)
+                                                    {
+                                                        string balise_4 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                                                        balise_ligne[4] = ligne;
+                                                        (N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL, ligne, _,
+                                                            ligne_perdue_liste) =             // individual
+                                                            Extraire_INDIVIDUAL_53(
+                                                                N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL,
+                                                                ligne, niveau + 1,
+                                                                ligne_perdue_liste);
+                                                        switch (balise_4)
+                                                        {
+                                                            case "4 ADDR":
+                                                            case "4 ADOP":// événement
+                                                            case "4 ANUL":
+                                                            case "4 BAPM":
+                                                            case "4 BARM":
+                                                            case "4 BASM":
+                                                            case "4 BIRT":
+                                                            case "4 BLES":
+                                                            case "4 BURI":
+                                                            case "4 CAST":
+                                                            case "4 CENS":
+                                                            case "4 CHR":
+                                                            case "4 CHRA":
+                                                            case "4 CONF":
+                                                            case "4 DEAT":
+                                                            case "4 DIV":
+                                                            case "4 DIVF":
+                                                            case "4 DSCR":
+                                                            case "4 EDUC":
+                                                            case "4 EMIG":
+                                                            case "4 ENGA":
+                                                            case "4 EVEN":
+                                                            case "4 GRAD":
+                                                            case "4 IDNO":
+                                                            case "4 IMMI":
+                                                            case "4 MARB":
+                                                            case "4 MARC":
+                                                            case "4 MARL":
+                                                            case "4 MARR":
+                                                            case "4 MARS":
+                                                            case "4 NAME":
+                                                            case "4 NAMR":
+                                                            case "4 NATI":
+                                                            case "4 NATU":
+                                                            case "4 NCHI":
+                                                            case "4 NMR":
+                                                            case "4 OCCU":
+                                                            case "4 ORDN":
+                                                            case "4 PROP":
+                                                            case "4 RELI":
+                                                            case "4 RETI":
+                                                            case "4 SEX":
+                                                            case "4 SIGN":
+                                                            case "4 SSN":
+                                                            case "4 TITL":
+                                                                (N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL,
+                                                                    ligne, _,
+                                                                    ligne_perdue_liste) =             // individual
+                                                            Extraire_INDIVIDUAL_53(
+                                                                N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL,
+                                                                ligne,
+                                                                niveau + 1,
+                                                                ligne_perdue_liste);
+                                                                break;
+                                                            case "4 TYPE":                                // TYPE
+                                                                (N4_EVEN_ROLE_RELATIONSHIP_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                                                break;
+                                                            default:
+                                                                {
+                                                                    ligne = Ligne_perdu_plus(
+                                                                        ligne,
+                                                                        MethodBase.GetCurrentMethod().Name,
+                                                                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                                                        balise_ligne
+                                                                        );
+                                                                    break;
+                                                                }
+                                                        }
+                                                        //ligne++;
+                                                    }
+                                                    break;
+                                                default:
+                                                    ligne = Ligne_perdu_plus(
+                                                        ligne,
+                                                        MethodBase.GetCurrentMethod().Name,
+                                                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                                        balise_ligne
+                                                        );
+                                                    break;
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        ligne = Ligne_perdu_plus(
+                                            ligne,
+                                            MethodBase.GetCurrentMethod().Name,
+                                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                            balise_ligne
+                                            );
+                                        break;
+                                }
+                            }
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
+                    }
+                }
+            }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+            }
+            if (!GH.GH.annuler)
+            {
+                liste_EVEN_RECORD_53.Add(new EVEN_RECORD_53()
+                {
+                    ligne_perdue_liste = ligne_perdue_liste,
+                    N0_ID = N0_ID,
+                    N1_CHAN = N1_CHAN,
+                    N1_EVEN = N1_EVEN,
+                    N2_EVEN_TYPE = N2_EVEN_TYPE,
+                    N2_EVEN_DATE = N2_EVEN_DATE,
+                    DATE_trier = DATE_trier,
+                    N2_EVEN_SITE = N2_EVEN_SITE,
+                    N2_EVEN_PLAC = N2_EVEN_PLAC,
+                    N2_EVEN_PERI = N2_EVEN_PERI,
+                    N2_EVEN_RELI = N2_EVEN_RELI,
+                    //N2_EVEN_AUDIO_liste = N2_EVEN_AUDIO_liste,
+
+                    //N2_EVEN_PHOTO_liste = N2_EVEN_PHOTO_liste,
+                    //N2_EVEN_VIDEO_liste = N2_EVEN_VIDEO_liste,
+                    MULTIMEDIA_LINK_liste_ID = MULTIMEDIA_LINK_liste_ID,
+                    N2_EVEN_TEXT_liste = N2_EVEN_TEXT_liste,
+                    N2_EVEN_SOUR_citation_liste_ID = N2_EVEN_SOUR_citation_liste_ID,
+                    N2_EVEN_SOUR_source_liste_ID = N2_EVEN_SOUR_source_liste_ID,
+                    N2_EVEN_NOTE_STRUCTURE_liste_ID = N2_EVEN_NOTE_STRUCTURE_liste_ID,
+                    N2_EVEN_ROLE = N2_EVEN_ROLE,
+                    N3_EVEN_ROLE_TYPE = N3_EVEN_ROLE_TYPE,
+                    N3_EVEN_ROLE_INDIVIDUAL = N3_EVEN_ROLE_INDIVIDUAL,
+                    N3_EVEN_ROLE_ASSO_liste = N3_EVEN_ROLE_ASSO_liste,
+                    //N4_EVEN_ROLE_ASSO_TYPE = N4_EVEN_ROLE_ASSO_TYPE,
+                    N3_EVEN_ROLE_RELATIONSHIP_tag = N3_EVEN_ROLE_RELATIONSHIP_tag,
+                    N3_EVEN_ROLE_RELATIONSHIP_ID = N3_EVEN_ROLE_RELATIONSHIP_ID,
+                    N4_EVEN_ROLE_RELATIONSHIP_TYPE = N4_EVEN_ROLE_RELATIONSHIP_TYPE,
+                    N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL = N4_EVEN_ROLE_RELATIONSHIP_INDIVIDUAL
+                });
+            }
+            //R..Z("Retour Extraire_EVEN_RECORD_53 ligne=" + ligne);
+            return ligne;
+        }
+
+        private static (EVEN_STRUCTURE_53, int) Extraire_EVEN_STRUCTURE_53(int ligne, int niveau)
+        {
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            string N0_EVEN;
+            (_, _, N0_EVEN, _, ligne) = Extraire_info_niveau_0(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            EVEN_STRUCTURE_53 info_EVEN_STRUCTURE_53 = new EVEN_STRUCTURE_53
+            {
+                N1_NOTE_STRUCTURE_liste_ID = new List<string>(),
+                N1_SOUR_citation_liste_ID = new List<string>(),
+                N1_SOUR_source_liste_ID = new List<string>(),
+                N1_TEXT_liste = new List<TEXT_STRUCTURE>(),
+                N0_EVEN = N0_EVEN                                                                       // EVEN
+            };
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                if (balise_1 == (niveau + 1) + " TYPE")
+                    (info_EVEN_STRUCTURE_53.N1_TYPE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " DATE")
+                    (info_EVEN_STRUCTURE_53.N1_DATE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " PLAC")
+                    (info_EVEN_STRUCTURE_53.N1_PLAC, ligne, ligne_perdue_liste) = Extraire_PLACE_STRUCTURE(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " AGE")
+                    (info_EVEN_STRUCTURE_53.N1_AGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " MSTAT")
+                    (info_EVEN_STRUCTURE_53.N1_MSTAT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " CAUS")
+                    (info_EVEN_STRUCTURE_53.N1_CAUS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " RELI")
+                    (info_EVEN_STRUCTURE_53.N1_RELI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " AGNC")
+                    (info_EVEN_STRUCTURE_53.N1_AGNC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " TEXT")
+                {
+
+                    TEXT_STRUCTURE temp;
+                    (temp, ligne, ligne_perdue_liste) = Extraire_TEXT_STRUCTURE(ligne, ligne_perdue_liste);
+                    info_EVEN_STRUCTURE_53.N1_TEXT_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " SOUR")
+                {
+                    string citation;
+                    string source;
+                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                    if (IsNotNullOrEmpty(citation))
+                        info_EVEN_STRUCTURE_53.N1_SOUR_citation_liste_ID.Add(citation);
+                    if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                        info_EVEN_STRUCTURE_53.N1_SOUR_source_liste_ID.Add(source);
+                }
+                else if (balise_1 == (niveau + 1) + " NOTE")
+                {
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    info_EVEN_STRUCTURE_53.N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else if (balise_1 == (niveau + 1) + " CHAN")
+                    (info_EVEN_STRUCTURE_53.N1_CHAN, ligne, _) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info_EVEN_STRUCTURE_53.ligne_perdue_liste = ligne_perdue_liste;
+            return (info_EVEN_STRUCTURE_53, ligne);
+        }
+
+        private static int Extraire_FAM_RECORD(int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+
+            Regler_code_erreur();
+            if (GH.GH.annuler) return (ligne);
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
             string N0_ID;
             string N1_RESN = null;
-            List<EVENT_ATTRIBUTE_STRUCTURE> N1_Event_liste = new List<EVENT_ATTRIBUTE_STRUCTURE>();
-            List<EVENT_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste = new List<EVENT_ATTRIBUTE_STRUCTURE>();
-            
-
+            List<EVEN_ATTRIBUTE_STRUCTURE> N1_Event_liste = new List<EVEN_ATTRIBUTE_STRUCTURE>();
+            List<EVEN_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste = new List<EVEN_ATTRIBUTE_STRUCTURE>();
             string N1_HUSB = null;
             string N1_WIFE = null;
             List<string> N1_CHIL_liste_ID = new List<string>();
@@ -2920,164 +7531,212 @@ namespace GEDCOM
             LDS_SPOUSE_SEALING N1_SLGS = new LDS_SPOUSE_SEALING();
             List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
             string N1_RIN = null;
-            CHANGE_DATE N1_CHAN = new CHANGE_DATE();
-            List<string> N1_NOTE_liste_ID = new List<string>();
+            CHANGE_DATE N1_CHAN = null;
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
             List<string> N1_SOUR_citation_liste_ID = new List<string>();
             List<string> N1_SOUR_source_liste_ID = new List<string>();
-            List<string> N1_OBJE_liste = new List<string>();
-
+            List<string> MULTIMEDIA_LINK_liste_ID = new List<string>();
+            List<ASSOCIATION_STRUCTURE> N1_ASSO_liste = new List<ASSOCIATION_STRUCTURE>();
+            string N1_TYPU = null; // Ancestrologie
+            string N1__UST = null; // Heridis
+            string temp;
+            int niveau = 0;
             N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            Tb_Status.Text = "Décodage du data. Lecture des familles ID  " + N0_ID;
-            Animation(true);
             ligne++;
             // extraction
-            while (Extraire_niveau(ligne) > 0)
+            try
             {
-                Application.DoEvents();
-                string balise = Extraire_balise(dataGEDCOM[ligne]);
-                // Si événement
-                if (SiBaliseEvenementFamille(balise))
+                while (Extraire_niveau(ligne) > niveau)
                 {
-                    EVENT_ATTRIBUTE_STRUCTURE Event;
-                    (Event, ligne) = Extraire_EVENT_ATTRIBUTE_STRUCTURE(ligne);
-                    N1_Event_liste.Add(Event);
-                }
-                // Si attribut
-                else if (SiBaliseAttributeFamille(balise))                                              // attribut pour GRAMPS
-                {
-                    EVENT_ATTRIBUTE_STRUCTURE Attribute;
-                    (Attribute, ligne) = Extraire_EVENT_ATTRIBUTE_STRUCTURE(ligne);
-                    N1_ATTRIBUTE_liste.Add(Attribute);
-                }
-                else
-                if (Extraire_balise(dataGEDCOM[ligne]) == "1 RESN")                                     //1 RESN
-                {
-                    N1_RESN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    if (N1_RESN.ToLower() == "confidential") N1_RESN = "confidentiel";
-                    if (N1_RESN.ToLower() == "locked") N1_RESN = "verrouillé";
-                    if (N1_RESN.ToLower() == "privacy") N1_RESN = "privé";
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 TYPU")                                // 1 TYPU
-                {
-                    // ????
-                    // trouver dans Ancestrologie
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 HUSB")                                // 1 HUSB
-                {
-                    N1_HUSB = Extraire_ID(dataGEDCOM[ligne]);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WIFE")                                // 1 WIFE
-                {
-                    N1_WIFE = Extraire_ID(dataGEDCOM[ligne]);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHIL")                                // 1 CHIL
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
                     {
-                        string IDEnfant = Extraire_ID(dataGEDCOM[ligne]);
-                        N1_CHIL_liste_ID.Add(IDEnfant);
+                        // evenement famille
+                        case "1 ANUL":
+                        case "1 CENS":
+                        case "1 DIV":
+                        case "1 DIVF":
+                        case "1 ENGA":
+                        case "1 EVEN":
+                        case "1 MARB":
+                        case "1 MARC":
+                        case "1 MARL":
+                        case "1 MARR":
+                        case "1 MARS":
+                        case "1 RESI":
+                        case "1 _ANCES_ORDRE": // ancestrologie
+                        case "1 _ANCES_XINSEE":// ancestrologie
+                            EVEN_ATTRIBUTE_STRUCTURE Event;
+                            (Event, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            N1_Event_liste.Add(Event);
+                            break;
+                        //attribute_famille
+                        case "1 FACT":
+                            EVEN_ATTRIBUTE_STRUCTURE Attribute;
+                            (Attribute, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            N1_ATTRIBUTE_liste.Add(Attribute);
+                            break;
+                        case "1 ASSO":                                                                    //1 ASSO V5.3
+                            ASSOCIATION_STRUCTURE info;
+                            (info, ligne, ligne_perdue_liste) = Extraire_ASSOCIATION_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_ASSO_liste.Add(info);
+                            break;
+                        case "1 RESN":                                                                    //1 RESN
+                            (N1_RESN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 TYPU":                                                                    // 1 TYPU pour Ancestrologie
+                            (N1_TYPU, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 _UST":                                                                    // 1 _UST Heridis
+                            (N1__UST, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 HUSB":                                                                    // 1 HUSB
+                            N1_HUSB = Extraire_ID(dataGEDCOM[ligne]);
+                            ligne++;
+                            break;
+                        case "1 WIFE":                                                                    // 1 WIFE
+                            N1_WIFE = Extraire_ID(dataGEDCOM[ligne]);
+                            ligne++;
+                            break;
+                        case "1 CHIL":                                                                    // 1 CHIL
+                            if (dataGEDCOM[ligne].Length > 7)
+                            {
+                                string IDEnfant = Extraire_ID(dataGEDCOM[ligne]);
+                                N1_CHIL_liste_ID.Add(IDEnfant);
+                            }
+                            ligne++;
+                            break;
+                        case "1 NCHI":                                                                    // 1 NCHI
+                            (N1_NCHI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 SUBM":                                                                    // 1 SUBM
+                            if (dataGEDCOM[ligne].Length > 7)
+                            {
+                                N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
+                                ligne++;
+                            }
+                            else
+                            {
+                                ligne = Ligne_perdu_plus(
+                                    ligne,
+                                    MethodBase.GetCurrentMethod().Name,
+                                    (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                    balise_ligne
+                                    );
+                            }
+                            break;
+                        case "1 SLGS":                                                                    // 1 SLGS
+                            (N1_SLGS, ligne, ligne_perdue_liste) = Extraire_LDS_SPOUSE_SEALING(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 REFN":                                                                    // 1 REFN
+                            USER_REFERENCE_NUMBER N1_REFN;
+                            (N1_REFN, ligne, ligne_perdue_liste) = Extraire_USER_REFERENCE_NUMBER(ligne, ligne_perdue_liste);
+                            N1_REFN_liste.Add(N1_REFN);
+                            break;
+                        case "1 RIN":                                                                     // 1 RIN
+                            (N1_RIN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 CHAN":                                                                    // 1 CHAN
+                            (N1_CHAN, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 NOTE":                                                                    // 1 NOTE
+                            string IDNote;
+                            (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                            break;
+                        case "1 OBJE":                                                                    // 1 OBJE Famille
+                            (temp, ligne) = Extraire_MULTIMEDIA_LINK(ligne);
+                            MULTIMEDIA_LINK_liste_ID.Add(temp);
+                            break;
+                        case "1 AUDIO":                                                                   // 1 AUDIO individu V5.3
+                        case "1 PHOTO":                                                                // 1 PHOTO individu  V5.3
+                        case "1 VIDEO":                                                               // 1 VIDEO individu V5.3
+                            (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            MULTIMEDIA_LINK_liste_ID.Add(temp);
+                            break;
+                        case "1 SOUR":                                                                // 1 SOUR
+                            string citation;
+                            string source;
+                            (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                            if (IsNotNullOrEmpty(citation)) N1_SOUR_citation_liste_ID.Add(citation);
+                            if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                            {
+                                N1_SOUR_source_liste_ID.Add(source);
+                            }
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
                     }
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NCHI")                                // 1 NCHI
-                {
-                    N1_NCHI = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                                // 1 SUBM
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
-                        ligne++;
-                    }
-                    else
-                    {
-                        EcrireBalise(ligne, dataGEDCOM[ligne]);
-                        ligne++;
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SLGS")                                // 1 SLGS
-                {
-                    (N1_SLGS, ligne) = Extraire_LDS_SPOUSE_SEALING(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                                // 1 REFN
-                {
-                    USER_REFERENCE_NUMBER N1_REFN;
-                    (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
-                    N1_REFN_liste.Add(N1_REFN);
-
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                                 // 1 RIN
-                {
-                    N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                // 1 CHAN
-                {
-                    (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                // 1 NOTE
-                {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                                // 1 OBJE Famille
-                {
-                    string ID_OBJE;
-                    (ID_OBJE, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
-                    N1_OBJE_liste.Add(ID_OBJE);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                                // 1 SOUR
-                {
-                    string citation;
-                    string source;
-                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) N1_SOUR_source_liste_ID.Add(source);
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
                 }
             }
-            liste_FAM_RECORD.Add(new FAM_RECORD()
+            catch (Exception msg)
             {
-                N0_ID = N0_ID,
-                N1_EVENT_Liste = N1_Event_liste,
-                N1_ATTRIBUTE_liste = N1_ATTRIBUTE_liste, // pour GRAMPS
-                N1_RESN = N1_RESN,
-                N1_HUSB = N1_HUSB,
-                N1_WIFE = N1_WIFE,
-                N1_NCHI = N1_NCHI,
-                N1_CHIL_liste_ID = N1_CHIL_liste_ID,
-                N1_SUBM_liste_ID = N1_SUBM_liste_ID,
-                N1_SLGS = N1_SLGS,
-                N1_REFN_liste = N1_REFN_liste,
-                N1_RIN = N1_RIN,
-                N1_OBJE_liste = N1_OBJE_liste,
-                N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                N1_CHAN = N1_CHAN
-            });
-            return (N0_ID, ligne);
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+            }
+            if (!GH.GH.annuler)
+            {
+                liste_FAM_RECORD.Add(new FAM_RECORD()
+                {
+                    ligne_perdue_liste = ligne_perdue_liste,
+                    N0_ID = N0_ID,
+                    N1_EVEN_Liste = N1_Event_liste,
+                    N1_ATTRIBUTE_liste = N1_ATTRIBUTE_liste, // pour GRAMPS
+                    N1_ASSO_liste = N1_ASSO_liste, // V5.3
+                    N1_RESN = N1_RESN,
+                    N1_HUSB = N1_HUSB,
+                    N1_WIFE = N1_WIFE,
+                    N1_NCHI = N1_NCHI,
+                    N1_CHIL_liste_ID = N1_CHIL_liste_ID,
+                    N1_SUBM_liste_ID = N1_SUBM_liste_ID,
+                    N1_SLGS = N1_SLGS,
+                    N1_REFN_liste = N1_REFN_liste,
+                    N1_RIN = N1_RIN,
+                    MULTIMEDIA_LINK_liste_ID = MULTIMEDIA_LINK_liste_ID,
+                    N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                    N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
+                    N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
+                    N1_CHAN = N1_CHAN,
+                    N1_TYPU = N1_TYPU,
+                    N1__UST = N1__UST,
+                });
+            }
+            return ligne;
         }
-        private static (string, int) Extraire_INDIVIDUAL_RECORD(int ligne)
+
+        private static int Extraire_INDIVIDUAL_RECORD(
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            if (GH.GH.annuler) return (null, 0);
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne );
+
+            Regler_code_erreur();
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
             string N0_ID;
             string N1_RESN = null;
             List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste = new List<PERSONAL_NAME_STRUCTURE>();
             string N1_SEX = null;
-            List<EVENT_ATTRIBUTE_STRUCTURE> N1_Event_liste = new List<EVENT_ATTRIBUTE_STRUCTURE>();
-            List<EVENT_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste = new List<EVENT_ATTRIBUTE_STRUCTURE>();
+            List<EVEN_ATTRIBUTE_STRUCTURE> N1_Event_liste = new List<EVEN_ATTRIBUTE_STRUCTURE>();
+            List<EVEN_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste = new List<EVEN_ATTRIBUTE_STRUCTURE>();
+            string N1_SITE = null;
+            List<ADDRESS_STRUCTURE> N1_ADDR_liste = new List<ADDRESS_STRUCTURE>();
+            string N1_RELI = null;
+            string N1_NAMR = null;
+            string N2_NAMR_RELI = null;
             LDS_INDIVIDUAL_ORDINANCE N1_LDS;
             CHILD_TO_FAMILY_LINK N1_FAMC = new CHILD_TO_FAMILY_LINK();
             List<SPOUSE_TO_FAMILY_LINK> N1_FAMS_liste_Conjoint = new List<SPOUSE_TO_FAMILY_LINK>();
@@ -3090,11 +7749,12 @@ namespace GEDCOM
             string N1_AFN = null;
             List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
             string N1_RIN = null;
-            CHANGE_DATE N1_CHAN = new CHANGE_DATE();
-            List<string> N1_NOTE_liste_ID = new List<string>();
+            //CHANGE_DATE N1_CHAN = new CHANGE_DATE();
+            CHANGE_DATE N1_CHAN = null;
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
             List<string> N1_SOUR_citation_liste_ID = new List<string>();
             List<string> N1_SOUR_source_liste_ID = new List<string>();
-            List<string> N1_OBJE_liste = new List<string>();
+            List<string> MULTIMEDIA_LINK_liste_ID= new List<string>();
             string adopter = null;
             string nom_section_1 = null;
             string nom_section_2 = null;
@@ -3102,671 +7762,652 @@ namespace GEDCOM
             string titre = null;
             string photoID = null;
             string N1__ANCES_CLE_FIXE = null; // Ancestrologie
-            List<string> N1_WWW_liste = new List<string>(); // GRAMPS
+            string N1_FILA = null; // Ancestrologie
+            string N1_SIGN = null; // Heridis
+            string N1__FIL = null; // heridis
+            string N1__CLS = null; // Heridis
+            List<string> N1_PHON_liste = new List<string>();
+            List<string> N1_EMAIL_liste = new List<string>();
+            List<string> N1_FAX_liste = new List<string>();
+            List<string> N1_WWW_liste = new List<string>();
             List<LDS_INDIVIDUAL_ORDINANCE> N1_LDS_liste = new List<LDS_INDIVIDUAL_ORDINANCE>();
-            int cn = 0;
+            int niveau = 0;
+            //int cn = 0;
             if (dataGEDCOM[ligne].Length == 5)
             {
                 dataGEDCOM[ligne] = dataGEDCOM[ligne];
             }
             N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            Tb_Status.Text = "Décodage du data. Lecture des individus ID  " + N0_ID;
-            Animation(true);
             ligne++;
-            while (Extraire_niveau(ligne) > 0)
+            try
             {
-                Application.DoEvents();
-                string baliseN1 = Extraire_balise(dataGEDCOM[ligne].ToUpper());
-                if (baliseN1 == "1 RESN")                                                               //1 RESN
+                while (Extraire_niveau(ligne) > niveau)
                 {
-                    N1_RESN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    if (N1_RESN.ToLower() == "confidential") N1_RESN = "confidentiel";
-                    if (N1_RESN.ToLower() == "locked") N1_RESN = "verrouillé";
-                    if (N1_RESN.ToLower() == "privacy") N1_RESN = "privé";
-                    ligne++;
-                }
-                // 1 NAME **************************************************************************************************
-                else if (baliseN1 == "1 NAME")                                                          // 1 NAME
-                {
-                    PERSONAL_NAME_STRUCTURE itemNom = new PERSONAL_NAME_STRUCTURE()
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
                     {
-                        N0_NAME = null,
-                        N1_TYPE = "Nom",
-                        N1_NPFX = null,
-                        N1_GIVN = null,
-                        N1_NICK = null,
-                        N1_SPFX = null,
-                        N1_SURN = null,
-                        N1_NSFX = null,
-                        N1_FONE = null,
-                        N2_FONE_TYPE = null,
-                        N2_FONE_NPFX = null,
-                        N2_FONE_GIVN = null,
-                        N2_FONE_NICK = null,
-                        N2_FONE_SPFX = null,
-                        N2_FONE_SURN = null,
-                        N2_FONE_NSFX = null,
-                        N2_FONE_SOUR_citation_liste_ID = new List<string>(),
-                        N2_FONE_SOUR_source_liste_ID = new List<string>(),
-                        N2_FONE_NOTE_ID_liste = new List<string>(),
-                        N1_ROMN = null,
-                        N2_ROMN_TYPE = null,
-                        N2_ROMN_NPFX = null,
-                        N2_ROMN_GIVN = null,
-                        N2_ROMN_NICK = null,
-                        N2_ROMN_SPFX = null,
-                        N2_ROMN_SURN = null,
-                        N2_ROMN_NSFX = null,
-                        N2_ROMN_SOUR_citation_liste_ID = new List<string>(),
-                        N2_ROMN_SOUR_source_liste_ID = new List<string>(),
-                        N2_ROMN_NOTE_ID_liste = new List<string>(),
-                        N1_NOTE_liste_ID = new List<string>(),
-                        N1_SOUR_citation_liste_ID = new List<string>(),
-                        N1_SOUR_source_liste_ID = new List<string>()
-                    };
-                    itemNom.N0_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    itemNom.N0_NAME = Extraire_NAME(itemNom.N0_NAME);
-                    cn++;
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        string balise = Extraire_balise(dataGEDCOM[ligne]);
-                        if (balise == "2 TYPE")                                                         // 2 Type
-                        {
-                            itemNom.N1_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            if (itemNom.N1_TYPE.ToLower() == "aka") itemNom.N1_TYPE = "Alias";
-                            if (itemNom.N1_TYPE.ToLower() == "birth") itemNom.N1_TYPE = "A la naissance";
-                            if (itemNom.N1_TYPE.ToLower() == "immigrant") itemNom.N1_TYPE = "À immigrant";
-                            if (itemNom.N1_TYPE.ToLower() == "maiden") itemNom.N1_TYPE = "Avant le premier mariage";
-                            if (itemNom.N1_TYPE.ToLower() == "married") itemNom.N1_TYPE = "Au mariage";
-                            if (itemNom.N1_TYPE.ToLower() == "user_defined") itemNom.N1_TYPE = "Par l'utilisateur";
+                        case "1 RESN":                                                                    //1 RESN
+                            (N1_RESN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 NAME":                                                                    // 1 NAME
+                            PERSONAL_NAME_STRUCTURE info_nom = new PERSONAL_NAME_STRUCTURE();
+                            (info_nom, ligne, ligne_perdue_liste) = Extraire_PERSONAL_NAME_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_NAME_liste.Add(info_nom);
+                            break;
+                        // événement 
+                        case "1 TEST":
+                        case "1 ADOP":
+                        case "1 BAPM":
+                        case "1 BARM":
+                        case "1 BASM":
+                        case "1 BIRT":
+                        case "1 BLES":
+                        case "1 BURI":
+                        case "1 CENS":
+                        case "1 CHR":
+                        case "1 CHRA":
+                        case "1 CONF":
+                        case "1 CREM":
+                        case "1 DEAT":
+                        case "1 EMIG":
+                        case "1 EVEN":
+                        case "1 FCOM":
+                        case "1 GRAD":
+                        case "1 IMMI":
+                        case "1 NATU":
+                        case "1 ORDN":
+                        case "1 PROB":
+                        case "1 RETI":
+                        case "1 WILL":
+                        case "1 _MDCL": // oem
+                        case "1 _MILT":
+                        case "1 _ELEC": // GRAMPS
+                            EVEN_ATTRIBUTE_STRUCTURE Event;
+                            (Event, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            N1_Event_liste.Add(Event);
+                            break;
+                        // attribut
+                        case "1 CAST":
+                        case "1 DSCR":
+                        case "1 EDUC":
+                        case "1 IDNO":
+                        case "1 NATI":
+                        case "1 NCHI":
+                        case "1 NMR":
+                        case "1 OCCU":
+                        case "1 PROP":
+                        case "1 RELI":
+                        case "1 RESI":
+                        case "1 SSN":
+                        case "1 TITL":
+                        case "1 FACT":
+                            EVEN_ATTRIBUTE_STRUCTURE Attribute;
+                            (Attribute, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            N1_ATTRIBUTE_liste.Add(Attribute);
+                            break;
+                        // SITE V5.3
+                        case "1 SITE":                                                                    // 1 SITE V5.3
+                            (N1_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 ADDR":                                                                    // 1 ADDR V5.3
+                            ADDRESS_STRUCTURE N1_ADDR;
+                            (N1_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_ADDR_liste.Add(N1_ADDR);
+                            break;
+                        // RELIGIOUS_AFFILIATION V5.3 1 NAMR
+                        case "1 NAMR":                                                                    // 1 NAMR V5.3
+                            (N1_NAMR, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            while (Extraire_niveau(ligne) > niveau + 1)
+                            {
+                                if (Avoir_balise_p1(dataGEDCOM[ligne].ToUpper()) == "2 RELI")               // 1 NAMR RELI V5.3
+                                {
+                                    (N2_NAMR_RELI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                                }
+                                else
+                                {
+                                    // pour la page HTML
+                                    ligne = Ligne_perdu_plus(
+                                        ligne,
+                                        MethodBase.GetCurrentMethod().Name,
+                                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                        balise_ligne
+                                        );
+                                }
+                            }
+                            break;
+                        // Si ordinance
+                        case "1 BAPL": //allowed in GEDCOM V5.3 V5.5.1
+                        case "1 CONL": //allowed in GEDCOM V5.3 V5.5.1
+                        case "1 ENDL": //allowed in GEDCOM V5.3 V5.5.1
+                        case "1 SLGC": //allowed in GEDCOM V5.5.1
+                        case "1 WAC":   //allowed in GEDCOM V5.3
+                            (N1_LDS, ligne) = Extraire_LDS_INDIVIDUAL_ORDINANCE_even(ligne);
+                            N1_LDS_liste.Add(N1_LDS);
+                            break;
+                        case "1 FILA":// Ancestrologie
+                            (N1_FILA, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 SEX":
+                            (N1_SEX, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_SEX = N1_SEX.ToUpper();
+                            break;
+                        case "1 SUBM":
+                            if (dataGEDCOM[ligne].Length > 7)
+                                N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                             ligne++;
-                        }
-                        else if (balise == "2 NPFX")                                                    // 2 NPFX
-                        {
-                            itemNom.N1_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            break;
+                        case "1 ASSO":                                                                    // ASSO
+                            ASSOCIATION_STRUCTURE info;
+                            (info, ligne, ligne_perdue_liste) = Extraire_ASSOCIATION_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_ASSO_liste.Add(info);
+                            break;
+                        case "1 ALIA":                                                                    // ALIA
+                            N1_ALIA_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                             ligne++;
-                        }
-                        else if (balise == "2 GIVN")                                                    // 2 GIVN
-                        {
-                            itemNom.N1_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            break;
+                        case "1 ANCI":                                                                    // ANCI
+                            N1_ANCI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                             ligne++;
-                        }
-                        else if (balise == "2 NICK")                                                    // 2 NICK
-                        {
-                            itemNom.N1_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
+                            break;
+                        case "1 DESI":                                                                    // DESI
+                            N1_DESI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                             ligne++;
-                        }
-                        else if (balise == "2 SPFX")                                                    // 2 SPFX
-                        {
-                            itemNom.N1_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else if (balise == "2 SURN")                                                    // 2 SURN
-                        {
-                            itemNom.N1_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else if (balise == "2 NSFX")                                                    // 2 NSFX
-                        {
-                            itemNom.N1_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            ligne++;
-                        }
-                        else if (balise == "2 NOTE")                                                    // 2 NOTE
-                        {
-                            string IDNote;
-                            (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                            itemNom.N1_NOTE_liste_ID.Add(IDNote);
-                        }
-                        else if (balise == "2 SOUR")                                                    // 2 SOUR
-                        {
+                            break;
+                        case "1 RFN":                                                                     // RFN
+                            (N1_RFN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 AFN":                                                                     // AFN
+                            (N1_AFN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 FAMS":                                                                    // FAMS conjoint/spouse
+                            SPOUSE_TO_FAMILY_LINK temp1;// = new SPOUSE_TO_FAMILY_LINK();
+                            (temp1, ligne, ligne_perdue_liste) = Extraire_SPOUSE_TO_FAMILY_LINK(ligne, ligne_perdue_liste);
+                            N1_FAMS_liste_Conjoint.Add(temp1);
+                            break;
+                        case "1 REFN":                                                                    // REFN
+                            USER_REFERENCE_NUMBER N1_REFN;
+                            (N1_REFN, ligne, ligne_perdue_liste) = Extraire_USER_REFERENCE_NUMBER(ligne, ligne_perdue_liste);
+                            N1_REFN_liste.Add(N1_REFN);
+                            break;
+                        case "1 FAMC":                                                                    // FAMC enfant de la famille
+                            (N1_FAMC, ligne, ligne_perdue_liste) = Extraire_CHILD_TO_FAMILY_LINK(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 SOUR":                                                                    // SOUR
                             string citation;
                             string source;
                             (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                            if (citation != null) itemNom.N1_SOUR_citation_liste_ID.Add(citation);
-                            if (source != null) itemNom.N1_SOUR_source_liste_ID.Add(source);
-                        }
-                        else if (balise == "2 FONE")                                                    // 2 FONE
-                        {
-
-                            itemNom.N1_FONE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            itemNom.N1_FONE = Extraire_NAME(itemNom.N1_FONE);
-                            ligne++;
-                            balise = Extraire_balise(dataGEDCOM[ligne]);
-                            while (Extraire_niveau(ligne) > 2)
-                            {
-                                if (balise == "3 TYPE")                                                 // FONE 3 TYPE
-                                {
-                                    itemNom.N2_FONE_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NPFX")                                            // FONE NPFX
-                                {
-                                    itemNom.N2_FONE_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 GIVN")                                            // FONE GIVN
-                                {
-                                    itemNom.N2_FONE_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NICK")                                            // FONE NICK
-                                {
-                                    itemNom.N2_FONE_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 SPFX")                                            // FONE SPFX
-                                {
-                                    itemNom.N2_FONE_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 SURN")                                            // FONE 3 SURN
-                                {
-                                    itemNom.N2_FONE_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NSFX")                                            // FONE  3 NSFX
-                                {
-                                    itemNom.N2_FONE_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NOTE")                                            // FONE 3 NOTE
-                                {
-                                    string IDNote;
-                                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                                    itemNom.N2_FONE_NOTE_ID_liste.Add(IDNote);
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 SOUR")                                            // FONE 3 SOUR
-                                {
-                                    string citation;
-                                    string source;
-                                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                                    if (citation != null)  itemNom.N2_FONE_SOUR_citation_liste_ID.Add(citation);
-                                    if (source != null) itemNom.N2_FONE_SOUR_source_liste_ID.Add(source);
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                            }
-                        }
-                        else if (balise == "2 ROMN")                                                    // 2 ROMN
-                        {
-                            itemNom.N1_ROMN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                            itemNom.N1_ROMN = Extraire_NAME(itemNom.N1_ROMN);
-                            ligne++;
-                            balise = Extraire_balise(dataGEDCOM[ligne]);
-                            while (Extraire_niveau(ligne) > 2)
-                            {
-                                if (balise == "3 TYPE")                                                 // ROMN 3 TYPE
-                                {
-                                    itemNom.N2_ROMN_TYPE = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NPFX")                                            // ROMN 3 NPFX
-                                {
-                                    itemNom.N2_ROMN_NPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 GIVN")                                            // ROMN 3 GIVN
-                                {
-                                    itemNom.N2_ROMN_GIVN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NICK")                                            // ROMN 3 NICK
-                                {
-                                    itemNom.N2_ROMN_NICK = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 SPFX")                                            // ROMN SPFX
-                                {
-                                    itemNom.N2_ROMN_SPFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 SURN")                                            // ROMN SURN
-                                {
-                                    itemNom.N2_ROMN_SURN = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NSFX")                                            // ROMN NSFX
-                                {
-                                    itemNom.N2_ROMN_NSFX = Extraire_ligne(dataGEDCOM[ligne], 4);
-                                    ligne++;
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 NOTE")                                            // ROMN 3 NOTE
-                                {
-                                    string IDNote;
-                                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                                    itemNom.N2_ROMN_NOTE_ID_liste.Add(IDNote);
-                                    balise = Extraire_balise(dataGEDCOM[ligne]);
-                                }
-                                else if (balise == "3 SOUR")                                            // ROMN SOUR
-                                {
-                                    string citation;
-                                    string source;
-                                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                                    if (citation != null) itemNom.N2_ROMN_SOUR_citation_liste_ID.Add(citation);
-                                    if (source != null) itemNom.N2_ROMN_SOUR_source_liste_ID.Add(source);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
-                        }
+                            if (IsNotNullOrEmpty(citation)) N1_SOUR_citation_liste_ID.Add(citation);
+                            if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation)) N1_SOUR_source_liste_ID.Add(source);
+                            break;
+                        case "1 OBJE":                                                                    // OBJE individu
+                            string temp_ID = null;
+                            (temp_ID, ligne) = Extraire_MULTIMEDIA_LINK(ligne);
+                            MULTIMEDIA_LINK_liste_ID.Add(temp_ID);
+                            break;
+                        case "1 AUDIO":                                                                   // AUDIO individu V5.3
+                            string fichier_audio = null;
+                            (fichier_audio, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            string audio_ID = Extraire_MULTIMEDIA_LINK(fichier_audio);
+                            MULTIMEDIA_LINK_liste_ID.Add(audio_ID);
+                            break;
+                        case "1 PHOTO":                                                                   // PHOTO individu  V5.3
+                            string fichier_photo = null;
+                            (fichier_photo, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            string photo_ID = Extraire_MULTIMEDIA_LINK(fichier_photo);
+                            MULTIMEDIA_LINK_liste_ID.Add(photo_ID);
+                            break;
+                        case "1 VIDEO":                                                                   // VIDEO individu V5.3
+                            string fichier_video = null;
+                            (fichier_video, ligne, ligne_perdue_liste) = Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            string video_ID = Extraire_MULTIMEDIA_LINK(fichier_video);
+                            MULTIMEDIA_LINK_liste_ID.Add(video_ID);
+                            break;
+                        case "1 NOTE":                                                                    // NOTE
+                            string IDNote;
+                            (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(
+                                ligne, ligne_perdue_liste);
+                            N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                            break;
+                        case "1 CHAN":                                                                    // 1 CHAN
+                            (N1_CHAN, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(
+                                ligne, ligne_perdue_liste);
+                            break;
+                        case "1 RIN":                                                                     // RIN
+                            (N1_RIN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 _ANCES_CLE_FIXE":                                                         // _ANCES_CLE_FIXE
+                            (N1__ANCES_CLE_FIXE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 PHON":                                                                    // PHON
+                            string temp_phon = null;
+                            (temp_phon, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_PHON_liste.Add(temp_phon);
+                            break;
+                        case "1 EMAIL":                                                                   // EMAIL
+                            string temp_email = null;
+                            (temp_email, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_EMAIL_liste.Add(temp_email);
+                            break;
+                        case "1 FAX":                                                                     // FAX
+                            string temp_fax = null;
+                            (temp_fax, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_FAX_liste.Add(temp_fax);
+                            break;
+                        case "1 WWW":                                                                     // WWW
+                            string temp_www = null;
+                            (temp_www, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_WWW_liste.Add(temp_www);
+                            break;
+                        case "1 SIGN":                                                                    // SIGN
+                            (N1_SIGN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_SIGN = N1_SIGN.ToUpper();
+                            break;
+                        case "1 _FIL":                                                                    // _FIL pour Heresis
+                            (N1__FIL, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            if (IsNotNullOrEmpty(N1__FIL)) N1__FIL = N1__FIL.ToUpper();
+                            break;
+                        case "1 _CLS":                                                                    // CLS pour Heresis
+                            (N1__CLS, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            if (IsNotNullOrEmpty(N1__CLS)) N1__CLS = N1__CLS.ToUpper();
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
                     }
-                    N1_NAME_liste.Add(itemNom);
-                }
-                // Fin 1 NAME **********************************************************************************************
-                // Si événement
-                else if (SiBaliseEvenementIndividu(baliseN1))                                                               // événement
-                {
-                    EVENT_ATTRIBUTE_STRUCTURE Event;
-                    (Event, ligne) = Extraire_EVENT_ATTRIBUTE_STRUCTURE(ligne);
-                    N1_Event_liste.Add(Event);
-                }
-                // Si attribut
-                else if (SiBaliseAttributeIndividu(baliseN1))                                                               // attribut
-                {
-                    EVENT_ATTRIBUTE_STRUCTURE Attribute;
-                    (Attribute, ligne) = Extraire_EVENT_ATTRIBUTE_STRUCTURE(ligne);
-                    N1_ATTRIBUTE_liste.Add(Attribute);
-                }
-                // Si ordinance
-                else if (SiBaliseOrdinanceIndividu(baliseN1))                                                               // ordinance
-                {
-                    (N1_LDS, ligne) = Extraire_LDS_INDIVIDUAL_ORDINANCE(ligne);
-                    N1_LDS_liste.Add(N1_LDS);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FILA")                                                     // 1 FILA
-                {
-                    // filiation
-                    // trouver dans Ancestrologie
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SEX")                                                      // 1 SEX
-                {
-                    N1_SEX = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                                                     // 1 SUBM
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
-                        ligne++;
-                    }
-                    else
-                    {
-                        EcrireBalise(ligne, dataGEDCOM[ligne]);
-                        ligne++;
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ASSO")                                                     // 1 ASSO
-                {
-                    ASSOCIATION_STRUCTURE info;
-                    (info, ligne) = Extraire_ASSOCIATION_STRUCTURE(ligne);
-                    N1_ASSO_liste.Add(info);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ALIA")                                                     // 1 ALIA
-                {
-                    N1_ALIA_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ANCI")                                                     // 1 ANCI
-                {
-                    N1_ANCI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 DESI")                                                     // 1 DESI
-                {
-                    N1_DESI_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RFN")                                                      // 1 RFN
-                {
-                    N1_RFN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 AFN")                                                      // 1 AFN
-                {
-                    N1_AFN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMS")                                                     // 1 FAMS conjoint/spouse
-                {
-                    SPOUSE_TO_FAMILY_LINK info;// = new SPOUSE_TO_FAMILY_LINK();
-                    (info, ligne) = Extraire_SPOUSE_TO_FAMILY_LINK(ligne);
-                    N1_FAMS_liste_Conjoint.Add(info);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 REFN")                                                     // 1 REFN
-                {
-                    USER_REFERENCE_NUMBER N1_REFN;
-                    (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
-                    N1_REFN_liste.Add(N1_REFN);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMC")                                                     // 1 FAMC enfant de la famille
-                {
-                    (N1_FAMC, ligne) = Extraire_CHILD_TO_FAMILY_LINK(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 SOUR")                                                     // 1 SOUR
-                {
-                    string citation;
-                    string source;
-                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) N1_SOUR_source_liste_ID.Add(source);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                                                                  // 1 OBJE individu
-                {
-                    string ID_OBJE;
-                    (ID_OBJE, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
-                    N1_OBJE_liste.Add(ID_OBJE);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                                                  // 1 NOTE
-                {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                                                  // 1 CHAN
-                {
-                    (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")
-                {
-                    N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 2)
-                    {
-                        ligne++;
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _ANCES_CLE_FIXE")                 // 1 _ANCES_CLE_FIXE
-                {
-                    N1__ANCES_CLE_FIXE = Extraire_ligne(dataGEDCOM[ligne], 15);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > 1)
-                    {
-                        ligne++;
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WWW")                             // 1 WWW pour GRAMPS
-                {
-                    string WWW;
-                    WWW = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    N1_WWW_liste.Add(WWW);
-                    ligne++;
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
                 }
             }
-            liste_INDIVIDUAL_RECORD.Add(new INDIVIDUAL_RECORD()
+            catch (Exception msg)
             {
-                N0_ID = N0_ID,
-                N1_RESN = N1_RESN,
-                N1__ANCES_CLE_FIXE = N1__ANCES_CLE_FIXE,
-                Titre = titre,
-                nom_section_1 = nom_section_1,
-                nom_section_2 = nom_section_2,
-                nom_section_3 = nom_section_3,
-                N1_NAME_liste = N1_NAME_liste,
-                N1_OBJE_liste = N1_OBJE_liste,
-                PhotoID = photoID,
-                N1_SEX = N1_SEX,
-                N1_EVENT_Liste = N1_Event_liste,
-                N1_Attribute_liste = N1_ATTRIBUTE_liste,
-                N1_LDS_liste = N1_LDS_liste,
-                N1_SUBM_liste_ID = N1_SUBM_liste_ID,
-                N1_ASSO_liste = N1_ASSO_liste,
-                N1_ALIA_liste_ID = N1_ALIA_liste_ID,
-                N1_ANCI_liste_ID = N1_ANCI_liste_ID,
-                N1_DESI_liste_ID = N1_DESI_liste_ID,
-                N1_RFN = N1_RFN,
-                N1_AFN = N1_AFN,
-                N1_FAMS_liste_Conjoint = N1_FAMS_liste_Conjoint,
-                N1_REFN_liste = N1_REFN_liste,
-                N1_FAMC = N1_FAMC,
-                Adopter = adopter, // ADOP,
-                N1_CHAN = N1_CHAN,
-                N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                N1_RIN = N1_RIN,
-                N1_WWW_liste = N1_WWW_liste // GRAMPS
-            });
-            return (N0_ID, ligne);
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+            }
+            if (!GH.GH.annuler)
+            {
+                liste_INDIVIDUAL_RECORD.Add(new INDIVIDUAL_RECORD()
+                {
+                    ligne_perdue_liste = ligne_perdue_liste,
+                    N0_ID = N0_ID,
+                    N1_RESN = N1_RESN,
+                    N1__ANCES_CLE_FIXE = N1__ANCES_CLE_FIXE,
+                    Titre = titre,
+                    nom_section_1 = nom_section_1,
+                    nom_section_2 = nom_section_2,
+                    nom_section_3 = nom_section_3,
+                    N1_NAME_liste = N1_NAME_liste,
+                    //N1_AUDIO_liste = N1_AUDIO_liste,
+                    //N1_PHOTO_liste = N1_PHOTO_liste,
+                    //N1_VIDEO_liste = N1_VIDEO_liste,
+                    MULTIMEDIA_LINK_liste_ID = MULTIMEDIA_LINK_liste_ID,
+                    PhotoID = photoID,
+                    N1_SEX = N1_SEX,
+                    N1_EVEN_Liste = N1_Event_liste,
+                    N1_Attribute_liste = N1_ATTRIBUTE_liste,
+                    N1_SITE = N1_SITE,
+                    N1_ADDR_liste = N1_ADDR_liste, // V5.3
+                    N1_RELI = N1_RELI, // V5.3
+                    N1_NAMR = N1_NAMR,
+                    N2_NAMR_RELI = N2_NAMR_RELI,
+                    N1_LDS_liste = N1_LDS_liste,
+                    N1_FILA = N1_FILA, // Ancestrologie
+                    N1_SUBM_liste_ID = N1_SUBM_liste_ID,
+                    N1_ASSO_liste = N1_ASSO_liste,
+                    N1_ALIA_liste_ID = N1_ALIA_liste_ID,
+                    N1_ANCI_liste_ID = N1_ANCI_liste_ID,
+                    N1_DESI_liste_ID = N1_DESI_liste_ID,
+                    N1_RFN = N1_RFN,
+                    N1_AFN = N1_AFN,
+                    N1_FAMS_liste_Conjoint = N1_FAMS_liste_Conjoint,
+                    N1_REFN_liste = N1_REFN_liste,
+                    N1_FAMC = N1_FAMC,
+                    Adopter = adopter, // ADOP,
+                    N1_CHAN = N1_CHAN,
+                    N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                    N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
+                    N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
+                    N1_RIN = N1_RIN,
+                    N1_PHON_liste = N1_PHON_liste,
+                    N1_EMAIL_liste = N1_EMAIL_liste,
+                    N1_FAX_liste = N1_FAX_liste,
+                    N1_WWW_liste = N1_WWW_liste,
+                    N1_SIGN = N1_SIGN, // Heridis
+                    N1__FIL = N1__FIL, // Heridis
+                    N1__CLS = N1__CLS, // Heridis
+                });
+            }
+            return ligne;
         }
         private static int Extraire_niveau(int ligne)
         {
             char[] espace = { ' ' };
             string[] section = dataGEDCOM[ligne].Split(espace);
-            GEDCOMClass.ZXCV(Int32.Parse(section[0]).ToString());
             return Int32.Parse(section[0]);
-            
-
         }
-        private static (string, int) Extraire_NOTE_RECORD(int ligne)
+
+        private static int Extraire_NOTE_RECORD(int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            string note;
+            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+
+            Regler_code_erreur();
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            string N0_texte;
             string N0_ID;
             List<USER_REFERENCE_NUMBER> N1_REFN_liste = new List<USER_REFERENCE_NUMBER>();
             string N1_RIN = null;
             List<string> N1_SOUR_citation_liste_ID = new List<string>();
             List<string> N1_SOUR_source_liste_ID = new List<string>();
-            CHANGE_DATE N1_CHAN = new CHANGE_DATE();
-            bool ID_Creer = false;
-            N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            note = Extraire_texte_ligne1(dataGEDCOM[ligne]);
-            if (N0_ID == null)
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            List<CHANGE_DATE> N1_CHAN_liste = new List<CHANGE_DATE>();
+            int niveau = 0;
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            // extraire le texte et ID de la ligne niveau 0
+            (_, N0_ID, _, N0_texte, ligne) = Extraire_info_niveau_0(ligne);
+            try
             {
-                N0_ID = "N-" + DateTime.Now.ToString("HHmmssffffff") + hazard.Next(999).ToString();
-                ID_Creer = true;
-            }
-            Tb_Status.Text = "Décodage du data. Lecture des notes  ID " + N0_ID;
-            Animation(true);
-            GEDCOMClass.ZXCV(dataGEDCOM[ligne]);
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
-            ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
-            {
-                
-                Application.DoEvents();
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONT")              // +1 CONT
+                while (Extraire_niveau(ligne) > niveau)
                 {
-                    note += "<br />" + Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONC")         // +1 CONC
-                {
-                    note += " " + Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " REFN")         // +1 REFN
-                {
-                    USER_REFERENCE_NUMBER N1_REFN;
-                    (N1_REFN, ligne) = Extraire_USER_REFERENCE_NUMBER(ligne);
-                    N1_REFN_liste.Add(N1_REFN);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " RIN")          // +1 RIN
-                {
-                    N1_RIN = Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " SOUR")         // +1 SOUR
-                {
-                    GEDCOMClass.ZXCV("------" + dataGEDCOM[ligne]);
-                    string citation;
-                    string source;
-                    (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
-                    if (citation != null) N1_SOUR_citation_liste_ID.Add(citation);
-                    if (source != null) N1_SOUR_source_liste_ID.Add(source);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CHAN")         // +1 CHAN
-                {
-                    (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            if (niveau_I > 0)
-            {
-                if (ID_Creer)
-                {
-                    listeInfoNote.Add(new NOTE_RECORD()
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
                     {
+                        case "1 REFN":                                                                    // REFN
+                            USER_REFERENCE_NUMBER N1_REFN;
+                            (N1_REFN, ligne, ligne_perdue_liste) = Extraire_USER_REFERENCE_NUMBER(ligne, ligne_perdue_liste);
+                            N1_REFN_liste.Add(N1_REFN);
+                            break;
+                        case "1 RIN":                                                                     // RIN
+                            (N1_RIN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 SOUR":                                                                    // SOUR
+                            string citation;
+                            string source;
+                            (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                            if (IsNotNullOrEmpty(citation)) N1_SOUR_citation_liste_ID.Add(citation);
+                            if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation)) N1_SOUR_source_liste_ID.Add(source);
+                            break;
+                        case "1 CHAN":                                                                    // CHAN
+                            CHANGE_DATE info_date = null;
+                            (info_date, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                            N1_CHAN_liste.Add(info_date);
+                            break;
+                        case "1 NOTE":                                                                    // NOTE
+                            string IDNote;
+                            (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
+                    }
+                }
+            }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+                if (GH.GH.annuler) return ligne;
+            }
+            if (!GH.GH.annuler)
+            {
+                {
+                    liste_NOTE_RECORD.Add(new NOTE_RECORD()
+                    {
+                        ligne_perdue_liste = ligne_perdue_liste,
                         N0_ID = N0_ID,
-                        N0_NOTE_Texte = note,
+                        N0_texte = N0_texte,
                         N1_RIN = N1_RIN,
                         N1_REFN_liste = N1_REFN_liste,
                         N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
                         N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                        N1_CHAN = N1_CHAN
+                        N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                        N1_CHAN_liste = N1_CHAN_liste,
                     });
-                    return (N0_ID, ligne);
-                }
-                else
-                {
-                    // NOTE_RECORD exixte déjà ajouter nouvelle source
-                    if (N1_SOUR_citation_liste_ID.Count > 0)
-                    {
-                        int index = 0;
-                        foreach (NOTE_RECORD infoNote in listeInfoNote)
-                        {
-                            if (infoNote.N0_ID == N0_ID)
-                            {
-                                foreach (string s in infoNote.N1_SOUR_citation_liste_ID)
-                                {
-                                    N1_SOUR_citation_liste_ID.Add(s);
-                                }
-                                listeInfoNote.RemoveAt(index);
-                                listeInfoNote.Add(new NOTE_RECORD()
-                                {
-                                    N0_ID = N0_ID,
-                                    N0_NOTE_Texte = infoNote.N0_NOTE_Texte,
-                                    N1_RIN = infoNote.N1_RIN,
-                                    N1_REFN_liste = infoNote.N1_REFN_liste,
-                                    N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                                    N1_CHAN = N1_CHAN
-                                });
-                                return (N0_ID, ligne);
-                            }
-                            index++;
-                        }
-                    }
-                    return (N0_ID, ligne);
                 }
             }
-            listeInfoNote.Add(new NOTE_RECORD()
-            {
-                N0_ID = N0_ID,
-                N0_NOTE_Texte = note,
-                N1_RIN = N1_RIN,
-                N1_REFN_liste = N1_REFN_liste,
-                N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
-                N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
-                N1_CHAN = N1_CHAN
-            });
-            return ("", ligne);
+            return ligne;
         }
-        private static (SOURCE_REPOSITORY_CITATION, int) Extraire_SOURCE_REPOSITORY_CITATION(int ligne)
+
+        private static (string, int, List<Ligne_perdue>) Extraire_NOTE_STRUCTURE(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            SOURCE_REPOSITORY_CITATION info = new SOURCE_REPOSITORY_CITATION
+            int niveau;
+            string N0_ID_RECORD;
+            string N0_texte;
+            string N0_ID_STRUCTURE;
+            (niveau, N0_ID_RECORD, _, N0_texte, ligne) = Extraire_info_niveau_0(ligne);
+            // créer un ID_STRUCTURE
+            N0_ID_STRUCTURE = "N-" + String.Format("{0:-00-00-00-00}", ++numero_ID);
+            // DEBUG
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + "<br>N0_ID_RECORD=" + N0_ID_RECORD + "<br>N0_ID_STRUCTURE=" + N0_ID_STRUCTURE + "<br>N0_texte= " + N0_texte);
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            List<string> N1_SOUR_citation_liste_ID = new List<string>();
+            List<string> N1_SOUR_source_liste_ID = new List<string>();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            try
             {
-                N2_CALN_MEDI = null
-            };
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
-            info.N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
-            {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")          // +1 NOTE
+                while (Extraire_niveau(ligne) > niveau)
                 {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CALN")     // +1 CALN
-                {
-                    info.N1_CALN = Extraire_texte_balise(4, dataGEDCOM[ligne]);
-                    ligne++;
-                    while (Extraire_niveau(ligne) > niveau_I + 1)
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    if (balise_1 == (niveau + 1).ToString() + " SOUR")
                     {
-                        if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 2).ToString() + " MEDI")  // +2 MEDI
-                        {
-                            info.N2_CALN_MEDI = Extraire_texte_balise(4, dataGEDCOM[ligne]);
-                            info.N2_CALN_MEDI = Avoir_type_media(info.N2_CALN_MEDI);
-                            ligne++;
-                        }
+                        string citation;
+                        string source;
+                        (citation, source, ligne) = Extraire_SOURCE_CITATION(ligne);
+                        if (IsNotNullOrEmpty(citation))
+                            N1_SOUR_citation_liste_ID.Add(citation);
+                        if (IsNotNullOrEmpty(source) && IsNullOrEmpty(citation))
+                            N1_SOUR_source_liste_ID.Add(source);
+                    }
+                    else if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                    {
+                        string IDNote;
+                        (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                        N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                    }
+                    else
+                    {
+                        ligne = Ligne_perdu_plus(
+                            ligne,
+                            MethodBase.GetCurrentMethod().Name,
+                            (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                            balise_ligne
+                            );
+                    }
+                }
+            }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+                if (GH.GH.annuler) return (N0_ID_STRUCTURE, ligne, ligne_perdue_liste);
+            }
+            if (!GH.GH.annuler)
+            {
+                liste_NOTE_STRUCTURE.Add(new NOTE_STRUCTURE()
+                {
+                    N0_ID_STRUCTURE = N0_ID_STRUCTURE,
+                    N0_ID_RECORD = N0_ID_RECORD,
+                    N0_texte = N0_texte,
+                    N1_SOUR_citation_liste_ID = N1_SOUR_citation_liste_ID,
+                    N1_SOUR_source_liste_ID = N1_SOUR_source_liste_ID,
+                    N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                });
+            }
+            //R..Z("Retourne" + "<br>N0_ID_STRUCTURE=" + N0_ID_STRUCTURE + "<br>ligne=" + ligne);
+            return (N0_ID_STRUCTURE, ligne, ligne_perdue_liste);
+        }
+
+        private static (SOURCE_REPOSITORY_CITATION, int) Extraire_SOURCE_REPOSITORY_CITATION(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
+        {
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            SOURCE_REPOSITORY_CITATION info = new SOURCE_REPOSITORY_CITATION();
+            int niveau;
+            info.N0_ID = Extraire_ID(dataGEDCOM[ligne]);
+            (niveau, info.N0_ID, _, _, ligne) = Extraire_info_niveau_0(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
+            info.N1_ADDR_liste = new List<ADDRESS_STRUCTURE>();
+            info.N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            info.N1_PHON_liste = new List<string>();
+            info.N1_EMAIL_liste = new List<string>();
+            info.N1_FAX_liste = new List<string>();
+            info.N1_WWW_liste = new List<string>();
+            string temp;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1) + " NAME")
+                    (info.N1_NAME, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " CNTC")
+                    (info.N1_CNTC, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " SITE")
+                    (info.N1_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " ADDR")
+                {
+                    ADDRESS_STRUCTURE N1_ADDR;
+                    (N1_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                    info.N1_ADDR_liste.Add(N1_ADDR);
+                }
+                else if (balise_1 == (niveau + 1) + " PHON")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info.N1_PHON_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " FAX")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info.N1_FAX_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " EMAIL" || balise_1 == (niveau + 1) + " _EMAIL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info.N1_EMAIL_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " WWW" || balise_1 == (niveau + 1) + " _WWW" || balise_1 == (niveau + 1) + " _URL")
+                {
+                    (temp, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    info.N1_WWW_liste.Add(temp);
+                }
+                else if (balise_1 == (niveau + 1) + " MEDI")
+                    (info.N1_MEDI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " CALN")
+                {
+                    (info.N1_CALN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " ITEM")
+                            (info.N2_CALN_ITEM, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " SHEE")
+                            (info.N2_CALN_SHEE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " PAGE")
+                            (info.N2_CALN_PAGE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                        else if (balise_2 == (niveau + 2).ToString() + " MEDI")
+                            (info.N2_CALN_MEDI, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
                         else
                         {
-                            EcrireBalise(ligne, dataGEDCOM[ligne]);
-                            ligne++;
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
                         }
                     }
                 }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
-            return (info, ligne);
-        }
-        private static (SPOUSE_TO_FAMILY_LINK, int) Extraire_SPOUSE_TO_FAMILY_LINK(int ligne)
-        {
-            SPOUSE_TO_FAMILY_LINK info = new SPOUSE_TO_FAMILY_LINK();
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
-            List<string> N1_NOTE_liste_ID = new List<string>();
-            info.N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
-            {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " NOTE")                               // +1 NOTE
+                else if (balise_1 == (niveau + 1) + " REFN")
+                    (info.N1_REFN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                else if (balise_1 == (niveau + 1) + " NOTE")
                 {
                     string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    info.N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
                 else
                 {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
                 }
             }
-            info.N1_NOTE_liste_ID = N1_NOTE_liste_ID;
             return (info, ligne);
         }
+
+        private static (SPOUSE_TO_FAMILY_LINK, int, List<Ligne_perdue>) Extraire_SPOUSE_TO_FAMILY_LINK(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
+        {
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            SPOUSE_TO_FAMILY_LINK info = new SPOUSE_TO_FAMILY_LINK();
+            int niveau = Extraire_niveau(ligne);
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            info.N0_ID = Extraire_ID(dataGEDCOM[ligne]);
+            ligne++;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + "NOTE")
+                {
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info, ligne, ligne_perdue_liste);
+        }
+
         private static int Extraire_SUBMISSION_RECORD(int ligne)
         {
-
+            Regler_code_erreur();
             info_SUBMISSION_RECORD.N0_ID = null;
             info_SUBMISSION_RECORD.N1_SUBM_liste_ID = new List<string>();
             info_SUBMISSION_RECORD.N1_FAMF = null;
@@ -3775,295 +8416,496 @@ namespace GEDCOM
             info_SUBMISSION_RECORD.N1_DESC = null;
             info_SUBMISSION_RECORD.N1_ORDI = null;
             info_SUBMISSION_RECORD.N1_RIN = null;
-            info_SUBMISSION_RECORD.N1_NOTE_liste_ID = null;
-            info_SUBMISSION_RECORD.N1_CHAN = new CHANGE_DATE();
+            info_SUBMISSION_RECORD.N1_NOTE_STRUCTURE_liste_ID = null;
+            info_SUBMISSION_RECORD.N1_CHAN = null;
             info_SUBMISSION_RECORD.N0_ID = Extraire_ID(dataGEDCOM[ligne]);
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
             List<string> listeNoteID = new List<string>();
-            Tb_Status.Text = "Décodage du data. Lecture du soumissionaire";
-            Animation(true);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            string method;
+            int lineNumber;
             ligne++;
             while (Extraire_niveau(ligne) > 0)
             {
-                if (Extraire_balise(dataGEDCOM[ligne]) == "1 SUBM")                                                          // 1 SUBM
+                try
                 {
-                    info_SUBMISSION_RECORD.N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
-                    ligne++;
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
+                    {
+                        case "1 SUBM":                                                                    // SUBM
+                            info_SUBMISSION_RECORD.N1_SUBM_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
+                            ligne++;
+                            break;
+                        case "1 FAMF":                                                                    // FAMF
+                            info_SUBMISSION_RECORD.N1_FAMF = Extraire_texte_balise(4, dataGEDCOM[ligne]);
+                            ligne++;
+                            break;
+                        case "1 TEMP":                                                                    // TEMP
+                            info_SUBMISSION_RECORD.N1_TEMP = Extraire_texte_balise(4, dataGEDCOM[ligne]);
+                            ligne++;
+                            break;
+                        case "1 ANCE":                                                                    // ANCE
+                            info_SUBMISSION_RECORD.N1_ANCE = Extraire_texte_balise(4, dataGEDCOM[ligne]);
+                            ligne++;
+                            break;
+                        case "1 DESC":                                                                    // DESC
+                            info_SUBMISSION_RECORD.N1_DESC = Extraire_texte_balise(4, dataGEDCOM[ligne]);
+                            ligne++;
+                            break;
+                        case "1 ORDI":                                                                    // ORDI
+                            info_SUBMISSION_RECORD.N1_ORDI = Extraire_texte_balise(4, dataGEDCOM[ligne]).ToUpper();
+                            ligne++;
+                            break;
+                        case "1 RIN":                                                                     // RIN
+                            info_SUBMISSION_RECORD.N1_RIN = Extraire_texte_balise(3, dataGEDCOM[ligne]);
+                            ligne++;
+                            break;
+                        case "1 NOTE":                                                                    // NOTE
+                            string IDNote;
+                            (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            listeNoteID.Add(IDNote);
+                            break;
+                        case "1 CHAN":                                                                    // CHAN
+                            (info_SUBMISSION_RECORD.N1_CHAN, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
+                    }
                 }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAMF")                                                     // 1 FAMF
+                catch (Exception msg)
                 {
-                    info_SUBMISSION_RECORD.N1_FAMF = Extraire_texte_balise(4, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 TEMP")                                                     // 1 TEMP
-                {
-                    info_SUBMISSION_RECORD.N1_TEMP = Extraire_texte_balise(4, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ANCE")                                                     // 1 ANCE
-                {
-                    info_SUBMISSION_RECORD.N1_ANCE = Extraire_texte_balise(4, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 DESC")                                                     // 1 DESC
-                {
-                    info_SUBMISSION_RECORD.N1_DESC = Extraire_texte_balise(4, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ORDI")                                                     // 1 ORDI
-                {
-                    info_SUBMISSION_RECORD.N1_ORDI = Extraire_texte_balise(4, dataGEDCOM[ligne]);
-                    if (info_SUBMISSION_RECORD.N1_ORDI.ToLower() == "yes") info_SUBMISSION_RECORD.N1_ORDI = "Oui";
-                    if (info_SUBMISSION_RECORD.N1_ORDI.ToLower() == "no") info_SUBMISSION_RECORD.N1_ORDI = "Non";
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                                                      // 1 RIN
-                {
-                    info_SUBMISSION_RECORD.N1_RIN = Extraire_texte_balise(3, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                                     // 1 NOTE
-                {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    listeNoteID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                                     // 1 CHAN
-                {
-                    (info_SUBMISSION_RECORD.N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
+                    GC.Collect();
+                    string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                    Voir_message(message, msg.Message, GH.GH.erreur);
                 }
             }
-            info_SUBMISSION_RECORD.N1_NOTE_liste_ID = listeNoteID;
+            info_SUBMISSION_RECORD.ligne_perdue_liste = ligne_perdue_liste;
+            info_SUBMISSION_RECORD.N1_NOTE_STRUCTURE_liste_ID = listeNoteID;
             return (ligne);
         }
-        private static int Extraire_SUBMITTER_RECORD(int ligne)
+
+        private static int Extraire_SUBMITTER_RECORD(
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>");
+            Regler_code_erreur();
             string N0_ID;
-            string N1_NAME = null;
-            ADDRESS_STRUCTURE N1_ADDR = new ADDRESS_STRUCTURE();
-            
+            List<Ligne_perdue> ligne_perdue_liste = new List<Ligne_perdue>();
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste = new List<PERSONAL_NAME_STRUCTURE>();
+            string N1_SITE = null; // v5.3
+            List<ADDRESS_STRUCTURE> N1_ADDR_liste = new List<ADDRESS_STRUCTURE>();
             List<string> N1_PHON_liste = new List<string>();
             List<string> N1_FAX_liste = new List<string>();
             List<string> N1_EMAIL_liste = new List<string>();
             List<string> N1_WWW_liste = new List<string>();
-            List<string> N1_OBJE_ID_liste = new List<string>();
+            List<string> MULTIMEDIA_LINK_liste_ID = new List<string>();
             string N1_LANG = null;
             string N1_RIN = null;
             string N1_RFN = null;
-            List<string> N1_NOTE_liste_ID = new List<string>();
+            
+            int[] balise_ligne = new int[10];
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
             CHANGE_DATE N1_CHAN = new CHANGE_DATE
             {
                 N1_CHAN_DATE = null,
                 N2_CHAN_DATE_TIME = null
             };
             N0_ID = Extraire_ID(dataGEDCOM[ligne]);
-            Tb_Status.Text = "Décodage du data. Lecture des chercheurs ID  " + N0_ID;
-            ligne++;
-            while (Extraire_niveau(ligne) > 0)
-            {
-                Application.DoEvents();
-                if (Extraire_balise(dataGEDCOM[ligne]) == "1 NAME")                                         // 1 NAME
-                {
-                    N1_NAME = Extraire_ligne(dataGEDCOM[ligne], 4);
-                    N1_NAME = Extraire_NAME(N1_NAME);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 ADDR")                                    // 1 ADDR
-                {
-                    (N1_ADDR, ligne) = Extraire_ADDRESS_STRUCTURE(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 PHON")                                    // 2 PHON
-                {
-                    N1_PHON_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 FAX")                                     // 2 FAX
-                {
-                    N1_FAX_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 EMAIL")                                   // 2 EMAIL
-                {
-                    N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 5));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _EMAIL")                                  // 2 _EMAIL
-                {
-                    N1_EMAIL_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 6));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 WWW")                                     // 2 WWW
-                {
-                    N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 3));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _WWW")                                    // 2 WWW
-                {
-                    N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 _URL")                                    // 2 _URL 
-                {
-                    N1_WWW_liste.Add(Extraire_ligne(dataGEDCOM[ligne], 4));
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 LANG")                                    // 1 LANG
-                {
-                    N1_LANG += Extraire_ligne(dataGEDCOM[ligne], 4);
-                    if (N1_LANG.ToLower() == "english") N1_LANG = "Anglais";
-                    if (N1_LANG.ToLower() == "french") N1_LANG = "Français";
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 NOTE")                                    // 1 NOTE
-                {
-                    string IDNote;
-                    (IDNote, ligne) = Extraire_NOTE_RECORD(ligne);
-                    N1_NOTE_liste_ID.Add(IDNote);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 OBJE")                                    // 1 OBJE
-                {
-                    string IDObje;
-                    (IDObje, ligne) = Extraire_MULTIMEDIA_RECORD(ligne);
-                    N1_OBJE_ID_liste.Add(IDObje);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 CHAN")                                    // 1 CHAN
-                {
-                    (N1_CHAN, ligne) = Extraire_CHANGE_DATE(ligne);
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RIN")                                     // 1 RIN
-                {
-                    N1_RIN += Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) == "1 RFN")                                     // 1 RFN
-                {
-                    N1_RFN += Extraire_ligne(dataGEDCOM[ligne], 3);
-                    ligne++;
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            liste_SUBMITTER_RECORD.Add(new SUBMITTER_RECORD()
-            {
-                N0_ID = N0_ID,
-                N1_NAME = N1_NAME,
-                N1_ADDR = N1_ADDR,
-                N1_PHON_liste = N1_PHON_liste,
-                N1_FAX_liste = N1_FAX_liste,
-                N1_EMAIL_liste = N1_EMAIL_liste,
-                N1_WWW_liste = N1_WWW_liste,
-                N1_LANG = N1_LANG,
-                N1_OBJE_ID_liste = N1_OBJE_ID_liste,
-                N1_RIN = N1_RIN,
-                N1_RFN = N1_RFN,
-                N1_NOTE_liste_ID = N1_NOTE_liste_ID,
-                N1_CHAN = N1_CHAN
-            });
-            return (ligne);
-        }
-        private static (string, int) Extraire_TEXT(int ligne)
-        {
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
-            string TEXT;
+            balise_ligne[0] = ligne;
 
-            TEXT = dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
             ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
-            {
-                if (Extraire_balise(dataGEDCOM[ligne]) == (niveau_I + 1).ToString() + " CONT")                               // +1 CONT
-                {
-                    if (dataGEDCOM[ligne].Length > 7)
-                    {
-                        TEXT += "<br />" + dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                        ligne++;
-                    }
-                    else
-                    {
-                        TEXT += "<br />";
-                        ligne++;
-                    }
-                }
-                else if (Extraire_balise(dataGEDCOM[ligne]) ==                                                               // +1 CONT
-                    (niveau_I + 1).ToString() + " CONC" && dataGEDCOM[ligne].Length > 7)
-                {
-                    TEXT += dataGEDCOM[ligne].Substring(7, dataGEDCOM[ligne].Length - 7);
-                    ligne++;
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            return (TEXT, ligne);
-        }
-        private static (USER_REFERENCE_NUMBER, int) Extraire_USER_REFERENCE_NUMBER(int ligne)
-        {
-            //string niveau_S = dataGEDCOM[ligne][0].ToString();
-            //int niveau_I = int.Parse(niveau_S);
-            int niveau_I = Extraire_niveau(ligne);
-            USER_REFERENCE_NUMBER info = new USER_REFERENCE_NUMBER
-            {
-                N1_TYPE = "",
-                N0_REFN = Extraire_ligne(dataGEDCOM[ligne], 4)
-            };
-            info.N0_REFN = Extraire_ligne(dataGEDCOM[ligne], 4);
-            ligne++;
-            while (Extraire_niveau(ligne) > niveau_I)
-            {
-                if (Extraire_balise(dataGEDCOM[ligne]) ==                                                                    // +1 TYPE
-                    (niveau_I + 1).ToString() + " TYPE" && dataGEDCOM[ligne].Length > 7)
-                {
-                    info.N1_TYPE += Extraire_ligne(dataGEDCOM[ligne], 4);
-                    ligne++;
-                }
-                else
-                {
-                    EcrireBalise(ligne, dataGEDCOM[ligne]);
-                    ligne++;
-                }
-            }
-            return (info, ligne);
-        }
-        private static string Extraire_texte_ligne1(string s)
-        {
-            int p1 = 0;
-            if (s.Contains("NOTE")) p1 = s.IndexOf("NOTE");
-            if (s.Contains("SOUR")) p1 = s.IndexOf("SOUR");
-            if (s.Length > p1 + 5)
-            {
-                return s.Substring(p1 + 5);
-            }
-            return null;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fichier"></param>
-        /// <returns>nom du fichier original ou convertie en UTF8</returns>
-        public static string LireEnteteGEDCOM(string fichier)
-        {
-            string erreur = "GLE3930";
             try
             {
+                while (Extraire_niveau(ligne) > 0)
+                {
+                    string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                    balise_ligne[1] = ligne;
+                    switch (balise_1)
+                    {
+                        case "1 NAME":                                                                    // NAME
+                            PERSONAL_NAME_STRUCTURE info_nom = new PERSONAL_NAME_STRUCTURE();
+                            (info_nom, ligne, ligne_perdue_liste) = Extraire_PERSONAL_NAME_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_NAME_liste.Add(info_nom);
+                            break;
+                        case "1 SITE":                                                                    // SITE V5.3
+                            (N1_SITE, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 ADDR":                                                                    // ADDR
+                            GEDCOMClass.ADDRESS_STRUCTURE N1_ADDR;
+                            (N1_ADDR, ligne, ligne_perdue_liste) = Extraire_ADDRESS_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_ADDR_liste.Add(N1_ADDR);
+                            break;
+                        case "1 PHON":                                                                    // PHON
+                            string a;
+                            (a, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_PHON_liste.Add(a);
+                            break;
+                        case "1 FAX":                                                                     // FAX
+                            string b;
+                            (b, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_FAX_liste.Add(b);
+                            break;
+                        case "1 EMAIL":                                                                   // EMAIL
+                            string c;
+                            (c, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_EMAIL_liste.Add(c);
+                            break;
+                        case "1 _EMAIL":                                                                  // _EMAIL
+                            string d;
+                            (d, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_EMAIL_liste.Add(d);
+                            break;
+                        case "1 WWW":                                                                     // WWW
+                            string e;
+                            (e, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_WWW_liste.Add(e);
+                            break;
+                        case "1 _WWW":                                                                    // _WWW
+                            string f;
+                            (f, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_WWW_liste.Add(f);
+                            break;
+                        case "1 _URL":                                                                    // _URL 
+                            string g;
+                            (g, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            N1_WWW_liste.Add(g);
+                            break;
+                        case "1 LANG":                                                                    // LANG
+                            (N1_LANG, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 NOTE":                                                                    // NOTE
+                            string IDNote;
+                            (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                            N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                            break;
+                        case "1 OBJE":                                                                    // OBJE
+                            string temp;
+                            (temp, ligne) = Extraire_MULTIMEDIA_LINK(ligne);
+                            MULTIMEDIA_LINK_liste_ID.Add(temp);
+                            break;
+                        case "1 AUDIO":                                                                   // AUDIO V5.3
+                        case "1 PHOTO":                                                                   // PHOTO V5.3
+                        case "1 VIDEO":                                                                   // VIDEO V5.3
+                            string fichier;
+                            string temp_link;
+                            (fichier, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            temp_link = Extraire_MULTIMEDIA_LINK(fichier);
+                            MULTIMEDIA_LINK_liste_ID.Add(temp_link);
+                            break;
+                        case "1 CHAN":                                                                    // CHAN
+                            (N1_CHAN, ligne, ligne_perdue_liste) = Extraire_CHANGE_DATE(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 RIN":                                                                     // RIN
+                            (N1_RIN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        case "1 RFN":                                                                     // RFN
+                            (N1_RFN, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+                            break;
+                        default:
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                            break;
+                    }
+                }
+            }
+            catch (Exception msg)
+            {
+                GC.Collect();
+                string message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
+            }
+            if (!GH.GH.annuler)
+            {
+                liste_SUBMITTER_RECORD.Add(new SUBMITTER_RECORD()
+                {
+                    ligne_perdue_liste = ligne_perdue_liste,
+                    N0_ID = N0_ID,
+                    N1_NAME_liste = N1_NAME_liste,
+                    N1_SITE = N1_SITE,
+                    N1_ADDR_liste = N1_ADDR_liste,
+                    N1_PHON_liste = N1_PHON_liste,
+                    N1_FAX_liste = N1_FAX_liste,
+                    N1_EMAIL_liste = N1_EMAIL_liste,
+                    N1_WWW_liste = N1_WWW_liste,
+                    N1_LANG = N1_LANG,
+                    //N1_OBJE_LINK_liste_ID = N1_OBJE_LINK_liste_ID,
+                    //N1_AUDIO_liste = N1_AUDIO_liste,
+                    //N1_VIDEO_liste = N1_VIDEO_liste,
+                    //N1_PHOTO_liste = N1_PHOTO_liste,
+                    MULTIMEDIA_LINK_liste_ID = MULTIMEDIA_LINK_liste_ID,
+                    N1_RIN = N1_RIN,
+                    N1_RFN = N1_RFN,
+                    N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID,
+                    N1_CHAN = N1_CHAN,
+                });
+            }
+            //R..Z(ligne + "retour Extraire_SUBMITTER_RECORD");
+            return (ligne);
+        }
+
+        private static (TEXT_STRUCTURE, int, List<Ligne_perdue>) Extraire_TEXT_STRUCTURE(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
+        {
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            TEXT_STRUCTURE info_texte = new TEXT_STRUCTURE();
+            List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
+            int niveau = Extraire_niveau(ligne);
+            (info_texte.N0_TEXT, ligne, ligne_perdue_liste) =Extraire_texte_niveau_plus(ligne, ligne_perdue_liste);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " NOTE")
+                {
+                    string IDNote;
+                    (IDNote, ligne, ligne_perdue_liste) = Extraire_NOTE_STRUCTURE(ligne, ligne_perdue_liste);
+                    N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            info_texte.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
+            return (info_texte, ligne, ligne_perdue_liste);
+        }
+
+        private static (string, int, List<Ligne_perdue>) Extraire_texte_niveau_plus(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+            Regler_code_erreur();
+            int[] balise_ligne = new int[10];
+
+            balise_ligne[0] = ligne;
+            string texte = Extraire_textuel(ligne);
+            ligne++;
+            int niveau = Extraire_niveau(ligne);
+            string balise = Avoir_niveau_balise(dataGEDCOM[ligne]);
+            while ( balise == (niveau ).ToString() + " CONT" || balise == (niveau ).ToString() + " CONC") 
+            {
+                if (balise == (niveau).ToString() + " CONT")
+                {
+                    texte += System.Environment.NewLine + Extraire_textuel(ligne);
+                }
+                if (balise == (niveau).ToString() + " CONC")
+                {
+                    texte += " " + Extraire_textuel(ligne);
+                }
+                ligne++;
+                balise = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                if (balise == null)
+                {
+                    balise_ligne[1] = ligne;
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            //R..Z("B retourne " + texte + " ligne=" + ligne);
+            return (texte, ligne, ligne_perdue_liste);
+        }
+        private static string Extraire_textuel(int numero_ligne)
+        {
+            string texte = dataGEDCOM[numero_ligne];
+            texte = texte.TrimStart();
+            texte = texte.TrimEnd();
+            // retire les espace d'extra
+            string texte2 = texte[0].ToString();
+            for (int f = 1; f < texte.Count(); f++)
+            {
+                if (texte[f] == ' ' && texte[f - 1] == ' ')
+                {
+                    texte2 += "#A#A#A#";
+                }
+                else texte2 += texte[f].ToString();
+            }
+            char[] espace = { ' ' };
+            string[] section = texte2.Split(espace);
+            int nombre_section = section.Length;
+            if (nombre_section < 3) return null;
+            texte2 = texte.Substring(section[0].Length + section[1].Length + 2);
+            texte2 = Retirer_marque(texte2);
+            return texte2;
+        }
+
+        private static (USER_REFERENCE_NUMBER, int, List<Ligne_perdue>) Extraire_USER_REFERENCE_NUMBER(
+            int ligne,
+            List<Ligne_perdue> ligne_perdue_liste)
+        {
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            int niveau = Extraire_niveau(ligne);
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            USER_REFERENCE_NUMBER info = new USER_REFERENCE_NUMBER
+            {
+                N1_TYPE = null,
+                N0_REFN = Extraire_texte(ligne),
+            };
+            info.N0_REFN = Extraire_texte(ligne);
+            ligne++;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1) + " TYPE")
+                {
+                    info.N1_TYPE += Extraire_texte(ligne);
+                    ligne++;
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            return (info, ligne, ligne_perdue_liste);
+        }
+
+        public static bool IsNotNullOrEmpty(string s
+        //, [CallerLineNumber] int callerLineNumber = 0
+        )
+        {
+            // retourne true si pas vide ou vide ou null
+            if (s == null)
+            {
+                return false;
+            }
+            s = s.Trim();
+            if (s == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IsNotNullOrEmpty(List<string> list
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            if (list == null) return false;
+            foreach (string a in list)
+            {
+                if (!String.IsNullOrWhiteSpace(a))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool IsNotNullOrEmpty<T>(
+            List<T> list
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            // verifie si une liste est null ou vide
+            // retourne true si n'est pas vide ou null
+            if (list == null) return false;
+            if (list.Count == 0) return false;
+            return list.Any();
+        }
+
+        public static bool IsNullOrEmpty(string s)
+        {
+            // verifie si une liste est null ou vide
+            // retourne true si vide ou null
+            if (s == null)
+            {
+                return true;
+            }
+            return !s.Any();
+        }
+
+        public static bool IsNullOrEmpty<T>(List<T> list)
+        {
+            // verifie si une liste est null ou vide
+            // retourne true si vide ou null
+            if (list == null)
+            {
+                return true;
+            }
+            return !list.Any();
+        }
+        private static int Ligne_perdu_plus(
+            int ligne,
+            //List<Ligne_perdue> groupe_ligne,
+            string methode,
+            int lineNumber,
+            int[] balise_ligne
+            , [CallerLineNumber] int callerLineNumber = 0 // ne pas commenter
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br>GEDCOM=" + ligne + "<br>lineNumber=" + lineNumber);
+            // rapport Balise
+            List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
+            foreach (int l in balise_ligne)
+            {
+                if (l > 0)
+                {
+                    Ligne_perdue a0 = new Ligne_perdue
+                    {
+                        ligne = l,
+                        texte = dataGEDCOM[l]
+                    };
+                    groupe_ligne.Add(a0);
+                }
+            }
+            Ecrire_balise(methode, callerLineNumber, groupe_ligne);
+            groupe_ligne.Clear();
+            ligne++;
+            return (ligne);
+        }
+        public static string Lire_entete_GEDCOM(string fichier
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=");
+
+            try
+            {
+                info_HEADER.N1_CHAR = null;
+                info_HEADER.N2_GEDC_FORM = null;
                 ligne = 0;
-                Info_HEADER.N1_CHAR = null;
+                info_HEADER.N1_CHAR = null;
                 List<string> entete = new List<string>();
-                Info_HEADER.N2_GEDC_FORM = "";
-                Tb_Status.Text = "Verification de la validité du fichier " + Path.GetFileName(fichier) + " et de la page de code";
-                Application.DoEvents();
+                info_HEADER.N2_GEDC_FORM = "";
                 System.IO.StreamReader fichierCodage = new System.IO.StreamReader(@fichier);
-                entete.Add(fichierCodage.ReadLine());
-                erreur = "GLE3939";
+                entete.Add(fichierCodage.ReadLine().TrimStart());
                 if (entete[0].Substring(0, 6) != "0 HEAD")
                 {
                     MessageBox.Show("Le fichier ne semble pas être un fichier au format GEDCOM.\r\n\r\n" + "\r\n\r\n", "GEDCOM ?",
@@ -4074,36 +8916,35 @@ namespace GEDCOM
                 string text;
                 do
                 {
-                    text = fichierCodage.ReadLine();
+                    text = fichierCodage.ReadLine().TrimStart();
                     entete.Add(text);
                 } while (text[0].ToString() != "0");
                 entete.Add("0 TRLR");
-                erreur = "GLE3954";
                 do
                 {
-                    if (Extraire_balise(entete[ligne]) == "0 HEAD")                                                              // 0 HEAD
+                    if (Avoir_balise_p1(entete[ligne]) == "0 HEAD")                                     // 0 HEAD
                     {
                         ligne++;
-                        while (Extraire_niveau(ligne) > 0)
+                        while ((int)Char.GetNumericValue(entete[ligne][0]) > 0)
                         {
-                            if (Extraire_balise(entete[ligne]) == "1 CHAR")                                                      // 1 CHAR
+                            if (Avoir_balise_p1(entete[ligne]) == "1 CHAR")                             // 1 CHAR
                             {
-                                Info_HEADER.N1_CHAR = Extraire_ligne(entete[ligne], 4);
+                                info_HEADER.N1_CHAR = Extraire_ligne(entete[ligne], 4);
                                 ligne++;
 
-                                while (Extraire_niveau(ligne) > 1)
+                                while ((int)Char.GetNumericValue(entete[ligne][0]) > 1)
                                 {
                                     ligne++;
                                 }
                             }
-                            else if (Extraire_balise(entete[ligne]) == "1 GEDC")                                                 // 1 GEDC
+                            else if (Avoir_balise_p1(entete[ligne]) == "1 GEDC")                        // 1 GEDC
                             {
                                 ligne++;
-                                while (Extraire_niveau(ligne) > 1)
+                                while ((int)Char.GetNumericValue(entete[ligne][0]) > 1)
                                 {
-                                    if (Extraire_balise(entete[ligne]) == "2 FORM")                                              // 2 FORM
+                                    if (Avoir_balise_p1(entete[ligne]) == "2 FORM")                     // 2 FORM
                                     {
-                                        Info_HEADER.N2_GEDC_FORM = Extraire_ligne(entete[ligne], 4);
+                                        info_HEADER.N2_GEDC_FORM = Extraire_ligne(entete[ligne], 4);
                                         ligne++;
                                     }
                                     else
@@ -4113,104 +8954,102 @@ namespace GEDCOM
                                 }
                             }
                             else
+                            {
                                 ligne++;
+                            }
                         }
                     }
                     ligne++;
-                    erreur = "GLE3993";
                 }
                 while (!entete[ligne].Contains("0 TRLR"));
                 fichierCodage.Close();
-                erreur = "GLE3997";
-                if (Info_HEADER.N1_CHAR == "IBMPC")
+                if (info_HEADER.N1_CHAR == "IBMPC")
                 {
-                    AutoClosingMessageBox.Show("Le fichier utilise le jeu de charactères IBMPC.\r\n\r\n" +
-                        "Le jeu de caractères IBMPC n'est pas autorisé. Ce jeu de caractères\r\n" +
-                        "ne peut pas être interprété correctement sans savoir quelle page de\r\n" +
-                        "code l'expéditeur utilisait, selon la norme GEDCOM.\r\n \r\n" +
-                        "GH va tout de même lire le fichier. Certains caractères seront invalides, en particulier les accents.\r\n",
-                        "Jeu de caractères IBMPC", 15000);
+                    MessageBox.Show("Le fichier GEDCOM utilise le jeu de caractères IBMPC.\r\n\r\n" +
+                        "Le jeu de caractères IBMPC n'est pas autorisé. Ce jeu de " +
+                        "caractères ne peut pas être interprété correctement sans " +
+                        "savoir quelle page code l'expéditeur utilisait, selon " +
+                        "la norme GEDCOM.\r\n\r\n" +
+                        "GH va lire le fichier. Certains caractères " +
+                        "seront invalides, en particulier les accents.\r\n",
+                        "Jeu de caractères IBMPC",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                 }
                 // si en en codage ANSI ou ANSI convertir à UFT8
                 if (
-                    Info_HEADER.N1_CHAR == "ANSI" ||
-                    Info_HEADER.N1_CHAR == "ASCII" ||
-                    Info_HEADER.N1_CHAR == "ANSEL"
+                    info_HEADER.N1_CHAR == "ANSI" ||
+                    info_HEADER.N1_CHAR == "ASCII" ||
+                    info_HEADER.N1_CHAR == "ANSEL"
                    )
                 {
-                    Tb_Status.Text = "Convertion du fichier " + Path.GetFileName(fichier) + "de code de page " +
-                        Info_HEADER.N1_CHAR + " en UTF8.";
-                    Application.DoEvents();
                     string utf8String = "";
                     if (
-                        Info_HEADER.N1_CHAR == "ANSI" ||
-                        Info_HEADER.N1_CHAR == "ASCII" ||
-                        Info_HEADER.N1_CHAR == "ANSEL"
+                        info_HEADER.N1_CHAR == "ANSI" ||
+                        info_HEADER.N1_CHAR == "ASCII" ||
+                        info_HEADER.N1_CHAR == "ANSEL"
                        )
                     {
                         byte[] ansiBytes = File.ReadAllBytes(fichier);
                         utf8String = Encoding.Default.GetString(ansiBytes);
                     }
-                    erreur = "GLE4027";
                     string sansExtention = Path.GetFileNameWithoutExtension(fichier);
                     fichier = Path.GetTempPath() + "UTF8-" + sansExtention + ".gedCopie";
                     File.WriteAllText(fichier, utf8String);
                 }
-                Tb_Status.Text = "";
-                Application.DoEvents();
-                erreur = "GLE4034";
                 return fichier;
             }
-            catch
+            catch (Exception msg)
             {
+                GC.Collect();
+                string message;
                 if (ligne > 0)
                 {
-                    MessageBox.Show("Erreur dans la lecture du fichier GEDCOM à la ligne " + ligne + ".\r\n\r\n", "Erreur " +
-                        erreur + " Problème ?",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                    message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                    Voir_message(message, msg.Message, GH.GH.erreur);
                     return null;
                 }
-                MessageBox.Show("Erreur dans la lecture du fichier GEDCOM.\r\n\r\n", "Erreur " + erreur + " Problème ?",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                message = "Erreur dans la lecture du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
                 return null;
             }
         }
-        public static bool LireGEDCOM(string fichier)
+        public static bool Lire_GEDCOM(
+            string fichier
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            string erreur = "GLG4055";
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> fichier=" + fichier );
             try
             {
+                Application .DoEvents();
                 dataGEDCOM = new List<string>();
                 dataGEDCOM.Clear();
                 string text;
-                Tb_Status.Text = "Lecture du fichier " + Path.GetFileName(fichier);
-                Application.DoEvents();
                 long position = 0;
                 System.IO.StreamReader file = new System.IO.StreamReader(@fichier);
-                erreur = "GLG4065";
                 ligne = 0;
-                text = file.ReadLine();
+                dataGEDCOM.Add("");
+                text = file.ReadLine().TrimStart();
                 dataGEDCOM.Add(text);
-                erreur = "GLG4069";
-                Info_HEADER.Nom_fichier_disque = fichier;
-                while ((text = file.ReadLine()) != null)
+                info_HEADER.Nom_fichier_disque = fichier;
+                while ((text = file.ReadLine().TrimStart()) != null)
                 {
+                    if (GH.GH.annuler == true) return false;
                     position += text.Length;
-                    if (Info_HEADER.N1_CHAR.ToLower() == "ansel") text = Convertir_ANSEL(text);
-                    if (text == "") text = "9 ESPACE";
+                    if (IsNotNullOrEmpty(info_HEADER.N1_CHAR))
+                        if (info_HEADER.N1_CHAR.ToLower() == "ansel") text = Convertir_ANSEL(text);
+                    if (text == "") text = "99 ligne vide";
                     dataGEDCOM.Add(text);
-                    erreur = "GLG4077";
                     if (text.Contains("0 TRLR") || file.EndOfStream)
                     {
                         file.Close();
                         break;
                     }
                     ligne++;
+                    if (ligne % 1000 == 0) Application.DoEvents();
                 }
                 file.Close();
-                erreur = "GLG4086";
                 // effacer fichier  si extention .gedCopie
                 if (Path.GetExtension(fichier) == ".gedCopie")
                 {
@@ -4219,26 +9058,25 @@ namespace GEDCOM
                         File.Delete(@fichier);
                     }
                 }
-                erreur = "GLG4095";
+                Application.DoEvents();
                 return true;
             }
-            catch
+            catch (Exception msg)
             {
+                GC.Collect();
+                string message;
                 if (ligne > 0)
                 {
-                    MessageBox.Show("Erreur dans la lecture du fichier GEDCOM à la ligne " + ligne + ".\r\n\r\n", "Erreur " +
-                        erreur + " Problème ?",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                    message = "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.";
+                    Voir_message(message, msg.Message, GH.GH.erreur);
                     return false;
                 }
-                MessageBox.Show("Erreur dans la lecture du fichier GEDCOM.\r\n\r\n", "Erreur " + erreur + " Problème ?",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                message = "Erreur dans la lecture du fichier GEDCOM.";
+                Voir_message(message, msg.Message, GH.GH.erreur);
                 return false;
             }
         }
-        public static string AvoirIDAdoption(string ID)
+        public static string Avoir_IDAdoption(string ID)
         {
             foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
             {
@@ -4249,11 +9087,11 @@ namespace GEDCOM
             }
             return "";
         }
-        public static HEADER AvoirInfoGEDCOM()
+        public static HEADER Avoir_info_GEDCOM()
         {
-            return Info_HEADER;
+            return info_HEADER;
         }
-        public static SUBMITTER_RECORD Avoir_info_chercheur(string ID)
+        public static SUBMITTER_RECORD Avoir_info_SUBMITTER_RECORD(string ID)
         {
             foreach (SUBMITTER_RECORD info in liste_SUBMITTER_RECORD)
             {
@@ -4264,8 +9102,10 @@ namespace GEDCOM
             }
             return null;
         }
-        public static SUBMISSION_RECORD AvoirInfoSUBMISSION_RECORD()
+        public static SUBMISSION_RECORD Avoir_info_SUBMISSION_RECORD()
         {
+
+
             return info_SUBMISSION_RECORD;
         }
         public static List<string> AvoirListIDEnfant(string ID)
@@ -4312,31 +9152,31 @@ namespace GEDCOM
             }
             return null;
         }
-        public static EVENT_ATTRIBUTE_STRUCTURE Avoir_attribute_nombre_enfant(List<EVENT_ATTRIBUTE_STRUCTURE> liste)
+        public static EVEN_ATTRIBUTE_STRUCTURE Avoir_attribute_nombre_enfant(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
-            foreach (EVENT_ATTRIBUTE_STRUCTURE info in liste)
+            foreach (EVEN_ATTRIBUTE_STRUCTURE info in liste)
             {
                 if (info.N1_EVEN == "NCHI")
                     return info;
             }
-            EVENT_ATTRIBUTE_STRUCTURE r = new EVENT_ATTRIBUTE_STRUCTURE();
+            EVEN_ATTRIBUTE_STRUCTURE r = new EVEN_ATTRIBUTE_STRUCTURE();
             return r;
         }
-        public static EVENT_ATTRIBUTE_STRUCTURE Avoir_attribute_nombre_mariage(List<EVENT_ATTRIBUTE_STRUCTURE> liste)
+        public static EVEN_ATTRIBUTE_STRUCTURE Avoir_attribute_nombre_mariage(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
-            foreach (EVENT_ATTRIBUTE_STRUCTURE info in liste)
+            foreach (EVEN_ATTRIBUTE_STRUCTURE info in liste)
             {
                 if (info.N1_EVEN == "NMR")
                     return info;
             }
-            EVENT_ATTRIBUTE_STRUCTURE r = new EVENT_ATTRIBUTE_STRUCTURE();
+            EVEN_ATTRIBUTE_STRUCTURE r = new EVEN_ATTRIBUTE_STRUCTURE();
             return r;
         }
-        public static (bool, EVENT_ATTRIBUTE_STRUCTURE) AvoirEvenementDeces(List<EVENT_ATTRIBUTE_STRUCTURE> liste)
+        public static (bool, EVEN_ATTRIBUTE_STRUCTURE) Avoir_evenement_deces(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
-            EVENT_ATTRIBUTE_STRUCTURE retourNull = new EVENT_ATTRIBUTE_STRUCTURE();
-            if (liste == null) return (false, retourNull);
-            foreach (EVENT_ATTRIBUTE_STRUCTURE info in liste)
+            EVEN_ATTRIBUTE_STRUCTURE retourNull = new EVEN_ATTRIBUTE_STRUCTURE();
+            if (IsNullOrEmpty(liste)) return (false, retourNull);
+            foreach (EVEN_ATTRIBUTE_STRUCTURE info in liste)
             {
                 if (info.N1_EVEN == "DEAT")
                     return (true, info);
@@ -4344,11 +9184,11 @@ namespace GEDCOM
 
             return (false, retourNull);
         }
-        public static EVENT_ATTRIBUTE_STRUCTURE AvoirEvenementMariage(List<EVENT_ATTRIBUTE_STRUCTURE> liste)
+        public static EVEN_ATTRIBUTE_STRUCTURE AvoirEvenementMariage(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
-            EVENT_ATTRIBUTE_STRUCTURE r = new EVENT_ATTRIBUTE_STRUCTURE();
-            if (liste == null) return r;
-            foreach (EVENT_ATTRIBUTE_STRUCTURE info in liste)
+            EVEN_ATTRIBUTE_STRUCTURE r = new EVEN_ATTRIBUTE_STRUCTURE();
+            if (IsNullOrEmpty(liste)) return r;
+            foreach (EVEN_ATTRIBUTE_STRUCTURE info in liste)
             {
                 if (info.N1_EVEN == "MARR")
                 {
@@ -4357,15 +9197,28 @@ namespace GEDCOM
             }
             return r;
         }
-        public static (bool, EVENT_ATTRIBUTE_STRUCTURE) AvoirEvenementNaissance(List<EVENT_ATTRIBUTE_STRUCTURE> liste)
+        public static (bool, EVEN_ATTRIBUTE_STRUCTURE) Avoir_evenement_naissance(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
-            
-            EVENT_ATTRIBUTE_STRUCTURE retourNull = new EVENT_ATTRIBUTE_STRUCTURE();
-            if (liste == null ) return (false, retourNull);
-            foreach (EVENT_ATTRIBUTE_STRUCTURE info in liste)
+
+            EVEN_ATTRIBUTE_STRUCTURE retourNull = new EVEN_ATTRIBUTE_STRUCTURE();
+            if (IsNullOrEmpty(liste)) return (false, retourNull);
+            foreach (EVEN_ATTRIBUTE_STRUCTURE info in liste)
             {
                 if (info.N1_EVEN == "BIRT")
-                return (true, info);
+                    return (true, info);
+            }
+            return (false, retourNull);
+        }
+        public static (bool, EVEN_STRUCTURE_53) AvoirEvenementNaissance_53(
+            List<EVEN_STRUCTURE_53> liste)
+        {
+
+            EVEN_STRUCTURE_53 retourNull = new EVEN_STRUCTURE_53();
+            if (IsNullOrEmpty(liste)) return (false, retourNull);
+            foreach (EVEN_STRUCTURE_53 info in liste)
+            {
+                if (info.N0_EVEN == "BIRT")
+                    return (true, info);
             }
             return (false, retourNull);
         }
@@ -4380,12 +9233,16 @@ namespace GEDCOM
             }
             return null;
         }
-        public static List<string> AvoirListeIDFamille()
+        public static List<string> Avoir_liste_ID_famille()
         {
             List<string> ListeID = new List<string>();
+            int numero = 0;
             foreach (FAM_RECORD info in liste_FAM_RECORD)
             {
                 ListeID.Add(info.N0_ID);
+                numero++;
+                if (numero % 1000 == 0) Application.DoEvents();
+
             }
             return ListeID;
         }
@@ -4401,7 +9258,23 @@ namespace GEDCOM
             INDIVIDUAL_RECORD retour = new INDIVIDUAL_RECORD();
             return (false, retour);
         }
-        public static SOURCE_RECORD AvoirInfoSource(string ID)
+        public static (string, string, string, string, string) Avoir_nom_naissance_deces(string ID)
+        {
+            (_, INDIVIDUAL_RECORD info_individu) = Avoir_info_individu(ID);
+            (_, EVEN_ATTRIBUTE_STRUCTURE naissance) = Avoir_evenement_naissance(info_individu.N1_EVEN_Liste);
+            (_, EVEN_ATTRIBUTE_STRUCTURE deces) = Avoir_evenement_deces(info_individu.N1_EVEN_Liste);
+            string lieu_naissance;
+            string lieu_deces;
+            if (naissance.N2_PLAC != null) lieu_naissance = naissance.N2_PLAC.N0_PLAC; else lieu_naissance = null;
+            if (deces.N2_PLAC != null) lieu_deces = deces.N2_PLAC.N0_PLAC; else lieu_deces = null;
+            return (
+                Avoir_premier_nom_individu(ID),
+                naissance.N2_DATE,
+                lieu_naissance,
+                deces.N2_DATE,
+                lieu_deces);
+        }
+        public static SOURCE_RECORD Avoir_info_source(string ID)
         {
             foreach (SOURCE_RECORD info in liste_SOURCE_RECORD)
             {
@@ -4412,16 +9285,46 @@ namespace GEDCOM
             }
             return null;
         }
-        public static List<string> AvoirListeIDIndividu()
+        public static List<string> Avoir_liste_ID_individu()
         {
 
             List<string> ListeID = new List<string>();
             ListeID.Clear();
+            int numero = 0;
             foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
             {
                 ListeID.Add(info.N0_ID);
+                numero++;
+                if (numero % 1000 == 0) Application.DoEvents();
             }
             return ListeID;
+        }
+
+        public static REPOSITORY_RECORD Avoir_info_repo(
+            string ID
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>ID=" + ID);
+            foreach (REPOSITORY_RECORD info in liste_REPOSITORY_RECORD)
+            {
+                if (info.N0_ID == ID)
+                {
+                    return info;
+                }
+            }
+            return null;
+        }
+        public static EVEN_RECORD_53 Avoir_info_event_53(string ID)
+        {
+            foreach (EVEN_RECORD_53 info in liste_EVEN_RECORD_53)
+            {
+                if (info.N0_ID == ID)
+                {
+                    return info;
+                }
+            }
+            return null;
         }
         public static FAM_RECORD Avoir_info_famille(string ID)
         {
@@ -4434,124 +9337,119 @@ namespace GEDCOM
             }
             return null;
         }
-        public static (bool, List<PERSONAL_NAME_STRUCTURE>) AvoirListeNom(string ID)
+        public static List<PERSONAL_NAME_STRUCTURE> Avoir_liste_nom_chercheur(string ID)
         {
-            foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
+            foreach (SUBMITTER_RECORD info in liste_SUBMITTER_RECORD)
             {
                 if (info.N0_ID == ID)
                 {
-                    if (info.N1_NAME_liste == null)
+                    if (IsNullOrEmpty(info.N1_NAME_liste))
                     {
-                        return (false, null);
+                        return null;
                     }
                     else if (info.N1_NAME_liste.Count == 0)
                     {
-                        return (false, null);
+                        return null;
                     }
                     else
                     {
-                        return (true, info.N1_NAME_liste);
+                        return info.N1_NAME_liste;
                     }
-                }
-            }
-            return (false, null);
-        }
-        public static MULTIMEDIA_RECORD AvoirMedia(string ID)
-        {
-            foreach (MULTIMEDIA_RECORD info in liste_MULTIMEDIA_RECORD)
-            {
-                if (info.N0_ID == ID)
-                {
-                    return info;
                 }
             }
             return null;
         }
+
+        public static List<PERSONAL_NAME_STRUCTURE> Avoir_liste_nom_individu(string ID
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "&nbsp;&nbsp;ID=" + ID);
+
+            foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
+            {
+                if (info.N0_ID == ID)
+                {
+                    if (IsNullOrEmpty(info.N1_NAME_liste))
+                    {
+                        return null;
+                    }
+                    else if (info.N1_NAME_liste.Count == 0)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return info.N1_NAME_liste;
+                    }
+                }
+            }
+            return null;
+        }
+
         public static string AvoirPrenomPatronymeIndividu(string ID)
         {
-            if (ID == "") return "";
-            if (ID == " ") return "";
-            bool Ok;
+            if (IsNullOrEmpty(ID)) return null;
             List<PERSONAL_NAME_STRUCTURE> info;
-            (Ok, info) = AvoirListeNom(ID);
-            if (!Ok) return "";
-            string patronyme = info[0].N1_SURN;
-            string prenom = info[0].N1_GIVN;
-            if (prenom == "" && patronyme == "") return "";
-            if (prenom == "") prenom = "?";
-            if (patronyme == "") patronyme = "?";
+            info = Avoir_liste_nom_individu(ID);
+            if (R.IsNullOrEmpty(info)) return null;
+            string patronyme = info[0].N1_PERSONAL_NAME_PIECES.Nn_SURN;
+            string prenom = info[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN;
+            if (IsNullOrEmpty(prenom) && IsNullOrEmpty(patronyme)) return null;
+            if (IsNullOrEmpty(prenom)) prenom = "?";
+            if (IsNullOrEmpty(patronyme)) patronyme = "?";
             return prenom + " " + patronyme;
         }
-        public static string AvoirPremierNomIndividu(string ID)
+
+        public static string Avoir_premier_nom_chercheur(
+            string ID
+            , [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            if (ID == "") return "";
+            if (IsNullOrEmpty(ID)) return null;
             bool Ok;
             List<PERSONAL_NAME_STRUCTURE> info;
-            (Ok, info) = AvoirListeNom(ID);
-            if (!Ok) return "";
-
-            string patronyme = info[0].N1_SURN;
-            string prenom = info[0].N1_GIVN;
-            if (prenom == "" && patronyme == "") return info[0].N0_NAME;
-            if (prenom == null && patronyme == null) return info[0].N0_NAME;
-            if (prenom == "") prenom = "?";
-            if (patronyme == "") patronyme = "?";
+            info = Avoir_liste_nom_chercheur(ID);
+            if (R.IsNullOrEmpty(info)) return null;
+            string patronyme = null;
+            string prenom = null;
+            if (info[0].N1_PERSONAL_NAME_PIECES != null)
+            {
+                patronyme = info[0].N1_PERSONAL_NAME_PIECES.Nn_SURN;
+                prenom = info[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN;
+            }
+            if (IsNullOrEmpty(prenom) && IsNullOrEmpty(patronyme))
+            {
+                return info[0].N0_NAME;
+            }
+            if (IsNullOrEmpty(prenom)) prenom = "?";
+            if (IsNullOrEmpty(patronyme)) patronyme = "?";
             return patronyme + ", " + prenom;
         }
-        public static string Convert_Age_GEDCOM(string age)
+        public static string Avoir_premier_nom_individu(
+            string ID
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            if (age.ToUpper() == "CHILD") return "enfant";
-            if (age.ToUpper() == "INFANT") return "bébé";
-            if (age.ToUpper() == "STILLBORN") return "mort né";
-            char[] espace = { ' ' };
-            string[] section = age.Split(espace);
-            int nombreSection = section.Length;
-            for (int f = 0; f < nombreSection; f++)
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> ID=" + ID );
+            if (IsNullOrEmpty(ID)) return null;
+            List<PERSONAL_NAME_STRUCTURE> info;
+            info = Avoir_liste_nom_individu(ID);
+            if (IsNullOrEmpty(info)) return null;
+            string patronyme = null;
+            string prenom = null;
+            if (info[0].N1_PERSONAL_NAME_PIECES != null)
             {
-                if (section[f].ToLower().Contains(">"))
-                    section[f] = "après ";
-                if (section[f].ToLower().Contains("<"))
-                    section[f] = "avant ";
-                if (section[f].ToLower().Contains("y"))
-                {
-                    section[f] = section[f].Remove(section[f].Length - 1, 1);
-                    if (int.Parse(section[f]) == 1)
-                    {
-                        section[f] += " an";
-                    }
-                    else
-                    {
-                        section[f] += " ans";
-                    }
-                }
-                if (section[f].ToLower().Contains("m"))
-                {
-                    section[f] = section[f].Remove(section[f].Length - 1, 1);
-                    section[f] += " mois";
-                }
-                if (section[f].ToLower().Contains("d"))
-                {
-                    section[f] = section[f].Remove(section[f].Length - 1, 1);
-                    if (int.Parse(section[f]) == 1)
-                    {
-                        section[f] += " jour";
-                    }
-                    else
-                    {
-                        section[f] += " jours";
-                    }
-                }
+                patronyme = info[0].N1_PERSONAL_NAME_PIECES.Nn_SURN;
+                prenom = info[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN;
             }
-            if (nombreSection == 1) age = section[0];
-            if (nombreSection == 2) age = section[0] + " " + section[1];
-            if (nombreSection == 3) age = section[0] + " " + section[1] + " " + section[2];
-            if (nombreSection == 4) age = section[0] + " " + section[1] + " " + section[2] + " " + section[3];
-            if (age.All(char.IsDigit))
+            if (IsNullOrEmpty(prenom) && IsNullOrEmpty(patronyme))
             {
-                if (int.Parse(section[0]) == 1) age += " an";
-                else age += " ans";
+                return info[0].N0_NAME;
             }
-            return age;
+            if (IsNullOrEmpty(prenom)) prenom = "?";
+            if (IsNullOrEmpty(patronyme)) patronyme = "?";
+            return patronyme + ", " + prenom;
         }
         public static string Convertir_ANSEL(string texte)
         {
@@ -4790,620 +9688,215 @@ namespace GEDCOM
             texte = texte.Replace("ïo", "ö");
             texte = texte.Replace("ïu", "ü");
             texte = texte.Replace("ïy", "ÿ");
-
-            if (Info_HEADER.N2_CHAR_VERS == "ANSI Z39.47-1985")
+            if (info_HEADER.N2_CHAR_VERS == "ANSI Z39.47-1985")
             {
                 texte = texte.Replace("Ã", "©");
             }
             return texte;
         }
-        public static string ConvertirDateTexte(string date)
-        {
-            string mois;
-            // si date  = "" ou null retourner ""
-            if (date == "" || date == null)
-            {
-                return "";
-            }
-            // vérifie si alphabet dans la date, si oui retourne sans changement
-            int c = date.Length;
-            int w = 0;
-            while (w < c)
-            {
-                if ((date[w] >= 'a' && date[w] <= 'z') || (date[w] >= 'A' && date[w] <= 'Z'))
-                {
-                    return date;
-                }
-                w++;
-            }
-            char[] s = { '-' };
-            string[] d = date.Split(s);
-            int l = d.Length;
-            if (l == 1)
-            {
-                return date;
-            }
-            if (l == 2)
-            {
-                mois = ConvertirMoisEnLong(d[1]);
-                return mois + " " + d[0];
-            }
-            if (l == 3)
-            {
-                mois = ConvertirMoisEnLong(d[1]);
-                if (d[2] == "01") d[2] = "1<sup>er</sup>";
-                return d[2] + " " + mois + " " + d[0];
-            }
-            return "";
-        }
-        private static string ConvertirDateGEDCOM(string date)
-        {
-            if (date == "" || date == null)
-            {
-                return "";
-            }
-            date = date.ToUpper().Trim();
-            char[] s = { ' ' };
-            char zero = '0';
-            string[] d = date.Split(s);
-            int l = d.Length; // nombre item dans la date ex. CAL 31 DEC 1997 l=4
-            if (l == 1)
-            {
-                return date; // année seulement
-            }
-            /*
-                ABT  ABT. = About, meaning the date is not exact.
-                CAL = Calculated mathematically, for example, from an event date and age.
-                EST = Estimated based on an algorithm using some other event date.
 
-                FROM = Indicates the beginning of a happening or state.
-                TO = Indicates the ending of a happening or state
-
-                AFT AFT.= Event happened after the given date.
-                BEF BEF. = Event happened before the given date.
-                BET = Event happened sometime between date 1 AND date 2
-
-                The date modifiers ABT, BEF & AFT are three-letter abbreviations. Several old
-                versions of Family Tree Maker use the illegal four-letter abbreviations ABT., BEF.
-                & AFT.
-             */
-            if (l == 2)
-            {
-                // 0        1       2       3       4       5       6       7  
-                // ABT      1852
-                if (d[0] == "ABT" || d[0] == "ABT.")
-                {
-                    return "Autour " + d[1];
-                }
-                // AFT      1852
-                if (d[0] == "AFT" || d[0] == "AFT.")
-                {
-                    return "Autour " + d[1];
-                }
-                // BEF      1852
-                if (d[0] == "BEF" || d[0] == "BEF.")
-                {
-                    return "Avant " + d[1];
-                }
-                // EST      1852
-                if (d[0] == "EST" || d[0] == "EST.")
-                {
-                    return "Estimé " + d[1];
-                }
-                // CAL      1852
-                if (d[0] == "CAL" || d[0] == "CAL.")
-                {
-                    return "Calculé " + d[1];
-                }
-                if (d[0] == "TO")
-                {
-                    return "Jusqu'au " + d[1];
-                }
-                // DEC      1852    
-                return d[1] + "-" + ConvertirMoisEnChiffre(d[0]);
-            }
-            if (l == 3)
-            {
-                // 0        1       2       3       4       5       6       7  
-                // ABT      DEC     1852
-                if (d[0] == "ABT" || d[0] == "ABT.")
-                {
-                    return "Autour " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]);
-                }
-                // AFT      DEC     1852
-                if (d[0] == "AFT" || d[0] == "AFT.")
-                {
-                    return "Après " + d[2] + ConvertirMoisEnChiffre(d[1]);
-                }
-                //ABT DEC 1852
-                if (d[1] == "ABT" || d[1] == "ABT.")
-                {
-                    return "Autour + " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]);
-                }
-                // BEF      DEC     1852
-                if (d[1] == "BEF" || d[1] == "BEF.")
-                {
-                    return "Avant + " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]);
-                }
-                // CAL      DEC     1852
-                if (d[0] == "CAL" || d[0] == "CAL")
-                {
-                    return "Calculé + " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]);
-                }
-                // EST      DEC     1852
-                if (d[0] == "EST" || d[0] == "EST.")
-                {
-                    return "Estimé " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]);
-                }
-                if (d[0] == "TO")
-                {
-                    return "Jusqu'au " + d[2] + "-" + d[1];
-                }
-                // 24       DEC     1852 
-                return d[2] + "-" + ConvertirMoisEnChiffre(d[1]) + "-" + d[0].PadLeft(2, zero);
-            }
-            if (l == 4)
-            {
-                // 0        1       2       3       4       5       6       7  
-                // ABT      24      DEC     1852
-                if (d[0] == "ABT" || d[0] == "ABT.")
-                {
-                    return "Autour " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero);
-                }
-                // BEF      24       DEC    1852
-                if (d[0] == "BEF" || d[0] == "BEF.")
-                {
-                    return "Avant " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero);
-                }
-                // AFT      24      DEC     1852
-                if (d[0] == "AFT" || d[0] == "AFT")
-                {
-                    return "Après " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero);
-                }
-                // BEF      24      DEC     1852
-                if (d[0] == "BEF" || d[0] == "BEF.")
-                {
-                    return "Avant " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero);
-                }
-                // BET     1852    AND     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[2] == "AND")
-                {
-                    return "Entre " + d[1] + " et " + d[3];
-                }
-                // FROM     1852    TO      1853
-                if (d[0] == "FROM" && d[2] == "TO")
-                {
-                    return "Du " + d[1] + " au " + d[3];
-                }
-                // CAL      24      DEC     1852
-                if (d[0] == "CAL" || d[0] == "CAL.")
-                {
-                    return "Calculé " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero);
-                }
-                // EST      24      DEC     1852
-                if (d[0] == "EST" || d[0] == "EST.")
-                {
-                    return "Estimé " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero);
-                }
-                // TO       24      DEC     1852
-                if (d[0] == "TO")
-                {
-                    return "Jusqu'au " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero);
-                }
-            }
-            if (l == 5)
-            {
-                // 0        1       2       3       4       5       6       7  
-                // BET     1852    AND     DEC     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[2] == "AND")
-                {
-
-                    return "Entre " + d[1] + " et " + d[4] + "-" + ConvertirMoisEnChiffre(d[3]);
-                }
-                // BET     DEC     1852    AND     1853 
-                if ((d[0] == "BET" || d[0] == "BET.") && d[3] == "AND")
-                {
-                    return "Entre " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]) + " et " + d[4];
-                }
-                // FROM     1852    TO      DEC     1853
-                if (d[0] == "FROM" && d[3] == "TO")
-                {
-                    return "Du " + d[1] + " au " + d[4] + "-" + ConvertirMoisEnChiffre(d[3]);
-                }
-                // FROM     DEC     1852    TO      1853
-                if (d[0] == "FROM" && d[3] == "TO")
-                {
-                    return "Du " + d[2] + "-" + ConvertirMoisEnChiffre(d[2]) + " au " + d[4];
-                }
-            }
-            if (l == 6)
-            {
-                // 0        1       2       3       4       5       6       7  
-                // BET     1852    AND     24      DEC     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[2] == "AND")
-                {
-                    return "Entre " + d[1] + " et " + d[5] + "-" + ConvertirMoisEnChiffre(d[4]) + "-" + d[3].PadLeft(2, zero);
-                }
-                // BET     DEC     1852    AND     DEC     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[3] == "AND")
-                {
-                    return "Entre " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]) + " et " + d[5] + "-" + ConvertirMoisEnChiffre(d[4]);
-                }
-                // BET      24     DEC     1852    AND     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[4] == "AND")
-                {
-                    return "Entre " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero) + " et " + d[5];
-                }
-                // FROM     24      DEC     1852    TO      1853
-                if (d[0] == "FROM" && d[4] == "TO")
-                {
-                    return "Du " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero) + " au " + d[5];
-                }
-                // FROM     DEC     1852    TO      DEC     1853
-                if (d[0] == "FROM" && d[4] == "TO")
-                {
-                    return "Du " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]) + " au " + d[5] + "-" + ConvertirMoisEnChiffre(d[3]);
-                }
-                // FROM     24      DEC     1852    TO      1853    
-                if (d[0] == "FROM" && d[4] == "TO")
-                {
-                    return "Du " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero) + " au " + d[5];
-                }
-            }
-            if (l == 7)
-            {
-                // 0        1       2       3       4       5       6       7   
-                // BET      DEC     1852    AND     24      DEC     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[3] == "AND")
-                {
-                    return "Entre " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]) + " et " + d[6] + ConvertirMoisEnChiffre(d[5]) + "-" + d[4].PadLeft(2, zero);
-                }
-                // BET      24     DEC     1852    AND      DEC     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[3] == "AND")
-                {
-                    return "Entre " + d[3] + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero) + " et " + d[6] + "-" + ConvertirMoisEnChiffre(d[5]);
-                }
-                // FROM     DEC     1852    TO      DEC     1853
-                if (d[0] == "FROM" && d[4] == "TO")
-                {
-                    return "Du " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]) + " au " + d[5] + "-" + ConvertirMoisEnChiffre(d[4]);
-                }
-                // FROM     24      DEC     1852    TO      DEC     1853    
-                if (d[0] == "FROM" && d[4] == "TO")
-                {
-                    return "Du " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero) + " au " + d[6] + "-" + ConvertirMoisEnChiffre(d[5]);
-                }
-                // FROM     DEC     1852    TO      24      DEC     1853    
-                if (d[0] == "FROM" && d[4] == "TO")
-                {
-                    return "Du " + d[2] + "-" + ConvertirMoisEnChiffre(d[1]) + " au " + d[6] + "-" + ConvertirMoisEnChiffre(d[5]) + "-" + d[4].PadLeft(2, zero);
-                }
-            }
-            if (l == 8)
-            {
-                // 0        1       2       3       4       5       6       7   
-                // BET      24     DEC     1852    AND     24      DEC     1853
-                if ((d[0] == "BET" || d[0] == "BET.") && d[4] == "AND")
-                {
-                    return "Entre " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero) + " et " + d[7] + "-" + ConvertirMoisEnChiffre(d[6]) + "-" + d[5].PadLeft(2, zero);
-                }
-                // FROM     24      DEC     1852    TO      24      DEC     1853    
-                if (d[0] == "FROM" && d[4] == "TO")
-                {
-                    return "Du " + d[3] + "-" + ConvertirMoisEnChiffre(d[2]) + "-" + d[1].PadLeft(2, zero) + " au " + d[7] + "-" + ConvertirMoisEnChiffre(d[6]) + "-" + d[5].PadLeft(2, zero);
-                }
-            }
-            return date;
-        }
-        public static string Convertir_EVENT_titre(string action, string ligne = null)
+        private static string Retirer_espace_inutile(string s)
         {
-            string texte;
-            if (action == "ADOP") texte = "Adoption";
-            else if (action == "ANUL") texte = "Annulation de mariage";
-            else if (action == "BIRT") texte = "Naissance";
-            else if (action == "BAPM") texte = "Baptême";
-            else if (action == "BARM") texte = "Bar Mitzvah";
-            else if (action == "BASM") texte = "Bat Mitsva";
-            else if (action == "BLES") texte = "Bénédiction";
-            else if (action == "CAST") texte = "Caste " + ligne;
-            else if (action == "CENS") texte = "Recensement";
-            else if (action == "CHR") texte = "Baptême christianisme";
-            else if (action == "CHRA") texte = "Baptême adulte";
-            else if (action == "CONF") texte = "Confirmation";
-            else if (action == "CONL") texte = "Confirmation LDS";
-            else if (action == "CREM") texte = "Crémation";
-            else if (action == "DIVF") texte = "Demande de divorce par épouse";
-            else if (action == "DSCR") texte = "Description physique";
-            else if (action == "EDUC") texte = "Éducation " + ligne;
-            else if (action == "EMIG") texte = "Départ de son pays avec l'intention de résider ailleurs";
-            else if (action == "ENDL") texte = "cérémonie religieuse LDS";
-            else if (action == "DEAT") texte = "Décès";
-            else if (action == "BURI") texte = "Inhumation";
-            else if (action == "DIV") texte = "Divorce";
-            else if (action == "ENGA") texte = "Fiançailles";
-            else if (action == "FCOM") texte = "Première communiun";
-            else if (action == "GRAD") texte = "Graduation";
-            else if (action == "INDO") texte = "Numero d'identification " + ligne;
-            else if (action == "IMMI") texte = "Immigration";
-            else if (action == "MARC") texte = "contrat de mariage";
-            else if (action == "MARR") texte = "Mariage";
-            else if (action == "MARS") texte = "Contrat de mariage";
-            else if (action == "MARB") texte = "Publication des bans";
-            else if (action == "MARL") texte = "Licence de mariage";
-            else if (action == "NATI") texte = "Patrimoine national " + ligne;
-            else if (action == "NATU") texte = "Naturalization";
-            else if (action == "NCHI") texte = "Nombre d'enfant " + ligne;
-            else if (action == "NMR") texte = "Nombre de mariage " + ligne;
-            else if (action == "OCCU") texte = "Profession " + ligne;
-            else if (action == "ORDN") texte = "Ordination religieuse";
-            else if (action == "PROB") texte = "Homologation d'un testament";
-            else if (action == "PROP") texte = "Propriété " + ligne;
-            else if (action == "RELI") texte = "Religion " + ligne;
-            else if (action == "RESI") texte = "Résidence";
-            else if (action == "RETI") texte = "Retraite";
-            else if (action == "SSN") texte = "Numéro sécurité sociale " + ligne;
-            else if (action == "TITL") texte = "Titre " + ligne;
-            else if (action == "SLGC") texte = "Scellemt à ses parents LDS";
-            else if (action == "WILL") texte = "Testament";
-            else if (action == "_ELEC") texte = "Élection";
-            else if (action == "_MILT") texte = "Service militaire"; // GRAMPS
-            else if (action == "_MDCL") texte = "Information médicale";
-            else if (action == "BAPL") texte = "Baptême église LDS";
-            else if (action == "EVEN") texte = ligne;
-            else if (action == "FACT") texte = ligne;
-            else texte = action;
-            return texte;
-        }
-        private static string ConvertirMoisEnChiffre(string mois)
-        {
-
-            string m = mois.ToUpper();
-            if (m == "JAN")
-            {
-                m = "01";
-            }
-            if (m == "FEB")
-            {
-                m = "02";
-            }
-            if (m == "MAR")
-            {
-                m = "03";
-            }
-            if (m == "APR")
-            {
-                m = "04";
-            }
-            if (m == "MAY")
-            {
-                m = "05";
-            }
-            if (m == "JUN")
-            {
-                m = "06";
-            }
-            if (m == "JUL")
-            {
-                m = "07";
-            }
-            if (m == "AUG")
-            {
-                m = "08";
-            }
-            if (m == "SEP")
-            {
-                m = "09";
-            }
-            if (m == "OCT")
-            {
-                m = "10";
-            }
-            if (m == "NOV")
-            {
-                m = "11";
-            }
-            if (m == "DEC")
-            {
-                m = "12";
-            }
-            return m;
-        }
-        private static string ConvertirMoisEnLong(string mois)
-        {
-            string m = mois.ToUpper();
-            if (m == "01")
-            {
-                m = "janvier";
-            }
-            if (m == "02")
-            {
-                m = "février";
-            }
-            if (m == "03")
-            {
-                m = "mars";
-            }
-            if (m == "04")
-            {
-                m = "avril";
-            }
-            if (m == "05")
-            {
-                m = "mai";
-            }
-            if (m == "06")
-            {
-                m = "juin";
-            }
-            if (m == "07")
-            {
-                m = "Juillet";
-            }
-            if (m == "08")
-            {
-                m = "août";
-            }
-            if (m == "09")
-            {
-                m = "septembre";
-            }
-            if (m == "10")
-            {
-                m = "octobre";
-            }
-            if (m == "11")
-            {
-                m = "novembre";
-            }
-            if (m == "12")
-            {
-                m = "décembre";
-            }
-            return m;
-        }
-        public static string Convertir_Sujet(string sujet)
-        {
-            string texte;
-            if (sujet.ToUpper() == "CHIL") texte = "Enfant";
-            else if (sujet.ToUpper() == "HUSB") texte = "Conjoint";
-            else if (sujet.ToUpper() == "WIFE") texte = "Conjointe";
-            else if (sujet.ToUpper() == "MOTH") texte = "Mère";
-            else if (sujet.ToUpper() == "FATH") texte = "Père";
-            else if (sujet.ToUpper() == "SPOU") texte = "Conjoint(e)";
-            else texte = sujet;
-            return texte;
-        }
-        public static bool SiBaliseAttributeFamille(string balise)
-        {
-             if (balise == "1 FACT") return true; // trouver dans GRAMPS
-            return false;
-        }
-        public static bool SiBaliseAttributeIndividu(string balise)
-        {
-            // p.33
-
-            if (balise == "1 CAST") return true;
-            if (balise == "1 DSCR") return true;
-            if (balise == "1 EDUC") return true;
-            if (balise == "1 IDNO") return true;
-            if (balise == "1 NATI") return true;
-            if (balise == "1 NCHI") return true;
-            if (balise == "1 NMR") return true;
-            if (balise == "1 OCCU") return true;
-            if (balise == "1 PROP") return true;
-            if (balise == "1 RELI") return true;
-            if (balise == "1 RESI") return true;
-            if (balise == "1 SSN") return true;
-            if (balise == "1 TITL") return true;
-            if (balise == "1 FACT") return true;
-            return false;
-        }
-        public static bool SiBaliseEvenementFamille(string balise)
-        {
-            // p.32
-            if (balise == "1 ANUL" || balise == "1 CENS" || balise == "1 DIV" || balise == "1 DIVF") return true;
-            if (balise == "1 ENGA" || balise == "1 MARB" || balise == "1 MARC") return true;
-            if (balise == "1 MARR") return true;
-            if (balise == "1 MARL" || balise == "1 MARS") return true;
-            if (balise == "1 RESI") return true;
-            if (balise == "1 EVEN") return true;
-
-            // ancestrologie
-            if (balise == "_ANCES_ORDRE") return true;
-            if (balise == "_ANCES_XINSEE") return true;
-            // GRAMPS
-            return false;
-        }
-        public static bool SiBaliseEvenementIndividu(string balise)
-        {
-            // p.34
-            balise = balise.ToUpper();
-            if (balise == "1 BIRT" || balise == "1 CHR") return true;
-            if (balise == "1 DEAT") return true;
-            if (balise == "1 BURI" || balise == "1 CREM") return true;
-            if (balise == "1 ADOP") return true;
-            if (balise == "1 BAPM" || balise == "1 BARM" || balise == "1 BASM" || balise == "1 BLES") return true;
-            if (balise == "1 CHRA" || balise == "1 CONF" || balise == "1 FCOM" || balise == "1 ORDN") return true;
-            if (balise == "1 BAPM" || balise == "1 BARM" || balise == "1 BASM" || balise == "1 BLES") return true;
-            if (balise == "1 NATU" || balise == "1 EMIG" || balise == "1 IMMI") return true;
-            if (balise == "1 CENS" || balise == "1 PROB" || balise == "1 WILL") return true;
-            if (balise == "1 GRAD" || balise == "1 RETI") return true;
-            if (balise == "1 EVEN") return true;
-            if (balise == "1 _MDCL") return true; // oem
-            if (balise == "1 _MILT") return true; // oem
-            
-            if (balise == "1 _ELEC") return true; // GRAMPS
-            return false;
-        }
-        public static bool SiBaliseOrdinanceIndividu(string balise)
-        {
-            if (balise == "1 BAPL") return true; //allowed in GEDCOM 5.5.1
-            if (balise == "1 CONL") return true; //allowed in GEDCOM 5.5.1
-            if (balise == "1 ENDL") return true; //allowed in GEDCOM 5.5.1
-            if (balise == "1 SLGC") return true; //allowed in GEDCOM 5.5.1
-            return false;
-        }
-        public static string SiBaliseZero(string s)
-        {
-            if (s == "") return "";
-            if (s[0] != '0') return "";
-            if (s.Substring(2) == "HEAD") return "HEAD";
-            int p1 = s.IndexOf("@");
-            int p2 = s.IndexOf("@", s.IndexOf('@') + 1);
-            if (p2 == -1) return "";
-            if (s.Length < p2 + 3) return "";
-            if ((p1 < 2 && p2 < 3) || (p1 > p2))
-            {
-                return "";
-            }
-            if (s.Substring(p2 + 2, 3) == "FAM") return "FAM";
-            s = s.Substring(p2 + 2, 4);
+            s = s.Trim(); // retire espace au début et à la fin
+            while (s.Contains("  ")) s = s.Replace("  ", " "); // remplace tout les double espace par un espace
             return s;
         }
-        public static void ZXCV(string message = "", [CallerFilePath] string code = "", [CallerLineNumber] int ligneCode = 0, [CallerMemberName] string fonction = null)
+
+        private static string Retirer_marque(string s)
         {
-            if (!GH.Properties.Settings.Default.deboguer || GH.Properties.Settings.Default.DossierHTML == "") return;
+            while (s.Contains("#A#A#A#"))
+                s = s.Replace("#A#A#A#", " ");
+            return s;
+        }
+        public static bool Si_chercheur(string ID)
+        {
+            foreach (SUBMITTER_RECORD info in liste_SUBMITTER_RECORD)
+            {
+                if (info.N0_ID == ID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool Si_individu(string ID)
+        {
+            foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
+            {
+                if (info.N0_ID == ID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool Si_info_event(string ID)
+        {
+            foreach (EVEN_RECORD_53 info in liste_EVEN_RECORD_53)
+            {
+                if (info.N0_ID == ID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        public static bool Si_info_source(string ID)
+        {
+            foreach (SOURCE_RECORD info in liste_SOURCE_RECORD)
+            {
+                if (info.N0_ID == ID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        public static void Voir_message(string message, string raison, string erreur)
+        {
+            DialogResult reponse;
+            string message_log = String.Format("Erreur {0,-7 } {1}\r\n{2,-15 }{3}", erreur, message, "",raison );
+            reponse = MessageBox.Show("Erreur " + erreur + ". " + message + "\r\n" + raison +
+                "\r\n\r\n" ,
+                "Erreur " + erreur + " problème ?",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Warning);
+            Erreur_log(message_log);
+            if (reponse == System.Windows.Forms.DialogResult.Cancel)
+                GH.GH.annuler = true;
+        }
+
+        public static void DEBUG(
+            object message = null,
+            [CallerFilePath] string code = "",
+            [CallerLineNumber] int ligneCode = 0,
+            [CallerMemberName] string fonction = null
+            )
+        {
+            if (!GH.GH.DEBUG) return;
+            // convertir message à string si n'est pas un string
+            if (message != null)
+                if (message.GetType() != typeof(string))
+                    message.ToString();
             System.Windows.Forms.Button Btn_deboguer = Application.OpenForms["GH"].Controls["Btn_deboguer"] as System.Windows.Forms.Button;
             code = Path.GetFileName(code);
-            code = code[0].ToString().ToUpper();
-            string fichier = GH.Properties.Settings.Default.DossierHTML + "\\deboguer.txt";
             try
             {
-                using (StreamWriter ligne = File.AppendText(fichier))
+                Btn_deboguer.Visible = true;
                 {
-                    if (!LogInfoGEDCOM && Info_HEADER.N2_SOUR_NAME != "")
+                    if (!File.Exists(GH.GH.fichier_debug))
                     {
-                        Btn_deboguer.Visible = true;
-                        ligne.WriteLine(DateTime.Now);
-                        ligne.WriteLine("**********************************************************************");
-                        ligne.WriteLine("Nom: " + Info_HEADER.N2_SOUR_NAME);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_SOUR_VERS);
-                        ligne.WriteLine("Date: " + Info_HEADER.N1_DATE + " " + Info_HEADER.N2_DATE_TIME);
-                        ligne.WriteLine("Copyright: " + Info_HEADER.N1_COPR);
-                        ligne.WriteLine("Version: " + Info_HEADER.N2_GEDC_VERS);
-                        ligne.WriteLine("Code charactère: " + Info_HEADER.N1_CHAR);
-                        ligne.WriteLine("Langue: " + Info_HEADER.N1_LANG);
-                        ligne.WriteLine("Fichier sur le disque: " + Info_HEADER.Nom_fichier_disque);
-                        ligne.WriteLine("**********************************************************************");
-                        LogInfoGEDCOM = true;
+                        using (StreamWriter ligne = File.AppendText(GH.GH.fichier_debug))
+                        {
+                            ligne.WriteLine(
+                            "<!DOCTYPE html>\n" +
+                            "<html lang=\"fr\" style=\"background-color:#FFF;\">\n" +
+                            "    <head>\n" +
+                            "       <title>Deboguer</title>" +
+                            "       <style>\n" +
+                            "           h1{color:#00F}\n" +
+                            "           .col0{width:150px;vertical-align:top;}\n " +
+                            "           .col1{width:90px;vertical-align:top;}\n " +
+                            "           .col2{width:50px;vertical-align:top;}\n " +
+                            "           .col3{width:330px;vertical-align:top;}\n " +
+                            "           .col4{vertical-align:top;}\n " +
+                            "           .navbar {\n" +
+                            "               overflow: hidden;\n" +
+                            "               position: fixed;\n" +
+                            "               top: 0;\n" +
+                            "               background-color: #FFF;\n" +
+                            "               width: 100%;\n" +
+                            "           }\n" +
+                            "       </style>\n" +
+                            "    </head>");
+                            Btn_deboguer.Visible = true;
+                            ligne.WriteLine("<div class=\"navbar\">");
+                            ligne.WriteLine("<h1>Deboguer</h1>");
+                            ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
+                            ligne.WriteLine("\t<tr><td style=\"width:200px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                            ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_SOUR_VERS + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Date</td><td>" + info_HEADER.N1_DATE + " " + info_HEADER.N2_DATE_TIME + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Copyright</td><td>" + info_HEADER.N1_COPR + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_GEDC_VERS + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + info_HEADER.N1_CHAR + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Langue</td><td>" + info_HEADER.N1_LANG + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
+                            System.Version version;
+                            try
+                            {
+                                version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                            }
+                            catch
+                            {
+                                GC.Collect();
+                                version = Assembly.GetExecutingAssembly().GetName().Version;
+                            }
+                            ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                            ligne.WriteLine("</table>");
+                            ligne.WriteLine(
+                                "<table >" +
+                                "<tr>" +
+                                "<td class=\"col0\">" +
+                                "Date heure" +
+                                "</td>" +
+                                "<td class=\"col1\">" +
+                                "Code" +
+                                "</td>" +
+                                "<td class=\"col2\">" +
+                                "Ligne" +
+                                "</td>" +
+                                "<td class=\"col3\">" +
+                                "Routine" +
+                                "</td>" +
+                                "<td>" +
+                                "Message" +
+                                "</td>" +
+                                "</table>" +
+                                "<hr>");
+                            ligne.WriteLine("</div>");
+                            ligne.WriteLine("<div style=\"margin-top: 325px;\">\n");
+                            ligne.WriteLine("</div>\n");
+                        }
                     }
-                    ligne.WriteLine(code + " " + ligneCode + ">" + fonction + "-> " + "►" + message + "◄");
+                    using (StreamWriter ligne = File.AppendText(GH.GH.fichier_debug))
+                        {
+
+                        string s = String.Format(
+                            "<table style=\"background-color:#FFFF00;width:100%\">" +
+                            "<tr>" +
+                            "<td class=\"col0\">" +
+                            "{0}" +
+                            "</td>" +
+                            "<td class=\"col1\">" +
+                            "{1}" +
+                            "</td>" +
+                            "<td class=\"col2\">" +
+                            "{2}" +
+                            "</td>" +
+                            "<td class=\"col3\">" +
+                            "{3}" +
+                            "</td>" +
+                            "<td style=\"width:*\">" +
+                            "{4}" +
+                            "</td>" +
+                            "</tr>" +
+                            "</table>" +
+                            "<hr>",
+                            DateTime.Now, code, ligneCode, fonction, message);
+                        ligne.WriteLine(s);
+                    }
                 }
             }
             catch (Exception msg)
             {
-                {
-                    MessageBox.Show("Debub Actif dans GEDCOM.\r\n\r\n" + code + " " + ligneCode + " " + 
-                        fonction + "-> " + message + "\r\n\r\n" + msg.Message, "GZX5205 problème ?",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Warning);
-                }
+                GC.Collect();
+                MessageBox.Show("Debub Actif dans GEDCOM.\r\n\r\n" + code + " " + ligneCode + " " +
+                    fonction + "-> " + message + "\r\n\r\n" + msg.Message, GH.GH.erreur + " problème ?",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
             }
-        }
-        public class DateReference
-        {
-            public string Date { get; set; }
-            public int Reference { get; set; }
         }
     }
 }

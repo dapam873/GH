@@ -1,0 +1,3 @@
+
+###DEBUG###  Utiliser la ligne pour mode Debug,   commenter la ligne pour mode Release
+

@@ -19,7 +19,7 @@ namespace GH.Properties {
     // à l'aide d'un outil, tel que ResGen ou Visual Studio.
     // Pour ajouter ou supprimer un membre, modifiez votre fichier .ResX, puis réexécutez ResGen
     // avec l'option /str ou régénérez votre projet VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,11 +61,21 @@ namespace GH.Properties {
         }
         
         /// <summary>
+        ///   Recherche une ressource localisée de type System.Byte[].
+        /// </summary>
+        internal static byte[] boutons {
+            get {
+                object obj = ResourceManager.GetObject("boutons", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arret {
+        internal static System.Drawing.Bitmap btn_annuler {
             get {
-                object obj = ResourceManager.GetObject("arret", resourceCulture);
+                object obj = ResourceManager.GetObject("btn_annuler", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +83,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap attendre2 {
+        internal static System.Drawing.Bitmap btn_arriere_plan {
             get {
-                object obj = ResourceManager.GetObject("attendre2", resourceCulture);
+                object obj = ResourceManager.GetObject("btn_arriere_plan", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +93,119 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap balise {
+        internal static System.Drawing.Bitmap Btn_B {
             get {
-                object obj = ResourceManager.GetObject("balise", resourceCulture);
+                object obj = ResourceManager.GetObject("Btn_B", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btn_D {
+            get {
+                object obj = ResourceManager.GetObject("btn_D", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_dossier {
+            get {
+                object obj = ResourceManager.GetObject("Btn_dossier", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_droite {
+            get {
+                object obj = ResourceManager.GetObject("Btn_droite", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_E {
+            get {
+                object obj = ResourceManager.GetObject("Btn_E", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_famille {
+            get {
+                object obj = ResourceManager.GetObject("Btn_famille", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btn_G {
+            get {
+                object obj = ResourceManager.GetObject("btn_G", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_gauche {
+            get {
+                object obj = ResourceManager.GetObject("Btn_gauche", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_individu {
+            get {
+                object obj = ResourceManager.GetObject("Btn_individu", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btn_log {
+            get {
+                object obj = ResourceManager.GetObject("btn_log", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_ok {
+            get {
+                object obj = ResourceManager.GetObject("Btn_ok", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Btn_total {
+            get {
+                object obj = ResourceManager.GetObject("Btn_total", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +223,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap deboguer {
+        internal static System.Drawing.Bitmap del_ambe {
             get {
-                object obj = ResourceManager.GetObject("deboguer", resourceCulture);
+                object obj = ResourceManager.GetObject("del-ambe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +233,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap dossier {
+        internal static System.Drawing.Bitmap del_bleu {
             get {
-                object obj = ResourceManager.GetObject("dossier", resourceCulture);
+                object obj = ResourceManager.GetObject("del-bleu", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +243,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap dossier_20 {
+        internal static System.Drawing.Bitmap del_off {
             get {
-                object obj = ResourceManager.GetObject("dossier_20", resourceCulture);
+                object obj = ResourceManager.GetObject("del-off", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +253,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap dossier_32 {
+        internal static System.Drawing.Bitmap del_rouge {
             get {
-                object obj = ResourceManager.GetObject("dossier_32", resourceCulture);
+                object obj = ResourceManager.GetObject("del-rouge", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,49 +263,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap dossier1 {
+        internal static System.Drawing.Bitmap del_vert {
             get {
-                object obj = ResourceManager.GetObject("dossier1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap erreur {
-            get {
-                object obj = ResourceManager.GetObject("erreur", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap femelle {
-            get {
-                object obj = ResourceManager.GetObject("femelle", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ficheFamilleNoir {
-            get {
-                object obj = ResourceManager.GetObject("ficheFamilleNoir", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ficheIndividuNoir {
-            get {
-                object obj = ResourceManager.GetObject("ficheIndividuNoir", resourceCulture);
+                object obj = ResourceManager.GetObject("del-vert", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +293,9 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap male {
+        internal static System.Drawing.Bitmap priver_19X24 {
             get {
-                object obj = ResourceManager.GetObject("male", resourceCulture);
+                object obj = ResourceManager.GetObject("priver_19X24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,9 +303,19 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap total {
+        internal static System.Drawing.Bitmap priver_50X64 {
             get {
-                object obj = ResourceManager.GetObject("total", resourceCulture);
+                object obj = ResourceManager.GetObject("priver_50X64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap recherche {
+            get {
+                object obj = ResourceManager.GetObject("recherche", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

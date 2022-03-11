@@ -1,0 +1,675 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GH</name>
+    </assembly>
+    <members>
+        <member name="F:GH.Bienvenu.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GH.Bienvenu.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GH.Bienvenu.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:GH.GH.SOSA">
+            <summary>
+            constante de la liste
+            </summary>
+            <summary>
+            position de la colonne SOSA dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.PAGE">
+            <summary>
+            position de la colonne PAGE dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.GENERATION">
+            <summary>
+            position de la colonne GENERATION dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.PATRONYME">
+            <summary>
+            position de la colonne PATRONYME dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.PRENOM">
+            <summary>
+            position de la colonne PRENOM dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.NOMTRI">
+            <summary>
+            position de la colonne NOMTRI dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.NELE">
+            <summary>
+            position de la colonne NELE dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.NELIEU">
+            <summary>
+            position de la colonne NELIEU dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.DELE">
+            <summary>
+            position de la colonne DELE dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.DELIEU">
+            <summary>
+            position de la colonne DELIEU dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.MALE">
+            <summary>
+            position de la colonne MALE dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.MALIEU">
+            <summary>
+            position de la colonne MALIEU dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.IDg">
+            <summary>
+            position de la colonne IDg dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.IDFAMILLEENFANT">
+            <summary>
+            position de la colonne IDFAMILLEENFANT dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.NOTE1">
+            <summary>
+            position de la colonne IDFAMILLEPARENT dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.NOTE2">
+            <summary>
+            position de la colonne Note2 dans le tableau grille
+            </summary>
+        </member>
+        <member name="F:GH.GH.FichierCourant">
+            <summary>
+            Nom du fichier courant
+            </summary>
+        </member>
+        <member name="F:GH.GH.FichierGEDCOMaLire">
+            <summary>
+            nom du fichier GEDCOM
+            </summary>
+        </member>
+        <member name="F:GH.GH.IDCourantFamilleConjoint">
+            <summary>
+            IDCourantFamilleConjoint
+            à utiliser avec le boutton Navigateur
+            </summary>
+        </member>
+        <member name="F:GH.GH.IDCourantFamilleConjointe">
+            <summary>
+            IDCourantFamilleConjointe
+            à utiliser avec le boutton Navigateur
+            </summary>
+        </member>
+        <member name="F:GH.GH.IDCourantIndividu">
+            <summary>
+            IDCourantIndividu
+            à utiliser avec le boutton Navigateur
+            </summary>
+        </member>
+        <member name="F:GH.GH.NomPrograme">
+            <summary>
+            Nom du programme
+            </summary>
+            
+        </member>
+        <member name="F:GH.GH.sosaCourant">
+            <summary>
+            numero du SOSA courant
+            </summary>
+        </member>
+        <member name="F:GH.GH.components">
+            <summary>
+            Variable nécessaire au concepteur.
+            </summary>
+        </member>
+        <member name="M:GH.GH.Dispose(System.Boolean)">
+            <summary>
+            Nettoyage des ressources utilisées.
+            </summary>
+            <param name="disposing">true si les ressources managées doivent être supprimées ; sinon, false.</param>
+        </member>
+        <member name="M:GH.GH.InitializeComponent">
+            <summary>
+            Méthode requise pour la prise en charge du concepteur - ne modifiez pas
+            le contenu de cette méthode avec l'éditeur de code.
+            </summary>
+        </member>
+        <member name="F:GH.A_propos.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GH.A_propos.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GH.A_propos.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:GH.Parametre.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GH.Parametre.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:GH.Program.Main">
+            <summary>
+            Point d'entrée principal de l'application.
+            </summary>
+        </member>
+        <member name="T:GH.Properties.Resources">
+            <summary>
+              Une classe de ressource fortement typée destinée, entre autres, à la consultation des chaînes localisées.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.ResourceManager">
+            <summary>
+              Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.Culture">
+            <summary>
+              Remplace la propriété CurrentUICulture du thread actuel pour toutes
+              les recherches de ressources à l'aide de cette classe de ressource fortement typée.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.annuler_24X24">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.B">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.DAPAMv5_201">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.deboguer">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.del_ambe">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.del_bleu">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.del_off">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.del_off1">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.del_rouge">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.del_vert">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.dossier_31X24">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.erreur">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.ficheFamille">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.G">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.GH150V2">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.loupe20">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.ok_25X24">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.priver_19X24">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.priver_50X64">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GH.Properties.Resources.total">
+            <summary>
+              Recherche une ressource localisée de type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.EVEN_RECORD_53.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.EVEN_ATTRIBUTE_STRUCTURE.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.EVEN_STRUCTURE_53.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.FAM_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.INDIVIDUAL_53.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.HEADER.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.MULTIMEDIA_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.NOTE_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.REPOSITORY_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.SOURCE_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.SUBMISSION_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="F:GEDCOM.GEDCOMClass.SUBMITTER_RECORD.ligne_perdu_liste">
+            <summary>
+            liste de balise non interpréter
+            </summary>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_INDIVIDUAL_53(GEDCOM.GEDCOMClass.INDIVIDUAL_53,System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="info_INDIVIDUAL_53"></param>
+            <param name="ligne"></param>
+            <param name="niveau"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_LDS_INDIVIDUAL_ORDINANCE_even(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            Extraire_LDS_INDIVIDUAL_ORDINANCE_even
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns>
+                info, 
+                ligne, 
+                ligne_perdue_liste
+            </returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_LDS_SPOUSE_SEALING(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_MULTIMEDIA_LINK(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_OBJE_record(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_SOURCE_RECORD(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_PERSONAL_NAME_STRUCTURE(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_PLACE_STRUCTURE(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_REPOSITORY_RECORD(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_CENS_record(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_IMMI_record(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_ORIG_record(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_PUBL_record(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_SOURCE_CITATION(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_GEDCOM">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Ecrire_execution_temps(System.String,System.TimeSpan)">
+            <summary>
+            
+            </summary>
+            <param name="nom"></param>
+            <param name="durer"></param>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_texte_CONT_CONC(System.Int32,System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="numero_ligne"></param>
+            <param name="niveau"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_NAME_STRUCTURE_53(System.Int32,System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="niveau"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_HEADER(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_ADDRESS_STRUCTURE(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_ASSOCIATION_STRUCTURE(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_ASSOCIATION_STRUCTURE_53(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_CHANGE_DATE(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_CHILD_TO_FAMILY_LINK(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_EVEN_ATTRIBUTE_STRUCTURE(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_EVEN_RECORD_53(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_EVEN_STRUCTURE_53(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="niveau"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_FAM_RECORD(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_INDIVIDUAL_RECORD(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_NOTE_RECORD(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_NOTE_STRUCTURE(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_SOURCE_REPOSITORY_CITATION(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_SPOUSE_TO_FAMILY_LINK(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_SUBMISSION_RECORD(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_SUBMITTER_RECORD(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_TEXT_STRUCTURE(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GEDCOM.GEDCOMClass.Extraire_USER_REFERENCE_NUMBER(System.Int32,System.Collections.Generic.List{GEDCOM.GEDCOMClass.ligne_perdue})">
+            <summary>
+            
+            </summary>
+            <param name="ligne"></param>
+            <param name="ligne_perdue_liste"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HTML.HTMLClass.Index(System.String,System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="fichierGEDCOM"></param>
+            <param name="nombreIndividu"></param>
+            <param name="nombreFamille"></param>
+            <param name="dossierSortie"></param>
+        </member>
+    </members>
+</doc>

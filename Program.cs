@@ -16,7 +16,7 @@ namespace GH
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GH());
+            Application.Run(new GHClass());
         }
     }
 }

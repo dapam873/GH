@@ -1,0 +1,138 @@
+﻿
+/*
+ Licence français
+
+     GEDCOM-HTML Ce logiciel permet d'extraire les informations d'un fichier GEDCOM
+     sous forme de fichier HTML pour tous les individus et toutes les familles.
+
+     Copyright (C) 2022 Daniel Pambrun
+
+     Ce programme est un logiciel libre : vous pouvez le redistribuer et/ou le modifier
+     sous les termes de la licence publique générale GNU telle que publiée par
+     la Free Software Foundation, soit la version 3 de la Licence.
+
+     Ce programme est distribué dans l'espoir qu'il sera utile,
+     mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de
+     QUALITÉ MARCHANDE ou ADAPTATION À UN USAGE PARTICULIER. Voir le
+     Licence publique générale GNU pour plus de détails.
+
+     Vous devriez avoir reçu une copie de la licence publique générale GNU
+     avec ce programme. Sinon, consultez <https://www.gnu.org/licenses/>.
+
+Licence English
+    GEDCOM-HTML This software makes it possible to extract information from a GEDCOM file
+    in the form of an HTML file for all individuals and all families.
+    
+    Copyright (C) 2022 Daniel Pambrun
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using Microsoft.Web.WebView2.Core;
+using System;
+using System.Windows.Forms;
+
+namespace GH
+{
+    public partial class Page : Form
+    {
+        public Page()
+        {
+        }
+        public Page(string lien, string nom)
+        {
+            InitializeComponent();
+            this.Text = nom;
+            lb_lien.Text = lien;
+            InitializeBrowser();
+
+        }
+
+        private void Page_Load(object sender, EventArgs e)
+        {
+            Timer_animation.Start();
+            /*
+            this.Width = 845;
+            this.MinimumSize = new System.Drawing.Size(845, 480);
+            this.Height = 590;
+            Wv_page.Source = new Uri(lb_lien.Text);
+            Wv_page.Visible= true;
+            Application.DoEvents();
+            */
+        }
+        private async void InitializeBrowser()
+        {
+            Application.DoEvents();
+            int largeur = this.Width;
+            int hauteur = this.Height;
+            Wv_page.Width = largeur - 18;
+            Wv_page.Height = hauteur - 39;
+            //if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\EBWebView"))
+            {
+                var env = await CoreWebView2Environment.CreateAsync(null, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH");
+                await Wv_page.EnsureCoreWebView2Async(env);
+            }
+            if (lb_lien.Text == "aide")
+            {
+                this.Width = 830;
+                this.MinimumSize = new System.Drawing.Size(830, 500);
+                this.Height = 500;
+                Wv_page.Source = new Uri("file:///" + Application.StartupPath + "\\aide\\aide.html");
+            }
+            else
+            {
+                Wv_page.Source = new Uri(lb_lien.Text);
+            }
+            Wv_page.Visible = true;
+            Timer_animation.Dispose();
+        }
+
+        private void Page_SizeChanged(object sender, EventArgs e)
+        {
+            int largeur = this.Width;
+            int hauteur = this.Height;
+            Wv_page.Width = largeur - 18;
+            Wv_page.Height = hauteur - 40;
+        }
+
+        private void Timer_animation_Tick(object sender, EventArgs e)
+        {
+            Random rnd = new Random();
+            if (rnd.Next(1, 5) == 1)
+                pb_del_1.Image = Properties.Resources.del_bleu;
+            if (rnd.Next(1, 5) == 2)
+                pb_del_1.Image = Properties.Resources.del_ambe;
+            if (rnd.Next(1, 5) == 3)
+                pb_del_1.Image = Properties.Resources.del_rouge;
+            if (rnd.Next(1, 5) == 4)
+                pb_del_1.Image = Properties.Resources.del_vert;
+            if (rnd.Next(1, 5) == 1)
+                pb_del_2.Image = Properties.Resources.del_bleu;
+            if (rnd.Next(1, 5) == 2)
+                pb_del_2.Image = Properties.Resources.del_ambe;
+            if (rnd.Next(1, 5) == 3)
+                pb_del_2.Image = Properties.Resources.del_rouge;
+            if (rnd.Next(1, 5) == 4)
+                pb_del_2.Image = Properties.Resources.del_vert;
+            if (rnd.Next(1, 5) == 1)
+                pb_del_3.Image = Properties.Resources.del_bleu;
+            if (rnd.Next(1, 5) == 2)
+                pb_del_3.Image = Properties.Resources.del_ambe;
+            if (rnd.Next(1, 5) == 3)
+                pb_del_3.Image = Properties.Resources.del_rouge;
+            if (rnd.Next(1, 5) == 4)
+                pb_del_3.Image = Properties.Resources.del_vert;
+            Application.DoEvents();
+        }
+    }
+}

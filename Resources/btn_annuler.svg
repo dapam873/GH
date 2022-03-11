@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="0.52083349in"
+   height="0.52083349in"
+   viewBox="0 0 13.229171 13.229171"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="btn_annuler.svg"
+   inkscape:export-filename="D:\Data\Documents\Mega\GH\images\bouttons\btn_annuler.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#969696"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="in"
+     inkscape:zoom="5.1241863"
+     inkscape:cx="40.982117"
+     inkscape:cy="27.223835"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="2391"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs2">
+    <linearGradient
+       y2="27.287088"
+       x2="28.49205"
+       y1="3.6336961"
+       x1="3.139704"
+       id="linearGradient13664"
+       xlink:href="#linearGradient13658"
+       gradientTransform="scale(1.0000916,0.99990845)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       id="linearGradient13658">
+      <stop
+         stop-color="white"
+         id="stop13660"
+         offset="0" />
+      <stop
+         stop-color="#ebebeb"
+         id="stop13662"
+         offset="1" />
+    </linearGradient>
+  </defs>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-58.827566,-4.8694212)">
+    <g
+       id="g3054"
+       transform="translate(-2.111305,-5.209356)">
+      <rect
+         style="fill:none;stroke:#66ccff;stroke-width:1.06926;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
+         id="rect2871"
+         width="12.159906"
+         height="12.159903"
+         x="61.473503"
+         y="10.613411"
+         ry="0" />
+      <rect
+         style="fill:none;fill-opacity:1;stroke:#000080;stroke-width:1.32288;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+         id="rect846-3-9-6-8"
+         width="11.906291"
+         height="11.906291"
+         x="61.600311"
+         y="10.740217"
+         ry="1.2166286"
+         inkscape:transform-center-x="34.312459"
+         inkscape:transform-center-y="10.062583" />
+    </g>
+    <g
+       id="g13"
+       transform="matrix(0.29400769,0,0,0.29400769,60.738716,6.7798575)"
+       style="stroke-width:1.36905;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="C:\Users\dapam\btn_annuler.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <title
+         id="title9">Layer 1</title>
+      <path
+         fill="url(#linearGradient13664)"
+         stroke="#8a0000"
+         stroke-width="0.600011"
+         stroke-linejoin="round"
+         stroke-miterlimit="4"
+         d="m 6.994497,0.418597 c -0.384221,0.040672 -0.746599,0.186268 -1.023,0.465 l -4.96,4.991 c -0.737076,0.743296 -0.606211,2.083329 0.279,2.976 l 6.975,7.006001 v 0.185998 l -7.099,7.037001 c -0.892681,0.885221 -1.022286,2.207935 -0.279,2.945 l 5.022,4.929001 c 0.743296,0.737076 2.052319,0.63722 2.945,-0.248001 l 7.099,-7.067999 7.130001,7.191999 c 0.885212,0.892683 2.207924,1.022297 2.945,0.278999 l 4.959999,-5.021999 c 0.737078,-0.743284 0.606222,-2.052317 -0.278999,-2.945 l -7.037001,-7.099001 v -0.062 l 7.160999,-7.098999 c 0.892681,-0.885211 1.022297,-2.176924 0.279001,-2.914 l -4.991001,-4.96 c -0.743284,-0.737066 -2.083319,-0.606211 -2.976,0.279 l -7.067999,7.037 h -0.062 l -7.099,-7.161 c -0.553258,-0.557921 -1.281624,-0.811773 -1.922,-0.744 z"
+         id="rect11855"
+         style="fill:url(#linearGradient13664);stroke-width:1.36905;stroke-miterlimit:4;stroke-dasharray:none" />
+      <path
+         fill="#7f3f00"
+         stroke-width="0.6"
+         stroke-linejoin="round"
+         stroke-miterlimit="4"
+         d="m 7.189356,3.76124 c -0.177925,-0.019334 -0.34347,0.03347 -0.465,0.155 l -2.759,2.759 c -0.24306,0.24305 -0.178292,0.689708 0.124,0.992 l 8.214999,8.21499 -8.214999,8.215009 c -0.302292,0.302282 -0.36706,0.748941 -0.124,0.992001 l 2.759,2.759001 c 0.24306,0.24305 0.689708,0.209282 0.992,-0.093 l 8.215,-8.215 8.215,8.215 c 0.30229,0.302282 0.74894,0.33605 0.991999,0.093 l 2.759001,-2.759001 c 0.243059,-0.243059 0.178291,-0.689718 -0.124001,-0.992001 l -8.215,-8.215009 8.215,-8.21499 c 0.302292,-0.302292 0.36706,-0.74895 0.124001,-0.992 l -2.759001,-2.759 c -0.243059,-0.24306 -0.689709,-0.178292 -0.991999,0.124 l -8.215,8.21499 -8.215,-8.21499 C 7.565215,3.889089 7.367281,3.780564 7.189356,3.76124 Z"
+         id="rect11874"
+         style="stroke-width:1.36905;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+  </g>
+</svg>
