@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GHClass));
             this.menuPrincipal = new System.Windows.Forms.MenuStrip();
             this.fichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,19 +40,21 @@
             this.BienvenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AProposToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblVersionProgramme = new System.Windows.Forms.Label();
-            this.lblFichier = new System.Windows.Forms.Label();
+            this.Lb_fichier_GEDCOM = new System.Windows.Forms.Label();
             this.lblCopyright = new System.Windows.Forms.Label();
             this.lblVersionGEDCOM = new System.Windows.Forms.Label();
             this.lblCharSet = new System.Windows.Forms.Label();
             this.lblLanguage = new System.Windows.Forms.Label();
             this.lblDateHeure = new System.Windows.Forms.Label();
-            this.lblNom = new System.Windows.Forms.Label();
+            this.Lb_nom_programe = new System.Windows.Forms.Label();
             this.lbFichierGenererPar = new System.Windows.Forms.Label();
             this.lbFamilleConjoint = new System.Windows.Forms.Label();
             this.lpIndividu = new System.Windows.Forms.Label();
             this.Gb_info_GEDCOM = new System.Windows.Forms.GroupBox();
-            this.NombreFamilleTb = new System.Windows.Forms.TextBox();
-            this.NombreIndividuTb = new System.Windows.Forms.TextBox();
+            this.Tb_temps_execution = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.Tb_nombre_famille = new System.Windows.Forms.TextBox();
+            this.Tb_nombre_individu = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -62,10 +63,8 @@
             this.LvChoixIndividu = new System.Windows.Forms.ListView();
             this.directoryEntry1 = new System.DirectoryServices.DirectoryEntry();
             this.LvChoixFamille = new System.Windows.Forms.ListView();
-            this.Timer_animation = new System.Windows.Forms.Timer(this.components);
-            this.pb_del_2 = new System.Windows.Forms.PictureBox();
-            this.pb_del_1 = new System.Windows.Forms.PictureBox();
-            this.Lb_ligne = new System.Windows.Forms.Label();
+            this.Lb_nombre_ligne = new System.Windows.Forms.Label();
+            this.Pb_attendre = new System.Windows.Forms.PictureBox();
             this.Btn_annuler = new System.Windows.Forms.Button();
             this.Btn_log_del = new System.Windows.Forms.Button();
             this.Btn_total = new System.Windows.Forms.Button();
@@ -79,16 +78,14 @@
             this.Btn_erreur = new System.Windows.Forms.Button();
             this.Btn_debug = new System.Windows.Forms.Button();
             this.Btn_GEDCOM = new System.Windows.Forms.Button();
-            this.pb_del_3 = new System.Windows.Forms.PictureBox();
             this.RechercheFamilleB = new System.Windows.Forms.Button();
             this.RechercheIndividuB = new System.Windows.Forms.Button();
             this.Pb_recherche_individu = new System.Windows.Forms.PictureBox();
             this.Pb_recherche_famille = new System.Windows.Forms.PictureBox();
+            this.Cadre = new System.Windows.Forms.Button();
             this.menuPrincipal.SuspendLayout();
             this.Gb_info_GEDCOM.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Pb_attendre)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Pb_recherche_individu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Pb_recherche_famille)).BeginInit();
             this.SuspendLayout();
@@ -166,21 +163,21 @@
             // 
             this.AideToolStripMenuItem1.Name = "AideToolStripMenuItem1";
             this.AideToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.AideToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.AideToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
             this.AideToolStripMenuItem1.Text = "&Aide";
             this.AideToolStripMenuItem1.Click += new System.EventHandler(this.AideToolStripMenuItem1_Click);
             // 
             // BienvenuToolStripMenuItem
             // 
             this.BienvenuToolStripMenuItem.Name = "BienvenuToolStripMenuItem";
-            this.BienvenuToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.BienvenuToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.BienvenuToolStripMenuItem.Text = "Bienvenu";
             this.BienvenuToolStripMenuItem.Click += new System.EventHandler(this.BienvenuToolStripMenuItem_Click);
             // 
             // AProposToolStripMenuItem
             // 
             this.AProposToolStripMenuItem.Name = "AProposToolStripMenuItem";
-            this.AProposToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.AProposToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.AProposToolStripMenuItem.Text = "À &propos";
             this.AProposToolStripMenuItem.Click += new System.EventHandler(this.ÀProposToolStripMenuItem_Click);
             // 
@@ -193,14 +190,14 @@
             this.lblVersionProgramme.TabIndex = 81;
             this.lblVersionProgramme.Text = "lblVersionProgramme";
             // 
-            // lblFichier
+            // Lb_fichier_GEDCOM
             // 
-            this.lblFichier.AutoSize = true;
-            this.lblFichier.Location = new System.Drawing.Point(4, 66);
-            this.lblFichier.Name = "lblFichier";
-            this.lblFichier.Size = new System.Drawing.Size(48, 13);
-            this.lblFichier.TabIndex = 82;
-            this.lblFichier.Text = "lblFichier";
+            this.Lb_fichier_GEDCOM.AutoSize = true;
+            this.Lb_fichier_GEDCOM.Location = new System.Drawing.Point(4, 66);
+            this.Lb_fichier_GEDCOM.Name = "Lb_fichier_GEDCOM";
+            this.Lb_fichier_GEDCOM.Size = new System.Drawing.Size(48, 13);
+            this.Lb_fichier_GEDCOM.TabIndex = 82;
+            this.Lb_fichier_GEDCOM.Text = "lblFichier";
             // 
             // lblCopyright
             // 
@@ -248,14 +245,14 @@
             this.lblDateHeure.TabIndex = 90;
             this.lblDateHeure.Text = "lblDateHeure";
             // 
-            // lblNom
+            // Lb_nom_programe
             // 
-            this.lblNom.AutoSize = true;
-            this.lblNom.Location = new System.Drawing.Point(19, 38);
-            this.lblNom.Name = "lblNom";
-            this.lblNom.Size = new System.Drawing.Size(39, 13);
-            this.lblNom.TabIndex = 91;
-            this.lblNom.Text = "lblNom";
+            this.Lb_nom_programe.AutoSize = true;
+            this.Lb_nom_programe.Location = new System.Drawing.Point(19, 38);
+            this.Lb_nom_programe.Name = "Lb_nom_programe";
+            this.Lb_nom_programe.Size = new System.Drawing.Size(39, 13);
+            this.Lb_nom_programe.TabIndex = 91;
+            this.Lb_nom_programe.Text = "lblNom";
             // 
             // lbFichierGenererPar
             // 
@@ -289,51 +286,74 @@
             // Gb_info_GEDCOM
             // 
             this.Gb_info_GEDCOM.BackColor = System.Drawing.Color.Transparent;
-            this.Gb_info_GEDCOM.Controls.Add(this.NombreFamilleTb);
-            this.Gb_info_GEDCOM.Controls.Add(this.NombreIndividuTb);
+            this.Gb_info_GEDCOM.Controls.Add(this.Tb_temps_execution);
+            this.Gb_info_GEDCOM.Controls.Add(this.lblVersionGEDCOM);
+            this.Gb_info_GEDCOM.Controls.Add(this.label4);
+            this.Gb_info_GEDCOM.Controls.Add(this.Tb_nombre_famille);
+            this.Gb_info_GEDCOM.Controls.Add(this.Tb_nombre_individu);
             this.Gb_info_GEDCOM.Controls.Add(this.label3);
             this.Gb_info_GEDCOM.Controls.Add(this.label2);
             this.Gb_info_GEDCOM.Controls.Add(this.label1);
-            this.Gb_info_GEDCOM.Controls.Add(this.lblNom);
+            this.Gb_info_GEDCOM.Controls.Add(this.Lb_nom_programe);
             this.Gb_info_GEDCOM.Controls.Add(this.lblDateHeure);
             this.Gb_info_GEDCOM.Controls.Add(this.lblVersionProgramme);
             this.Gb_info_GEDCOM.Controls.Add(this.lbFichierGenererPar);
             this.Gb_info_GEDCOM.Controls.Add(this.lblCopyright);
             this.Gb_info_GEDCOM.Controls.Add(this.lblCharSet);
-            this.Gb_info_GEDCOM.Controls.Add(this.lblVersionGEDCOM);
-            this.Gb_info_GEDCOM.Controls.Add(this.lblFichier);
+            this.Gb_info_GEDCOM.Controls.Add(this.Lb_fichier_GEDCOM);
             this.Gb_info_GEDCOM.Controls.Add(this.lblLanguage);
+            this.Gb_info_GEDCOM.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Gb_info_GEDCOM.ForeColor = System.Drawing.Color.Black;
-            this.Gb_info_GEDCOM.Location = new System.Drawing.Point(1028, 27);
+            this.Gb_info_GEDCOM.Location = new System.Drawing.Point(1026, 41);
             this.Gb_info_GEDCOM.Margin = new System.Windows.Forms.Padding(10);
             this.Gb_info_GEDCOM.Name = "Gb_info_GEDCOM";
-            this.Gb_info_GEDCOM.Size = new System.Drawing.Size(191, 184);
+            this.Gb_info_GEDCOM.Size = new System.Drawing.Size(190, 194);
             this.Gb_info_GEDCOM.TabIndex = 104;
             this.Gb_info_GEDCOM.TabStop = false;
             // 
-            // NombreFamilleTb
+            // Tb_temps_execution
             // 
-            this.NombreFamilleTb.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.NombreFamilleTb.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.NombreFamilleTb.Location = new System.Drawing.Point(105, 164);
-            this.NombreFamilleTb.Name = "NombreFamilleTb";
-            this.NombreFamilleTb.Size = new System.Drawing.Size(58, 13);
-            this.NombreFamilleTb.TabIndex = 123;
-            this.NombreFamilleTb.TabStop = false;
-            this.NombreFamilleTb.Text = "1 000 000";
-            this.NombreFamilleTb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Tb_temps_execution.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
+            this.Tb_temps_execution.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.Tb_temps_execution.Location = new System.Drawing.Point(104, 178);
+            this.Tb_temps_execution.Name = "Tb_temps_execution";
+            this.Tb_temps_execution.Size = new System.Drawing.Size(58, 13);
+            this.Tb_temps_execution.TabIndex = 182;
+            this.Tb_temps_execution.TabStop = false;
+            this.Tb_temps_execution.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // NombreIndividuTb
+            // label4
             // 
-            this.NombreIndividuTb.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
-            this.NombreIndividuTb.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.NombreIndividuTb.Location = new System.Drawing.Point(105, 150);
-            this.NombreIndividuTb.Name = "NombreIndividuTb";
-            this.NombreIndividuTb.Size = new System.Drawing.Size(58, 13);
-            this.NombreIndividuTb.TabIndex = 122;
-            this.NombreIndividuTb.TabStop = false;
-            this.NombreIndividuTb.Text = "1 000 000";
-            this.NombreIndividuTb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(4, 178);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(96, 13);
+            this.label4.TabIndex = 181;
+            this.label4.Text = "Temps d\'exécution";
+            // 
+            // Tb_nombre_famille
+            // 
+            this.Tb_nombre_famille.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
+            this.Tb_nombre_famille.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.Tb_nombre_famille.Location = new System.Drawing.Point(105, 164);
+            this.Tb_nombre_famille.Name = "Tb_nombre_famille";
+            this.Tb_nombre_famille.Size = new System.Drawing.Size(58, 13);
+            this.Tb_nombre_famille.TabIndex = 123;
+            this.Tb_nombre_famille.TabStop = false;
+            this.Tb_nombre_famille.Text = "1 000 000";
+            this.Tb_nombre_famille.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // Tb_nombre_individu
+            // 
+            this.Tb_nombre_individu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
+            this.Tb_nombre_individu.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.Tb_nombre_individu.Location = new System.Drawing.Point(105, 150);
+            this.Tb_nombre_individu.Name = "Tb_nombre_individu";
+            this.Tb_nombre_individu.Size = new System.Drawing.Size(58, 13);
+            this.Tb_nombre_individu.TabIndex = 122;
+            this.Tb_nombre_individu.TabStop = false;
+            this.Tb_nombre_individu.Text = "1 000 000";
+            this.Tb_nombre_individu.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // label3
             // 
@@ -428,53 +448,46 @@
             this.LvChoixFamille.SelectedIndexChanged += new System.EventHandler(this.LvChoixFamilleConjoint_SelectedIndexChanged);
             this.LvChoixFamille.DoubleClick += new System.EventHandler(this.LvChoixFamille_DoubleClick);
             // 
-            // Timer_animation
+            // Lb_nombre_ligne
             // 
-            this.Timer_animation.Interval = 10;
-            this.Timer_animation.Tick += new System.EventHandler(this.Timer_animation_Tick);
+            this.Lb_nombre_ligne.AutoSize = true;
+            this.Lb_nombre_ligne.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Lb_nombre_ligne.Location = new System.Drawing.Point(1024, 562);
+            this.Lb_nombre_ligne.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Lb_nombre_ligne.MaximumSize = new System.Drawing.Size(150, 40);
+            this.Lb_nombre_ligne.MinimumSize = new System.Drawing.Size(150, 40);
+            this.Lb_nombre_ligne.Name = "Lb_nombre_ligne";
+            this.Lb_nombre_ligne.Size = new System.Drawing.Size(150, 40);
+            this.Lb_nombre_ligne.TabIndex = 162;
+            this.Lb_nombre_ligne.Text = "123 456 789";
+            this.Lb_nombre_ligne.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // pb_del_2
+            // Pb_attendre
             // 
-            this.pb_del_2.ErrorImage = null;
-            this.pb_del_2.InitialImage = null;
-            this.pb_del_2.Location = new System.Drawing.Point(1073, 565);
-            this.pb_del_2.Margin = new System.Windows.Forms.Padding(0);
-            this.pb_del_2.Name = "pb_del_2";
-            this.pb_del_2.Size = new System.Drawing.Size(30, 30);
-            this.pb_del_2.TabIndex = 146;
-            this.pb_del_2.TabStop = false;
-            // 
-            // pb_del_1
-            // 
-            this.pb_del_1.ErrorImage = null;
-            this.pb_del_1.InitialImage = null;
-            this.pb_del_1.Location = new System.Drawing.Point(1037, 565);
-            this.pb_del_1.Margin = new System.Windows.Forms.Padding(0);
-            this.pb_del_1.Name = "pb_del_1";
-            this.pb_del_1.Size = new System.Drawing.Size(30, 30);
-            this.pb_del_1.TabIndex = 145;
-            this.pb_del_1.TabStop = false;
-            // 
-            // Lb_ligne
-            // 
-            this.Lb_ligne.AutoSize = true;
-            this.Lb_ligne.Location = new System.Drawing.Point(1025, 546);
-            this.Lb_ligne.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Lb_ligne.Name = "Lb_ligne";
-            this.Lb_ligne.Size = new System.Drawing.Size(0, 13);
-            this.Lb_ligne.TabIndex = 162;
+            this.Pb_attendre.ErrorImage = null;
+            this.Pb_attendre.Image = global::GH.Properties.Resources.spe340;
+            this.Pb_attendre.InitialImage = null;
+            this.Pb_attendre.Location = new System.Drawing.Point(1019, 525);
+            this.Pb_attendre.Margin = new System.Windows.Forms.Padding(0);
+            this.Pb_attendre.Name = "Pb_attendre";
+            this.Pb_attendre.Size = new System.Drawing.Size(197, 22);
+            this.Pb_attendre.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Pb_attendre.TabIndex = 178;
+            this.Pb_attendre.TabStop = false;
+            this.Pb_attendre.Visible = false;
             // 
             // Btn_annuler
             // 
             this.Btn_annuler.AutoSize = true;
             this.Btn_annuler.BackgroundImage = global::GH.Properties.Resources.btn_annuler;
             this.Btn_annuler.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_annuler.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_annuler.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_annuler.FlatAppearance.BorderSize = 0;
             this.Btn_annuler.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_annuler.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_annuler.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_annuler.Location = new System.Drawing.Point(1176, 552);
+            this.Btn_annuler.Location = new System.Drawing.Point(1177, 552);
             this.Btn_annuler.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_annuler.Name = "Btn_annuler";
             this.Btn_annuler.Size = new System.Drawing.Size(38, 41);
@@ -487,12 +500,13 @@
             this.Btn_log_del.AutoSize = true;
             this.Btn_log_del.BackgroundImage = global::GH.Properties.Resources.btn_log;
             this.Btn_log_del.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_log_del.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_log_del.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_log_del.FlatAppearance.BorderSize = 0;
             this.Btn_log_del.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_log_del.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_log_del.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_log_del.Location = new System.Drawing.Point(1019, 468);
+            this.Btn_log_del.Location = new System.Drawing.Point(1019, 454);
             this.Btn_log_del.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_log_del.Name = "Btn_log_del";
             this.Btn_log_del.Size = new System.Drawing.Size(75, 65);
@@ -505,12 +519,13 @@
             this.Btn_total.AutoSize = true;
             this.Btn_total.BackgroundImage = global::GH.Properties.Resources.Btn_total;
             this.Btn_total.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_total.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_total.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_total.FlatAppearance.BorderSize = 0;
             this.Btn_total.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_total.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_total.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_total.Location = new System.Drawing.Point(1019, 369);
+            this.Btn_total.Location = new System.Drawing.Point(1019, 367);
             this.Btn_total.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_total.Name = "Btn_total";
             this.Btn_total.Size = new System.Drawing.Size(206, 81);
@@ -523,12 +538,13 @@
             this.Btn_fiche_famille.AutoSize = true;
             this.Btn_fiche_famille.BackgroundImage = global::GH.Properties.Resources.Btn_famille;
             this.Btn_fiche_famille.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_fiche_famille.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_fiche_famille.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_fiche_famille.FlatAppearance.BorderSize = 0;
             this.Btn_fiche_famille.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_fiche_famille.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_fiche_famille.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_fiche_famille.Location = new System.Drawing.Point(1157, 298);
+            this.Btn_fiche_famille.Location = new System.Drawing.Point(1157, 305);
             this.Btn_fiche_famille.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_fiche_famille.Name = "Btn_fiche_famille";
             this.Btn_fiche_famille.Size = new System.Drawing.Size(68, 57);
@@ -541,12 +557,13 @@
             this.Btn_fiche_individu.AutoSize = true;
             this.Btn_fiche_individu.BackgroundImage = global::GH.Properties.Resources.Btn_individu;
             this.Btn_fiche_individu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_fiche_individu.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_fiche_individu.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_fiche_individu.FlatAppearance.BorderSize = 0;
             this.Btn_fiche_individu.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_fiche_individu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_fiche_individu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_fiche_individu.Location = new System.Drawing.Point(1019, 298);
+            this.Btn_fiche_individu.Location = new System.Drawing.Point(1019, 304);
             this.Btn_fiche_individu.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_fiche_individu.Name = "Btn_fiche_individu";
             this.Btn_fiche_individu.Size = new System.Drawing.Size(68, 57);
@@ -560,6 +577,7 @@
             this.Btn_famille_apres.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Btn_famille_apres.BackgroundImage = global::GH.Properties.Resources.Btn_droite;
             this.Btn_famille_apres.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_famille_apres.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_famille_apres.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_famille_apres.FlatAppearance.BorderSize = 0;
             this.Btn_famille_apres.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
@@ -579,6 +597,7 @@
             this.Btn_famille_avant.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Btn_famille_avant.BackgroundImage = global::GH.Properties.Resources.Btn_gauche;
             this.Btn_famille_avant.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_famille_avant.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_famille_avant.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_famille_avant.FlatAppearance.BorderSize = 0;
             this.Btn_famille_avant.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
@@ -598,6 +617,7 @@
             this.Btn_individu_apres.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Btn_individu_apres.BackgroundImage = global::GH.Properties.Resources.Btn_droite;
             this.Btn_individu_apres.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_individu_apres.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_individu_apres.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_individu_apres.FlatAppearance.BorderSize = 0;
             this.Btn_individu_apres.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
@@ -617,6 +637,7 @@
             this.Btn_individu_avant.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Btn_individu_avant.BackgroundImage = global::GH.Properties.Resources.Btn_gauche;
             this.Btn_individu_avant.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_individu_avant.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_individu_avant.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_individu_avant.FlatAppearance.BorderSize = 0;
             this.Btn_individu_avant.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
@@ -635,12 +656,13 @@
             this.Btn_balise.AutoSize = true;
             this.Btn_balise.BackgroundImage = global::GH.Properties.Resources.Btn_B;
             this.Btn_balise.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_balise.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_balise.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_balise.FlatAppearance.BorderSize = 0;
             this.Btn_balise.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_balise.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_balise.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_balise.Location = new System.Drawing.Point(1177, 223);
+            this.Btn_balise.Location = new System.Drawing.Point(1177, 245);
             this.Btn_balise.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_balise.Name = "Btn_balise";
             this.Btn_balise.Size = new System.Drawing.Size(48, 52);
@@ -653,12 +675,13 @@
             this.Btn_erreur.AutoSize = true;
             this.Btn_erreur.BackgroundImage = global::GH.Properties.Resources.Btn_E;
             this.Btn_erreur.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_erreur.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_erreur.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_erreur.FlatAppearance.BorderSize = 0;
             this.Btn_erreur.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_erreur.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_erreur.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_erreur.Location = new System.Drawing.Point(1126, 223);
+            this.Btn_erreur.Location = new System.Drawing.Point(1126, 245);
             this.Btn_erreur.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_erreur.Name = "Btn_erreur";
             this.Btn_erreur.Size = new System.Drawing.Size(48, 52);
@@ -671,12 +694,13 @@
             this.Btn_debug.AutoSize = true;
             this.Btn_debug.BackgroundImage = global::GH.Properties.Resources.btn_D;
             this.Btn_debug.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_debug.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_debug.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_debug.FlatAppearance.BorderSize = 0;
             this.Btn_debug.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_debug.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_debug.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_debug.Location = new System.Drawing.Point(1072, 223);
+            this.Btn_debug.Location = new System.Drawing.Point(1072, 245);
             this.Btn_debug.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_debug.Name = "Btn_debug";
             this.Btn_debug.Size = new System.Drawing.Size(48, 52);
@@ -689,29 +713,19 @@
             this.Btn_GEDCOM.AutoSize = true;
             this.Btn_GEDCOM.BackgroundImage = global::GH.Properties.Resources.btn_G;
             this.Btn_GEDCOM.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_GEDCOM.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_GEDCOM.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_GEDCOM.FlatAppearance.BorderSize = 0;
             this.Btn_GEDCOM.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_GEDCOM.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_GEDCOM.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_GEDCOM.Location = new System.Drawing.Point(1019, 223);
+            this.Btn_GEDCOM.Location = new System.Drawing.Point(1019, 245);
             this.Btn_GEDCOM.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_GEDCOM.Name = "Btn_GEDCOM";
             this.Btn_GEDCOM.Size = new System.Drawing.Size(48, 52);
             this.Btn_GEDCOM.TabIndex = 165;
             this.Btn_GEDCOM.UseVisualStyleBackColor = true;
             this.Btn_GEDCOM.Click += new System.EventHandler(this.Btn_G_Click);
-            // 
-            // pb_del_3
-            // 
-            this.pb_del_3.ErrorImage = null;
-            this.pb_del_3.Location = new System.Drawing.Point(1108, 565);
-            this.pb_del_3.Margin = new System.Windows.Forms.Padding(0);
-            this.pb_del_3.Name = "pb_del_3";
-            this.pb_del_3.Size = new System.Drawing.Size(30, 30);
-            this.pb_del_3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pb_del_3.TabIndex = 147;
-            this.pb_del_3.TabStop = false;
             // 
             // RechercheFamilleB
             // 
@@ -772,12 +786,28 @@
             this.Pb_recherche_famille.TabIndex = 164;
             this.Pb_recherche_famille.TabStop = false;
             // 
+            // Cadre
+            // 
+            this.Cadre.BackColor = System.Drawing.Color.Transparent;
+            this.Cadre.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.Cadre.FlatAppearance.BorderSize = 3;
+            this.Cadre.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Cadre.Location = new System.Drawing.Point(1019, 33);
+            this.Cadre.Name = "Cadre";
+            this.Cadre.Size = new System.Drawing.Size(206, 206);
+            this.Cadre.TabIndex = 180;
+            this.Cadre.UseVisualStyleBackColor = false;
+            this.Cadre.Click += new System.EventHandler(this.cadre_Click);
+            // 
             // GHClass
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(1234, 606);
+            this.Controls.Add(this.Gb_info_GEDCOM);
+            this.Controls.Add(this.Cadre);
+            this.Controls.Add(this.Pb_attendre);
             this.Controls.Add(this.Btn_annuler);
             this.Controls.Add(this.Btn_log_del);
             this.Controls.Add(this.Btn_total);
@@ -791,15 +821,11 @@
             this.Controls.Add(this.Btn_erreur);
             this.Controls.Add(this.Btn_debug);
             this.Controls.Add(this.Btn_GEDCOM);
-            this.Controls.Add(this.Lb_ligne);
-            this.Controls.Add(this.pb_del_3);
-            this.Controls.Add(this.pb_del_2);
-            this.Controls.Add(this.pb_del_1);
+            this.Controls.Add(this.Lb_nombre_ligne);
             this.Controls.Add(this.RechercheFamilleB);
             this.Controls.Add(this.RechercheFamilleTB);
             this.Controls.Add(this.RechercheIndividuB);
             this.Controls.Add(this.RechercheIndividuTB);
-            this.Controls.Add(this.Gb_info_GEDCOM);
             this.Controls.Add(this.lpIndividu);
             this.Controls.Add(this.lbFamilleConjoint);
             this.Controls.Add(this.LvChoixIndividu);
@@ -820,9 +846,7 @@
             this.menuPrincipal.PerformLayout();
             this.Gb_info_GEDCOM.ResumeLayout(false);
             this.Gb_info_GEDCOM.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Pb_attendre)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Pb_recherche_individu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Pb_recherche_famille)).EndInit();
             this.ResumeLayout(false);
@@ -837,13 +861,13 @@
         private System.Windows.Forms.ToolStripMenuItem OuvrirToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem QuitterToolStripMenuItem;
         private System.Windows.Forms.Label lblVersionProgramme;
-        private System.Windows.Forms.Label lblFichier;
+        private System.Windows.Forms.Label Lb_fichier_GEDCOM;
         private System.Windows.Forms.Label lblCopyright;
         private System.Windows.Forms.Label lblVersionGEDCOM;
         private System.Windows.Forms.Label lblCharSet;
         private System.Windows.Forms.Label lblLanguage;
         private System.Windows.Forms.Label lblDateHeure;
-        private System.Windows.Forms.Label lblNom;
+        private System.Windows.Forms.Label Lb_nom_programe;
         private System.Windows.Forms.Label lbFichierGenererPar;
         private System.Windows.Forms.Label lbFamilleConjoint;
         private System.Windows.Forms.Label lpIndividu;
@@ -858,19 +882,15 @@
         private System.Windows.Forms.TextBox RechercheFamilleTB;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox NombreIndividuTb;
-        private System.Windows.Forms.TextBox NombreFamilleTb;
+        private System.Windows.Forms.TextBox Tb_nombre_individu;
+        private System.Windows.Forms.TextBox Tb_nombre_famille;
         public System.Windows.Forms.ListView LvChoixIndividu;
         private System.DirectoryServices.DirectoryEntry directoryEntry1;
         private System.Windows.Forms.ToolStripMenuItem BienvenuToolStripMenuItem;
-        private System.Windows.Forms.PictureBox pb_del_1;
-        private System.Windows.Forms.PictureBox pb_del_2;
-        private System.Windows.Forms.PictureBox pb_del_3;
         public System.Windows.Forms.ListView LvChoixFamille;
-        private System.Windows.Forms.Timer Timer_animation;
         private System.Windows.Forms.Button RechercheFamilleB;
         private System.Windows.Forms.Button RechercheIndividuB;
-        private System.Windows.Forms.Label Lb_ligne;
+        private System.Windows.Forms.Label Lb_nombre_ligne;
         private System.Windows.Forms.PictureBox Pb_recherche_individu;
         private System.Windows.Forms.PictureBox Pb_recherche_famille;
         private System.Windows.Forms.Button Btn_GEDCOM;
@@ -886,6 +906,10 @@
         private System.Windows.Forms.Button Btn_total;
         private System.Windows.Forms.Button Btn_log_del;
         private System.Windows.Forms.Button Btn_annuler;
+        private System.Windows.Forms.PictureBox Pb_attendre;
+        private System.Windows.Forms.Button Cadre;
+        private System.Windows.Forms.TextBox Tb_temps_execution;
+        private System.Windows.Forms.Label label4;
     }
 }
 

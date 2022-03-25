@@ -926,7 +926,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
@@ -965,6 +965,7 @@
     <None Include="bin\Debug\images\attendre.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\spe340.gif" />
     <None Include="Resources\recherche.png" />
     <None Include="Resources\tota_gris.png" />
     <None Include="Resources\priver_50X64.png" />
@@ -1020,6 +1021,10 @@
     <None Include="Resources\Btn_famille.png" />
     <None Include="Resources\Btn_individu.png" />
     <None Include="Resources\Btn_total.png" />
+    <None Include="Resources\bloc.gif" />
+    <None Include="Resources\Btn_B_gris.png" />
+    <None Include="Resources\DP.gif" />
+    <None Include="Resources\bDP.gif" />
     <Content Include="Resources\Image1.png" />
     <None Include="Resources\log_del.png" />
     <None Include="Resources\log_del1.png" />

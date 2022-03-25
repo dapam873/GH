@@ -154,7 +154,7 @@
             this.Tb_text.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.Tb_text.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Tb_text.Location = new System.Drawing.Point(35, 239);
-            this.Tb_text.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Tb_text.Margin = new System.Windows.Forms.Padding(2);
             this.Tb_text.Multiline = true;
             this.Tb_text.Name = "Tb_text";
             this.Tb_text.Size = new System.Drawing.Size(212, 50);
@@ -168,6 +168,7 @@
             this.Btn_fermer.AutoSize = true;
             this.Btn_fermer.BackgroundImage = global::GH.Properties.Resources.Btn_ok;
             this.Btn_fermer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_fermer.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_fermer.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_fermer.FlatAppearance.BorderSize = 0;
             this.Btn_fermer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
@@ -184,6 +185,7 @@
             // logoDAPAM
             // 
             this.logoDAPAM.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.logoDAPAM.Cursor = System.Windows.Forms.Cursors.Hand;
             this.logoDAPAM.Image = global::GH.Properties.Resources.DAPAMv5_201;
             this.logoDAPAM.Location = new System.Drawing.Point(60, 372);
             this.logoDAPAM.Name = "logoDAPAM";

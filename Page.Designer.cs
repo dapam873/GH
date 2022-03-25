@@ -28,19 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Page));
             this.Wv_page = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.lb_lien = new System.Windows.Forms.Label();
             this.lb_SVP = new System.Windows.Forms.Label();
-            this.Timer_animation = new System.Windows.Forms.Timer(this.components);
-            this.pb_del_3 = new System.Windows.Forms.PictureBox();
-            this.pb_del_2 = new System.Windows.Forms.PictureBox();
-            this.pb_del_1 = new System.Windows.Forms.PictureBox();
+            this.Pb_attendre = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.Wv_page)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Pb_attendre)).BeginInit();
             this.SuspendLayout();
             // 
             // Wv_page
@@ -57,7 +51,7 @@
             // lb_lien
             // 
             this.lb_lien.AutoSize = true;
-            this.lb_lien.Location = new System.Drawing.Point(116, 40);
+            this.lb_lien.Location = new System.Drawing.Point(11, 26);
             this.lb_lien.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lb_lien.Name = "lb_lien";
             this.lb_lien.Size = new System.Drawing.Size(23, 13);
@@ -69,51 +63,25 @@
             // 
             this.lb_SVP.AutoSize = true;
             this.lb_SVP.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_SVP.Location = new System.Drawing.Point(173, 149);
+            this.lb_SVP.Location = new System.Drawing.Point(62, 38);
             this.lb_SVP.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lb_SVP.Name = "lb_SVP";
             this.lb_SVP.Size = new System.Drawing.Size(248, 39);
             this.lb_SVP.TabIndex = 2;
             this.lb_SVP.Text = "Un instant SVP";
             // 
-            // Timer_animation
+            // Pb_attendre
             // 
-            this.Timer_animation.Enabled = true;
-            this.Timer_animation.Interval = 10;
-            this.Timer_animation.Tick += new System.EventHandler(this.Timer_animation_Tick);
-            // 
-            // pb_del_3
-            // 
-            this.pb_del_3.ErrorImage = null;
-            this.pb_del_3.Location = new System.Drawing.Point(492, 153);
-            this.pb_del_3.Margin = new System.Windows.Forms.Padding(0);
-            this.pb_del_3.Name = "pb_del_3";
-            this.pb_del_3.Size = new System.Drawing.Size(30, 30);
-            this.pb_del_3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pb_del_3.TabIndex = 153;
-            this.pb_del_3.TabStop = false;
-            // 
-            // pb_del_2
-            // 
-            this.pb_del_2.ErrorImage = null;
-            this.pb_del_2.InitialImage = null;
-            this.pb_del_2.Location = new System.Drawing.Point(457, 153);
-            this.pb_del_2.Margin = new System.Windows.Forms.Padding(0);
-            this.pb_del_2.Name = "pb_del_2";
-            this.pb_del_2.Size = new System.Drawing.Size(30, 30);
-            this.pb_del_2.TabIndex = 152;
-            this.pb_del_2.TabStop = false;
-            // 
-            // pb_del_1
-            // 
-            this.pb_del_1.ErrorImage = null;
-            this.pb_del_1.InitialImage = null;
-            this.pb_del_1.Location = new System.Drawing.Point(421, 153);
-            this.pb_del_1.Margin = new System.Windows.Forms.Padding(0);
-            this.pb_del_1.Name = "pb_del_1";
-            this.pb_del_1.Size = new System.Drawing.Size(30, 30);
-            this.pb_del_1.TabIndex = 151;
-            this.pb_del_1.TabStop = false;
+            this.Pb_attendre.ErrorImage = null;
+            this.Pb_attendre.Image = global::GH.Properties.Resources.spe340;
+            this.Pb_attendre.InitialImage = null;
+            this.Pb_attendre.Location = new System.Drawing.Point(88, 87);
+            this.Pb_attendre.Margin = new System.Windows.Forms.Padding(0);
+            this.Pb_attendre.Name = "Pb_attendre";
+            this.Pb_attendre.Size = new System.Drawing.Size(197, 22);
+            this.Pb_attendre.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.Pb_attendre.TabIndex = 179;
+            this.Pb_attendre.TabStop = false;
             // 
             // Page
             // 
@@ -124,9 +92,7 @@
             this.Controls.Add(this.Wv_page);
             this.Controls.Add(this.lb_lien);
             this.Controls.Add(this.lb_SVP);
-            this.Controls.Add(this.pb_del_3);
-            this.Controls.Add(this.pb_del_2);
-            this.Controls.Add(this.pb_del_1);
+            this.Controls.Add(this.Pb_attendre);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Page";
@@ -134,9 +100,7 @@
             this.Load += new System.EventHandler(this.Page_Load);
             this.SizeChanged += new System.EventHandler(this.Page_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.Wv_page)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pb_del_1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Pb_attendre)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -147,9 +111,6 @@
         private Microsoft.Web.WebView2.WinForms.WebView2 Wv_page;
         private System.Windows.Forms.Label lb_lien;
         private System.Windows.Forms.Label lb_SVP;
-        private System.Windows.Forms.Timer Timer_animation;
-        private System.Windows.Forms.PictureBox pb_del_3;
-        private System.Windows.Forms.PictureBox pb_del_2;
-        private System.Windows.Forms.PictureBox pb_del_1;
+        private System.Windows.Forms.PictureBox Pb_attendre;
     }
 }

@@ -39,7 +39,10 @@ Licence English
  */
 
 using Microsoft.Web.WebView2.Core;
+using Routine;
 using System;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace GH
@@ -60,79 +63,58 @@ namespace GH
 
         private void Page_Load(object sender, EventArgs e)
         {
-            Timer_animation.Start();
-            /*
-            this.Width = 845;
-            this.MinimumSize = new System.Drawing.Size(845, 480);
-            this.Height = 590;
-            Wv_page.Source = new Uri(lb_lien.Text);
-            Wv_page.Visible= true;
-            Application.DoEvents();
-            */
         }
         private async void InitializeBrowser()
         {
-            Application.DoEvents();
-            int largeur = this.Width;
-            int hauteur = this.Height;
-            Wv_page.Width = largeur - 18;
-            Wv_page.Height = hauteur - 39;
-            //if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH\EBWebView"))
+            Regler_code_erreur();
+            string nom_fichier = null;
+            try
             {
-                var env = await CoreWebView2Environment.CreateAsync(null, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH");
-                await Wv_page.EnsureCoreWebView2Async(env);
+                Application.DoEvents();
+                int largeur = this.Width;
+                int hauteur = this.Height;
+                Wv_page.Width = largeur - 18;
+                Wv_page.Height = hauteur - 39;
+                nom_fichier = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH";
+                {
+                    var env = await CoreWebView2Environment.CreateAsync(null, nom_fichier);
+                    await Wv_page.EnsureCoreWebView2Async(env);
+                }
+
+                if (Path.GetFileName(lb_lien.Text) == "aide.html")
+                {
+                    this.Width = 780;
+                    this.Height = 500;
+                    this.MinimumSize = new System.Drawing.Size(780, 500);
+                    this.MaximumSize = new System.Drawing.Size(780, 2500);
+
+                    nom_fichier = "file:///" + Application.StartupPath + "\\aide\\aide.html";
+                    Wv_page.Source = new Uri(nom_fichier);
+                }
+                else
+                {
+                    Wv_page.Source = new Uri(lb_lien.Text);
+                }
+                Wv_page.Visible = true;
             }
-            if (lb_lien.Text == "aide")
+            catch (Exception msg)
             {
-                this.Width = 830;
-                this.MinimumSize = new System.Drawing.Size(830, 500);
-                this.Height = 500;
-                Wv_page.Source = new Uri("file:///" + Application.StartupPath + "\\aide\\aide.html");
+                R.Afficher_message("Ne peut pas écrire le fichier" + nom_fichier + ".", msg.Message, GH.GHClass.erreur);
             }
-            else
-            {
-                Wv_page.Source = new Uri(lb_lien.Text);
-            }
-            Wv_page.Visible = true;
-            Timer_animation.Dispose();
         }
 
         private void Page_SizeChanged(object sender, EventArgs e)
         {
+            Regler_code_erreur();
             int largeur = this.Width;
             int hauteur = this.Height;
             Wv_page.Width = largeur - 18;
             Wv_page.Height = hauteur - 40;
         }
 
-        private void Timer_animation_Tick(object sender, EventArgs e)
+        private static void Regler_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
         {
-            Random rnd = new Random();
-            if (rnd.Next(1, 5) == 1)
-                pb_del_1.Image = Properties.Resources.del_bleu;
-            if (rnd.Next(1, 5) == 2)
-                pb_del_1.Image = Properties.Resources.del_ambe;
-            if (rnd.Next(1, 5) == 3)
-                pb_del_1.Image = Properties.Resources.del_rouge;
-            if (rnd.Next(1, 5) == 4)
-                pb_del_1.Image = Properties.Resources.del_vert;
-            if (rnd.Next(1, 5) == 1)
-                pb_del_2.Image = Properties.Resources.del_bleu;
-            if (rnd.Next(1, 5) == 2)
-                pb_del_2.Image = Properties.Resources.del_ambe;
-            if (rnd.Next(1, 5) == 3)
-                pb_del_2.Image = Properties.Resources.del_rouge;
-            if (rnd.Next(1, 5) == 4)
-                pb_del_2.Image = Properties.Resources.del_vert;
-            if (rnd.Next(1, 5) == 1)
-                pb_del_3.Image = Properties.Resources.del_bleu;
-            if (rnd.Next(1, 5) == 2)
-                pb_del_3.Image = Properties.Resources.del_ambe;
-            if (rnd.Next(1, 5) == 3)
-                pb_del_3.Image = Properties.Resources.del_rouge;
-            if (rnd.Next(1, 5) == 4)
-                pb_del_3.Image = Properties.Resources.del_vert;
-            Application.DoEvents();
+            GH.GHClass.erreur = "PA" + sourceLineNumber;
         }
     }
 }

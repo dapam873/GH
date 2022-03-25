@@ -114,6 +114,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace GEDCOM
 {
     public static class GEDCOMClass
@@ -299,6 +300,15 @@ namespace GEDCOM
                                                             //                                                  V5.5.1  p.37
                                                             //                                                  v5.5.5  p.71
         }
+        
+/*
+        public class DISPOSITION_GenoPro // GenoPro
+        {
+            public string N1_TYPE; // Burial, Cremation, Unknown, ... 
+            public string N1_DATE;
+            public PLAC_GenoPro N1_PLAC; // Place
+        }
+*/
         public class EVEN_RECORD_53 // V5.3 SEULEMENT
         {
             // GEDCOM53.pdf             p.18
@@ -437,6 +447,9 @@ namespace GEDCOM
                                                             //                                                  V5.5    p.34
                                                             //                                                  V5.5.1  p.39
                                                             //                                                  V5.5.5  p.73
+            //
+
+
             public List<string> N2_SOUR_source_liste_ID;
             public List<string> MULTIMEDIA_LINK_liste_ID;
 
@@ -485,6 +498,8 @@ namespace GEDCOM
             public string N2__ANCES_ORDRE;                  //  n Ancestrologie
             public string N2__ANCES_XINSEE;                 //  n Ancestrologie
             public string N2__FNA;                          //  n Heridis Etat des recherches d'un événement
+
+//            public DISPOSITION_GenoPro N2_DISPOSITION_GenoPro; // GenoPro Pour DEAT la disposition du corps
         }
         public class EVEN_STRUCTURE_53
         {
@@ -523,6 +538,8 @@ namespace GEDCOM
                                                                         //                                          V5.5
                                                                         //                                          V5.5.1
                                                                         //                                          v5.5.5
+            public string Date_mariage;
+            public string Lieu_mariage;
             public string N1_RESN;                                      //    +1 RESN <RESTRICTION_NOTICE>      {0:1) 
                                                                         //                                          V5.5.1  p.60
             public List<EVEN_ATTRIBUTE_STRUCTURE> N1_EVEN_Liste;        //    +1 <<FAMILY_EVENT_STRUCTURE>>     {0:M}
@@ -644,6 +661,10 @@ namespace GEDCOM
                                                                         //                                                      V5.5
                                                                         //                                                      V5.5.1
                                                                         //                                                      V5.5.5
+            public string Date_naissance;
+            public string Lieu_naissance;
+            public string Date_deces;
+            public string Lieu_deces;
             public string N1_RESN;                                      //          +1 RESN <RESTRICTION_NOTICE>            {0:1}
                                                                         //                                                      V5.4    p.45
                                                                         //                                                      V5.5    p.52
@@ -1376,7 +1397,9 @@ namespace GEDCOM
                                                                         //                                      V5.5   p.48
                                                                         //                                      V5.5.1 p.54
                                                                         //                                      V5.5.5 p.96
-
+            public string N1_DISPLAY;                                   //                                      GenoPro
+            public string N1_MIDDLE;                                    //                                      GenoPro
+            public string N1_LAST2;                                     //                                      GenoPro
             public string N1_TYPE;                                      //          +1 TYPE <NAME_TYPE>     {0:1}
                                                                         //                                      V5.3
                                                                         //                                      V5.5.1 p.56
@@ -1408,6 +1431,11 @@ namespace GEDCOM
                                                                         //                                  V5.5.5 p.105
                                                                         // extra
             public List<string> N1_ALIA_liste;                          //              +1 ALIA  alia dans BROSKEEP
+        }
+        public class PLAC_GenoPro
+        {
+            public string N0_PLAC; //le lieu
+            public string N1__XREF_ID; // ID de la ficher du lieu 
         }
         public class PLACE_STRUCTURE
         {
@@ -2153,7 +2181,6 @@ namespace GEDCOM
         private static List<REPOSITORY_RECORD> liste_REPOSITORY_RECORD = new List<REPOSITORY_RECORD>(); // 551-p27
 
 
-
         public static void Label_debugXXX()
         //[CallerLineNumber] int callerLineNumber = 0)
 
@@ -2449,6 +2476,7 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
+            Regler_code_erreur();
             int niveau = Extraire_niveau(ligne);
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br>GEDCOM=" + ligne + "<br>niveau=" + niveau);
 
@@ -2525,7 +2553,11 @@ namespace GEDCOM
                     (IDNote, ligne) = Extraire_NOTE_STRUCTURE(ligne);
                     info.N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string citation;
                     string source;
@@ -2554,6 +2586,7 @@ namespace GEDCOM
             )
         {
             //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=");
+            Regler_code_erreur();
             LDS_SPOUSE_SEALING info = new LDS_SPOUSE_SEALING
             {
                 N1_DATE = null,
@@ -2617,7 +2650,11 @@ namespace GEDCOM
                     (IDNote, ligne) = Extraire_NOTE_STRUCTURE(ligne);
                     info.N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string citation;
                     string source;
@@ -2653,6 +2690,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> ligne GEDCOM=" + ligne );
+            Regler_code_erreur();
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
             MULTIMEDIA_LINK info_LINK = new MULTIMEDIA_LINK
@@ -2749,7 +2787,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
-
+            Regler_code_erreur();
             string N0_ID = Extraire_ID(dataGEDCOM[ligne]);
             //R..Z("ID="+ N0_ID);
             //Label_debug();
@@ -2887,7 +2925,8 @@ namespace GEDCOM
                             }
 
                             break;
-
+                        case "1 SOURCE": // GenoPro
+                        case "1 SOURCES":  // GenoPro
                         case "1 SOUR":                                                                     // SOUR
                             string citation;
                             string source;
@@ -2916,11 +2955,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "-01",
                     null,
                     MessageBoxButtons.OKCancel,
                     MessageBoxIcon.Error);
@@ -2967,6 +3005,7 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
+            Regler_code_erreur();
             string N0_ID;
             string N0_texte;
             (_, N0_ID, _, N0_texte, ligne) = Extraire_info_niveau_0(ligne);
@@ -3032,6 +3071,8 @@ namespace GEDCOM
                             case "1 PERI":                                                                // PERI V5.3
                                 (N1_PERI, ligne) = Extraire_texte_niveau_plus(ligne);
                                 break;
+                            case "1 SOURCE": // GenoPro
+                            case "1 SOURCES":  // GenoPro
                             case "1 SOUR":                                                                // SOUR V5.3
                                 N1_SOUR_EVEN_liste_ID.Add(Extraire_ID(dataGEDCOM[ligne]));
                                 ligne++;
@@ -3246,11 +3287,10 @@ namespace GEDCOM
                     }
                     catch (Exception msg)
                     {
-                        GC.Collect();
                         DialogResult reponse = R.Afficher_message(
                             "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                             msg.Message,
-                            GH.GHClass.erreur,
+                            GH.GHClass.erreur + "-02",
                             null,
                             MessageBoxButtons.OKCancel,
                             MessageBoxIcon.Error);
@@ -3311,13 +3351,14 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne );
+            Regler_code_erreur();
             int niveau = Extraire_niveau(ligne);
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
-            GEDCOMClass.PERSONAL_NAME_PIECES N1_nom_name_pieces = new PERSONAL_NAME_PIECES();
-            GEDCOMClass.PERSONAL_NAME_PIECES N1_FONE_name_pieces = new PERSONAL_NAME_PIECES();
-            GEDCOMClass.PERSONAL_NAME_PIECES N1_ROMN_name_pieces = new PERSONAL_NAME_PIECES();
-            GEDCOMClass.PERSONAL_NAME_STRUCTURE info_nom = new PERSONAL_NAME_STRUCTURE();
+            PERSONAL_NAME_PIECES N1_nom_name_pieces = new PERSONAL_NAME_PIECES();
+            PERSONAL_NAME_PIECES N1_FONE_name_pieces = new PERSONAL_NAME_PIECES();
+            PERSONAL_NAME_PIECES N1_ROMN_name_pieces = new PERSONAL_NAME_PIECES();
+            PERSONAL_NAME_STRUCTURE info_nom = new PERSONAL_NAME_STRUCTURE();
             List<string> Nn_NOTE_STRUCTURE_liste_ID = new List<string>();
             List<string> Nn_SOUR_citation_liste_ID = new List<string>();
             List<string> Nn_SOUR_source_liste_ID = new List<string>();
@@ -3334,7 +3375,41 @@ namespace GEDCOM
             {
                 string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
                 balise_ligne[1] = ligne;
-                if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                if (balise_1 == (niveau + 1).ToString() + " DISPLAY") // GenoPro
+                {
+                    (info_nom.N1_DISPLAY, ligne) = Extraire_texte_niveau_plus(ligne);
+                    while (Extraire_niveau(ligne) > niveau + 1)
+                    {
+                        string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                        balise_ligne[2] = ligne;
+                        if (balise_2 == (niveau + 2).ToString() + " FORMAT")
+                        {
+                            (_, ligne) = Extraire_texte_niveau_plus(ligne);
+                        }
+                        else
+                        {
+                            ligne = Ligne_perdu_plus(
+                                ligne,
+                                MethodBase.GetCurrentMethod().Name,
+                                (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                                balise_ligne
+                                );
+                        }
+                    }
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " MIDDLE")  // GenoPro
+                {
+                    (info_nom.N1_MIDDLE, ligne) = Extraire_texte_niveau_plus(ligne);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " FORMAT")  // GenoPro
+                {
+                    (_, ligne) = Extraire_texte_niveau_plus(ligne);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " LAST2")  // GenoPro
+                {
+                    (info_nom.N1_LAST2, ligne) = Extraire_texte_niveau_plus(ligne);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " TYPE")
                 {
                     (info_nom.N1_TYPE, ligne) = Extraire_texte_niveau_plus(ligne);
                     if (info_nom.N1_TYPE.ToLower() == "aka")
@@ -3380,7 +3455,11 @@ namespace GEDCOM
                     (IDNote, ligne) = Extraire_NOTE_STRUCTURE(ligne);
                     Nn_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string ID_citation;
                     string ID_source;
@@ -3438,7 +3517,11 @@ namespace GEDCOM
                             (temp, ligne) = Extraire_NOTE_STRUCTURE(ligne);
                             Nn_FONE_NOTE_STRUCTURE_liste_ID.Add(temp);
                         }
-                        else if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                        else if (
+                            balise_2 == (niveau + 2).ToString() + " SOUR" ||
+                            balise_2 == (niveau + 2).ToString() + " SOURCE" || // GenoPro
+                            balise_2 == (niveau + 2).ToString() + " SOURCES" // GenoPro
+                            )
                         {
                             string citation;
                             string source;
@@ -3501,7 +3584,11 @@ namespace GEDCOM
                             (temp2, ligne) = Extraire_NOTE_STRUCTURE(ligne);
                             Nn_ROMN_NOTE_STRUCTURE_liste_ID.Add(temp2);
                         }
-                        else if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                        else if (
+                            balise_2 == (niveau + 2).ToString() + " SOUR" ||
+                            balise_2 == (niveau + 2).ToString() + " SOURCE" || // GenoPro
+                            balise_2 == (niveau + 2).ToString() + " SOURCES" // GenoPro
+                    )
                         {
                             string citation;
                             string source;
@@ -3566,12 +3653,43 @@ namespace GEDCOM
             };
             return (info_PERSONAL_NAME_STRUCTURE, ligne);
         }
+        private static (PLAC_GenoPro, int) Extraire_PLAC_GenoPro_plus(int ligne)
+        {
+            PLAC_GenoPro info = new PLAC_GenoPro();
+            int[] balise_ligne = new int[10];
+            int niveau = Extraire_niveau(ligne);
+            balise_ligne[0] = ligne;
+            (info.N0_PLAC, ligne) = Extraire_texte_niveau_plus(ligne);
+
+            while (Extraire_niveau(ligne) > niveau + 1)
+            {
+                string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[2] = ligne;
+                if (balise_2 == (niveau + 2).ToString() + " _XREF") // id fiche place
+                {
+                    info.N1__XREF_ID = Extraire_ID(dataGEDCOM[ligne]);
+                    ligne++;
+                    ligne++;
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            return (info, ligne);
+        }
 
         private static (PLACE_STRUCTURE, int) Extraire_PLACE_STRUCTURE(
             int ligne
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
+            Regler_code_erreur();
             int niveau = Extraire_niveau(ligne);
             //GEDCOMClass.ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "&nbsp;&nbsp;niveau=" + niveau);
             PLACE_STRUCTURE info = new PLACE_STRUCTURE
@@ -3756,7 +3874,11 @@ namespace GEDCOM
                     (IDNote, ligne) = Extraire_NOTE_STRUCTURE(ligne);
                     N1_NOTE_STRUCTURE_liste_ID.Add(IDNote);
                 }
-                else if (balise_1 == (niveau + 1) + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1) + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string citation;
                     string source;
@@ -3941,11 +4063,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "-03",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -4167,6 +4288,7 @@ namespace GEDCOM
         private static (CENS_record, int) Extraire_CENS_record(
             int ligne)
         {
+            Regler_code_erreur();
             // utiliser avec SOUR de V5.3
             CENS_record info_CENS = new CENS_record();
             List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
@@ -4225,6 +4347,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "<br>" + dataGEDCOM[ligne]);
+            Regler_code_erreur();
             /*
                 format de la première ligne
             1               |niveau|balise|ID|              3
@@ -4336,6 +4459,7 @@ namespace GEDCOM
         private static (IMMI_record, int) Extraire_IMMI_record(
             int ligne)
         {
+            Regler_code_erreur();
             // utiliser avec SOUR de V5.3
             IMMI_record info_IMMI = new IMMI_record();
             List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
@@ -4458,6 +4582,7 @@ namespace GEDCOM
         {
             //R..Z(" LP De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
             // utiliser avec SOUR de V5.3
+            Regler_code_erreur();
             ORIG_record info_ORIG = new ORIG_record();
             List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
             int niveau = Extraire_niveau(ligne);
@@ -4499,6 +4624,7 @@ namespace GEDCOM
         private static (PUBL_record, int) Extraire_PUBL_record(
             int ligne)
         {
+            Regler_code_erreur();
             // utiliser avec SOUR de V5.3
             PUBL_record info_PUBL = new PUBL_record();
             List<ADDRESS_STRUCTURE> N1_ADDR_liste = new List<ADDRESS_STRUCTURE>();
@@ -4667,7 +4793,11 @@ namespace GEDCOM
                         (temp2, ligne) = Extraire_texte_niveau_plus(ligne);
                         N1_TITL_liste.Add(temp2);
                     }
-                    else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                    else if (
+                        balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                        balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                        balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                     {
                         source_ID_seulement = false;
                         string temp_texte;
@@ -4857,7 +4987,11 @@ namespace GEDCOM
                         {
                             string balise_2 = Avoir_niveau_balise(dataGEDCOM[ligne]);
                             balise_ligne[2] = ligne;
-                            if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                            if (
+                                balise_2 == (niveau + 2).ToString() + " SOUR" ||
+                                balise_2 == (niveau + 2).ToString() + " SOURCE" || // GenoPro
+                                balise_2 == (niveau + 2).ToString() + " SOURCES" // GenoPro
+                                    )
                             {
                                 (info.N2__QUAL__SOUR, ligne) = Extraire_texte_niveau_plus(ligne);
                             }
@@ -4894,11 +5028,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "-04",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -4926,17 +5059,16 @@ namespace GEDCOM
             //R..Z("extraire citation ID source = " + info.N0_ID_citation + " ID souce=" + info.N0_ID_SOUR + " source seulement="+ info.source_ID_seulement.ToString());
             return (info.N0_ID_citation, info.N0_ID_SOUR, ligne);
         }
-
+        
         public static bool Extraire_GEDCOM(
             //[CallerLineNumber] int callerLineNumber = 0
             )
         {
-            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>");
+            //R,.Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>");
 
             //Label_debug();
             Regler_code_erreur();
-            Stopwatch chrono;
-            chrono = Stopwatch.StartNew();
+            System.Windows.Forms.Label Lb_nombre_ligne = Application.OpenForms["GHClass"].Controls["Lb_nombre_ligne"] as System.Windows.Forms.Label;
             int niveau;
             liste_SUBMITTER_RECORD = new List<SUBMITTER_RECORD>();
             liste_NOTE_RECORD = new List<NOTE_RECORD>();
@@ -4956,12 +5088,16 @@ namespace GEDCOM
                 {
                     string balise_0 = "99 null";
                     if (ligne % 1000 == 0)
+                    {
+                        Lb_nombre_ligne.Text = String.Format("{0:n0}", ligne);
                         Application.DoEvents();
+                    }
                     niveau = Extraire_niveau(ligne);
+                    Regler_code_erreur();
                     //if (niveau == 0)
                     {
                         if (GH.GHClass.annuler)
-                            return false;
+                            return true;
                         string temp = dataGEDCOM[ligne];
                         string texte = String.Join(" ", temp.ToUpper().Split(new string[] { " " }, // retire les espaces d'extra
                             StringSplitOptions.RemoveEmptyEntries));
@@ -4982,25 +5118,23 @@ namespace GEDCOM
                             balise_0 = section[0];
                         }
                         balise_ligne[0] = ligne;
-
                         switch (balise_0)
                         {
                             case "0 HEAD":
-                                //R..Z(ligne + " Extraire HEAD");
+                                Regler_code_erreur();
                                 ligne = Extraire_HEADER(ligne);
-
+                                Regler_code_erreur();
                                 break;
                             case "0 EVEN":
                                 ligne = Extraire_EVEN_RECORD_53(ligne);
-                                //R..Z(ligne + " Extraire EVEN");
                                 break;
                             case "0 FAM":
                                 ligne = Extraire_FAM_RECORD(ligne);
-                                //R..Z(ligne + " Extraire FAM");
+                                
                                 break;
+                            case "0 _INDI": // GenoPro
                             case "0 INDI":
                                 ligne = Extraire_INDIVIDUAL_RECORD(ligne);
-                                //R..Z(ligne + " Extraire INDI");
                                 break;
                             case "0 NOTE":
                                 ligne = Extraire_NOTE_RECORD(ligne);
@@ -5008,7 +5142,6 @@ namespace GEDCOM
                                 break;
                             case "0 OBJE":
                                 ligne = Extraire_OBJE_record(ligne);
-                                //R..Z(ligne + " Extraire OBJE");
                                 break;
                             case "0 REPO":
                                 ligne = Extraire_REPOSITORY_RECORD(ligne);
@@ -5026,9 +5159,60 @@ namespace GEDCOM
                                 //R..Z(ligne + " Extraire SUBM");
                                 ligne = Extraire_SUBMITTER_RECORD(ligne);
                                 break;
+                            case "0 GLOBAL":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 GENOMAP":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 PEDIGREELINK":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 Marriage":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 LABEL":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 Twin":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 Bookmark":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 Occupation":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 Education":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
+                            case "0 PLAC":// GenoPro
+                                {
+                                    ligne = Extraire_GenoPro_plus(ligne, 0);
+                                    break;
+                                }
                             case "0 TRLR":
-                                //R..Z(ligne + " "Extraire TRLR");
-                                return true;
+                                Lb_nombre_ligne.Text = String.Format("{0:n0}", ligne);
+                                    Application.DoEvents();
+                                return false;
                             default:
                                 ligne = Ligne_perdu_plus(
                                     ligne,
@@ -5043,20 +5227,18 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur, null,
+                    GH.GHClass.erreur + "-05",
+                    null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                if (GH.GHClass.annuler)
-                    return false;
+                Lb_nombre_ligne.Text = String.Format("{0:n0}", ligne);
+                return true;
             }
-            chrono.Stop();
-            TimeSpan durer = TimeSpan.FromMilliseconds(chrono.ElapsedMilliseconds);
-            GEDCOMClass.Ecrire_execution_temps("Direct -- ", durer);
-            //Label_debug();
+            Lb_nombre_ligne.Text = String.Format("{0:n0}", ligne);
+            Application.DoEvents();
             return false;
         }
 
@@ -5099,7 +5281,6 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 R.Afficher_message(
                     " Timer problème ?",
                     msg.Message,
@@ -5112,6 +5293,7 @@ namespace GEDCOM
         }
         private static string Convertir_string_2d(string s)
         {
+            Regler_code_erreur();
             if (IsNullOrEmpty(s))
                 return "00";
 
@@ -5689,6 +5871,7 @@ namespace GEDCOM
         }
         private static string Convertir_mois_chiffre(string s)
         {
+            Regler_code_erreur();
             s = s.ToUpper();
             switch (s)
             {
@@ -5739,10 +5922,16 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
-            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>");
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br> Para.enregistrer_balise=" + GH.GHClass.Para.enregistrer_balise );
             Regler_code_erreur();
-            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GHClass"].Controls["Btn_balise"] as
-                System.Windows.Forms.Button;
+            if (GH.GHClass.annuler)
+                return;
+            System.Windows.Forms.Button Btn_balise = Application.OpenForms["GHClass"].Controls["Btn_balise"] as System.Windows.Forms.Button;
+            Btn_balise.Visible = true;
+            Application.DoEvents();
+            if (!GH.GHClass.Para.enregistrer_balise)
+                return;
+
             try
             {
                 if (liste == null)
@@ -5779,26 +5968,17 @@ namespace GEDCOM
                             ligne.WriteLine("<div class=\"navbar\">");
                             ligne.WriteLine("<h1>Balise</h1>");
                             ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
-                            ligne.WriteLine("\t<tr><td style=\"width:150px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                            ligne.WriteLine("\t<tr><td style=\"width:150px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td></tr>");
                             ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_SOUR_VERS + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Date</td><td>" + info_HEADER.N1_DATE + " " + info_HEADER.N2_DATE_TIME + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Copyright</td><td>" + info_HEADER.N1_COPR + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_GEDC_VERS + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + info_HEADER.N1_CHAR + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Langue</td><td>" + info_HEADER.N1_LANG + "<td></tr>");
-                            ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
-                            System.Version version;
-                            /*try
-                            {
-                                version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                            }
-                            catch
-                            {
-                            */
-                            GC.Collect();
-                            version = Assembly.GetExecutingAssembly().GetName().Version;
-                            //}
+                            ligne.WriteLine("\t<tr><td>Fichier GEDCOM</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
+                            System.Version  version = Assembly.GetExecutingAssembly().GetName().Version;
                             ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                            ligne.WriteLine("\t<tr><td>Fichier balise</td><td>" + GH.GHClass.fichier_balise + "<td></tr>");
                             ligne.WriteLine("</table>");
                             ligne.WriteLine(
                                 "<table>" +
@@ -5818,11 +5998,11 @@ namespace GEDCOM
                                 "</table>" +
                                 "<hr>");
                             ligne.WriteLine("</div>");
-                            ligne.WriteLine("<div style=\"margin-top: 325px;\">\n");
+                            ligne.WriteLine("<div style=\"margin-top: 350px;\">\n");
                             ligne.WriteLine("</div>\n");
                         }
                     }
-                    Btn_balise.Visible = true;
+                    
                     using (StreamWriter ligne = File.AppendText(GH.GHClass.fichier_balise))
                     {
                         // battir le texte des balise
@@ -5856,7 +6036,6 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse;
                 reponse = R.Afficher_message(
                     "Ne peut écrire le fichier " + GH.GHClass.fichier_balise,
@@ -5873,6 +6052,7 @@ namespace GEDCOM
 
         public static string Avoir_balise(string ligne)
         {
+            Regler_code_erreur();
             // retourne la balise
             // mette en majuscule
             ligne = ligne.ToUpper();
@@ -5913,6 +6093,7 @@ namespace GEDCOM
         }
         public static string Avoir_balise_p1(string ligne)
         {
+            Regler_code_erreur();
             // le niveau doit être plus grand que 0
             // retourne la balise avec son niveau qui doit être en position 1
             // mette en majuscule
@@ -5928,6 +6109,7 @@ namespace GEDCOM
         }
         public static string Extraire_ID(string s)
         {
+            Regler_code_erreur();
             int p1 = s.IndexOf("@") + 2;
             if (p1 > 9)
                 return ""; // si ID n'est pas au début retour ""
@@ -5943,6 +6125,7 @@ namespace GEDCOM
         }
         private static string Extraire_texte_balise(int nombre, string ligne)
         {
+            Regler_code_erreur();
             if (ligne.Length > 3 + nombre)
             {
                 return ligne.Substring(3 + nombre);
@@ -5952,6 +6135,7 @@ namespace GEDCOM
 
         private static string Extraire_texte(int numero_ligne)
         {
+            Regler_code_erreur();
             string texte = dataGEDCOM[numero_ligne];
             texte = texte.TrimStart();
             texte = texte.TrimEnd();
@@ -5979,6 +6163,7 @@ namespace GEDCOM
 
         private static string Extraire_ligne(string ligne, int nombre_charactere_balise)
         {
+            Regler_code_erreur();
             int nombre = nombre_charactere_balise + 3;
             if (ligne.Length > nombre)
             {
@@ -5988,6 +6173,7 @@ namespace GEDCOM
         }
         private static string Extraire_NAME(string s)
         {
+            Regler_code_erreur();
             if (IsNullOrEmpty(s))
                 return null;
             if (s == "")
@@ -6036,6 +6222,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "&nbsp;&nbsp;niveau=" + niveau);
+            Regler_code_erreur();
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
             string n0_name;
@@ -6056,7 +6243,11 @@ namespace GEDCOM
                 {
                     (info_NAME_STRUCTURE_53.N1_TYPE, ligne) = Extraire_texte_niveau_plus(ligne);
                 }
-                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string citation;
                     string source;
@@ -6085,6 +6276,24 @@ namespace GEDCOM
             return (info_NAME_STRUCTURE_53, ligne);
         }
 
+        private static int Extraire_GenoPro_plus(int ligne, int niveau)
+        {
+            // GenoPro ignore l'information pour le moment
+            ligne++;
+            try
+            {
+                while (Extraire_niveau(ligne) > niveau )
+                {
+                    ligne++;
+                }
+            }
+            catch (Exception msg)
+            {
+
+            }
+            return ligne;
+        }
+        
         private static int Extraire_HEADER(int ligne
             //, [CallerLineNumber] int callerLineNumber = 0
             )
@@ -6135,7 +6344,7 @@ namespace GEDCOM
                     {
                         (info_HEADER.N1_DEST, ligne) = Extraire_texte_niveau_plus(ligne);
                     }
-                    else if (balise_1 == "1 SOUR")
+                    else if (balise_1 == "1 SOUR" || balise_1 == "1 SOURCE" || balise_1 == "1 SOURCES")
                     {
                         string balise_1_texte;
                         (balise_1_texte, ligne) = Extraire_texte_niveau_plus(ligne);
@@ -6277,7 +6486,9 @@ namespace GEDCOM
                     }
                     else if (balise_1 == "1 FILE")
                     {
-                        (info_HEADER.N1_FILE, ligne) = Extraire_texte_niveau_plus(ligne);
+                        string nom_fichier; 
+                        (nom_fichier, ligne) = Extraire_texte_niveau_plus(ligne);
+                        info_HEADER.N1_FILE = Path.GetFileName(nom_fichier);
                     }
                     else if (balise_1 == "1 SUBN")
                     {
@@ -6417,11 +6628,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "-06",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -6551,7 +6761,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "<br>fichier="+ fichier);
-
+            Regler_code_erreur();
             MULTIMEDIA_LINK info_MULTIMEDIA_LINK = new MULTIMEDIA_LINK
             {
                 ID_LINK = "IA-" + String.Format("{0:-00-00-00-00}", ++numero_ID),
@@ -6572,6 +6782,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> <br>GEDCOM=" + ligne);
+            Regler_code_erreur();
             ASSOCIATION_STRUCTURE info = new ASSOCIATION_STRUCTURE();
             string N0_ASSO;
             string N1_TYPE = null;
@@ -6605,7 +6816,11 @@ namespace GEDCOM
                             break;
                     }
                 }
-                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string citation;
                     string source;
@@ -6714,6 +6929,7 @@ namespace GEDCOM
         private static (CHILD_TO_FAMILY_LINK, int) Extraire_CHILD_TO_FAMILY_LINK(
             int ligne)
         {
+            Regler_code_erreur();
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
             int niveau = Extraire_niveau(ligne);
@@ -6748,7 +6964,11 @@ namespace GEDCOM
                             (info.N2_ADOP_DATE, ligne) = Extraire_texte_niveau_plus(ligne);
                         else if (balise_2 == (niveau + 2).ToString() + " PLAC")
                             (info.N2_ADOP_PLAC, ligne) = Extraire_PLACE_STRUCTURE(ligne);
-                        else if (balise_2 == (niveau + 2).ToString() + " SOUR")
+                        else if (
+                            balise_2 == (niveau + 2).ToString() + " SOUR" ||
+                            balise_2 == (niveau + 2).ToString() + " SOURCE" || // GenoPro
+                            balise_2 == (niveau + 2).ToString() + " SOURCES" // GenoPro
+                    )
                         {
                             string citation;
                             string source;
@@ -6831,14 +7051,61 @@ namespace GEDCOM
             info.N1_NOTE_STRUCTURE_liste_ID = N1_NOTE_STRUCTURE_liste_ID;
             return (info, ligne);
         }
-
-        private static (EVEN_ATTRIBUTE_STRUCTURE, int) Extraire_EVEN_ATTRIBUTE_STRUCTURE(
+        /*
+        private static (DISPOSITION_GenoPro, int) Extraire_DISPOSITION_GenePro_plus(
+            int ligne
+            , [CallerLineNumber] int callerLineNumber = 0
+            )
+        {
+            int niveau = Extraire_niveau(ligne);
+            R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br>GEDCOM=" + ligne + "<br>niveau=" + niveau);
+            DISPOSITION_GenoPro info = new DISPOSITION_GenoPro();
+            
+            int[] balise_ligne = new int[10];
+            balise_ligne[0] = ligne;
+            ligne++;
+            while (Extraire_niveau(ligne) > niveau)
+            {
+                R..Z(ligne.ToString() + " " + dataGEDCOM[ligne]);
+                string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
+                balise_ligne[1] = ligne;
+                if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                {
+                    R..Z(ligne.ToString() + " " + dataGEDCOM[ligne]);
+                    (info.N1_TYPE, ligne) = Extraire_texte_niveau_plus(ligne);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " DATE")
+                {
+                    R..Z(ligne.ToString() + " " + dataGEDCOM[ligne]);
+                    (info.N1_DATE, ligne) = Extraire_texte_niveau_plus(ligne);
+                }
+                else if (balise_1 == (niveau + 1).ToString() + " PLAC")
+                {
+                    R..Z(ligne.ToString() + " " + dataGEDCOM[ligne]);
+                    (info.N1_PLAC, ligne) = Extraire_PLAC_GenoPro_plus(ligne);
+                }
+                else
+                {
+                    ligne = Ligne_perdu_plus(
+                        ligne,
+                        MethodBase.GetCurrentMethod().Name,
+                        (new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber(),
+                        balise_ligne
+                        );
+                }
+            }
+            R..Z("<b>Retoune ligne=" + ligne.ToString());
+            return (info, ligne);
+        }
+        */
+        private static (EVEN_ATTRIBUTE_STRUCTURE, int, string, string) Extraire_EVEN_ATTRIBUTE_STRUCTURE(
             int ligne,
             int niveau
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
-            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name +" code " + callerLineNumber + "</b> GEDCOM="+ ligne);
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name +" code " + callerLineNumber + "</b> GEDCOM="+ ligne + " " + dataGEDCOM[ligne]);
+            Regler_code_erreur();
             EVEN_ATTRIBUTE_STRUCTURE info = new EVEN_ATTRIBUTE_STRUCTURE
             {
                 N2_DATE = "", // important pour classer par date;
@@ -6863,7 +7130,8 @@ namespace GEDCOM
                 description = null,
                 N2__ANCES_ORDRE = null, // Ancestrologie
                 N2__ANCES_XINSEE = null,  // Ancestrologie
-                N2__FNA = null // Heredis
+                N2__FNA = null, // Heredis
+                //N2_DISPOSITION_GenoPro = null //GenoPro
             };
             List<ADDRESS_STRUCTURE> N2_ADDR_liste = new List<ADDRESS_STRUCTURE>();
             List<string> N2_PHON_liste = new List<string>();
@@ -6876,6 +7144,8 @@ namespace GEDCOM
             List<string> MULTIMEDIA_LINK_liste_ID = new List<string>();
             List<string> N2_TYPE_liste = new List<string>();
             List<TEXT_STRUCTURE> N2_TEXT_liste = new List<TEXT_STRUCTURE>();
+            string Date_retour = null;
+            string Lieu_retour = null;
             //CHANGE_DATE N2_CHAN = new CHANGE_DATE();
             CHANGE_DATE N2_CHAN = null;
             (_, _, info.N1_EVEN, info.N1_EVEN_texte, ligne) = Extraire_info_niveau_0(ligne);
@@ -6887,7 +7157,13 @@ namespace GEDCOM
             {
                 string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
                 balise_ligne[1] = ligne;
-                if (balise_1 == (niveau + 1).ToString() + " TYPE")
+                /*
+                if (balise_1 == (niveau + 1).ToString() + " DISPOSITION")
+                {
+                    (info.N2_DISPOSITION_GenoPro , ligne) = Extraire_DISPOSITION_GenePro_plus(ligne);
+                }
+
+                else*/ if (balise_1 == (niveau + 1).ToString() + " TYPE")
                 {
                     string type;
                     (type, ligne) = Extraire_texte_niveau_plus(ligne);
@@ -6896,6 +7172,7 @@ namespace GEDCOM
                 else if (balise_1 == (niveau + 1).ToString() + " DATE")
                 {
                     (info.N2_DATE, ligne) = Extraire_texte_niveau_plus(ligne);
+                    Date_retour = info.N2_DATE;
                     info.DATE_trier = Convertir_date_trier(info.N2_DATE);
                     while (Extraire_niveau(ligne) > niveau + 1)
                     {
@@ -6920,14 +7197,8 @@ namespace GEDCOM
                     (info.N2_TEMP, ligne) = Extraire_texte_niveau_plus(ligne);
                 else if (balise_1 == (niveau + 1).ToString() + " PLAC")
                 {
-                    if (info_HEADER.N2_GEDC_VERS == "5.3")
-                    {
-                        (info.N2_PLAC, ligne) = Extraire_PLACE_STRUCTURE(ligne);
-                    }
-                    else
-                    {
-                        (info.N2_PLAC, ligne) = Extraire_PLACE_STRUCTURE(ligne);
-                    }
+                    (info.N2_PLAC, ligne) = Extraire_PLACE_STRUCTURE(ligne);
+                    Lieu_retour = info.N2_PLAC.N0_PLAC;
                 }
                 else if (balise_1 == (niveau + 1).ToString() + " SITE")
                     (info.N2_SITE, ligne) = Extraire_texte_niveau_plus(ligne);
@@ -6995,7 +7266,11 @@ namespace GEDCOM
                     (temp2, ligne) = Extraire_TEXT_STRUCTURE(ligne);
                     N2_TEXT_liste.Add(temp2);
                 }
-                else if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string citation;
                     string source;
@@ -7113,10 +7388,12 @@ namespace GEDCOM
             info.N2_SOUR_source_liste_ID = N2_SOUR_source_liste_ID;
             info.N2_TEXT_liste = N2_TEXT_liste;
             info.N2_CHAN = N2_CHAN;
-            return (info, ligne);
+            //R..Z("<b>Retourne date=" + Date_retour + " lieu=" + Lieu_retour);
+            return (info, ligne, Date_retour, Lieu_retour);
         }
         private static string Extraire_EVEN_liste(string liste)
         {
+            Regler_code_erreur();
             if (IsNullOrEmpty(liste))
                 return null;
             // séparer par ','
@@ -7278,6 +7555,8 @@ namespace GEDCOM
                                         (temp2, ligne) = Extraire_TEXT_STRUCTURE(ligne);
                                         N2_EVEN_TEXT_liste.Add(temp2);
                                         break;
+                                    case "2 SOURCE": // GenoPro
+                                    case "2 SOURCES":  // GenoPro
                                     case "2 SOUR":                                                        // SOUR
                                         string citation;
                                         string source;
@@ -7476,11 +7755,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "-07",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -7523,6 +7801,7 @@ namespace GEDCOM
 
         private static (EVEN_STRUCTURE_53, int) Extraire_EVEN_STRUCTURE_53(int ligne, int niveau)
         {
+            Regler_code_erreur();
             string N0_EVEN;
             (_, _, N0_EVEN, _, ligne) = Extraire_info_niveau_0(ligne);
             int[] balise_ligne = new int[10];
@@ -7561,7 +7840,11 @@ namespace GEDCOM
                     (temp, ligne) = Extraire_TEXT_STRUCTURE(ligne);
                     info_EVEN_STRUCTURE_53.N1_TEXT_liste.Add(temp);
                 }
-                else if (balise_1 == (niveau + 1) + " SOUR")
+                else if (
+                    balise_1 == (niveau + 1) + " SOUR" ||
+                    balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                    balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                 {
                     string citation;
                     string source;
@@ -7596,7 +7879,7 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
-            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + " " + dataGEDCOM[ligne]);
             //Label_debug();
             Regler_code_erreur();
             Application.DoEvents();
@@ -7605,6 +7888,10 @@ namespace GEDCOM
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
             string N0_ID;
+            string Date_mariage = null;
+            string Lieu_mariage = null;
+            string Date_retour;
+            string Lieu_retour;
             string N1_RESN = null;
             List<EVEN_ATTRIBUTE_STRUCTURE> N1_Event_liste = new List<EVEN_ATTRIBUTE_STRUCTURE>();
             List<EVEN_ATTRIBUTE_STRUCTURE> N1_ATTRIBUTE_liste = new List<EVEN_ATTRIBUTE_STRUCTURE>();
@@ -7653,13 +7940,21 @@ namespace GEDCOM
                         case "1 _ANCES_ORDRE": // ancestrologie
                         case "1 _ANCES_XINSEE":// ancestrologie
                             EVEN_ATTRIBUTE_STRUCTURE Event;
-                            (Event, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            (Event, ligne, Date_retour, Lieu_retour) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            if (Event.N1_EVEN == "MARR")
+                            {
+                                Date_mariage = Date_retour;
+                                Lieu_mariage = Lieu_retour;
+                            }
                             N1_Event_liste.Add(Event);
+                            break;
+                        case "1 POSITION": // GenoPro
+                            ligne = Extraire_GenoPro_plus(ligne, 1);
                             break;
                         //attribute_famille
                         case "1 FACT":
                             EVEN_ATTRIBUTE_STRUCTURE Attribute;
-                            (Attribute, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            (Attribute, ligne, _, _) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
                             N1_ATTRIBUTE_liste.Add(Attribute);
                             break;
                         case "1 ASSO":                                                                    //1 ASSO V5.3
@@ -7743,6 +8038,8 @@ namespace GEDCOM
                             string media_ID = Extraire_MULTIMEDIA_LINK(fichier);
                             MULTIMEDIA_LINK_liste_ID.Add(media_ID);
                             break;
+                        case "1 SOURCE": // GenoPro
+                        case "1 SOURCES":  // GenoPro
                         case "1 SOUR":                                                                // 1 SOUR
                             string citation;
                             string source;
@@ -7767,23 +8064,23 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "-08",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 if (reponse == System.Windows.Forms.DialogResult.Cancel)
                     GH.GHClass.annuler = true;
             }
-
             if (!GH.GHClass.annuler)
             {
                 liste_FAM_RECORD.Add(new FAM_RECORD()
                 {
                     N0_ID = N0_ID,
+                    Date_mariage = Date_mariage,
+                    Lieu_mariage = Lieu_mariage,
                     N1_EVEN_Liste = N1_Event_liste,
                     N1_ATTRIBUTE_liste = N1_ATTRIBUTE_liste, // pour GRAMPS
                     N1_ASSO_liste = N1_ASSO_liste, // V5.3
@@ -7805,6 +8102,7 @@ namespace GEDCOM
                     N1__UST = N1__UST,
                 });
             }
+            //R..Z("Retoune ID=" + N0_ID + " " + Date_mariage + ">" + Lieu_mariage);
             return ligne;
         }
 
@@ -7813,13 +8111,19 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
-            //ZXXCV("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne );
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + " " + dataGEDCOM[ligne]);
             //Label_debug();
             Regler_code_erreur();
             Application.DoEvents();
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
             string N0_ID;
+            string Date_retour;
+            string Lieu_retour;
+            string Date_naissance = null;
+            string Lieu_naissance = null;
+            string Date_deces = null;
+            string Lieu_deces = null;
             string N1_RESN = null;
             List<PERSONAL_NAME_STRUCTURE> N1_NAME_liste = new List<PERSONAL_NAME_STRUCTURE>();
             string N1_SEX = null;
@@ -7888,6 +8192,12 @@ namespace GEDCOM
                             (info_nom, ligne) = Extraire_PERSONAL_NAME_STRUCTURE(ligne);
                             N1_NAME_liste.Add(info_nom);
                             break;
+                        case "1 POSITION": // GenoPro
+                            ligne = Extraire_GenoPro_plus(ligne, 1);
+                            break;
+                        case "1 INDIVIDUALINTERNALHYPERLINK": // GenoPlus
+                            (_, ligne) = Extraire_texte_niveau_plus(ligne);
+                            break;
                         // événement 
                         case "1 TEST":
                         case "1 ADOP":
@@ -7917,8 +8227,20 @@ namespace GEDCOM
                         case "1 _MILT":
                         case "1 _ELEC": // GRAMPS
                             EVEN_ATTRIBUTE_STRUCTURE Event;
-                            (Event, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            (Event, ligne, Date_retour,Lieu_retour) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
                             N1_Event_liste.Add(Event);
+                            
+                            if (Event.N1_EVEN == "BIRT")
+                            {
+                                Date_naissance = Date_retour;
+                                Lieu_naissance = Lieu_retour;
+                            }
+                            if (Event.N1_EVEN == "DEAT")
+                            {
+                                Date_deces = Date_retour;
+                                Lieu_deces = Lieu_retour;
+                            }
+                            
                             break;
                         // attribut
                         case "1 CAST":
@@ -7936,7 +8258,7 @@ namespace GEDCOM
                         case "1 TITL":
                         case "1 FACT":
                             EVEN_ATTRIBUTE_STRUCTURE Attribute;
-                            (Attribute, ligne) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
+                            (Attribute, ligne, _, _) = Extraire_EVEN_ATTRIBUTE_STRUCTURE(ligne, niveau + 1);
                             N1_ATTRIBUTE_liste.Add(Attribute);
                             break;
                         // SITE V5.3
@@ -8026,6 +8348,8 @@ namespace GEDCOM
                         case "1 FAMC":                                                                    // FAMC enfant de la famille
                             (N1_FAMC, ligne) = Extraire_CHILD_TO_FAMILY_LINK(ligne);
                             break;
+                        case "1 SOURCE": // GenoPro
+                        case "1 SOURCES":  // GenoPro
                         case "1 SOUR":                                                                    // SOUR
                             string citation;
                             string source;
@@ -8111,11 +8435,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "-09",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -8128,6 +8451,10 @@ namespace GEDCOM
                 liste_INDIVIDUAL_RECORD.Add(new INDIVIDUAL_RECORD()
                 {
                     N0_ID = N0_ID,
+                    Date_naissance = Date_naissance,
+                    Lieu_naissance = Lieu_naissance,
+                    Date_deces = Date_deces,
+                    Lieu_deces = Lieu_deces,
                     N1_RESN = N1_RESN,
                     N1__ANCES_CLE_FIXE = N1__ANCES_CLE_FIXE,
                     Titre = titre,
@@ -8171,11 +8498,17 @@ namespace GEDCOM
                     N1__FIL = N1__FIL, // Heridis
                     N1__CLS = N1__CLS, // Heridis
                 });
+                //R..Z("<b>Retourne " + "ID=" + N0_ID + " Naissance " +  Date_naissance + ">" + Lieu_naissance + " Déces " + Date_deces + ">" + Lieu_deces);
             }
             return ligne;
         }
-        private static int Extraire_niveau(int ligne)
+        private static int Extraire_niveau(
+            int ligne
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne);
+            Regler_code_erreur();
             char[] espace = { ' ' };
             string[] section = dataGEDCOM[ligne].Split(espace);
             return Int32.Parse(section[0]);
@@ -8218,6 +8551,8 @@ namespace GEDCOM
                         case "1 RIN":                                                                     // RIN
                             (N1_RIN, ligne) = Extraire_texte_niveau_plus(ligne);
                             break;
+                        case "1 SOURCE": // GenoPro
+                        case "1 SOURCES":  // GenoPro
                         case "1 SOUR":                                                                    // SOUR
                             string citation;
                             string source;
@@ -8250,11 +8585,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "10",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -8310,7 +8644,10 @@ namespace GEDCOM
                 {
                     string balise_1 = Avoir_niveau_balise(dataGEDCOM[ligne]);
                     balise_ligne[1] = ligne;
-                    if (balise_1 == (niveau + 1).ToString() + " SOUR")
+                    if (balise_1 == (niveau + 1).ToString() + " SOUR" ||
+                        balise_1 == (niveau + 1).ToString() + " SOURCE" || // GenoPro
+                        balise_1 == (niveau + 1).ToString() + " SOURCES" // GenoPro
+                    )
                     {
                         string citation;
                         string source;
@@ -8339,11 +8676,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "11",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -8375,6 +8711,7 @@ namespace GEDCOM
         private static (SOURCE_REPOSITORY_CITATION, int) Extraire_SOURCE_REPOSITORY_CITATION(
             int ligne)
         {
+            Regler_code_erreur();
             SOURCE_REPOSITORY_CITATION info = new SOURCE_REPOSITORY_CITATION();
             int niveau;
             info.N0_ID = Extraire_ID(dataGEDCOM[ligne]);
@@ -8476,6 +8813,7 @@ namespace GEDCOM
         private static (SPOUSE_TO_FAMILY_LINK, int) Extraire_SPOUSE_TO_FAMILY_LINK(
             int ligne)
         {
+            Regler_code_erreur();
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
             SPOUSE_TO_FAMILY_LINK info = new SPOUSE_TO_FAMILY_LINK();
@@ -8509,6 +8847,7 @@ namespace GEDCOM
 
         private static int Extraire_SUBMISSION_RECORD(int ligne)
         {
+            Regler_code_erreur();
             //Label_debug();
             Regler_code_erreur();
             Application.DoEvents();
@@ -8583,11 +8922,10 @@ namespace GEDCOM
                 }
                 catch (Exception msg)
                 {
-                    GC.Collect();
                     DialogResult reponse = R.Afficher_message(
                         "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                         msg.Message,
-                        GH.GHClass.erreur,
+                        GH.GHClass.erreur + "12",
                         null,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
@@ -8737,11 +9075,10 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 DialogResult reponse = R.Afficher_message(
                     "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                     msg.Message,
-                    GH.GHClass.erreur,
+                    GH.GHClass.erreur + "13",
                     null,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -8776,6 +9113,7 @@ namespace GEDCOM
         private static (TEXT_STRUCTURE, int) Extraire_TEXT_STRUCTURE(
             int ligne)
         {
+            Regler_code_erreur();
             TEXT_STRUCTURE info_texte = new TEXT_STRUCTURE();
             List<string> N1_NOTE_STRUCTURE_liste_ID = new List<string>();
             int niveau = Extraire_niveau(ligne);
@@ -8848,6 +9186,7 @@ namespace GEDCOM
         }
         private static string Extraire_textuel(int numero_ligne)
         {
+            Regler_code_erreur();
             string texte = dataGEDCOM[numero_ligne];
             texte = texte.TrimStart();
             texte = texte.TrimEnd();
@@ -8875,6 +9214,7 @@ namespace GEDCOM
         private static (USER_REFERENCE_NUMBER, int) Extraire_USER_REFERENCE_NUMBER(
             int ligne)
         {
+            Regler_code_erreur();
             int niveau = Extraire_niveau(ligne);
             int[] balise_ligne = new int[10];
             balise_ligne[0] = ligne;
@@ -8907,10 +9247,13 @@ namespace GEDCOM
             return (info, ligne);
         }
 
+
+
         public static bool IsNotNullOrEmpty(string s
         //, [CallerLineNumber] int callerLineNumber = 0
         )
         {
+            Regler_code_erreur();
             // retourne true si pas vide ou vide ou null
             if (s == null)
             {
@@ -8928,6 +9271,7 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
+            Regler_code_erreur();
             if (list == null)
                 return false;
             foreach (string a in list)
@@ -8945,6 +9289,7 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
+            Regler_code_erreur();
             // verifie si une liste est null ou vide
             // retourne true si n'est pas vide ou null
             if (list == null)
@@ -8956,6 +9301,7 @@ namespace GEDCOM
 
         public static bool IsNullOrEmpty(string s)
         {
+            Regler_code_erreur();
             // verifie si une liste est null ou vide
             // retourne true si vide ou null
             if (s == null)
@@ -8967,6 +9313,7 @@ namespace GEDCOM
 
         public static bool IsNullOrEmpty<T>(List<T> list)
         {
+            Regler_code_erreur();
             // verifie si une liste est null ou vide
             // retourne true si vide ou null
             if (list == null)
@@ -8985,6 +9332,7 @@ namespace GEDCOM
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br>GEDCOM=" + ligne + "<br>lineNumber=" + lineNumber);
             // rapport Balise
+            Regler_code_erreur();
             List<Ligne_perdue> groupe_ligne = new List<Ligne_perdue>();
             foreach (int l in balise_ligne)
             {
@@ -9105,6 +9453,7 @@ namespace GEDCOM
                     info_HEADER.N1_CHAR == "ANSEL"
                    )
                 {
+
                     string utf8String = "";
                     if (
                         info_HEADER.N1_CHAR == "ANSI" ||
@@ -9116,20 +9465,21 @@ namespace GEDCOM
                         utf8String = Encoding.Default.GetString(ansiBytes);
                     }
                     string sansExtention = Path.GetFileNameWithoutExtension(fichier);
-                    fichier = Path.GetTempPath() + "UTF8-" + sansExtention + ".gedCopie";
+                    //fichier = Path.GetTempPath() + "UTF8-" + sansExtention + ".gedCopie";
+                    fichier = GH.GHClass.dossier_sortie + "UTF8-" + sansExtention + ".gedCopie";
                     File.WriteAllText(fichier, utf8String);
                 }
+                //R..Z("<b>Retourne " + fichier);
                 return fichier;
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 if (ligne > 0)
                 {
                     R.Afficher_message(
                         "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                         msg.Message,
-                        GH.GHClass.erreur,
+                        GH.GHClass.erreur + "14",
                         null,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
@@ -9202,13 +9552,12 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 if (ligne > 0)
                 {
                     R.Afficher_message(
                         "Problème en lisant la ligne " + (ligne + 1).ToString() + " du fichier GEDCOM.",
                         msg.Message,
-                        GH.GHClass.erreur,
+                        GH.GHClass.erreur + "15",
                         null,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
@@ -9228,6 +9577,7 @@ namespace GEDCOM
         }
         public static string Avoir_IDAdoption(string ID)
         {
+            Regler_code_erreur();
             foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9243,6 +9593,7 @@ namespace GEDCOM
         }
         public static SUBMITTER_RECORD Avoir_info_SUBMITTER_RECORD(string ID)
         {
+            Regler_code_erreur();
             foreach (SUBMITTER_RECORD info in liste_SUBMITTER_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9254,12 +9605,14 @@ namespace GEDCOM
         }
         public static SUBMISSION_RECORD Avoir_info_SUBMISSION_RECORD()
         {
+            Regler_code_erreur();
 
 
             return info_SUBMISSION_RECORD;
         }
         public static List<string> AvoirListIDEnfant(string ID)
         {
+            Regler_code_erreur();
             foreach (FAM_RECORD info in liste_FAM_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9271,6 +9624,7 @@ namespace GEDCOM
         }
         public static string Avoir_erreur_ligne(Exception msg)
         {
+            Regler_code_erreur();
             int i = msg.StackTrace.LastIndexOf(" ");
             if (i > -1)
             {
@@ -9282,6 +9636,7 @@ namespace GEDCOM
         }
         public static string Avoir_famille_conjoint_ID(string ID)
         {
+            Regler_code_erreur();
             foreach (FAM_RECORD info in liste_FAM_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9293,6 +9648,7 @@ namespace GEDCOM
         }
         public static string Avoir_famille_conjointe_ID(string ID)
         {
+            Regler_code_erreur();
             foreach (FAM_RECORD info in liste_FAM_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9304,6 +9660,7 @@ namespace GEDCOM
         }
         public static EVEN_ATTRIBUTE_STRUCTURE Avoir_attribute_nombre_enfant(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
+            Regler_code_erreur();
             foreach (EVEN_ATTRIBUTE_STRUCTURE info in liste)
             {
                 if (info.N1_EVEN == "NCHI")
@@ -9314,6 +9671,7 @@ namespace GEDCOM
         }
         public static EVEN_ATTRIBUTE_STRUCTURE Avoir_attribute_nombre_mariage(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
+            Regler_code_erreur();
             foreach (EVEN_ATTRIBUTE_STRUCTURE info in liste)
             {
                 if (info.N1_EVEN == "NMR")
@@ -9324,6 +9682,7 @@ namespace GEDCOM
         }
         public static (bool, EVEN_ATTRIBUTE_STRUCTURE) Avoir_evenement_deces(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
+            Regler_code_erreur();
             EVEN_ATTRIBUTE_STRUCTURE retourNull = new EVEN_ATTRIBUTE_STRUCTURE();
             if (IsNullOrEmpty(liste))
                 return (false, retourNull);
@@ -9332,11 +9691,11 @@ namespace GEDCOM
                 if (info.N1_EVEN == "DEAT")
                     return (true, info);
             }
-
             return (false, retourNull);
         }
         public static EVEN_ATTRIBUTE_STRUCTURE AvoirEvenementMariage(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
+            Regler_code_erreur();
             EVEN_ATTRIBUTE_STRUCTURE r = new EVEN_ATTRIBUTE_STRUCTURE();
             if (IsNullOrEmpty(liste))
                 return r;
@@ -9351,6 +9710,7 @@ namespace GEDCOM
         }
         public static (bool, EVEN_ATTRIBUTE_STRUCTURE) Avoir_evenement_naissance(List<EVEN_ATTRIBUTE_STRUCTURE> liste)
         {
+            Regler_code_erreur();
 
             EVEN_ATTRIBUTE_STRUCTURE retourNull = new EVEN_ATTRIBUTE_STRUCTURE();
             if (IsNullOrEmpty(liste))
@@ -9365,7 +9725,7 @@ namespace GEDCOM
         public static (bool, EVEN_STRUCTURE_53) AvoirEvenementNaissance_53(
             List<EVEN_STRUCTURE_53> liste)
         {
-
+            Regler_code_erreur();
             EVEN_STRUCTURE_53 retourNull = new EVEN_STRUCTURE_53();
             if (IsNullOrEmpty(liste))
                 return (false, retourNull);
@@ -9378,6 +9738,7 @@ namespace GEDCOM
         }
         public static CHILD_TO_FAMILY_LINK AvoirInfoFamilleEnfant(string ID)
         {
+            Regler_code_erreur();
             foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9389,6 +9750,7 @@ namespace GEDCOM
         }
         public static List<string> Avoir_liste_ID_famille()
         {
+            Regler_code_erreur();
             List<string> ListeID = new List<string>();
             int numero = 0;
             foreach (FAM_RECORD info in liste_FAM_RECORD)
@@ -9410,11 +9772,11 @@ namespace GEDCOM
                     return (true, info);
                 }
             }
-            INDIVIDUAL_RECORD retour = new INDIVIDUAL_RECORD();
-            return (false, retour);
+            return (false, null);
         }
         public static (string, string, string, string, string) Avoir_nom_naissance_deces(string ID)
         {
+            Regler_code_erreur();
             (_, INDIVIDUAL_RECORD info_individu) = Avoir_info_individu(ID);
             (_, EVEN_ATTRIBUTE_STRUCTURE naissance) = Avoir_evenement_naissance(info_individu.N1_EVEN_Liste);
             (_, EVEN_ATTRIBUTE_STRUCTURE deces) = Avoir_evenement_deces(info_individu.N1_EVEN_Liste);
@@ -9437,6 +9799,7 @@ namespace GEDCOM
         }
         public static SOURCE_RECORD Avoir_info_source(string ID)
         {
+            Regler_code_erreur();
             foreach (SOURCE_RECORD info in liste_SOURCE_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9450,7 +9813,7 @@ namespace GEDCOM
         }
         public static List<string> Avoir_liste_ID_individu()
         {
-
+            Regler_code_erreur();
             List<string> ListeID = new List<string>();
             ListeID.Clear();
             int numero = 0;
@@ -9470,6 +9833,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b>ID=" + ID);
+            Regler_code_erreur();
             foreach (REPOSITORY_RECORD info in liste_REPOSITORY_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9481,6 +9845,7 @@ namespace GEDCOM
         }
         public static EVEN_RECORD_53 Avoir_info_event_53(string ID)
         {
+            Regler_code_erreur();
             foreach (EVEN_RECORD_53 info in liste_EVEN_RECORD_53)
             {
                 if (info.N0_ID == ID)
@@ -9492,6 +9857,7 @@ namespace GEDCOM
         }
         public static FAM_RECORD Avoir_info_famille(string ID)
         {
+            Regler_code_erreur();
             foreach (FAM_RECORD info in liste_FAM_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9503,6 +9869,7 @@ namespace GEDCOM
         }
         public static List<PERSONAL_NAME_STRUCTURE> Avoir_liste_nom_chercheur(string ID)
         {
+            Regler_code_erreur();
             foreach (SUBMITTER_RECORD info in liste_SUBMITTER_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9529,7 +9896,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> GEDCOM=" + ligne + "&nbsp;&nbsp;ID=" + ID);
-
+            Regler_code_erreur();
             foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9553,6 +9920,7 @@ namespace GEDCOM
 
         public static string AvoirPrenomPatronymeIndividu(string ID)
         {
+            Regler_code_erreur();
             if (IsNullOrEmpty(ID))
                 return null;
             List<PERSONAL_NAME_STRUCTURE> info;
@@ -9575,6 +9943,7 @@ namespace GEDCOM
             //, [CallerLineNumber] int callerLineNumber = 0
             )
         {
+            Regler_code_erreur();
             if (IsNullOrEmpty(ID))
                 return null;
             List<PERSONAL_NAME_STRUCTURE> info;
@@ -9604,6 +9973,7 @@ namespace GEDCOM
             )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b> ID=" + ID );
+            Regler_code_erreur();
             if (IsNullOrEmpty(ID))
                 return null;
             List<PERSONAL_NAME_STRUCTURE> info;
@@ -9612,6 +9982,10 @@ namespace GEDCOM
                 return null;
             string patronyme = null;
             string prenom = null;
+            if (info[0].N1_DISPLAY != null)
+            {
+                return info[0].N1_DISPLAY;
+            }
             if (info[0].N1_PERSONAL_NAME_PIECES != null)
             {
                 patronyme = info[0].N1_PERSONAL_NAME_PIECES.Nn_SURN;
@@ -9629,6 +10003,7 @@ namespace GEDCOM
         }
         public static string Convertir_ANSEL(string texte)
         {
+            Regler_code_erreur();
             if (texte == "")
                 return "";
             texte = texte.Replace("Comments", "cOmMeNtS");
@@ -9874,6 +10249,7 @@ namespace GEDCOM
 
         private static string Retirer_espace_inutile(string s)
         {
+            Regler_code_erreur();
             s = s.Trim(); // retire espace au début et à la fin
             while (s.Contains("  "))
                 s = s.Replace("  ", " "); // remplace tout les double espace par un espace
@@ -9891,6 +10267,7 @@ namespace GEDCOM
         //, [CallerLineNumber] int callerLineNumber = 0
         )
         {
+            Regler_code_erreur();
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br> ID=" + ID);
 
             foreach (SUBMITTER_RECORD info in liste_SUBMITTER_RECORD)
@@ -9910,6 +10287,7 @@ namespace GEDCOM
         )
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + " code " + callerLineNumber + "</b><br> ID="+ ID);
+            Regler_code_erreur();
             foreach (INDIVIDUAL_RECORD info in liste_INDIVIDUAL_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9923,6 +10301,7 @@ namespace GEDCOM
         }
         public static bool Si_info_event(string ID)
         {
+            Regler_code_erreur();
             foreach (EVEN_RECORD_53 info in liste_EVEN_RECORD_53)
             {
                 if (info.N0_ID == ID)
@@ -9937,6 +10316,7 @@ namespace GEDCOM
 
         public static bool Si_info_source(string ID)
         {
+            Regler_code_erreur();
             foreach (SOURCE_RECORD info in liste_SOURCE_RECORD)
             {
                 if (info.N0_ID == ID)
@@ -9955,6 +10335,7 @@ namespace GEDCOM
             [CallerMemberName] string fonction = null
             )
         {
+            Regler_code_erreur();
             if (!GH.GHClass.Para.mode_depanage)
                 return;
             // convertir message à string si n'est pas un string
@@ -9965,11 +10346,16 @@ namespace GEDCOM
             code = Path.GetFileName(code);
             try
             {
+                string fichier;
+                if (GH.GHClass.fichier_deboguer[1] != "")
+                    fichier = GH.GHClass.fichier_deboguer[1];
+                else
+                    fichier = GH.GHClass.fichier_deboguer[0];
                 Btn_debug.Visible = true;
                 {
-                    if (!File.Exists(GH.GHClass.fichier_deboguer))
+                    if (!File.Exists(fichier))
                     {
-                        using (StreamWriter ligne = File.AppendText(GH.GHClass.fichier_deboguer))
+                        using (StreamWriter ligne = File.AppendText(fichier))
                         {
                             ligne.WriteLine(
                             "<!DOCTYPE html>\n" +
@@ -9994,27 +10380,19 @@ namespace GEDCOM
                             "    </head>");
                             Btn_debug.Visible = true;
                             ligne.WriteLine("<div class=\"navbar\">");
-                            ligne.WriteLine("<h1><img style=\"height:64px\" src=commun/D.svg\" alt=\"\" /> Déboguer</h1>");
+                            ligne.WriteLine("<h1>Déboguer</h1>");
                             ligne.WriteLine("<table style=\"border:2px solid #000;width:100%\">");
-                            ligne.WriteLine("\t<tr><td style=\"width:150px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                            ligne.WriteLine("\t<tr><td style=\"width:150px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td></tr>");
                             ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_SOUR_VERS + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Date</td><td>" + info_HEADER.N1_DATE + " " + info_HEADER.N2_DATE_TIME + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Copyright</td><td>" + info_HEADER.N1_COPR + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Version</td><td>" + info_HEADER.N2_GEDC_VERS + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Code charactère</td><td>" + info_HEADER.N1_CHAR + "<td></tr>");
                             ligne.WriteLine("\t<tr><td>Langue</td><td>" + info_HEADER.N1_LANG + "<td></tr>");
-                            ligne.WriteLine("\t<tr><td>Fichier sur le disque</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
-                            System.Version version;
-                            try
-                            {
-                                version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                            }
-                            catch
-                            {
-                                GC.Collect();
-                                version = Assembly.GetExecutingAssembly().GetName().Version;
-                            }
+                            ligne.WriteLine("\t<tr><td>Fichier GEDCOM</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
+                            System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
                             ligne.WriteLine("\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                            ligne.WriteLine("\t\t\t\t<tr><td>Fichier déboguer</td><td>" + fichier + "<td></tr>");
                             ligne.WriteLine("</table>");
                             ligne.WriteLine(
                                 "<table >" +
@@ -10037,11 +10415,11 @@ namespace GEDCOM
                                 "</table>" +
                                 "<hr>");
                             ligne.WriteLine("</div>");
-                            ligne.WriteLine("<div style=\"margin-top: 325px;\">\n");
+                            ligne.WriteLine("<div style=\"margin-top: 350px;\">\n");
                             ligne.WriteLine("</div>\n");
                         }
                     }
-                    using (StreamWriter ligne = File.AppendText(GH.GHClass.fichier_deboguer))
+                    using (StreamWriter ligne = File.AppendText(fichier))
                     {
 
                         string s = String.Format(
@@ -10072,9 +10450,8 @@ namespace GEDCOM
             }
             catch (Exception msg)
             {
-                GC.Collect();
                 R.Afficher_message(
-                    "Deboguer Actif dans GEDCOM.\r\n\r\n" + code + " " + ligneCode + " " +
+                    "Déboguer Actif dans GEDCOM.\r\n\r\n" + code + " " + ligneCode + " " +
                     fonction + "-> " + message,
                     msg.Message,
                     GH.GHClass.erreur,

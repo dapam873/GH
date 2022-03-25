@@ -1,6 +1,6 @@
 ﻿namespace GH
 {
-    partial class Parametre
+    partial class ParaClass
     {
         /// <summary>
         /// Required designer variable.
@@ -24,7 +24,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Parametre));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ParaClass));
             this.TbDossierMedia = new System.Windows.Forms.TextBox();
             this.Tb_dossier_page = new System.Windows.Forms.TextBox();
             this.Cb_voir_ID = new System.Windows.Forms.CheckBox();
@@ -80,6 +80,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.Cb_tout_evenement = new System.Windows.Forms.CheckBox();
             this.Cb_certain = new System.Windows.Forms.CheckBox();
+            this.Cb_enregistrer_balise = new System.Windows.Forms.CheckBox();
             this.Btn_annuler = new System.Windows.Forms.Button();
             this.Btn_fermer = new System.Windows.Forms.Button();
             this.Btn_couleur_ap = new System.Windows.Forms.Button();
@@ -111,6 +112,8 @@
             // Cb_voir_ID
             // 
             this.Cb_voir_ID.AutoSize = true;
+            this.Cb_voir_ID.Checked = true;
+            this.Cb_voir_ID.CheckState = System.Windows.Forms.CheckState.Checked;
             this.Cb_voir_ID.Location = new System.Drawing.Point(8, 126);
             this.Cb_voir_ID.Name = "Cb_voir_ID";
             this.Cb_voir_ID.Size = new System.Drawing.Size(112, 17);
@@ -122,6 +125,8 @@
             // CbVoirMedia
             // 
             this.CbVoirMedia.AutoSize = true;
+            this.CbVoirMedia.Checked = true;
+            this.CbVoirMedia.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbVoirMedia.Location = new System.Drawing.Point(8, 142);
             this.CbVoirMedia.Name = "CbVoirMedia";
             this.CbVoirMedia.Size = new System.Drawing.Size(75, 17);
@@ -133,6 +138,8 @@
             // CbVoirDateChangement
             // 
             this.CbVoirDateChangement.AutoSize = true;
+            this.CbVoirDateChangement.Checked = true;
+            this.CbVoirDateChangement.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbVoirDateChangement.Location = new System.Drawing.Point(8, 175);
             this.CbVoirDateChangement.Name = "CbVoirDateChangement";
             this.CbVoirDateChangement.Size = new System.Drawing.Size(145, 17);
@@ -144,6 +151,8 @@
             // CbDateLongue
             // 
             this.CbDateLongue.AutoSize = true;
+            this.CbDateLongue.Checked = true;
+            this.CbDateLongue.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbDateLongue.Location = new System.Drawing.Point(8, 158);
             this.CbDateLongue.Name = "CbDateLongue";
             this.CbDateLongue.Size = new System.Drawing.Size(84, 17);
@@ -155,6 +164,8 @@
             // CbVoirNote
             // 
             this.CbVoirNote.AutoSize = true;
+            this.CbVoirNote.Checked = true;
+            this.CbVoirNote.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbVoirNote.Location = new System.Drawing.Point(155, 142);
             this.CbVoirNote.Name = "CbVoirNote";
             this.CbVoirNote.Size = new System.Drawing.Size(68, 17);
@@ -166,6 +177,8 @@
             // CbVoirReference
             // 
             this.CbVoirReference.AutoSize = true;
+            this.CbVoirReference.Checked = true;
+            this.CbVoirReference.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbVoirReference.Location = new System.Drawing.Point(155, 126);
             this.CbVoirReference.Name = "CbVoirReference";
             this.CbVoirReference.Size = new System.Drawing.Size(92, 17);
@@ -177,6 +190,8 @@
             // CbVoirChercheur
             // 
             this.CbVoirChercheur.AutoSize = true;
+            this.CbVoirChercheur.Checked = true;
+            this.CbVoirChercheur.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbVoirChercheur.Location = new System.Drawing.Point(8, 191);
             this.CbVoirChercheur.Name = "CbVoirChercheur";
             this.CbVoirChercheur.Size = new System.Drawing.Size(95, 17);
@@ -188,6 +203,8 @@
             // CbVoirCarte
             // 
             this.CbVoirCarte.AutoSize = true;
+            this.CbVoirCarte.Checked = true;
+            this.CbVoirCarte.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbVoirCarte.Location = new System.Drawing.Point(155, 158);
             this.CbVoirCarte.Name = "CbVoirCarte";
             this.CbVoirCarte.Size = new System.Drawing.Size(139, 17);
@@ -199,6 +216,8 @@
             // CbVoirInfoBulle
             // 
             this.CbVoirInfoBulle.AutoSize = true;
+            this.CbVoirInfoBulle.Checked = true;
+            this.CbVoirInfoBulle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbVoirInfoBulle.Location = new System.Drawing.Point(155, 175);
             this.CbVoirInfoBulle.Name = "CbVoirInfoBulle";
             this.CbVoirInfoBulle.Size = new System.Drawing.Size(89, 17);
@@ -209,11 +228,11 @@
             // Lb_code_arriere_plan
             // 
             this.Lb_code_arriere_plan.AutoSize = true;
-            this.Lb_code_arriere_plan.Location = new System.Drawing.Point(178, 228);
+            this.Lb_code_arriere_plan.Location = new System.Drawing.Point(178, 241);
             this.Lb_code_arriere_plan.Name = "Lb_code_arriere_plan";
-            this.Lb_code_arriere_plan.Size = new System.Drawing.Size(43, 13);
+            this.Lb_code_arriere_plan.Size = new System.Drawing.Size(46, 13);
             this.Lb_code_arriere_plan.TabIndex = 140;
-            this.Lb_code_arriere_plan.Text = "FFFFFF";
+            this.Lb_code_arriere_plan.Text = "F0D07E";
             this.Lb_code_arriere_plan.TextChanged += new System.EventHandler(this.Lb_code_arriere_plan_TextChanged);
             // 
             // Lb_couleur_arriere_plan
@@ -222,7 +241,7 @@
             this.Lb_couleur_arriere_plan.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.Lb_couleur_arriere_plan.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Lb_couleur_arriere_plan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(208)))), ((int)(((byte)(176)))));
-            this.Lb_couleur_arriere_plan.Location = new System.Drawing.Point(137, 213);
+            this.Lb_couleur_arriere_plan.Location = new System.Drawing.Point(137, 226);
             this.Lb_couleur_arriere_plan.Name = "Lb_couleur_arriere_plan";
             this.Lb_couleur_arriere_plan.Size = new System.Drawing.Size(44, 31);
             this.Lb_couleur_arriere_plan.TabIndex = 141;
@@ -251,7 +270,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(4, 271);
+            this.label10.Location = new System.Drawing.Point(4, 284);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(184, 26);
             this.label10.TabIndex = 177;
@@ -266,7 +285,7 @@
             this.Tb_tout_evenement_ans.Name = "Tb_tout_evenement_ans";
             this.Tb_tout_evenement_ans.Size = new System.Drawing.Size(29, 12);
             this.Tb_tout_evenement_ans.TabIndex = 17;
-            this.Tb_tout_evenement_ans.Text = "9999";
+            this.Tb_tout_evenement_ans.Text = "0";
             this.Tb_tout_evenement_ans.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.Tb_tout_evenement_ans.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Tb_tout_evenement_ans_KeyPress);
             // 
@@ -294,7 +313,7 @@
             // 
             // label14
             // 
-            this.label14.Location = new System.Drawing.Point(4, 310);
+            this.label14.Location = new System.Drawing.Point(4, 323);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(197, 28);
             this.label14.TabIndex = 198;
@@ -631,6 +650,8 @@
             // Cb_mode_depanage
             // 
             this.Cb_mode_depanage.AutoSize = true;
+            this.Cb_mode_depanage.Checked = true;
+            this.Cb_mode_depanage.CheckState = System.Windows.Forms.CheckState.Checked;
             this.Cb_mode_depanage.Location = new System.Drawing.Point(155, 191);
             this.Cb_mode_depanage.Name = "Cb_mode_depanage";
             this.Cb_mode_depanage.Size = new System.Drawing.Size(104, 17);
@@ -681,6 +702,8 @@
             // Cb_tout_evenement
             // 
             this.Cb_tout_evenement.AutoSize = true;
+            this.Cb_tout_evenement.Checked = true;
+            this.Cb_tout_evenement.CheckState = System.Windows.Forms.CheckState.Checked;
             this.Cb_tout_evenement.Location = new System.Drawing.Point(326, 100);
             this.Cb_tout_evenement.Name = "Cb_tout_evenement";
             this.Cb_tout_evenement.Size = new System.Drawing.Size(179, 17);
@@ -700,11 +723,25 @@
             this.Cb_certain.UseVisualStyleBackColor = true;
             this.Cb_certain.CheckedChanged += new System.EventHandler(this.Cb_certain_CheckedChanged);
             // 
+            // Cb_enregistrer_balise
+            // 
+            this.Cb_enregistrer_balise.AutoSize = true;
+            this.Cb_enregistrer_balise.Checked = true;
+            this.Cb_enregistrer_balise.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.Cb_enregistrer_balise.Location = new System.Drawing.Point(155, 208);
+            this.Cb_enregistrer_balise.Name = "Cb_enregistrer_balise";
+            this.Cb_enregistrer_balise.Size = new System.Drawing.Size(106, 17);
+            this.Cb_enregistrer_balise.TabIndex = 211;
+            this.Cb_enregistrer_balise.Text = "&Enregistrer balise";
+            this.Cb_enregistrer_balise.UseVisualStyleBackColor = true;
+            this.Cb_enregistrer_balise.CheckedChanged += new System.EventHandler(this.Cb_enregistrer_balise_CheckedChanged);
+            // 
             // Btn_annuler
             // 
             this.Btn_annuler.AutoSize = true;
             this.Btn_annuler.BackgroundImage = global::GH.Properties.Resources.btn_annuler;
             this.Btn_annuler.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_annuler.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_annuler.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_annuler.FlatAppearance.BorderSize = 0;
             this.Btn_annuler.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
@@ -723,6 +760,7 @@
             this.Btn_fermer.AutoSize = true;
             this.Btn_fermer.BackgroundImage = global::GH.Properties.Resources.Btn_ok;
             this.Btn_fermer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_fermer.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_fermer.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_fermer.FlatAppearance.BorderSize = 0;
             this.Btn_fermer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
@@ -741,12 +779,13 @@
             this.Btn_couleur_ap.AutoSize = true;
             this.Btn_couleur_ap.BackgroundImage = global::GH.Properties.Resources.btn_arriere_plan;
             this.Btn_couleur_ap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_couleur_ap.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_couleur_ap.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_couleur_ap.FlatAppearance.BorderSize = 0;
             this.Btn_couleur_ap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
             this.Btn_couleur_ap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Magenta;
             this.Btn_couleur_ap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Btn_couleur_ap.Location = new System.Drawing.Point(7, 213);
+            this.Btn_couleur_ap.Location = new System.Drawing.Point(7, 226);
             this.Btn_couleur_ap.Margin = new System.Windows.Forms.Padding(0);
             this.Btn_couleur_ap.Name = "Btn_couleur_ap";
             this.Btn_couleur_ap.Size = new System.Drawing.Size(120, 41);
@@ -800,12 +839,13 @@
             this.Pb_cadenas.TabIndex = 184;
             this.Pb_cadenas.TabStop = false;
             // 
-            // Parametre
+            // ParaClass
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(204)))), ((int)(((byte)(255)))));
             this.ClientSize = new System.Drawing.Size(704, 365);
+            this.Controls.Add(this.Cb_enregistrer_balise);
             this.Controls.Add(this.Btn_annuler);
             this.Controls.Add(this.Cb_certain);
             this.Controls.Add(this.Cb_tout_evenement);
@@ -869,7 +909,7 @@
             this.MainMenuStrip = this.menuPrincipal;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Parametre";
+            this.Name = "ParaClass";
             this.Text = "Paramètres";
             this.Load += new System.EventHandler(this.Parametre_Load);
             this.menuPrincipal.ResumeLayout(false);
@@ -943,5 +983,6 @@
         private System.Windows.Forms.CheckBox Cb_tout_evenement;
         private System.Windows.Forms.CheckBox Cb_certain;
         private System.Windows.Forms.Button Btn_annuler;
+        private System.Windows.Forms.CheckBox Cb_enregistrer_balise;
     }
 }

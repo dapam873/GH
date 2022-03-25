@@ -38,6 +38,7 @@ Licence English
  */
 using System.Reflection;
 using System.Windows.Forms;
+using System.Runtime.CompilerServices;
 
 
 namespace GH
@@ -50,44 +51,43 @@ namespace GH
         }
         private void Form2_Load(object sender, System.EventArgs e)
         {
+            Regler_code_erreur();
             //this.Location = new Point(Properties.Settings.Default.Form1_location.X + 100, Properties.Settings.Default.Form1_location.Y + 20);
-            //VersionLb.Text = "Version " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            System.Version version;
-            try
-            {
-                version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-            }
-            catch
-            {
-                version = Assembly.GetExecutingAssembly().GetName().Version;
-            }
-            VersionLb.Text = "Version " + version.Major + "." + version.Minor + "." + version.Build;
-
+            //VersionLb.Text = "Version " +Application.ProductVersion;
+            VersionLb.Text = "Version " + Application.ProductVersion;
         }
 
         private void PambrunLLb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            Regler_code_erreur();
             System.Diagnostics.Process.Start("https://pambrun.net");
         }
 
         private void Btn_Fermer_Click(object sender, System.EventArgs e)
         {
+            Regler_code_erreur();
             this.Close();
         }
 
         private void VersionLb_Click(object sender, System.EventArgs e)
         {
+            Regler_code_erreur();
 
         }
-
+        private static void Regler_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
+        {
+            GH.GHClass.erreur = "AP" + sourceLineNumber;
+        }
 
         private void Tb_text_TextChanged(object sender, System.EventArgs e)
         {
+            Regler_code_erreur();
 
         }
 
         private void Btn_fermer_Click_1(object sender, System.EventArgs e)
         {
+            Regler_code_erreur();
             this.Close();
         }
     }

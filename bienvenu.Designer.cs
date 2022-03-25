@@ -58,6 +58,7 @@ namespace GH
             // 
             this.Ll_licence.ActiveLinkColor = System.Drawing.Color.Transparent;
             this.Ll_licence.AutoSize = true;
+            this.Ll_licence.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Ll_licence.DisabledLinkColor = System.Drawing.Color.Blue;
             this.Ll_licence.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.Ll_licence.ForeColor = System.Drawing.Color.Blue;
@@ -106,6 +107,7 @@ namespace GH
             this.Btn_fermer.AutoSize = true;
             this.Btn_fermer.BackgroundImage = global::GH.Properties.Resources.Btn_ok;
             this.Btn_fermer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Btn_fermer.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Btn_fermer.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.Btn_fermer.FlatAppearance.BorderSize = 0;
             this.Btn_fermer.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;

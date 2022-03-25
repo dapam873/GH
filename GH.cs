@@ -64,9 +64,20 @@ namespace GH
 {
     public partial class GHClass : Form
     {
-        public static string fichier_deboguer = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\GH_deboguer.html";
-        public static string fichier_balise = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\GH\balise.html";
-        public static string fichier_erreur = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\GH_erreur.html";
+
+        public static string[] fichier_deboguer =
+            {
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\GH_deboguer.html",
+                ""
+            };
+
+        public static string[] fichier_erreur =
+            {
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\GH_erreur.html",
+                ""
+            };
+        public static string fichier_balise = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\GH_balise.html";
+        
         public static string fichier_GEDCOM = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)) + @"\GH_GEDCOM.html";
 
         public static string dossier_sortie;
@@ -162,7 +173,7 @@ namespace GH
         /// <summary>
         /// nom du fichier GEDCOM
         /// </summary>
-        public static string FichierGEDCOMaLire = null;
+        public static string FichierGEDCOMaLire = "";
         /// <summary>
         /// IDCourantFamilleConjoint
         /// à utiliser avec le boutton Navigateur
@@ -191,7 +202,7 @@ namespace GH
         public static Form _Form1;
 
         // paramètre
-        public static class Para
+        public class Para
         {
             public static string arriere_plan;
             public static int location_X;
@@ -209,6 +220,7 @@ namespace GH
             public static bool voir_carte;
             public static bool voir_info_bulle;
             public static bool mode_depanage;
+            public static bool enregistrer_balise;
             // confidentiel
             // tout événement
             public static bool tout_evenement;
@@ -255,6 +267,8 @@ namespace GH
             //Verifier_mise_a_jour();
             //task.Wait();
             task.ToString();
+
+
         }
 #pragma warning disable CS1998 // Cette méthode async n'a pas d'opérateur 'await' et elle s'exécutera de façon synchrone
 
@@ -276,7 +290,7 @@ namespace GH
             }
             else
             {
-                Animation(true);
+                R.Animation(true);
                 Btn_annuler.Visible = true;
                 string nom = HTML.Fiche_individu(ID, dossier_sortie, false);
                 Page page = new Page("file:///" + dossier_sortie + @"\individus\page.html", nom);
@@ -284,7 +298,7 @@ namespace GH
                 frm.Tag = this;
                 frm.Show(this);
                 Btn_annuler.Visible = false;
-                Animation(false);
+                R.Animation(false);
             }
         }
         private void Genere_page_famille(string ID)
@@ -305,7 +319,7 @@ namespace GH
             }
             else
             {
-                Animation(true);
+                R.Animation(true);
                 Btn_annuler.Visible = true;
                 string nom = HTML.Fiche_famille(ID, dossier_sortie, false);
                 Page page = new Page("file:///" + dossier_sortie + @"\familles\page.html", nom);
@@ -313,55 +327,75 @@ namespace GH
                 frm.Tag = this;
                 frm.Show(this);
                 Btn_annuler.Visible = false;
-                Animation(false);
+                R.Animation(false);
             }
         }
-        private void Tout_visible()
+        private void tout_afficher()
         {
-            Regler_code_erreur();
+            Btn_total.Visible = true;
+            Btn_fiche_individu.Visible = true;
+            Btn_fiche_famille.Visible = true;
+            Gb_info_GEDCOM.Visible = true;
+            Cadre.Visible = true;
+            LvChoixIndividu.Visible = true;
+            LvChoixFamille.Visible = true;
+            lpIndividu.Visible = true;
+            lbFamilleConjoint.Visible = true;
+            RechercheFamilleB.Visible = true;
+            RechercheFamilleTB.Visible = true;
+            RechercheIndividuB.Visible = true;
+            RechercheIndividuTB.Visible = true;
+            menuPrincipal.Visible = true;
+            Btn_annuler.Visible = false;
+            Pb_recherche_individu.Visible = true;
+            Pb_recherche_famille.Visible = true;
             Btn_individu_avant.Visible = true;
             Btn_individu_apres.Visible = true;
             Btn_famille_avant.Visible = true;
             Btn_famille_apres.Visible = true;
-
-            Btn_fiche_individu.Visible = true;
-            Btn_fiche_famille.Visible = true;
-            Btn_total.Visible = true;
-
-            Btn_annuler.Visible = true;
+            Btn_GEDCOM.Visible = true;
             Btn_debug.Visible = true;
             Btn_erreur.Visible = true;
             Btn_balise.Visible = true;
-            Btn_GEDCOM.Visible = true;
-            Pb_recherche_individu.Visible = true;
-            RechercheIndividuTB.Visible = true;
-            RechercheIndividuB.Visible = true;
-
-            Pb_recherche_famille.Visible = true;
-            RechercheFamilleTB.Visible = true;
-            RechercheFamilleB.Visible = true;
-
-            LvChoixIndividu.Visible = true;
-            LvChoixFamille.Visible = true;
-            Gb_info_GEDCOM.Visible = true;
-            Btn_annuler.Visible = true;
+            Pb_attendre.Visible = true;
+            Lb_nombre_ligne.Visible = true;
+            Btn_annuler.Visible=true;
+            Pb_attendre.Visible=true;
+            Application.DoEvents();
         }
 
-        public void Valider_dossier_page()
+        public bool Valider_dossier_page()
         {
             Regler_code_erreur();
             while (!Directory.Exists(Para.dosssier_page))
             {
-                R.Afficher_message(
+                DialogResult reponse = R.Afficher_message(
                     "S.V.P.Spécifiez dans les paramêtres, le dossier des page.",
                     null,
-                    GHClass.erreur,
+                    erreur,
                     null,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Information
                     );
-                Voir_paramettre();
+                if (reponse == DialogResult.OK)
+                {
+                    if (this.WindowState == FormWindowState.Normal)
+                    {
+                        Para.location_X = this.Location.X;
+                        Para.location_Y = this.Location.Y;
+                    }
+                    else
+                    {
+                        Para.location_X = this.RestoreBounds.Location.X;
+                        Para.location_Y = this.RestoreBounds.Location.Y;
+                    }
+                    Voir_paramettre();
+                    Valider_dossier_page();
+                }
+                else
+                    return false;
             }
+            return true;
         }
 
         private async Task Verifier_mise_a_jour() //nnn
@@ -395,25 +429,39 @@ namespace GH
             l.ShowDialog(this);
         }
         //readonly ToolTip t1 = new ToolTip();
-        private void OuvrirToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OuvrirToolStripMenuItem_Click(
+            object sender,
+            EventArgs e
+            )
         {
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name );
+            // règer et démarer chronomètre
+            Stopwatch chrono;
+            chrono = Stopwatch.StartNew();
+            string temps = null;
+            TimeSpan durer;
+
+            annuler = false;
             Regler_code_erreur();
-            Valider_dossier_page();
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            if (Valider_dossier_page())
             {
-                openFileDialog.InitialDirectory = Para.dossier_GEDCOM;
-                openFileDialog.Filter = "GEDCOM (*.ged)|*.ged|All files (*.*)|*.*";
-                openFileDialog.Title = "Lire le fichier";
-                openFileDialog.FilterIndex = 1;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    FichierGEDCOMaLire = openFileDialog.FileName;
+                    openFileDialog.InitialDirectory = Para.dossier_GEDCOM;
+                    openFileDialog.Filter = "GEDCOM (*.ged)|*.ged|All files (*.*)|*.*";
+                    openFileDialog.Title = "Lire le fichier";
+                    openFileDialog.FilterIndex = 1;
+                    openFileDialog.RestoreDirectory = true;
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        FichierGEDCOMaLire = openFileDialog.FileName;
+                    }
+                    else
+                    {
+                        chrono.Stop();
+                        return;
+                    }
                 }
-            }
-            // Si dialog retourne autre chose que ""
-            if (R.IsNotNullOrEmpty(FichierGEDCOMaLire))
-            {
                 Effacer_Log();
                 dossier_sortie = Para.dosssier_page + @"\" + Path.GetFileNameWithoutExtension(FichierGEDCOMaLire);
                 if (Directory.Exists(dossier_sortie))
@@ -429,85 +477,83 @@ namespace GH
                         );
                     if (reponse == System.Windows.Forms.DialogResult.Cancel)
                     {
-                        annuler = true;
+                        chrono.Stop();
                         return;
                     }
                 }
-            }
-            Animation(true);
-            if (R.IsNotNullOrEmpty(FichierGEDCOMaLire))
-            {
-                Animation(true);
+                R.Animation(true);
                 Btn_annuler.Visible = true;
                 Btn_balise.Visible = false;
                 menuPrincipal.Visible = false;
                 FormVisible(false);
                 Application.DoEvents();
-
                 if (!Lire_fichier_GEDCOM(FichierGEDCOMaLire))
                 {
                     Application.DoEvents();
                     Btn_annuler.Visible = false;
                     Gb_info_GEDCOM.Visible = false;
+                    Cadre.Visible = false;
                     this.Cursor = Cursors.Default;
                     annuler = false;
                     menuPrincipal.Visible = true;
-                    Animation(false);
+                    R.Animation(false);
+                    chrono.Stop();
                     return;
                 }
                 Application.DoEvents();
-
                 Para.dossier_GEDCOM = Path.GetDirectoryName(FichierGEDCOMaLire);
-                if (Para.dosssier_page != "")
+                if (Para.dosssier_page != null)
                     CreerDossier();
                 Application.DoEvents();
                 FichierGEDCOM = Path.GetFileName(FichierGEDCOMaLire);
                 this.Text = " " + FichierGEDCOM;
+                menuPrincipal.Visible = true;
+                FormVisible(true);
+                Btn_GEDCOM.Visible = true;
                 Btn_annuler.Visible = false;
                 annuler = false;
                 Application.DoEvents();
+                R.Animation(false);
+
+                // avoir temps d.exécution
+                chrono.Stop();
+                durer = chrono.Elapsed;
+                if (durer != null)
+                    temps += durer.Hours.ToString() + "h ";
+                temps += String.Format("{0:00}m {1:00}s", durer.Minutes, durer.Seconds);
+                Tb_temps_execution.Text= temps;
+                
+                //tout_afficher();
             }
-            menuPrincipal.Visible = true;
-            FormVisible(true);
-            Btn_GEDCOM.Visible = true;
-            //Tout_visible();
-            Animation(false);
         }
-        private string AssemblerPatronymePrenom(string patronyme, string prenom)
+        private string AssemblerPatronymePrenom(
+            string patronyme,
+            string prenom
+            //, [CallerLineNumber] int callerLineNumber = 0
+            )
         {
-            Regler_code_erreur();
-            if (prenom == null && patronyme == null)
-                return null;
-            if (prenom == "" && patronyme == "")
-                return null;
-            if (prenom == "")
-                prenom = "?";
+            //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + "</b> à la ligne " + callerLineNumber + " patronymme="+ patronyme + " prenom=" + prenom);
             if (prenom == null)
                 prenom = "?";
-            if (patronyme == "")
-                patronyme = "?";
+            else if (prenom == "")
+                prenom = "?";
             if (patronyme == null)
                 patronyme = "?";
+            else if (patronyme == "")
+                patronyme = "?";
+            if (prenom == "?" && patronyme == "?")
+            {
+                //R..Z("<b>Retourne null");
+                return null;
+            }
+            //R..Z("<b>Retourne " + patronyme + ", " + prenom);
             return patronyme + ", " + prenom;
         }
         private static void Regler_code_erreur([CallerLineNumber] int sourceLineNumber = 0)
         {
             erreur = "GH" + sourceLineNumber;
         }
-        private void AvoirDossierPageWeb()
-        {
-            Regler_code_erreur();
-            FolderBrowserDialog folderBrowserDialog1 = new FolderBrowserDialog
-            {
-                Description = "Ou enregister les fiches HTML"
-            };
-            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
-            {
-                Para.dosssier_page = folderBrowserDialog1.SelectedPath;
-                TextBox dossierHTML = Application.OpenForms["Parametre"].Controls["TbDossierHTML"] as TextBox;
-                dossierHTML.Text = Para.dosssier_page;
-            }
-        }
+
         private void ChoixLVIndividu_SelectedIndexChanged(object sender, EventArgs e)
         {
             Regler_code_erreur();
@@ -518,11 +564,11 @@ namespace GH
         }
         private void CreerDossier()
         {
+            Regler_code_erreur();
             if (!DossierHTMLValide())
             {
                 return;
             }
-            Regler_code_erreur();
             try
             {
                 Regler_code_erreur();
@@ -634,7 +680,7 @@ namespace GH
             Stopwatch chrono;
             chrono = Stopwatch.StartNew();
             */
-            Animation(true);
+            R.Animation(true);
 
             // paramètre
             Para.arriere_plan = "F0D0B0";
@@ -654,6 +700,8 @@ namespace GH
             Para.voir_carte = true;
             Para.voir_info_bulle = false;
             Para.mode_depanage = true;
+            Para.enregistrer_balise = true;
+
             Btn_log_del.Visible = true;
 
             // lire fichier
@@ -735,10 +783,10 @@ namespace GH
                 Process.Start(fichier_balise);
 
             // debug
-            if (File.Exists(fichier_deboguer))
+            if (File.Exists(fichier_deboguer[1]))
                 System.Diagnostics.Process.Start("file:///" + fichier_deboguer);
 
-            Animation(false);
+            R.Animation(false);
             /*
             chrono.Stop();
             TimeSpan durer = TimeSpan.FromMilliseconds(chrono.ElapsedMilliseconds);
@@ -754,7 +802,7 @@ namespace GH
             if (!Directory.Exists(Para.dosssier_page))
             {
                 DialogResult reponse = R.Afficher_message(
-                    "S.V.P. Spécifiez dans les paramêtres, le dossier des fiches HTML.",
+                    "S.V.P. Spécifiez dans les paramêtres, Dossier page.",
                     code + lineNumber + " " + caller,
                     erreur,
                     "Information",
@@ -767,7 +815,7 @@ namespace GH
             }
             return true;
         }
-        private static bool EffacerLeDossier1(string dossier)
+        private bool EffacerLeDossier1(string dossier)
         {
             Regler_code_erreur();
             if (!Directory.Exists(dossier))
@@ -817,315 +865,48 @@ namespace GH
                 status = EffacerLeDossier1(Para.dosssier_page + @"\" + dossier1 + @"\familles");
             return status;
         }
-        public static void Ecrire_paramettre()
-        {
-            Regler_code_erreur();
-            try
-            {
-                string repertoire = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\GH";
-                if (!Directory.Exists(repertoire))
-                    Directory.CreateDirectory(repertoire);
-                string Fichier = repertoire + @"\GH.ini";
-
-                if (File.Exists(Fichier))
-                {
-                    File.Delete(Fichier);
-                }
-                using (StreamWriter ligne = File.CreateText(Fichier))
-                {
-
-                    ligne.WriteLine("[location_X]");
-                    ligne.WriteLine(Para.location_X);
-                    ligne.WriteLine("[location_Y]");
-                    ligne.WriteLine(Para.location_Y);
-
-
-                    ligne.WriteLine("[dossier_page]");
-                    ligne.WriteLine(Para.dosssier_page);
-                    ligne.WriteLine("[dossier_media]");
-                    ligne.WriteLine(Para.dossier_media);
-                    ligne.WriteLine("[dossier_GEDCOM]");
-                    ligne.WriteLine(Para.dossier_GEDCOM);
-                    ligne.WriteLine("[arriere_plan]");
-                    ligne.WriteLine(Para.arriere_plan);
-                    ligne.WriteLine("[voir_ID]");
-                    if (Para.voir_ID)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[voir_media]");
-                    if (Para.voir_media)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[date_longue]");
-                    if (Para.date_longue)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[voir_date_changement]");
-                    if (Para.voir_date_changement)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[voir_chercheur]");
-                    if (Para.voir_chercheur)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[voir_reference]");
-                    if (Para.voir_reference)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[voir_note]");
-                    if (Para.voir_note)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[voir_carte]");
-                    if (Para.voir_carte)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[voir_info_bulle]");
-                    if (Para.voir_info_bulle)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-
-                    ligne.WriteLine("[mode_depanage]");
-                    if (Para.mode_depanage)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-
-                    //*** Confidentiel] ***
-
-                    ligne.WriteLine("[tout_evenement]");
-                    if (Para.tout_evenement)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[tout_evenement_date]");
-                    if (Para.tout_evenement_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[tout_evenement_ans]");
-                    ligne.WriteLine(Para.tout_evenement_ans);
-
-                    // naissance
-                    ligne.WriteLine("[naissance_date]");
-                    if (Para.naissance_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[naissance_ans]");
-                    ligne.WriteLine(Para.naissance_ans);
-
-                    // bapteme
-                    ligne.WriteLine("[bapteme_date]");
-                    if (Para.bapteme_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[bapteme_ans]");
-                    ligne.WriteLine(Para.bapteme_ans);
-
-                    // union
-                    ligne.WriteLine("[union_date]");
-                    if (Para.union_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[union_ans]");
-                    ligne.WriteLine(Para.union_ans);
-
-                    // déces
-                    ligne.WriteLine("[deces_date]");
-                    if (Para.deces_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[deces_ans]");
-                    ligne.WriteLine(Para.deces_ans);
-
-                    // inhumation
-                    ligne.WriteLine("[inhumation_date]");
-                    if (Para.inhumation_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[inhumation_ans]");
-                    ligne.WriteLine(Para.inhumation_ans);
-
-                    // ordonnance
-                    ligne.WriteLine("[ordonnance_date]");
-                    if (Para.ordonnance_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[ordonnance_ans]");
-                    ligne.WriteLine(Para.ordonnance_ans);
-
-                    // autre
-                    ligne.WriteLine("[autre_date]");
-                    if (Para.autre_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[autre_ans]");
-                    ligne.WriteLine(Para.autre_ans);
-
-                    // citoyen
-                    ligne.WriteLine("[citoyen_date]");
-                    if (Para.citoyen_date)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[citoyen_ans]");
-                    ligne.WriteLine(Para.citoyen_ans);
-
-                    // testement
-
-                    ligne.WriteLine("[testament]");
-                    if (Para.testament_information)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[testament_information]");
-                    if (Para.testament_information)
-                    {
-                        ligne.WriteLine("1");
-                    }
-                    else
-                    {
-                        ligne.WriteLine("0");
-                    }
-                    ligne.WriteLine("[testament_ans]");
-                    ligne.WriteLine(Para.testament_ans);
-                }
-            }
-            catch (Exception msg)
-            {
-                R.Afficher_message("Ne peut pas écrire les paramètres",
-                    msg.Message,
-                    erreur,
-                    null,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                    );
-            }
-        }
         private void Effacer_Log()
         {
             Regler_code_erreur();
             try
             {
+                string dossier_log = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+
                 // si fichier_debug existe efface fichiers
-                if (File.Exists(fichier_deboguer))
+                if (File.Exists(fichier_deboguer[0]))
                 {
-                    File.Delete(fichier_deboguer);
+                    File.Delete(fichier_deboguer[0]);
+                }
+                if (File.Exists(fichier_deboguer[1]))
+                {
+                    File.Delete(fichier_deboguer[1]);
                 }
 
                 // si fichier_erreur existe efface fichiers
-                if (File.Exists(fichier_erreur))
+                if (File.Exists(fichier_erreur[0]))
                 {
-                    File.Delete(fichier_erreur);
+                    File.Delete(fichier_erreur[0]);
+                }
+                if (File.Exists(fichier_erreur[1]))
+                {
+                    File.Delete(fichier_erreur[1]);
                 }
 
                 // si fichier_balise existe efface fichiers
+                if (File.Exists(dossier_log + @"\GH_balise.html"))
+                {
+                    File.Delete(dossier_log + @"\GH_balise.html");
+                }
                 if (File.Exists(fichier_balise))
                 {
                     File.Delete(fichier_balise);
                 }
 
                 // si fichier_GEDCOM existe efface fichiers
+                if (File.Exists(dossier_log + @"\GH_GEDCOM.html"))
+                {
+                    File.Delete(dossier_log + @"\GH_GEDCOM.html");
+                }
                 if (File.Exists(fichier_GEDCOM))
                 {
                     File.Delete(fichier_GEDCOM);
@@ -1155,6 +936,7 @@ namespace GH
         private void GH_FormClosing(object sender, FormClosingEventArgs e)
         {
             Regler_code_erreur();
+            annuler = true;
             if (this.WindowState == FormWindowState.Normal)
             {
                 Para.location_X = this.Location.X;
@@ -1165,13 +947,31 @@ namespace GH
                 Para.location_X = this.RestoreBounds.Location.X;
                 Para.location_Y = this.RestoreBounds.Location.Y;
             }
-            Ecrire_paramettre();
+            ParaClass.Ecrire_paramettre();
+            Environment.Exit(Environment.ExitCode);
         }
 
         private void GH_Load(object sender, EventArgs e)
         {
-
             Regler_code_erreur();
+            // lire paramètre
+            Para.arriere_plan = "FAD07E";
+            Para.voir_ID = true;
+            Para.voir_media = true;
+            Para.date_longue = true;
+            Para.voir_date_changement = true;
+            Para.voir_chercheur = true;
+            Para.voir_reference = true;
+            Para.voir_note = true;
+            Para.voir_carte = true;
+            Para.voir_info_bulle = true;
+            Para.mode_depanage = false;
+            Para.enregistrer_balise = true;
+            bool position_Bonne = false;
+            (int position_X, int position_Y) = Lire_parametre();
+
+            Effacer_Log();
+
             //Set up the delays for the ToolTip.
             Info_bulle.AutoPopDelay = 5000;
             Info_bulle.InitialDelay = 1000;
@@ -1204,36 +1004,8 @@ namespace GH
             // Log Btn_log_del
             Info_bulle.SetToolTip(this.Btn_log_del, "Effacer les journaux d'événement");
 
-            // tab stop
-            RechercheIndividuTB.TabStop = true;
-            RechercheIndividuTB.TabIndex = 1;
-
-            Btn_individu_avant.TabStop = true;
-            Btn_individu_avant.TabIndex = 2;
-            Btn_individu_apres.TabStop = true;
-            Btn_individu_apres.TabIndex = 3;
-            LvChoixIndividu.TabStop = true;
-            LvChoixIndividu.TabIndex = 4;
-
-            RechercheFamilleTB.TabStop = true;
-            RechercheFamilleTB.TabIndex = 5;
-
-            Btn_famille_avant.TabStop = true;
-            Btn_famille_avant.TabIndex = 6;
-            Btn_famille_apres.TabStop = true;
-            Btn_famille_apres.TabIndex = 7;
-            LvChoixFamille.TabStop = true;
-            LvChoixFamille.TabIndex = 8;
-
-
             if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH"))
                 Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\GH");
-            int position_X;
-            int position_Y;
-            bool position_Bonne = false;
-            Regler_code_erreur();
-            (position_X, position_Y) = Lire_parametre();
-            Effacer_Log();
             if (Para.mode_depanage)
                 Btn_log_del.Visible = true;
             this.Visible = false;
@@ -1241,20 +1013,20 @@ namespace GH
 
             LvChoixIndividu.Items.Clear();
             //organisation des élément graphique de la forme
-            lblNom.Text = "";
+            Lb_nombre_ligne.Text = null;
+
+            Lb_nom_programe.Text = "";
             lblVersionProgramme.Text = "";
-            lblFichier.Text = "";
+            Lb_fichier_GEDCOM.Text = "";
             lblDateHeure.Text = "";
             lblVersionGEDCOM.Text = "";
             lblCopyright.Text = "";
             lblCharSet.Text = "";
             lblLanguage.Text = "";
-            NombreIndividuTb.Text = "";
-            NombreFamilleTb.Text = "";
-            pb_del_1.Image = Properties.Resources.del_off;
-            pb_del_2.Image = Properties.Resources.del_off;
-            pb_del_3.Image = Properties.Resources.del_off;
+            Tb_nombre_individu.Text = "";
+            Tb_nombre_famille.Text = "";
             Gb_info_GEDCOM.Visible = false;
+            Cadre.Visible = false;
             Btn_individu_avant.Visible = false;
             Btn_individu_apres.Visible = false;
             Btn_famille_avant.Visible = false;
@@ -1292,16 +1064,12 @@ namespace GH
             LvChoixFamille.Columns.Add("", 0);
             LvChoixFamille.BackColor = Color.LightSkyBlue;
 
-
             RechercheIndividuTB.MaximumSize = new Size(280, 20);
             RechercheIndividuTB.MinimumSize = new Size(280, 20);
             RechercheIndividuTB.Size = new Size(280, 20);
             RechercheFamilleTB.MaximumSize = new Size(280, 20);
             RechercheFamilleTB.MinimumSize = new Size(280, 20);
             RechercheFamilleTB.Size = new Size(280, 20);
-
-
-
 
             PasConfidentiel("", "");
             FormVisible(false);
@@ -1325,9 +1093,16 @@ namespace GH
             this.Visible = true;
             Directe(); // à commenter pour la production *** DEBUG ***
             Application.DoEvents();
-
+            R.Animation(false);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="FichierGEDCOMaLire"></param>
+        /// <returns>
+        /// bool true si annuler false non annuler
+        /// 
+        /// </returns>
         public bool Lire_fichier_GEDCOM(
             string FichierGEDCOMaLire
             //, [CallerLineNumber] int callerLineNumber = 0
@@ -1335,9 +1110,11 @@ namespace GH
         {
             //R..Z("De la methode <b>" + (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name + "</b> à la ligne " + callerLineNumber + " FichierGEDCOMaLire="+ FichierGEDCOMaLire);
             Regler_code_erreur();
-            Animation(true);
-            NombreIndividuTb.Text = "";
-            NombreFamilleTb.Text = "";
+            if (annuler)
+                return (false);
+            R.Animation(true);
+            Tb_nombre_individu.Text = "";
+            Tb_nombre_famille.Text = "";
             this.Text = "";
             string FichierGEDCOMaLireTemp = GEDCOMClass.Lire_entete_GEDCOM(FichierGEDCOMaLire);
             Application.DoEvents();
@@ -1346,23 +1123,24 @@ namespace GH
             FichierGEDCOMaLire = FichierGEDCOMaLireTemp;
             GEDCOMClass.HEADER InfoGEDCOM = GEDCOMClass.Avoir_info_GEDCOM();
             lblCharSet.Text = "Code charactère: " + InfoGEDCOM.N1_CHAR;
-            Gb_info_GEDCOM.Visible = true;
+            //Gb_info_GEDCOM.Visible = true;
             if (!GEDCOMClass.Lire_GEDCOM(FichierGEDCOMaLire))
                 return false;
             this.Cursor = Cursors.WaitCursor;
-            GEDCOMClass.Extraire_GEDCOM();
+            annuler = GEDCOMClass.Extraire_GEDCOM();
             if (annuler)
                 return (false);
             InfoGEDCOM = GEDCOMClass.Avoir_info_GEDCOM();
-            lblNom.Text = "Nom: " + InfoGEDCOM.N2_SOUR_NAME;
+            Lb_nom_programe.Text = InfoGEDCOM.N1_SOUR + " " + InfoGEDCOM.N2_SOUR_NAME;
             lblVersionProgramme.Text = "Version: " + InfoGEDCOM.N2_SOUR_VERS;
             lblDateHeure.Text = InfoGEDCOM.N1_DATE + " " + InfoGEDCOM.N2_DATE_TIME;
-            lblFichier.Text = "Fichier: " + FichierGEDCOM;
+            Lb_fichier_GEDCOM.Text = "Fichier: " + InfoGEDCOM.N1_FILE;
             lblCopyright.Text = InfoGEDCOM.N1_COPR;
             lblVersionGEDCOM.Text = "Version: " + InfoGEDCOM.N2_GEDC_VERS;
             lblCharSet.Text = "Code charactère: " + InfoGEDCOM.N1_CHAR;
             lblLanguage.Text = "Langue: " + InfoGEDCOM.N1_LANG;
             Gb_info_GEDCOM.Visible = true;
+            Cadre.Visible = true;
             FichierCourant = "";
             Application.DoEvents();
             // créer liste individu
@@ -1378,8 +1156,8 @@ namespace GH
             LvChoixIndividu.Items.Clear();
             for (int f = 0; f < nombre; f++)
             {
-                if (f % 1000 == 0)
-                    Application.DoEvents();
+                Tb_nombre_individu.Text = String.Format("{0:n0}", f);
+                Application.DoEvents();
                 if (annuler)
                 {
                     Btn_annuler.Visible = false;
@@ -1387,49 +1165,40 @@ namespace GH
                 }
                 bool Ok;
                 string IDIndividu = ListeIDIndividu[f];
-                GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD infoIndividu;
-                (Ok, infoIndividu) = GEDCOMClass.Avoir_info_individu(IDIndividu);
+                GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD info_individu;
+                (Ok, info_individu) = GEDCOMClass.Avoir_info_individu(IDIndividu);
                 string nom = null;
                 if (Ok)
                 {
-                    if (infoIndividu.N1_NAME_liste.Count > 0)
+                    if (info_individu.N1_NAME_liste.Count > 0)
                     {
-                        if (infoIndividu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES != null)
+                        if (info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES != null)
                         {
-                            nom = AssemblerPatronymePrenom(infoIndividu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN,
-                                infoIndividu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN);
+                            nom = AssemblerPatronymePrenom(info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_SURN, info_individu.N1_NAME_liste[0].N1_PERSONAL_NAME_PIECES.Nn_GIVN);
                         }
                     }
                     if (nom == null)
                     {
-                        if (infoIndividu.N1_NAME_liste.Count > 0)
-                            nom = infoIndividu.N1_NAME_liste[0].N0_NAME;
+                        if (info_individu.N1_NAME_liste.Count > 0)
+                            nom = info_individu.N1_NAME_liste[0].N0_NAME;
                     }
-
                 }
-                // info naissance
-                GEDCOMClass.EVEN_ATTRIBUTE_STRUCTURE Naissance;
-                (_, Naissance) = GEDCOMClass.Avoir_evenement_naissance(infoIndividu.N1_EVEN_Liste);
-                // info Décès
-                GEDCOMClass.EVEN_ATTRIBUTE_STRUCTURE Deces;
-                (_, Deces) = GEDCOMClass.Avoir_evenement_deces(infoIndividu.N1_EVEN_Liste);
                 string[] ligne = new string[8];
                 ligne[0] = IDIndividu;
                 ligne[1] = nom;
-
-                (ligne[2], _) = HTMLClass.Convertir_date(Naissance.N2_DATE, false);
-                if (Naissance.N2_PLAC != null)
-                    ligne[3] = Naissance.N2_PLAC.N0_PLAC;
-                (ligne[4], _) = HTMLClass.Convertir_date(Deces.N2_DATE, false);
-                if (Deces.N2_PLAC != null)
-                    ligne[5] = Deces.N2_PLAC.N0_PLAC;
-                ligne[6] = Naissance.N2_DATE;
-                ligne[7] = Deces.N2_DATE;
+                (ligne[2], _) = HTMLClass.Convertir_date(info_individu.Date_naissance, false);
+                if (info_individu.Date_naissance != null)
+                    ligne[3] = info_individu.Lieu_naissance;
+                (ligne[4], _) = HTMLClass.Convertir_date(info_individu.Date_deces, false);
+                if (info_individu.Date_deces != null)
+                    ligne[5] = info_individu.Lieu_deces;
+                ligne[6] = info_individu.Date_naissance;
+                ligne[7] = info_individu.Date_deces;
                 itmIndividu = new ListViewItem(ligne);
                 LvChoixIndividu.Items.Add(itmIndividu);
             }
-            NombreIndividuTb.Text = string.Format("{0:0,0}", LvChoixIndividu.Items.Count);
-            Application.DoEvents();
+            Tb_nombre_individu.Text = string.Format("{0:0,0}", LvChoixIndividu.Items.Count);
+            GC.Collect();
             // créer liste famille
             LvChoixFamille.View = View.Details;
             LvChoixFamille.GridLines = true;
@@ -1441,8 +1210,8 @@ namespace GH
             nombre = ListeIDFamille.Count;
             for (int f = 0; f < nombre; f++)
             {
-                if (f % 1000 == 0)
-                    Application.DoEvents();
+                Tb_nombre_famille.Text = String.Format("{0:n0}", f);
+                Application.DoEvents();
                 if (annuler)
                 {
                     Btn_annuler.Visible = false;
@@ -1450,9 +1219,9 @@ namespace GH
                 }
                 bool Ok;
                 string IDFamille = ListeIDFamille[f];
-                GEDCOM.GEDCOMClass.FAM_RECORD infoFamille = GEDCOMClass.Avoir_info_famille(IDFamille);
+                GEDCOM.GEDCOMClass.FAM_RECORD info_famille = GEDCOMClass.Avoir_info_famille(IDFamille);
                 GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD infoConjoint;
-                (Ok, infoConjoint) = GEDCOMClass.Avoir_info_individu(infoFamille.N1_HUSB);
+                (Ok, infoConjoint) = GEDCOMClass.Avoir_info_individu(info_famille.N1_HUSB);
                 string nomConjoint = null;
                 if (Ok)
                 {
@@ -1470,7 +1239,7 @@ namespace GH
                 }
                 string nomConjointe = null;
                 GEDCOM.GEDCOMClass.INDIVIDUAL_RECORD infoConjointe;
-                (Ok, infoConjointe) = GEDCOMClass.Avoir_info_individu(infoFamille.N1_WIFE);
+                (Ok, infoConjointe) = GEDCOMClass.Avoir_info_individu(info_famille.N1_WIFE);
                 if (Ok)
                 {
                     if (infoConjointe.N1_NAME_liste.Count > 0)
@@ -1485,22 +1254,21 @@ namespace GH
                             nomConjointe = infoConjointe.N1_NAME_liste[0].N0_NAME;
                     }
                 }
-                GEDCOMClass.EVEN_ATTRIBUTE_STRUCTURE Mariage = GEDCOMClass.AvoirEvenementMariage(infoFamille.N1_EVEN_Liste);
+                //GEDCOMClass.EVEN_ATTRIBUTE_STRUCTURE Mariage = GEDCOMClass.AvoirEvenementMariage(infoFamille.N1_EVEN_Liste);
                 string[] ligne = new string[6];
                 ligne[0] = IDFamille;
                 ligne[1] = nomConjoint;
                 ligne[2] = nomConjointe;
-                (ligne[3], _) = HTMLClass.Convertir_date(Mariage.N2_DATE, false);
-                if (Mariage.N2_PLAC != null)
-                    ligne[4] = Mariage.N2_PLAC.N0_PLAC;
-                ligne[5] = Mariage.N2_DATE;
+                (ligne[3], _) = HTMLClass.Convertir_date(info_famille.Date_mariage, false);
+                if (info_famille.Lieu_mariage != null)
+                    ligne[4] = info_famille.Lieu_mariage;
+                ligne[5] = info_famille.Date_mariage;
                 itmFamille = new ListViewItem(ligne);
                 LvChoixFamille.Items.Add(itmFamille);
             }
-
             Application.DoEvents();
-            NombreFamilleTb.Text = string.Format("{0:0,0}", LvChoixFamille.Items.Count);
-
+            Tb_nombre_famille.Text = string.Format("{0:0,0}", LvChoixFamille.Items.Count);
+            GC.Collect();
             this.Cursor = Cursors.Default;
             System.Windows.Forms.SortOrder sort_order;
             Application.DoEvents();
@@ -1512,35 +1280,23 @@ namespace GH
             LvChoixIndividu.Sort();
             Application.DoEvents();
             // sort Famille par nom du conjoint
+            
             Application.DoEvents();
             LvChoixFamille.ListViewItemSorter = new ListViewComparer(1, sort_order);
             Application.DoEvents();
             LvChoixFamille.Sort();
             Application.DoEvents();
+            GC.Collect();
+            //R..Z("<b>Retourne</b> true");
             return true;
         }
         public (int position_X, int position_Y) Lire_parametre()
         {
             Regler_code_erreur();
-            // parametre valeur par défaut
-            Para.dosssier_page = "";
-            Para.dossier_media = "";
-            Para.dossier_GEDCOM = "";
-            Para.arriere_plan = "FFFFFF";
-            Para.voir_ID = false;
-            Para.voir_media = true;
-            Para.date_longue = true;
-            Para.voir_date_changement = true;
-            Para.voir_chercheur = true;
-            Para.voir_reference = true;
-            Para.voir_note = true;
-            Para.voir_carte = true;
-            Para.voir_info_bulle = true;
-            Para.mode_depanage = false;
-            string Fichier_parametre = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\GH\GH.ini";
+             string Fichier_parametre = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\GH\GH.ini";
             int position_X = 5;
             int position_Y = 5;
-            /*bool position_Bonne = false;*/
+            Regler_code_erreur();
             // lecture des paramettres
             if (File.Exists(Fichier_parametre))
             {
@@ -1667,6 +1423,8 @@ namespace GH
                                 else
                                     Info_bulle.Active = false;
                             }
+
+                            // depanage
                             if (Ligne == "[mode_depanage]")
                             {
                                 string a = sr.ReadLine();
@@ -1679,6 +1437,25 @@ namespace GH
                                 {
                                     Para.mode_depanage = false;
                                     Btn_log_del.Visible = false;
+                                }
+                            }
+
+                            // enregister balise
+                            if (Ligne == "[enregistrer_balise]")
+                            {
+                                string a = sr.ReadLine();
+                                if (a == "1")
+                                {
+                                    Para.enregistrer_balise = true;
+                                    Btn_balise.BackgroundImage = Properties.Resources.Btn_B;
+                                    Btn_balise.Enabled = true;
+                                }
+                                else
+                                {
+                                    Para.enregistrer_balise = false;
+                                    Btn_balise.BackgroundImage = Properties.Resources.Btn_B_gris;
+                                    Btn_balise.Enabled = false;
+
                                 }
                             }
                             // confidentiel
@@ -1873,8 +1650,8 @@ namespace GH
             }
             if (Para.dosssier_page != null)
             {
-                fichier_deboguer = Para.dosssier_page + @"\GH_deboguer.html";
-                fichier_erreur = Para.dosssier_page + @"\GH_erreur.html";
+                fichier_deboguer[1] = Para.dosssier_page + @"\GH_deboguer.html";
+                fichier_erreur[1] = Para.dosssier_page + @"\GH_erreur.html";
                 fichier_balise = Para.dosssier_page + @"\GH_balise.html";
                 fichier_GEDCOM = Para.dosssier_page + @"\GH_GEDCOM.html";
             }
@@ -1940,7 +1717,7 @@ namespace GH
             ListeID = GEDCOMClass.Avoir_liste_ID_individu();
             int compteur = 1;
             compteur = 0;
-            HTML.Index(FichierGEDCOM, NombreIndividuTb.Text, NombreFamilleTb.Text);
+            HTML.Index(FichierGEDCOM, Tb_nombre_individu.Text, Tb_nombre_famille.Text);
             if (annuler)
                 return;
             HTML.Index_individu(dossier_sortie);
@@ -1970,8 +1747,6 @@ namespace GH
             }
             try
             {
-                //System.Diagnostics.Process.Start("file:///" + dossier_sortie + @"\index.html");
-
                 Page page = new Page("file:///" + dossier_sortie + @"\index.html", FichierGEDCOM);
                 Page frm = page;
                 frm.Tag = this;
@@ -2072,6 +1847,7 @@ namespace GH
                 Btn_fiche_individu.Visible = true;
                 Btn_fiche_famille.Visible = true;
                 Gb_info_GEDCOM.Visible = true;
+                Cadre.Visible = true;
                 LvChoixIndividu.Visible = true;
                 LvChoixFamille.Visible = true;
                 lpIndividu.Visible = true;
@@ -2096,6 +1872,7 @@ namespace GH
                 Btn_fiche_individu.Visible = false;
                 Btn_fiche_famille.Visible = false;
                 Gb_info_GEDCOM.Visible = false;
+                Cadre.Visible = false;
                 LvChoixIndividu.Visible = false;
                 LvChoixFamille.Visible = false;
                 lpIndividu.Visible = false;
@@ -2225,11 +2002,7 @@ namespace GH
             // Sort.
             LvChoixFamille.Sort();
         }
-        private void DossierPagesWebToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            AvoirDossierPageWeb();
-        }
+
         private void ÀProposToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
@@ -2241,6 +2014,17 @@ namespace GH
             };
             l.ShowDialog(this);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message_1"></param>
+        /// <param name="message_2"></param>
+        /// <param name="erreur"></param>
+        /// <param name="bouton "></param>
+        /// <param name="icon"></param>
+        /// <returns>reponse</returns>
+
         private void AideToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
@@ -2248,7 +2032,7 @@ namespace GH
             Page frm = page;
             frm.Tag = this;
             frm.Show(this);
-            Animation(false);
+            R.Animation(false);
         }
         private void LvChoixIndividu_DoubleClick(object sender, EventArgs e)
         {
@@ -2261,7 +2045,7 @@ namespace GH
             if (!Directory.Exists(Para.dosssier_page))
             {
                 R.Afficher_message(
-                    "S.V.P. Spécifiez dans les paramêtres, le dossier des fiches HTML."
+                    "S.V.P. Spécifiez dans les paramêtres, le dossier page."
                     );
                 return;
             }
@@ -2340,118 +2124,6 @@ namespace GH
             }
         }
 
-        public void Animation(bool afficher)
-        {
-            Regler_code_erreur();
-            if (afficher)
-            {
-                Timer_animation.Start();
-                Application.DoEvents();
-            }
-            else
-            {
-                Timer_animation.Stop();
-                pb_del_1.Image = Properties.Resources.del_off;
-                pb_del_2.Image = Properties.Resources.del_off;
-                pb_del_3.Image = Properties.Resources.del_off;
-                Application.DoEvents();
-                return;
-            }
-        }
-        private void ApresConjointeB_Click(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            int index = 0;
-            string[] s = RechercheFamilleTB.Text.ToLower().Split(' ');
-            if (LvChoixFamille.SelectedItems.Count > 0)
-            {
-                index = LvChoixFamille.SelectedIndices[0];
-            }
-            for (int f = index + 1; f < LvChoixFamille.Items.Count; f++)
-            {
-                bool trouver = true;
-                foreach (string fe in s)
-                {
-                    if (
-                        (LvChoixFamille.Items[f].SubItems[1].Text.ToLower().IndexOf(fe) < 0) &&
-                        (LvChoixFamille.Items[f].SubItems[2].Text.ToLower().IndexOf(fe) < 0)
-                        )
-                        trouver = false;
-                }
-                if (trouver)
-                {
-                    LvChoixFamille.Items[f].Selected = true;
-                    LvChoixFamille.EnsureVisible(f);
-                    return;
-                }
-            }
-            for (int f = 0; f < index; f++)
-            {
-                bool trouver = true;
-                foreach (string fe in s)
-                {
-                    if (
-                        (LvChoixFamille.Items[f].SubItems[1].Text.ToLower().IndexOf(fe) < 0) &&
-                        (LvChoixFamille.Items[f].SubItems[2].Text.ToLower().IndexOf(fe) < 0)
-                        )
-                        trouver = false;
-                }
-                if (trouver)
-                {
-                    LvChoixFamille.Items[f].Selected = true;
-                    LvChoixFamille.EnsureVisible(f);
-                    return;
-                }
-            }
-        }
-
-        private void AvantConjointeB_Click(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            int index = 0;
-            string[] s = RechercheFamilleTB.Text.ToLower().Split(' ');
-            if (LvChoixFamille.SelectedItems.Count > 0)
-            {
-                index = LvChoixFamille.SelectedIndices[0];
-            }
-            for (int f = index - 1; f > -1; f--)
-            {
-                bool trouver = true;
-                foreach (string fe in s)
-                {
-                    if (
-                        (LvChoixFamille.Items[f].SubItems[1].Text.ToLower().IndexOf(fe) < 0) &&
-                        (LvChoixFamille.Items[f].SubItems[2].Text.ToLower().IndexOf(fe) < 0)
-                    )
-                        trouver = false;
-                }
-                if (trouver)
-                {
-                    LvChoixFamille.Items[f].Selected = true;
-                    LvChoixFamille.EnsureVisible(f);
-                    return;
-                }
-            }
-            for (int f = LvChoixFamille.Items.Count - 1; f > index; f--)
-            {
-                bool trouver = true;
-                foreach (string fe in s)
-                {
-                    if (
-                        (LvChoixFamille.Items[f].SubItems[1].Text.ToLower().IndexOf(fe) < 0) &&
-                        (LvChoixFamille.Items[f].SubItems[2].Text.ToLower().IndexOf(fe) < 0)
-                        )
-                        trouver = false;
-                }
-                if (trouver)
-                {
-                    LvChoixFamille.Items[f].Selected = true;
-                    LvChoixFamille.EnsureVisible(f);
-                    return;
-                }
-            }
-        }
-
         private void LvChoixFamille_DoubleClick(object sender, EventArgs e)
         {
             Regler_code_erreur();
@@ -2463,40 +2135,11 @@ namespace GH
             if (File.Exists(fichier_balise))
                 Process.Start(fichier_balise);
         }
-        private void DeboguerTb_Click(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            if (File.Exists(fichier_deboguer))
-                Process.Start(fichier_deboguer);
-        }
-        private void VoirDateDeChangementToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-        }
-        private void VoirReferenceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-        }
-        private void VoirNoteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-        }
-        private void VoirReferenceToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            if (R.IsNotNullOrEmpty(FichierGEDCOMaLire))
-            {
-
-                MessageBox.Show("Les fiches HTML doivent être re-générer pour voir le changement.", "Voir reférences a été changer",
-                                         MessageBoxButtons.OK,
-                                         MessageBoxIcon.Warning);
-            }
-        }
 
         public void Voir_paramettre()
         {
             Regler_code_erreur();
-            Form l = new Parametre
+            Form l = new ParaClass
             {
                 StartPosition = FormStartPosition.Manual,
                 Left = this.Left + 70,  // position de la fenêtte GH
@@ -2512,29 +2155,6 @@ namespace GH
             else
                 Btn_log_del.Visible = false;
             Application.DoEvents();
-        }
-        private void VoirDateDeChangementToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            if (R.IsNotNullOrEmpty(FichierGEDCOMaLire))
-            {
-
-                MessageBox.Show("Les fiches HTML doivent être re-générer pour voir le changement.", "Voir date de changement a été changer",
-                                         MessageBoxButtons.OK,
-                                         MessageBoxIcon.Warning);
-            }
-        }
-
-        private void VoirNoteToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            if (R.IsNotNullOrEmpty(FichierGEDCOMaLire))
-            {
-
-                MessageBox.Show("Les fiches HTML doivent être re-générer pour voir le changement.", "Voir Note a été changer",
-                                         MessageBoxButtons.OK,
-                                         MessageBoxIcon.Warning);
-            }
         }
 
         private void ParamètresToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2565,40 +2185,10 @@ namespace GH
             l.ShowDialog(this);
         }
 
-        private void Timer_animation_Tick(object sender, EventArgs e)
-        {
-            Regler_code_erreur();
-            Random rnd = new Random();
-            if (rnd.Next(1, 5) == 1)
-                pb_del_1.Image = Properties.Resources.del_bleu;
-            if (rnd.Next(1, 5) == 2)
-                pb_del_1.Image = Properties.Resources.del_ambe;
-            if (rnd.Next(1, 5) == 3)
-                pb_del_1.Image = Properties.Resources.del_rouge;
-            if (rnd.Next(1, 5) == 4)
-                pb_del_1.Image = Properties.Resources.del_vert;
-            if (rnd.Next(1, 5) == 1)
-                pb_del_2.Image = Properties.Resources.del_bleu;
-            if (rnd.Next(1, 5) == 2)
-                pb_del_2.Image = Properties.Resources.del_ambe;
-            if (rnd.Next(1, 5) == 3)
-                pb_del_2.Image = Properties.Resources.del_rouge;
-            if (rnd.Next(1, 5) == 4)
-                pb_del_2.Image = Properties.Resources.del_vert;
-            if (rnd.Next(1, 5) == 1)
-                pb_del_3.Image = Properties.Resources.del_bleu;
-            if (rnd.Next(1, 5) == 2)
-                pb_del_3.Image = Properties.Resources.del_ambe;
-            if (rnd.Next(1, 5) == 3)
-                pb_del_3.Image = Properties.Resources.del_rouge;
-            if (rnd.Next(1, 5) == 4)
-                pb_del_3.Image = Properties.Resources.del_vert;
-            Application.DoEvents();
-        }
-
         private void Btn_G_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
+            Btn_GEDCOM.Visible = false;
             try
             {
                 // si fichier_gedcom existe efface fichiers
@@ -2629,7 +2219,7 @@ namespace GH
                     ligne.WriteLine("\t\t<table style=\"border:2px solid #000;width:100%\">");
                     ligne.WriteLine("\t\t\t<tr>");
                     ligne.WriteLine("\t\t\t\t<tr>");
-                    ligne.WriteLine("\t\t\t\t\t<td style=\"width:150px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td><td></tr>");
+                    ligne.WriteLine("\t\t\t\t\t<td style=\"width:150px\">Nom</td><td>" + info_HEADER.N2_SOUR_NAME + "</td></tr>");
                     ligne.WriteLine("\t\t\t<tr><td>Version</td><td>" + info_HEADER.N2_SOUR_VERS + "<td></tr>");
                     ligne.WriteLine("\t\t\t<tr><td>Date</td><td>" + info_HEADER.N1_DATE + " " + info_HEADER.N2_DATE_TIME + "<td></tr>");
                     ligne.WriteLine("\t\t\t<tr><td>Copyright</td><td>" + info_HEADER.N1_COPR + "<td></tr>");
@@ -2638,9 +2228,10 @@ namespace GH
                     ligne.WriteLine("\t\t\t<tr><td>Langue</td><td>" + info_HEADER.N1_LANG + "<td></tr>");
                     ligne.WriteLine("\t\t\t<tr><td>Fichier sur le disque</td><td>" + info_HEADER.Nom_fichier_disque + "<td></tr>");
                     ligne.WriteLine("\t\t\t<tr><td>Page générée le</td><td>" + DateTime.Now + "<td></tr>");
-                    System.Version version;
-                    version = Assembly.GetExecutingAssembly().GetName().Version;
+                    System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
                     ligne.WriteLine("\t\t\t<tr><td>Version de GH</td><td>" + version.Major + "." + version.Minor + "." + version.Build + "<td></tr>");
+                    ligne.WriteLine("\t\t\t\t<tr><td>Fichier déboquer</td><td>" + fichier_GEDCOM + "<td></tr>");
                     ligne.WriteLine("\t\t</table>");
                     string text = "";
                     int position = 1;
@@ -2688,35 +2279,58 @@ namespace GH
                     MessageBoxIcon.Error
                     );
             }
+            GC.Collect();
+            Btn_GEDCOM.Visible = true;
         }
 
         private void Btn_debug_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
-            if (File.Exists(fichier_deboguer))
+            Btn_debug.Enabled = false;
+            if (File.Exists(fichier_deboguer[0]))
             {
-                Page page = new Page("file:///" + fichier_deboguer, "Déboguer");
+                Page page = new Page("file:///" + fichier_deboguer[0], "Déboguer");
                 Page frm = page;
                 frm.Tag = this;
                 frm.Show(this);
             }
+            if (File.Exists(fichier_deboguer[1]))
+            {
+                Page page = new Page("file:///" + fichier_deboguer[1], "Déboguer");
+                Page frm = page;
+                frm.Tag = this;
+                frm.Show(this);
+            }
+            GC.Collect();
+            Btn_debug.Enabled = true;
         }
 
         private void Btn_erreur_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
-            if (File.Exists(fichier_erreur))
+            Btn_erreur.Enabled = false;
+            if (File.Exists(fichier_erreur[0]))
             {
-                Page page = new Page("file:///" + fichier_erreur, "Erreur");
+                Page page = new Page("file:///" + fichier_erreur[0], "Erreur du bureau");
                 Page frm = page;
                 frm.Tag = this;
                 frm.Show(this);
             }
+            if (File.Exists(fichier_erreur[1]))
+            {
+                Page page = new Page("file:///" + fichier_erreur[1], "Erreur du bureau du dossier page");
+                Page frm = page;
+                frm.Tag = this;
+                frm.Show(this);
+            }
+            GC.Collect();
+            Btn_erreur.Enabled = true;
         }
 
         private void Btn_balise_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
+            Btn_balise.Enabled = false;
             if (File.Exists(fichier_balise))
             {
                 Page page = new Page("file:///" + fichier_balise, "Balise");
@@ -2724,6 +2338,8 @@ namespace GH
                 frm.Tag = this;
                 frm.Show(this);
             }
+            GC.Collect();
+            Btn_balise.Enabled = true;
         }
 
         private void Btn_individu_avant_Click(object sender, EventArgs e)
@@ -2819,6 +2435,7 @@ namespace GH
         private void Btn_famille_avant_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
+            Form_desactiver(true);
             int index = 0;
             string[] s = RechercheFamilleTB.Text.ToLower().Split(' ');
             if (LvChoixFamille.SelectedItems.Count > 0)
@@ -2862,11 +2479,13 @@ namespace GH
                     return;
                 }
             }
+            Form_desactiver(false);
         }
 
         private void Btn_famille_apres_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
+            Form_desactiver(true);
             int index = 0;
             string[] s = RechercheFamilleTB.Text.ToLower().Split(' ');
             if (LvChoixFamille.SelectedItems.Count > 0)
@@ -2909,64 +2528,70 @@ namespace GH
                     return;
                 }
             }
+            Form_desactiver(false);
         }
 
         private void Btn_fiche_individu_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
+            Btn_fiche_individu.Enabled = false;
             Genere_page_individu(IDCourantIndividu);
+            GC.Collect();
+            Btn_fiche_individu.Enabled = true;
+            
         }
 
         private void Btn_fiche_famille_Click(object sender, EventArgs e)
         {
+            Btn_fiche_famille.Enabled = false;
             Regler_code_erreur();
             Genere_page_famille(IDCourantFamilleConjoint);
+            GC.Collect();
+            Btn_fiche_famille.Enabled = true;
         }
 
         private void Btn__total_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
+            Btn_total.Enabled = false;
             Btn_annuler.Visible = true;
-            Animation(true);
+            R.Animation(true);
             Form_desactiver(true);
             Fichier_total();
             annuler = false;
             Btn_annuler.Visible = false;
             Form_desactiver(false);
-            Animation(false);
+            GC.Collect();
+            Btn_total.Enabled = true;
+            R.Animation(false);
         }
 
         private void Btn_log_del_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
+            Btn_log_del.Enabled = false;
             Effacer_Log();
+            GC.Collect();
+            Btn_log_del.Enabled = true;
         }
 
         private void Btn_annuler_Click(object sender, EventArgs e)
         {
             Regler_code_erreur();
             annuler = true;
+            GC.Collect();
         }
 
         private void QuitterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-    }
-    internal class ListViewItemComparer : IComparer
-    {
-        public readonly int col;
-        private ListViewItemComparer()
+
+        private void cadre_Click(object sender, EventArgs e)
         {
-            col = 0;
-        }
-        public ListViewItemComparer(int column)
-        {
-            col = column;
-        }
-        public int Compare(object x, object y)
-        {
-            return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
+
         }
     }
+    
+
 }

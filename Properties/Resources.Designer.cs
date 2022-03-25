@@ -22,7 +22,7 @@ namespace GH.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace GH.Properties {
         ///   Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GH.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace GH.Properties {
         ///   les recherches de ressources à l'aide de cette classe de ressource fortement typée.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Byte[].
         /// </summary>
-        internal static byte[] boutons {
+        public static byte[] boutons {
             get {
                 object obj = ResourceManager.GetObject("boutons", resourceCulture);
                 return ((byte[])(obj));
@@ -73,7 +73,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btn_annuler {
+        public static System.Drawing.Bitmap btn_annuler {
             get {
                 object obj = ResourceManager.GetObject("btn_annuler", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btn_arriere_plan {
+        public static System.Drawing.Bitmap btn_arriere_plan {
             get {
                 object obj = ResourceManager.GetObject("btn_arriere_plan", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +93,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_B {
+        public static System.Drawing.Bitmap Btn_B {
             get {
                 object obj = ResourceManager.GetObject("Btn_B", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -103,7 +103,17 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btn_D {
+        public static System.Drawing.Bitmap Btn_B_gris {
+            get {
+                object obj = ResourceManager.GetObject("Btn_B_gris", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap btn_D {
             get {
                 object obj = ResourceManager.GetObject("btn_D", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +123,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_dossier {
+        public static System.Drawing.Bitmap Btn_dossier {
             get {
                 object obj = ResourceManager.GetObject("Btn_dossier", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -123,7 +133,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_droite {
+        public static System.Drawing.Bitmap Btn_droite {
             get {
                 object obj = ResourceManager.GetObject("Btn_droite", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -133,7 +143,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_E {
+        public static System.Drawing.Bitmap Btn_E {
             get {
                 object obj = ResourceManager.GetObject("Btn_E", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -143,7 +153,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_famille {
+        public static System.Drawing.Bitmap Btn_famille {
             get {
                 object obj = ResourceManager.GetObject("Btn_famille", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -153,7 +163,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btn_G {
+        public static System.Drawing.Bitmap btn_G {
             get {
                 object obj = ResourceManager.GetObject("btn_G", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -163,7 +173,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_gauche {
+        public static System.Drawing.Bitmap Btn_gauche {
             get {
                 object obj = ResourceManager.GetObject("Btn_gauche", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -173,7 +183,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_individu {
+        public static System.Drawing.Bitmap Btn_individu {
             get {
                 object obj = ResourceManager.GetObject("Btn_individu", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -183,7 +193,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btn_log {
+        public static System.Drawing.Bitmap btn_log {
             get {
                 object obj = ResourceManager.GetObject("btn_log", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -193,7 +203,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_ok {
+        public static System.Drawing.Bitmap Btn_ok {
             get {
                 object obj = ResourceManager.GetObject("Btn_ok", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -203,7 +213,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Btn_total {
+        public static System.Drawing.Bitmap Btn_total {
             get {
                 object obj = ResourceManager.GetObject("Btn_total", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -213,7 +223,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap DAPAMv5_201 {
+        public static System.Drawing.Bitmap DAPAMv5_201 {
             get {
                 object obj = ResourceManager.GetObject("DAPAMv5_201", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -223,7 +233,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap del_ambe {
+        public static System.Drawing.Bitmap del_ambe {
             get {
                 object obj = ResourceManager.GetObject("del-ambe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -233,7 +243,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap del_bleu {
+        public static System.Drawing.Bitmap del_bleu {
             get {
                 object obj = ResourceManager.GetObject("del-bleu", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -243,7 +253,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap del_off {
+        public static System.Drawing.Bitmap del_off {
             get {
                 object obj = ResourceManager.GetObject("del-off", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -253,7 +263,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap del_rouge {
+        public static System.Drawing.Bitmap del_rouge {
             get {
                 object obj = ResourceManager.GetObject("del-rouge", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -263,7 +273,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap del_vert {
+        public static System.Drawing.Bitmap del_vert {
             get {
                 object obj = ResourceManager.GetObject("del-vert", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -273,7 +283,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap GH150V2 {
+        public static System.Drawing.Bitmap GH150V2 {
             get {
                 object obj = ResourceManager.GetObject("GH150V2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -283,7 +293,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap loupe20 {
+        public static System.Drawing.Bitmap loupe20 {
             get {
                 object obj = ResourceManager.GetObject("loupe20", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -293,7 +303,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap priver_19X24 {
+        public static System.Drawing.Bitmap priver_19X24 {
             get {
                 object obj = ResourceManager.GetObject("priver_19X24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -303,7 +313,7 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap priver_50X64 {
+        public static System.Drawing.Bitmap priver_50X64 {
             get {
                 object obj = ResourceManager.GetObject("priver_50X64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -313,9 +323,19 @@ namespace GH.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap recherche {
+        public static System.Drawing.Bitmap recherche {
             get {
                 object obj = ResourceManager.GetObject("recherche", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap spe340 {
+            get {
+                object obj = ResourceManager.GetObject("spe340", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
